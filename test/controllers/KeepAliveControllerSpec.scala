@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,67 +16,36 @@
 
 package controllers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.{GET, route, status, _}
 
 import scala.concurrent.Future
 
-class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
+class KeepAliveControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  "keepAlive" - {
+  "Keep alive controller" - {
+    "touch mongo cache when mrn is available" in {
+      when(mockSessionRepository.get(any(), any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-    "when the user has answered some questions" - {
+      lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(Some(mrn.toString)).url
+      val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
 
-      "must keep the answers alive and return OK" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-        when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(Some(emptyUserAnswers))
-            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-            .build()
-
-        running(application) {
-
-          val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          verify(mockSessionRepository, times(1)).keepAlive(emptyUserAnswers.id)
-        }
-      }
+      status(result) mustBe NO_CONTENT
+      verify(mockSessionRepository, times(1)).set(any())
+      verify(mockSessionRepository, times(1)).get(any(), any())
     }
 
-    "when the user has not answered any questions" - {
+    "not touch mongo cache when mrn is not available" in {
+      lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(None).url
+      val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
 
-      "must return OK" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-        when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(None)
-            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-            .build()
-
-        running(application) {
-
-          val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          verify(mockSessionRepository, never()).keepAlive(any())
-        }
-      }
+      status(result) mustBe NO_CONTENT
+      verify(mockSessionRepository, never()).set(any())
+      verify(mockSessionRepository, never()).get(any(), any())
     }
   }
 }

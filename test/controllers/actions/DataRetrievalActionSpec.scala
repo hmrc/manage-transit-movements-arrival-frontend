@@ -1,49 +1,94 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.actions
 
-import base.SpecBase
-import models.UserAnswers
+import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import repositories.SessionRepository
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
+class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+  val sessionRepository: SessionRepository = mock[SessionRepository]
+  val mrn: MovementReferenceNumber         = arbitrary[MovementReferenceNumber].sample.value
+  val eoriNumber: EoriNumber               = arbitrary[EoriNumber].sample.value
+
+  override lazy val app: Application = {
+
+    import play.api.inject._
+
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[SessionRepository].toInstance(sessionRepository)
+      )
+      .build()
   }
 
-  "Data Retrieval Action" - {
+  def harness(mrn: MovementReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
-    "when there is no data in the cache" - {
+    lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
 
-      "must set userAnswers to 'None' in the request" in {
+    actionProvider(mrn)
+      .invokeBlock(
+        IdentifierRequest(FakeRequest(GET, "/").asInstanceOf[Request[AnyContent]], EoriNumber("")),
+        {
+          request: OptionalDataRequest[AnyContent] =>
+            f(request)
+            Future.successful(Results.Ok)
+        }
+      )
+      .futureValue
+  }
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
-        val action = new Harness(sessionRepository)
+  "a data retrieval action" - {
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
+    "must return an OptionalDataRequest with an empty UserAnswers" - {
 
-        result.userAnswers must not be defined
+      "where there are no existing answers for this MRN" in {
+
+        when(sessionRepository.get(any(), any())) thenReturn Future.successful(None)
+
+        harness(mrn, request => request.userAnswers must not be defined)
       }
     }
 
-    "when there is data in the cache" - {
+    "must return an OptionalDataRequest with some defined UserAnswers" - {
 
-      "must build a userAnswers object and add it to the request" in {
+      "when there are existing answers for this MRN" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
-        val action = new Harness(sessionRepository)
+        when(sessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(mrn, eoriNumber)))
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
-
-        result.userAnswers mustBe defined
+        harness(mrn, request => request.userAnswers mustBe defined)
       }
     }
   }
