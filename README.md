@@ -1,5 +1,5 @@
 
-# transit-movement-arrival-frontend
+# manage-transit-movements-arrival-frontend
 
 This service allows a user to record a transit movement arrival at its destination.
 

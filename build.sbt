@@ -31,7 +31,7 @@ lazy val root = (project in file("."))
       "models.Mode",
       "controllers.routes._"
     ),
-    PlayKeys.playDefaultPort := 9483,
+    PlayKeys.playDefaultPort := 10121,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration",
