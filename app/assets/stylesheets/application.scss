@@ -1,0 +1,15 @@
+$govuk-assets-path: "/manage-transit-movements-arrivals/assets/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/manage-transit-movements-arrivals/assets/lib/hmrc-frontend/hmrc/assets/";
+
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
+
+@import "partials/page-heading";
+@import "_timeout-dialog.scss";
+@import "partials/header";
+@import "partials/shame";
+
+.hint-as-label {
+    @extend .govuk-label;
+    @extend #{'.govuk-\\!-padding-bottom-2'};
+}
