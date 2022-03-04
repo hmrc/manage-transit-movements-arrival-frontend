@@ -1,21 +1,187 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+GET        /assets/*file                                     controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET         /keep-alive                                      controllers.KeepAliveController.keepAlive(mrn: Option[String] = None)
+GET         /:mrn/keep-alive                                 controllers.KeepAliveController.keepAlive(mrn: Option[String])
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPageLoad(mrn: MovementReferenceNumber)
+POST       /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPost(mrn: MovementReferenceNumber)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET        /cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET        /movement-reference-number                        controllers.MovementReferenceNumberController.onPageLoad()
+POST       /movement-reference-number                        controllers.MovementReferenceNumberController.onSubmit()
+GET        /change-movement-reference-number                 controllers.MovementReferenceNumberController.onPageLoad()
+POST       /change-movement-reference-number                 controllers.MovementReferenceNumberController.onSubmit()
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET        /:arrivalId/update-movement-reference-number      controllers.UpdateRejectedMRNController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/update-movement-reference-number      controllers.UpdateRejectedMRNController.onSubmit(arrivalId: ArrivalId)
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET        /:mrn/where-are-goods                             controllers.GoodsLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/where-are-goods                             controllers.GoodsLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-where-are-goods                      controllers.GoodsLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-where-are-goods                      controllers.GoodsLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /:mrn/supervising-customs-office                  controllers.SimplifiedCustomsOfficeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/supervising-customs-office                  controllers.SimplifiedCustomsOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-supervising-customs-office           controllers.SimplifiedCustomsOfficeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-supervising-customs-office           controllers.SimplifiedCustomsOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+
+GET        /:mrn/customs-office                              controllers.CustomsOfficeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/customs-office                              controllers.CustomsOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-customs-office                       controllers.CustomsOfficeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-customs-office                       controllers.CustomsOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/customs-approved-location                   controllers.CustomsSubPlaceController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/customs-approved-location                   controllers.CustomsSubPlaceController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-customs-approved-location            controllers.CustomsSubPlaceController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-customs-approved-location            controllers.CustomsSubPlaceController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/authorised-location-code                    controllers.AuthorisedLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/authorised-location-code                    controllers.AuthorisedLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-authorised-location-code             controllers.AuthorisedLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-authorised-location-code             controllers.AuthorisedLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/destination-trader-address                  controllers.TraderAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/destination-trader-address                  controllers.TraderAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-destination-trader-address           controllers.TraderAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-destination-trader-address           controllers.TraderAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/destination-trader-eori                     controllers.TraderEoriController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/destination-trader-eori                     controllers.TraderEoriController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-destination-trader-eori              controllers.TraderEoriController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-destination-trader-eori              controllers.TraderEoriController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/destination-trader-name                     controllers.TraderNameController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/destination-trader-name                     controllers.TraderNameController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-destination-trader-name              controllers.TraderNameController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-destination-trader-name              controllers.TraderNameController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/use-ncts-service                            controllers.UseDifferentServiceController.onPageLoad(mrn: MovementReferenceNumber)
+
+GET        /:mrn/arrival-notification-sent                   controllers.ConfirmationController.onPageLoad(mrn: MovementReferenceNumber)
+
+GET        /:mrn/event-on-journey                            controllers.IncidentOnRouteController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/event-on-journey                            controllers.IncidentOnRouteController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-event-on-journey                     controllers.IncidentOnRouteController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-event-on-journey                     controllers.IncidentOnRouteController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/event-country             controllers.events.EventCountryController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/event-country             controllers.events.EventCountryController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-event-country      controllers.events.EventCountryController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-event-country      controllers.events.EventCountryController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/event-place                                           controllers.events.EventPlaceController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/event-place                                           controllers.events.EventPlaceController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-event-place                                    controllers.events.EventPlaceController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-event-place                                    controllers.events.EventPlaceController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/reported-event                                        controllers.events.EventReportedController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/reported-event                                        controllers.events.EventReportedController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-reported-event                                 controllers.events.EventReportedController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-reported-event                                 controllers.events.EventReportedController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/event-details                                         controllers.events.IncidentInformationController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/event-details                                         controllers.events.IncidentInformationController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-event-details                                  controllers.events.IncidentInformationController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-event-details                                  controllers.events.IncidentInformationController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/vehicle-or-container                                  controllers.events.IsTranshipmentController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/vehicle-or-container                                  controllers.events.IsTranshipmentController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-vehicle-or-container                           controllers.events.IsTranshipmentController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-vehicle-or-container                           controllers.events.IsTranshipmentController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/check-event-answers                                   controllers.events.CheckEventAnswersController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index)
+POST       /:mrn/event/:eventIndex/check-event-answers                                   controllers.events.CheckEventAnswersController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index)
+
+GET        /:mrn/complete-arrival-at-trader-address                                      controllers.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/complete-arrival-at-trader-address                                      controllers.IsTraderAddressPlaceOfNotificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-complete-arrival-at-trader-address                               controllers.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-complete-arrival-at-trader-address                               controllers.IsTraderAddressPlaceOfNotificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/place-complete-arrival                                                  controllers.PlaceOfNotificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/place-complete-arrival                                                  controllers.PlaceOfNotificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-place-complete-arrival                                           controllers.PlaceOfNotificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-place-complete-arrival                                           controllers.PlaceOfNotificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/event/add-event                                                         controllers.events.AddEventController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/event/add-event                                                         controllers.events.AddEventController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/event/change-add-event                                                  controllers.events.AddEventController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/event/change-add-event                                                  controllers.events.AddEventController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/what-changed                                          controllers.events.transhipments.TranshipmentTypeController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/what-changed                                          controllers.events.transhipments.TranshipmentTypeController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-what-changed                                   controllers.events.transhipments.TranshipmentTypeController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-what-changed                                   controllers.events.transhipments.TranshipmentTypeController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/vehicle-name-registration-reference                   controllers.events.transhipments.TransportIdentityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/vehicle-name-registration-reference                   controllers.events.transhipments.TransportIdentityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-vehicle-name-registration-reference            controllers.events.transhipments.TransportIdentityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-vehicle-name-registration-reference            controllers.events.transhipments.TransportIdentityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/vehicle-registration-country                                 controllers.events.transhipments.TransportNationalityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/vehicle-registration-country                                 controllers.events.transhipments.TransportNationalityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-vehicle-registration-country                          controllers.events.transhipments.TransportNationalityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-vehicle-registration-country                          controllers.events.transhipments.TransportNationalityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/container/:containerIndex/container-number                   controllers.events.transhipments.ContainerNumberController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/container/:containerIndex/container-number                   controllers.events.transhipments.ContainerNumberController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/container/:containerIndex/change-container-number            controllers.events.transhipments.ContainerNumberController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/container/:containerIndex/change-container-number            controllers.events.transhipments.ContainerNumberController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/add-container                                                controllers.events.transhipments.AddContainerController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/add-container                                                controllers.events.transhipments.AddContainerController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-add-container                                         controllers.events.transhipments.AddContainerController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-add-container                                         controllers.events.transhipments.AddContainerController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/container/:containerIndex/confirm-remove-container           controllers.events.transhipments.ConfirmRemoveContainerController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/container/:containerIndex/confirm-remove-container           controllers.events.transhipments.ConfirmRemoveContainerController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/container/:containerIndex/change-confirm-remove-container    controllers.events.transhipments.ConfirmRemoveContainerController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/container/:containerIndex/change-confirm-remove-container    controllers.events.transhipments.ConfirmRemoveContainerController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/seal/:sealIndex/seal-number                                  controllers.events.seals.SealIdentityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/seal/:sealIndex/seal-number                                  controllers.events.seals.SealIdentityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/seal/:sealIndex/change-seal-number                           controllers.events.seals.SealIdentityController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/seal/:sealIndex/change-seal-number                           controllers.events.seals.SealIdentityController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/add-seal                                                     controllers.events.seals.AddSealController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/add-seal                                                     controllers.events.seals.AddSealController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-add-seal                                              controllers.events.seals.AddSealController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-add-seal                                              controllers.events.seals.AddSealController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/seals-changed                                                controllers.events.seals.HaveSealsChangedController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/seals-changed                                                controllers.events.seals.HaveSealsChangedController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-seals-changed                                         controllers.events.seals.HaveSealsChangedController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-seals-changed                                         controllers.events.seals.HaveSealsChangedController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/seal/:sealIndex/confirm-remove-seal                          controllers.events.seals.ConfirmRemoveSealController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/seal/:sealIndex/confirm-remove-seal                          controllers.events.seals.ConfirmRemoveSealController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/seal/:sealIndex/change-confirm-remove-seal                   controllers.events.seals.ConfirmRemoveSealController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/seal/:sealIndex/change-confirm-remove-seal                   controllers.events.seals.ConfirmRemoveSealController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/event/:eventIndex/confirm-remove-event                                         controllers.events.ConfirmRemoveEventController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+POST       /:mrn/event/:eventIndex/confirm-remove-event                                         controllers.events.ConfirmRemoveEventController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = NormalMode)
+GET        /:mrn/event/:eventIndex/change-confirm-remove-event                                  controllers.events.ConfirmRemoveEventController.onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+POST       /:mrn/event/:eventIndex/change-confirm-remove-event                                  controllers.events.ConfirmRemoveEventController.onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode = CheckMode)
+
+GET        /:arrivalId/arrival-rejection                                             controllers.ArrivalRejectionController.onPageLoad(arrivalId: ArrivalId)
+
+GET        /:mrn/consignee-name                        controllers.ConsigneeNameController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/consignee-name                        controllers.ConsigneeNameController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-consignee-name                  controllers.ConsigneeNameController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-consignee-name                  controllers.ConsigneeNameController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/eori-number                        controllers.ConsigneeEoriNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/eori-number                        controllers.ConsigneeEoriNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-eori-number                  controllers.ConsigneeEoriNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-eori-number                  controllers.ConsigneeEoriNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/consignee-address                        controllers.ConsigneeAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/consignee-address                        controllers.ConsigneeAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/change-consignee-address                  controllers.ConsigneeAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/change-consignee-address                  controllers.ConsigneeAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

@@ -1,28 +1,44 @@
 package controllers
 
 import base.SpecBase
+import matchers.JsonMatchers
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import play.twirl.api.Html
 
-class $className$ControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class $className$ControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
   "$className$ Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(GET, routes.$className$Controller.onPageLoad(mrn).url)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      running(application) {
-        val request = FakeRequest(GET, routes.$className$Controller.onPageLoad().url)
+      val result = route(application, request).value
 
-        val result = route(application, request).value
+      status(result) mustEqual OK
 
-        val view = application.injector.instanceOf[$className$View]
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
-      }
+      val expectedJson = Json.obj("mrn" -> mrn)
+
+      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
     }
   }
 }

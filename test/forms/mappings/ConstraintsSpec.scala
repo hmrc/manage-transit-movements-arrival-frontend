@@ -1,16 +1,32 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package forms.mappings
+
+import generators.Generators
+import models.Index
+import org.scalacheck.Gen
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 
-import generators.Generators
-import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import play.api.data.validation.{Invalid, Valid}
-
-class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators  with Constraints {
-
+class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" - {
 
@@ -118,7 +134,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       forAll(gen) {
         case (max, date) =>
-
           val result = maxDate(max, "error.future")(date)
           result mustEqual Valid
       }
@@ -133,7 +148,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       forAll(gen) {
         case (max, date) =>
-
           val result = maxDate(max, "error.future", "foo")(date)
           result mustEqual Invalid("error.future", "foo")
       }
@@ -151,7 +165,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       forAll(gen) {
         case (min, date) =>
-
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Valid
       }
@@ -166,10 +179,70 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       forAll(gen) {
         case (min, date) =>
-
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Invalid("error.past", "foo")
       }
     }
   }
+
+  "doesNotExistIn" - {
+    case class TestObject(value: String)
+
+    val testObjectsToValidateAgainst = Seq(TestObject("a"))
+
+    implicit val testObjectFormEqCheck: StringEquivalence[TestObject] =
+      new StringEquivalence[TestObject] {
+        override def equivalentToString(lhs: TestObject, formValue: String): Boolean = lhs.value == formValue
+      }
+
+    val nextIndex    = Index(1)
+    val currentIndex = Index(0)
+
+    def constraint(index: Index): Constraint[String] = doesNotExistIn(testObjectsToValidateAgainst, index, "error.duplicate")
+
+    "returns Valid if it is not contained in the values to be tested against and index is the next sequential index" in {
+      val result = constraint(nextIndex)("b")
+
+      result mustEqual Valid
+    }
+
+    "returns Invalid if it is contained in the values to be tested against and index is the next sequential index" in {
+      val result = constraint(nextIndex)("a")
+
+      result mustEqual Invalid("error.duplicate")
+    }
+
+    "returns Valid if new answer is the same as the previous in current index" in {
+      val result = constraint(currentIndex)("a")
+
+      result mustEqual Valid
+    }
+  }
+
+  "validAscii" - {
+
+    "returns valid if there are only printable ascii characters within the string" in {
+
+      val stringsWithOnlyPrintableAscii: Gen[String] = stringsLongerThan(1, withOnlyPrintableAscii = true)
+
+      forAll(stringsWithOnlyPrintableAscii) {
+        value =>
+          val result = printableAscii("error.invalid")(value)
+          result mustBe Valid
+      }
+
+    }
+
+    "returns invalid if there are any non-printable ascii characters within the string" in {
+
+      val stringsWithoutPrintableAscii: Gen[String] = stringsLongerThan(1, withOnlyPrintableAscii = false)
+
+      forAll(stringsWithoutPrintableAscii) {
+        value =>
+          val result = printableAscii("error.invalid")(value)
+          result mustBe Invalid("error.invalid")
+      }
+    }
+  }
+
 }
