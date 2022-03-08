@@ -4,7 +4,7 @@ import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-lazy val appName: String = "manage-transit-movements-arrivals-frontend"
+lazy val appName: String = "manage-transit-movements-arrival-frontend"
 
 val silencerVersion = "1.7.1"
 
