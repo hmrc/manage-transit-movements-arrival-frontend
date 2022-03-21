@@ -16,13 +16,13 @@
 
 package models
 
-import java.time.LocalDateTime
-
 import derivable.Derivable
 import pages._
 import play.api.libs.json._
 import queries.Gettable
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -80,7 +80,7 @@ object UserAnswers {
       (__ \ "movementReferenceNumber").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead) and
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.localDateTimeReads) and
         (__ \ "arrivalId").readNullable[ArrivalId] and
         (__ \ "_id").read[Id]
     )(UserAnswers.apply _)
@@ -94,9 +94,11 @@ object UserAnswers {
       (__ \ "movementReferenceNumber").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite) and
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.localDateTimeWrites) and
         (__ \ "arrivalId").writeNullable[ArrivalId] and
         (__ \ "_id").write[Id]
     )(unlift(UserAnswers.unapply))
   }
+
+  implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 }
