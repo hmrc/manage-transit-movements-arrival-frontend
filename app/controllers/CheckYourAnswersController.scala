@@ -49,8 +49,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport
-    with HttpErrorFunctions
-    with TechnicalDifficultiesPage {
+    with HttpErrorFunctions {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
     implicit request =>
