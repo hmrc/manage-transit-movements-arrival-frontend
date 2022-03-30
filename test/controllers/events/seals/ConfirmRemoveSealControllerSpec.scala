@@ -92,8 +92,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs("seal"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs("seal"),
+        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"concurrent.seal"),
+        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"concurrent.seal"),
         "linkText"     -> msg"concurrent.remove.error.noSeal.link.text",
         "redirectLink" -> onwardRoute.url
       )
@@ -132,8 +132,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs("seal"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs("seal"),
+        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"concurrent.seal"),
+        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"concurrent.seal"),
         "linkText"     -> msg"concurrent.remove.error.multipleSeal.link.text",
         "redirectLink" -> onwardRoute.url
       )

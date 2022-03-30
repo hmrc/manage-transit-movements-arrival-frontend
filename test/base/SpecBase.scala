@@ -24,15 +24,18 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.FakeRequest
 
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
+    with GuiceOneAppPerSuite
     with ScalaCheckPropertyChecks
     with OptionValues
     with TryValues
@@ -62,7 +65,9 @@ trait SpecBase
   val consigneeAddress: Address = Address("buildingAndStreet", "city", "NE99 1XN")
   val configKey                 = "config"
 
+  def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
-  implicit def messages: Messages = Helpers.stubMessages()
+  def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 }

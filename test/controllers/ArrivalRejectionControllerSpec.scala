@@ -39,9 +39,9 @@ import scala.concurrent.Future
 
 class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with BeforeAndAfterEach {
 
-  private val mockArrivalRejectionService = mock[ArrivalRejectionService]
-  private val mockViewModelConfig         = mock[ViewModelConfig]
-  private val testUrl                     = "testUrl"
+  private lazy val mockArrivalRejectionService = mock[ArrivalRejectionService]
+  private lazy val mockViewModelConfig         = mock[ViewModelConfig]
+  private val testUrl                          = "testUrl"
   when(mockViewModelConfig.nctsEnquiriesUrl).thenReturn(testUrl)
 
   override def beforeEach(): Unit = {

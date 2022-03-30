@@ -51,9 +51,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val destinationUrl: String     = configuration.get[Service]("microservice.services.destination").fullServiceUrl
   lazy val baseDestinationUrl: String = configuration.get[Service]("microservice.services.destination").baseUrl
   lazy val referenceDataUrl: String   = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl
-  lazy val timeoutSeconds: String     = configuration.get[String]("session.timeoutSeconds")
-  lazy val countdownSeconds: String   = configuration.get[String]("session.countdownSeconds")
+  lazy val timeoutSeconds: Int        = configuration.get[Int]("session.timeoutSeconds")
+  lazy val countdownSeconds: Int      = configuration.get[Int]("session.countdownSeconds")
   lazy val enrolmentProxyUrl: String  = configuration.get[Service]("microservice.services.enrolment-store-proxy").fullServiceUrl
+  lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
 
   lazy val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")

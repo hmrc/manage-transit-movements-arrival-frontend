@@ -39,7 +39,7 @@ class InterchangeControlReferenceIdRepositorySpec
     with IntegrationPatience
     with DefaultPlayMongoRepositorySupport[InterchangeControlReference] {
 
-  private val mockTimeService: DateTimeService = mock[DateTimeService]
+  private lazy val mockTimeService: DateTimeService = mock[DateTimeService]
 
   override protected def repository = new InterchangeControlReferenceIdRepository(mongoComponent, mockTimeService)
 

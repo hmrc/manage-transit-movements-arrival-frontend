@@ -56,13 +56,13 @@ import scala.concurrent.Future
 
 class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with NunjucksSupport with JsonMatchers {
 
-  private val formProvider                      = new MovementReferenceNumberFormProvider()
-  private val form                              = formProvider()
-  private val mockArrivalMovementMessageService = mock[ArrivalNotificationMessageService]
-  private val mockUserAnswersService            = mock[UserAnswersService]
-  private val arrivalId                         = ArrivalId(1)
-  private val viewConfig: ViewModelConfig       = app.injector.instanceOf[ViewModelConfig]
-  private lazy val movementReferenceNumberRoute = routes.UpdateRejectedMRNController.onPageLoad(arrivalId).url
+  private val formProvider                           = new MovementReferenceNumberFormProvider()
+  private val form                                   = formProvider()
+  private lazy val mockArrivalMovementMessageService = mock[ArrivalNotificationMessageService]
+  private lazy val mockUserAnswersService            = mock[UserAnswersService]
+  private val arrivalId                              = ArrivalId(1)
+  private val viewConfig: ViewModelConfig            = app.injector.instanceOf[ViewModelConfig]
+  private lazy val movementReferenceNumberRoute      = routes.UpdateRejectedMRNController.onPageLoad(arrivalId).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()

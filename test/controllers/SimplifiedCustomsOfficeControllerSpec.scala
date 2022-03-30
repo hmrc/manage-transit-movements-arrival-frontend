@@ -40,11 +40,11 @@ import scala.concurrent.Future
 
 class SimplifiedCustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  val formProvider                                             = new SimplifiedCustomsOfficeFormProvider()
-  val customsOffices                                           = CustomsOfficeList(Seq(CustomsOffice("id", Some("name"), None), CustomsOffice("officeId", Some("someName"), None)))
-  val form: Form[CustomsOffice]                                = formProvider(consigneeName, customsOffices)
-  val country: String                                          = "GB"
-  private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
+  val formProvider                                                  = new SimplifiedCustomsOfficeFormProvider()
+  val customsOffices                                                = CustomsOfficeList(Seq(CustomsOffice("id", Some("name"), None), CustomsOffice("officeId", Some("someName"), None)))
+  val form: Form[CustomsOffice]                                     = formProvider(consigneeName, customsOffices)
+  val country: String                                               = "GB"
+  private lazy val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
   lazy val simplifiedCustomsOfficeRoute: String = routes.SimplifiedCustomsOfficeController.onPageLoad(mrn, NormalMode).url
 

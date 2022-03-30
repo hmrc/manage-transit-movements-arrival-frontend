@@ -41,7 +41,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
   private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad().url
 
-  private val mockUserAnswersService = mock[UserAnswersService]
+  private lazy val mockUserAnswersService = mock[UserAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

@@ -7,6 +7,13 @@ GET         /:mrn/keep-alive                                 controllers.KeepAli
 
 GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
 
+GET        /bad-request                                      controllers.ErrorController.badRequest()
+GET        /not-found                                        controllers.ErrorController.notFound()
+GET        /technical-difficulties                           controllers.ErrorController.technicalDifficulties()
+GET        /internal-server-error                            controllers.ErrorController.internalServerError()
+
+->         /hmrc-frontend                                    hmrcfrontend.Routes
+
 GET        /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPageLoad(mrn: MovementReferenceNumber)
 POST       /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPost(mrn: MovementReferenceNumber)
 

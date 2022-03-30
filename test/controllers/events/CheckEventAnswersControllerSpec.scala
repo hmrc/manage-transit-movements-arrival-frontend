@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with MessagesModelGenerators {
 
-  private val mockCountriesService = mock[CountriesService]
+  private lazy val mockCountriesService = mock[CountriesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

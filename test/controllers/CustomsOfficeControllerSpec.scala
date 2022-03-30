@@ -42,13 +42,13 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   val formProvider              = new CustomsOfficeFormProvider()
   val customsOffices            = CustomsOfficeList(Seq(CustomsOffice("id", Some("name"), None), CustomsOffice("officeId", Some("someName"), None)))
-  val form: Form[CustomsOffice] = formProvider("sub place", customsOffices)
+  val form: Form[CustomsOffice] = formProvider(consigneeName, customsOffices)
   val country: String           = "GB"
 
-  lazy val customsOfficeRoute: String                          = routes.CustomsOfficeController.onPageLoad(mrn, NormalMode).url
-  val templateCaptor: ArgumentCaptor[String]                   = ArgumentCaptor.forClass(classOf[String])
-  val jsonCaptor: ArgumentCaptor[JsObject]                     = ArgumentCaptor.forClass(classOf[JsObject])
-  private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
+  lazy val customsOfficeRoute: String                               = routes.CustomsOfficeController.onPageLoad(mrn, NormalMode).url
+  val templateCaptor: ArgumentCaptor[String]                        = ArgumentCaptor.forClass(classOf[String])
+  val jsonCaptor: ArgumentCaptor[JsObject]                          = ArgumentCaptor.forClass(classOf[JsObject])
+  private lazy val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

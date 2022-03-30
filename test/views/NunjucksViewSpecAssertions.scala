@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 
 import scala.collection.JavaConverters._
 
-trait ViewSpecAssertions {
+trait NunjucksViewSpecAssertions {
   self: Matchers =>
 
   def messages: Messages
