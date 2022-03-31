@@ -6,6 +6,7 @@ GET         /keep-alive                                      controllers.KeepAli
 GET         /:mrn/keep-alive                                 controllers.KeepAliveController.keepAlive(mrn: Option[String])
 
 GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
+POST       /this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit()
 
 GET        /bad-request                                      controllers.ErrorController.badRequest()
 GET        /not-found                                        controllers.ErrorController.notFound()
