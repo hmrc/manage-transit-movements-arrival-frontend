@@ -22,16 +22,15 @@ import models.NormalMode
 import navigation.Navigator
 import pages.MovementReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.MovementReferenceNumberView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class MovementReferenceNumberController @Inject() (override val messagesApi: MessagesApi,
                                                    sessionRepository: SessionRepository,
@@ -40,7 +39,7 @@ class MovementReferenceNumberController @Inject() (override val messagesApi: Mes
                                                    formProvider: MovementReferenceNumberFormProvider,
                                                    userAnswersService: UserAnswersService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   renderer: Renderer
+                                                   view: MovementReferenceNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -50,9 +49,7 @@ class MovementReferenceNumberController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(): Action[AnyContent] = identify.async {
     implicit request =>
-      val json = Json.obj("form" -> form)
-
-      renderer.render("movementReferenceNumber.njk", json).map(Ok(_))
+      Future.successful(Ok(view(form)))
   }
 
   def onSubmit(): Action[AnyContent] = identify.async {
@@ -60,10 +57,7 @@ class MovementReferenceNumberController @Inject() (override val messagesApi: Mes
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            val json = Json.obj("form" -> formWithErrors)
-            renderer.render("movementReferenceNumber.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value =>
             for {
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
