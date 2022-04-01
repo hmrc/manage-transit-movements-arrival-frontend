@@ -55,7 +55,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, GoodsLocation.radioItems(), mrn, mode)(request, messages).toString
+        view(form, GoodsLocation.radioItems, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -74,7 +74,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
       contentAsString(result) mustEqual
-        view(filledForm, GoodsLocation.radioItems(Some(validAnswer)), mrn, mode)(request, messages).toString
+        view(filledForm, GoodsLocation.radioItems, mrn, mode)(request, messages).toString
     }
 
     "must redirect to the correct page for Border Force Office when valid data is submitted" in {
@@ -129,7 +129,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(filledForm, GoodsLocation.radioItems(), mrn, mode)(request, messages).toString
+        view(filledForm, GoodsLocation.radioItems, mrn, mode)(request, messages).toString
     }
   }
 }

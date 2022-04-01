@@ -29,7 +29,7 @@ class GoodsLocationViewSpec extends RadioViewBehaviours[GoodsLocation] {
   override def form: Form[GoodsLocation] = new GoodsLocationFormProvider()()
 
   override def applyView(form: Form[GoodsLocation]): HtmlFormat.Appendable =
-    injector.instanceOf[GoodsLocationView].apply(form, radioItems(form.value), mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GoodsLocationView].apply(form, radioItems, mrn, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "goodsLocation"
 
