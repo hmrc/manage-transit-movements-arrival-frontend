@@ -16,11 +16,13 @@
 
 package views.behaviours
 
+import viewModels.InputSize
+
 trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
   def validValue: T
 
-  def pageWithInputText(inputFieldClassSize: Option[InputTextSize] = None): Unit =
+  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None): Unit =
     "page with an input text field" - {
 
       "when rendered" - {
@@ -46,10 +48,14 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
       }
 
       "when rendered with a valid value" - {
-        val docWithValidValue = parseView(applyView(form.fill(validValue)))
+        val docWithFilledForm = parseView(applyView(form.fill(validValue)))
+
+        "include the form's value in the value input" in {
+          docWithFilledForm.getElementById("value").attr("value") mustBe validValue
+        }
 
         "must not render an error summary" in {
-          assertNotRenderedById(docWithValidValue, "error-summary_header")
+          assertNotRenderedById(docWithFilledForm, "error-summary_header")
         }
       }
 
@@ -66,15 +72,4 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
       }
     }
 
-}
-
-sealed abstract class InputTextSize(val className: String)
-
-object InputTextSize {
-  case object FULL extends InputTextSize("govuk-input--width-20")
-  case object TWO_THIRDS extends InputTextSize("govuk-input--width-10")
-  case object FIVE_CHARS extends InputTextSize("govuk-input--width-5")
-  case object FOUR_CHARS extends InputTextSize("govuk-input--width-4")
-  case object THREE_CHARS extends InputTextSize("govuk-input--width-3")
-  case object TWO_CHARS extends InputTextSize("govuk-input--width-2")
 }

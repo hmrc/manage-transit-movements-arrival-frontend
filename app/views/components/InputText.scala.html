@@ -23,8 +23,6 @@
 @(
     field: Field,
     label: String,
-    labelAsHeading: Boolean = false,
-    labelClass: Option[String] = None,
     inputClass: Option[String] = None,
     hint: Option[String] = None,
     prefix: Option[String] = None,
@@ -35,11 +33,6 @@
 
 @govukInput(
     Input(
-        label = Label(
-            isPageHeading = labelAsHeading,
-            classes = if(labelClass.isDefined) labelClass.get else "",
-            content = Text(label)
-        ),
         autocomplete = autocomplete,
         hint = hint.map(hint => Hint(content = Text(hint))),
         errorMessage = field.error match {
@@ -50,6 +43,8 @@
         inputmode = inputMode,
         prefix = prefix.map(prefix => PrefixOrSuffix(content = Text(prefix))),
         suffix = suffix.map(suffix => PrefixOrSuffix(content = Text(suffix))),
-        classes = if(inputClass.isDefined) inputClass.get else ""
-    ).withFormField(field)
+        classes = inputClass.getOrElse("")
+    )
+    .withFormField(field)
+    .withHeading(heading = Text(label))
 )

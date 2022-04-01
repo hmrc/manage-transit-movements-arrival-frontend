@@ -20,7 +20,8 @@ import forms.MovementReferenceNumberFormProvider
 import models.MovementReferenceNumber
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.{InputTextSize, InputTextViewBehaviours}
+import views.behaviours.InputTextViewBehaviours
+import viewModels.InputSize
 import views.html.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
@@ -42,7 +43,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
     "It is on the top right hand corner of the Transit Accompanying Document (TAD) that is with the goods. It is 18 characters, like 19GB12345678901234."
   )
 
-  behave like pageWithInputText(Some(InputTextSize.FULL))
+  behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
 }
