@@ -16,11 +16,15 @@
 
 package views.behaviours
 
-// TODO - make this extend RadioViewBehaviours
-trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
+import uk.gov.hmrc.govukfrontend.views.html.components._
 
-  def yesNoPage(hintTextPrefix: Option[String] = None, args: Seq[String] = Nil): Unit =
-    "page with a Yes/No question" - {
+trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
+
+  def radioItems(checkedValue: Option[T] = None): Seq[RadioItem]
+  def values: Seq[T]
+
+  def pageWithRadioItems(hintTextPrefix: Option[String] = None, args: Seq[String] = Nil): Unit =
+    "page with a radio question" - {
       "when rendered" - {
 
         "must contain a legend for the question" in {
@@ -35,14 +39,15 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
           }
         }
 
-        "must contain an input for the value" in {
-          assertRenderedById(doc, "value-yes")
-          assertRenderedById(doc, "value-no")
-        }
+        radioItems() foreach {
+          radioItem =>
+            s"must contain an input for the value ${radioItem.value.get}" in {
+              assertRenderedById(doc, radioItem.id.get)
+            }
 
-        "must have no values checked when rendered with no form" in {
-          assert(!doc.getElementById("value-yes").hasAttr("checked"))
-          assert(!doc.getElementById("value-no").hasAttr("checked"))
+            s"must not have ${radioItem.value.get} checked when rendered with no form" in {
+              assert(!doc.getElementById(radioItem.id.get).hasAttr("checked"))
+            }
         }
 
         "must not render an error summary" in {
@@ -50,12 +55,11 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
         }
       }
 
-      "when rendered with a value of true" - {
-        behave like answeredYesNoPage(answer = true)
-      }
-
-      "when rendered with a value of false" - {
-        behave like answeredYesNoPage(answer = false)
+      values foreach {
+        value =>
+          s"when rendered with a value of $value" - {
+            behave like answeredRadioPage(value)
+          }
       }
 
       "when rendered with an error" - {
@@ -71,13 +75,23 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
       }
     }
 
-  private def answeredYesNoPage(answer: Boolean): Unit = {
+  private def answeredRadioPage(answer: T): Unit = {
 
-    val doc = parseView(applyView(form.fill(answer)))
+    val filledForm = form.fill(answer)
+    val doc        = parseView(applyView(filledForm))
+    val items      = radioItems(Some(answer))
 
-    "must have only the correct value checked" in {
-      assert(doc.getElementById("value-yes").hasAttr("checked") == answer)
-      assert(doc.getElementById("value-no").hasAttr("checked") != answer)
+    items foreach {
+      radioItem =>
+        if (radioItem.value.get == answer.toString) {
+          s"must have ${radioItem.value.get} checked" in {
+            assert(doc.getElementById(radioItem.id.get).hasAttr("checked"))
+          }
+        } else {
+          s"must have ${radioItem.value.get} unchecked" in {
+            assert(!doc.getElementById(radioItem.id.get).hasAttr("checked"))
+          }
+        }
     }
 
     "must not render an error summary" in {

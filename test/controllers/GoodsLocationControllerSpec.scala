@@ -20,84 +20,61 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GoodsLocationFormProvider
 import matchers.JsonMatchers
 import models.{GoodsLocation, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.GoodsLocationPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GoodsLocationView
 
 import scala.concurrent.Future
 
 class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  lazy val goodsLocationRoute = routes.GoodsLocationController.onPageLoad(mrn, NormalMode).url
+  private val mode                    = NormalMode
+  private lazy val goodsLocationRoute = routes.GoodsLocationController.onPageLoad(mrn, mode).url
 
-  val formProvider = new GoodsLocationFormProvider()
-  val form         = formProvider()
+  private val formProvider = new GoodsLocationFormProvider()
+  private val form         = formProvider()
+
+  private val validAnswer = GoodsLocation.values.head
 
   "GoodsLocation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, goodsLocationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, goodsLocationRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[GoodsLocationView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> GoodsLocation.radios(form)
-      )
-
-      templateCaptor.getValue mustEqual "goodsLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, GoodsLocation.radioItems(), mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = emptyUserAnswers.set(GoodsLocationPage, GoodsLocation.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(GoodsLocationPage, validAnswer).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, goodsLocationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, goodsLocationRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[GoodsLocationView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      val filledForm = form.bind(Map("value" -> GoodsLocation.values.head.toString))
-
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> GoodsLocation.radios(filledForm)
-      )
-
-      templateCaptor.getValue mustEqual "goodsLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, GoodsLocation.radioItems(Some(validAnswer)), mrn, mode)(request, messages).toString
     }
 
     "must redirect to the correct page for Border Force Office when valid data is submitted" in {
@@ -107,9 +84,8 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val userAnswers = emptyUserAnswers.set(GoodsLocationPage, GoodsLocation.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, goodsLocationRoute)
-          .withFormUrlEncodedBody(("value", GoodsLocation.BorderForceOffice.toString))
+      val request = FakeRequest(POST, goodsLocationRoute)
+        .withFormUrlEncodedBody(("value", GoodsLocation.BorderForceOffice.toString))
 
       val result = route(app, request).value
 
@@ -125,9 +101,8 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val userAnswers = emptyUserAnswers.set(GoodsLocationPage, GoodsLocation.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, goodsLocationRoute)
-          .withFormUrlEncodedBody(("value", GoodsLocation.AuthorisedConsigneesLocation.toString))
+      val request = FakeRequest(POST, goodsLocationRoute)
+        .withFormUrlEncodedBody(("value", GoodsLocation.AuthorisedConsigneesLocation.toString))
 
       val result = route(app, request).value
 
@@ -138,31 +113,23 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, goodsLocationRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val invalidAnswer = "invalid value"
+
+      val request = FakeRequest(POST, goodsLocationRoute)
+        .withFormUrlEncodedBody(("value", invalidAnswer))
+
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[GoodsLocationView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> GoodsLocation.radios(boundForm)
-      )
-
-      templateCaptor.getValue mustEqual "goodsLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, GoodsLocation.radioItems(), mrn, mode)(request, messages).toString
     }
   }
 }

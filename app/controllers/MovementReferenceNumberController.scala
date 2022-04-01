@@ -32,14 +32,15 @@ import views.html.MovementReferenceNumberView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MovementReferenceNumberController @Inject() (override val messagesApi: MessagesApi,
-                                                   sessionRepository: SessionRepository,
-                                                   navigator: Navigator,
-                                                   identify: IdentifierAction,
-                                                   formProvider: MovementReferenceNumberFormProvider,
-                                                   userAnswersService: UserAnswersService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: MovementReferenceNumberView
+class MovementReferenceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  identify: IdentifierAction,
+  formProvider: MovementReferenceNumberFormProvider,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: MovementReferenceNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -47,9 +48,9 @@ class MovementReferenceNumberController @Inject() (override val messagesApi: Mes
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = identify.async {
+  def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
-      Future.successful(Ok(view(form)))
+      Ok(view(form)) // TODO prefill form
   }
 
   def onSubmit(): Action[AnyContent] = identify.async {
@@ -60,6 +61,8 @@ class MovementReferenceNumberController @Inject() (override val messagesApi: Mes
           formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value =>
             for {
+              // TODO - move 'get or create' logic to a StartController - amend url in manage FE
+              // TODO - save MRN in user answers
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
               _           <- sessionRepository.set(userAnswers)
             } yield Redirect(navigator.nextPage(MovementReferenceNumberPage, NormalMode, userAnswers))
