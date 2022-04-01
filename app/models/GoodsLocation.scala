@@ -16,11 +16,9 @@
 
 package models
 
-import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 
 sealed trait GoodsLocation
 
@@ -34,17 +32,6 @@ object GoodsLocation extends Enumerable.Implicits {
     BorderForceOffice,
     AuthorisedConsigneesLocation
   )
-
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-
-    val field = form("value")
-    val items = Seq(
-      Radios.Radio(msg"goodsLocation.authorisedConsigneesLocation", AuthorisedConsigneesLocation.toString),
-      Radios.Radio(msg"goodsLocation.borderForceOffice", BorderForceOffice.toString)
-    )
-
-    Radios(field, items)
-  }
 
   def radioItems(checkedValue: Option[GoodsLocation] = None)(implicit messages: Messages): Seq[RadioItem] =
     values.map {
