@@ -18,10 +18,11 @@ package views
 
 import forms.MovementReferenceNumberFormProvider
 import models.MovementReferenceNumber
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputTextViewBehaviours
 import viewModels.InputSize
+import views.behaviours.InputTextViewBehaviours
 import views.html.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
@@ -33,7 +34,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
 
   override val prefix: String = "movementReferenceNumber"
 
-  override val validValue: MovementReferenceNumber = mrn
+  implicit override val arbitraryT: Arbitrary[MovementReferenceNumber] = arbitraryMovementReferenceNumber
 
   behave like pageWithBackLink
 
