@@ -17,7 +17,7 @@ or
 ### Running manually or for journey tests
 
 <pre>sm --start CTC_TRADERS_PRELODGE -r
-sm --stop MANAGE_TRANSIT_MOVEMENT_ARRIVAL_FRONTEND
+sm --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND
 sbt run
 </pre>
 

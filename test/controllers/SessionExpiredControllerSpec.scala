@@ -43,6 +43,7 @@ class SessionExpiredControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do"
     }
   }
