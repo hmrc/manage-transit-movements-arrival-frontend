@@ -20,7 +20,7 @@ import forms.MovementReferenceNumberFormProvider
 import models.MovementReferenceNumber
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputTextViewBehaviours
+import views.behaviours.{InputTextSize, InputTextViewBehaviours}
 import views.html.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
@@ -32,7 +32,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
 
   override val prefix: String = "movementReferenceNumber"
 
-  override val validValue: MovementReferenceNumber = MovementReferenceNumber("99IT9876AB88901209").get
+  override val validValue: MovementReferenceNumber = mrn
 
   behave like pageWithBackLink
 
@@ -42,7 +42,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
     "It is on the top right hand corner of the Transit Accompanying Document (TAD) that is with the goods. It is 18 characters, like 19GB12345678901234."
   )
 
-  behave like pageWithInputText(Some(20))
+  behave like pageWithInputText(Some(InputTextSize.FULL))
 
   behave like pageWithSubmitButton("Continue")
 }
