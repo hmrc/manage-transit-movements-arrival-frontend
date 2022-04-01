@@ -34,11 +34,6 @@ lazy val root = (project in file("."))
       "controllers.routes._",
       "views.html.helper.CSPNonce",
       "viewModels.InputSize",
-      "viewModels.InputSize",
-      "viewModels.LabelSize",
-      "viewModels.LabelSize._",
-      "viewModels.LegendSize",
-      "viewModels.LegendSize._",
       "templates._"
     ),
     PlayKeys.playDefaultPort := 10121,

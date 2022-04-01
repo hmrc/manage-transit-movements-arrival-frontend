@@ -21,24 +21,27 @@ import models.{GoodsLocation, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.RadioViewBehaviours
 import views.html.GoodsLocationView
 
-class GoodsLocationViewSpec extends QuestionViewBehaviours[GoodsLocation] {
+class GoodsLocationViewSpec extends RadioViewBehaviours[GoodsLocation] {
 
-  val radioOptions: Seq[RadioItem]       = Nil //GoodsLocation.radios(form)
   override def form: Form[GoodsLocation] = new GoodsLocationFormProvider()()
 
   override def applyView(form: Form[GoodsLocation]): HtmlFormat.Appendable =
-    injector.instanceOf[GoodsLocationView].apply(form, radioOptions, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GoodsLocationView].apply(form, radioItems(form.value), mrn, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "goodsLocation"
+
+  override def radioItems(checkedValue: Option[GoodsLocation] = None): Seq[RadioItem] = GoodsLocation.radioItems(checkedValue)
+
+  override def values: Seq[GoodsLocation] = GoodsLocation.values
 
   behave like pageWithBackLink
 
   behave like pageWithHeading
 
-  //behave like pageWithOptions(form, applyView, GoodsLocation.radios(form))
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
+import views.html.MovementReferenceNumberView
 
 import scala.concurrent.Future
 
@@ -60,8 +61,15 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[MovementReferenceNumberView]
+
       status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form)(request, messages).toString
     }
+
+    "must populate the view correctly on a GET when the question has previously been answered" ignore {}
 
     "must redirect to the next page when valid data is submitted and sessionRepository returns UserAnswers value as Some(_)" in {
 
@@ -72,9 +80,8 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, movementReferenceNumberRoute)
-          .withFormUrlEncodedBody(("value", mrn.toString))
+      val request = FakeRequest(POST, movementReferenceNumberRoute)
+        .withFormUrlEncodedBody(("value", mrn.toString))
 
       val result = route(app, request).value
 
@@ -90,11 +97,21 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, movementReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val invalidAnswer = ""
+
+      val request = FakeRequest(POST, movementReferenceNumberRoute)
+        .withFormUrlEncodedBody(("value", invalidAnswer))
+
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[MovementReferenceNumberView]
+
       status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(filledForm)(request, messages).toString
     }
   }
 }
