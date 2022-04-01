@@ -20,7 +20,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
   def validValue: T
 
-  def pageWithInputText(inputFieldClassSize: Option[Int] = None): Unit =
+  def pageWithInputText(inputFieldClassSize: Option[InputTextSize] = None): Unit =
     "page with an input text field" - {
 
       "when rendered" - {
@@ -35,7 +35,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
         "must have the correct classes" in {
           inputFieldClassSize match {
-            case Some(sizeClass) => assert(getElementById(doc, "value").hasClass(s"govuk-input--width-$sizeClass"))
+            case Some(sizeClass) => assert(getElementById(doc, "value").hasClass(sizeClass.className))
             case None            => assert(getElementById(doc, "value").classNames().size == 1)
           }
         }
@@ -66,4 +66,15 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] {
       }
     }
 
+}
+
+sealed abstract class InputTextSize(val className: String)
+
+object InputTextSize {
+  case object FULL extends InputTextSize("govuk-input--width-20")
+  case object TWO_THIRDS extends InputTextSize("govuk-input--width-10")
+  case object FIVE_CHARS extends InputTextSize("govuk-input--width-5")
+  case object FOUR_CHARS extends InputTextSize("govuk-input--width-4")
+  case object THREE_CHARS extends InputTextSize("govuk-input--width-3")
+  case object TWO_CHARS extends InputTextSize("govuk-input--width-2")
 }
