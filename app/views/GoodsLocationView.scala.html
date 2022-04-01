@@ -19,14 +19,14 @@
 @import models.{MovementReferenceNumber, GoodsLocation}
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        button: Button,
-        inputRadio: InputRadio,
-        errorSummary: ErrorSummary
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    button: Button,
+    inputRadio: InputRadio,
+    errorSummary: ErrorSummary
 )
 
-@(form: Form[GoodsLocation], radios: Seq[RadioItem], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[GoodsLocation], radios: Option[GoodsLocation] => Seq[RadioItem], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("goodsLocation.title"),
@@ -40,7 +40,7 @@
         @inputRadio(
             field = form("value"),
             legend = messages("goodsLocation.heading"),
-            inputs = radios
+            inputs = radios(form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))

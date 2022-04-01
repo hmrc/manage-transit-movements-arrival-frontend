@@ -19,11 +19,11 @@
 @import models.MovementReferenceNumber
 
 @this(
- mainTemplate: MainTemplate,
- formHelper: FormWithCSRF,
- button: Button,
- inputText: InputText,
- errorSummary: ErrorSummary
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    button: Button,
+    inputText: InputText,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[MovementReferenceNumber])(implicit request: Request[_], messages: Messages)
@@ -33,17 +33,17 @@
     showBackLink = true
 ) {
 
- @formHelper(action = routes.MovementReferenceNumberController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = routes.MovementReferenceNumberController.onSubmit(), 'autoComplete -> "off") {
 
- @errorSummary(form.errors)
+        @errorSummary(form.errors)
 
- @inputText(
-     field = form("value"),
-     label = messages("movementReferenceNumber.heading"),
-     hint = Some(messages("movementReferenceNumber.hintText")),
-     inputClass = InputSize.Width20
- )
+        @inputText(
+            field = form("value"),
+            label = messages("movementReferenceNumber.heading"),
+            hint = Some(messages("movementReferenceNumber.hintText")),
+            inputClass = InputSize.Width20
+        )
 
-  @button(attributes = Map("id" -> "submit"))
- }
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

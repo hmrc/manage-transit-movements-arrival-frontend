@@ -52,7 +52,7 @@ class GoodsLocationController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, GoodsLocation.radioItems(preparedForm.value), mrn, mode))
+      Ok(view(preparedForm, GoodsLocation.radioItems, mrn, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
@@ -60,7 +60,7 @@ class GoodsLocationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, GoodsLocation.radioItems(formWithErrors.value), mrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, GoodsLocation.radioItems, mrn, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsLocationPage, value))
