@@ -35,6 +35,6 @@ class SessionExpiredController @Inject() (val controllerComponents: MessagesCont
 
   def onSubmit(): Action[AnyContent] = Action {
     _ =>
-      Redirect(s"${config.manageTransitMovementsUrl}/what-do-you-want-to-do")
+      Redirect(s"${config.manageTransitMovementsUrl}/what-do-you-want-to-do").withNewSession
   }
 }
