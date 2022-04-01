@@ -50,7 +50,7 @@ class MovementReferenceNumberController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(form)) // TODO prefill form
+      Ok(view(form))
   }
 
   def onSubmit(): Action[AnyContent] = identify.async {
@@ -61,8 +61,6 @@ class MovementReferenceNumberController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value =>
             for {
-              // TODO - move 'get or create' logic to a StartController - amend url in manage FE
-              // TODO - save MRN in user answers
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
               _           <- sessionRepository.set(userAnswers)
             } yield Redirect(navigator.nextPage(MovementReferenceNumberPage, NormalMode, userAnswers))
