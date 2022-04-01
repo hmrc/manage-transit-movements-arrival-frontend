@@ -16,4 +16,4 @@
 
 package pages
 
-case object MovementReferenceNumberPage extends Page // TODO - extends QuestionPage[MovementReferenceNumber]
+case object MovementReferenceNumberPage extends Page
