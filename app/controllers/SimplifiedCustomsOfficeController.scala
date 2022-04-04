@@ -51,8 +51,6 @@ class SimplifiedCustomsOfficeController @Inject() (
     with I18nSupport
     with NunjucksSupport {
 
-  val country_gb = "GB"
-
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
     (identify andThen getData(mrn) andThen requireData).async {
       implicit request =>

@@ -14,32 +14,26 @@
  * limitations under the License.
  *@
 
-@this(
-    govukSelect: GovukSelect
-)
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
+@this(govukSelect: GovukSelect)
 
 @(
     field: Field,
     label: String,
-    labelAsHeading: Boolean = false,
     hint: Option[String] = None,
     placeholder: Option[String] = None,
-    options: Seq[SelectItem],
-    labelClasses: Set[String] = Set.empty
+    options: Seq[SelectItem]
 )(implicit messages: Messages)
 
 @govukSelect(
     Select(
-         id = field.id,
-         name = field.name,
-         label = Label(isPageHeading = labelAsHeading,
-             classes = labelClasses.mkString(" "),
-             content = Text(label)
-         ),
          hint = hint.map(x => Hint(content = Text(x))),
          items = Seq(SelectItem(value = Some(""), text = placeholder.getOrElse(""))) ++ options,
          formGroupClasses = "autocomplete-wrapper",
          attributes = Map("data-autocomplete" -> ""),
          errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
     )
+    .withFormField(field)
+    .withHeading(heading = Text(label))
 )

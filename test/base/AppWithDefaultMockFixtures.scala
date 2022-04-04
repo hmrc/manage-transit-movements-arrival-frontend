@@ -32,15 +32,20 @@ import play.api.mvc.Call
 import repositories.SessionRepository
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
+import scala.concurrent.Future
+
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
     Mockito.reset(
       mockRenderer,
       mockSessionRepository,
       mockDataRetrievalActionProvider
     )
+
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+  }
 
   final val mockRenderer: NunjucksRenderer           = mock[NunjucksRenderer]
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]

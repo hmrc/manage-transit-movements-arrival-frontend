@@ -42,8 +42,6 @@
         @select(
             field = form("value"),
             label = messages("customsOffice.heading", customsOffice),
-            labelClasses = Set("govuk-heading-l"),
-            labelAsHeading = true,
             hint = Some(messages("customsOffice.hintText")),
             options = customsOffices.withItemSelected(form.value),
             placeholder = Some(messages("customsOffice.placeholder"))
