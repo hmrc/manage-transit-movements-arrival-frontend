@@ -16,6 +16,9 @@
 
 @import views.html.components.{ErrorSummary, Button, InputSelect}
 @import models.MovementReferenceNumber
+@import models.reference.CustomsOffice
+@import models.reference.Selectable
+@import models.reference.Selectable._
 
 @this(
     mainTemplate: MainTemplate,
@@ -25,7 +28,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], selectOptions: Seq[SelectItem], mrn: MovementReferenceNumber, mode: Mode, customsOffice: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], customsOffices: Seq[CustomsOffice], mrn: MovementReferenceNumber, mode: Mode, customsOffice: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("customsOffice.title"),
@@ -36,13 +39,14 @@
 
         @errorSummary(form.errors)
 
-        @select(field = form("value"),
+        @select(
+            field = form("value"),
             label = messages("customsOffice.heading", customsOffice),
             labelClasses = Set("govuk-heading-l"),
             labelAsHeading = true,
             hint = Some(messages("customsOffice.hintText")),
-            options = selectOptions,
-            placeholder = Some(messages("customsOffice.select"))
+            options = customsOffices.withItemSelected(form.value),
+            placeholder = Some(messages("customsOffice.placeholder"))
         )
 
         @button(attributes = Map("id" -> "submit"))

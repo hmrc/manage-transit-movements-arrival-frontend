@@ -31,7 +31,7 @@ class TechnicalDifficultiesViewSpec extends ViewBehaviours {
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading()
 
   behave like pageWithContent("p", "Try again later.")
 

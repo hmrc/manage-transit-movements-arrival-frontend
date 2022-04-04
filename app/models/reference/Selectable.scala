@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package views
+package models.reference
 
-import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
-import views.html.SessionExpiredView
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+trait Selectable {
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[SessionExpiredView].apply()(fakeRequest, messages)
+  def toSelectItem(selected: Boolean = false): SelectItem
+}
 
-  override val prefix: String = "session_expired"
+object Selectable {
 
-  override val hasSignOutLink: Boolean = false
+  implicit class RichSelectables(selectables: Seq[Selectable]) {
 
-  behave like pageWithoutBackLink
-
-  behave like pageWithHeading()
-
-  behave like pageWithContent("p", "We did not save your answers.")
-
-  behave like pageWithSubmitButton("Sign in")
+    def withItemSelected(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+      x => x.toSelectItem(selectedValue.contains(x))
+    )
+  }
 }

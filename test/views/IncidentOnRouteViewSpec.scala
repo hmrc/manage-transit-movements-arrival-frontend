@@ -34,7 +34,7 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading()
 
   behave like pageWithContent("p", "Events should be recorded on the transit accompanying document (TAD) in box 55.")
 

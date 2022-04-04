@@ -16,15 +16,52 @@
 
 package views.behaviours
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import models.reference.Selectable
 
+trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[T] {
 
-trait InputSelectViewBehaviours[T] extends QuestionViewBehaviours[T] {
+  def values: Seq[T]
 
-  def options: Seq[SelectItem]
+  def pageWithSelect(): Unit =
+    "behave like a page with a string value field" - {
 
-  def pageWithSelect(): Unit = {
+      "when rendered" - {
+        "must contain an input for the value" in {
+          assertRenderedById(doc, "value")
+        }
 
-  }
+        "must contain a placeholder" in {
+          val placeholder = getElementsByTag(doc, "option").first()
+          placeholder.text() mustBe messages(s"$prefix.placeholder")
+        }
 
+        val options = getElementsByTag(doc, "option")
+        values.map(_.toSelectItem()).foreach {
+          selectItem =>
+            s"must contain a select item for ${selectItem.text}" in {
+              assertElementExists(options, x => x.text() == selectItem.text && x.`val`() == selectItem.value.get)
+            }
+        }
+      }
+
+      "when rendered with a valid form" - {
+        "must have the correct selection option value 'selected' for the form input value" in {
+          val validValue = values.head
+          val filledForm = form.fill(validValue)
+          val doc        = parseView(applyView(filledForm))
+          doc.getElementsByAttribute("selected").attr("value") mustBe validValue.toSelectItem().value.get
+        }
+      }
+
+      "when rendered with an error" - {
+        "must show an error summary" in {
+          assertRenderedById(docWithError, "error-summary-title")
+        }
+
+        "must show an error in the value field's label" in {
+          val errorSpan = docWithError.getElementsByClass("govuk-error-message").first
+          assertElementContainsText(errorSpan, s"${messages("error.title.prefix")} ${messages(errorMessage)}")
+        }
+      }
+    }
 }

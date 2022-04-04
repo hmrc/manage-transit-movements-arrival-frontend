@@ -16,28 +16,40 @@
 
 package views
 
-import forms.{CustomsOfficeFormProvider, GoodsLocationFormProvider}
+import forms.CustomsOfficeFormProvider
+import generators.Generators
 import models.reference.CustomsOffice
-import models.{GoodsLocation, NormalMode}
+import models.{CustomsOfficeList, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.{InputSelectViewBehaviours, RadioViewBehaviours}
+import views.behaviours.InputSelectViewBehaviours
 import views.html.CustomsOfficeView
 
-class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
+class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] with Generators {
 
-  override def form: Form[CustomsOffice] = new CustomsOfficeFormProvider()()
+  override def form: Form[CustomsOffice] = new CustomsOfficeFormProvider()(arg, CustomsOfficeList(Nil))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
-    injector.instanceOf[CustomsOfficeView].apply(form, Nil, mrn, NormalMode, "")(fakeRequest, messages)
+    injector.instanceOf[CustomsOfficeView].apply(form, values, mrn, NormalMode, arg)(fakeRequest, messages)
 
   override val prefix: String = "customsOffice"
 
+  override def values: Seq[CustomsOffice] = Seq(
+    CustomsOffice("first", Some("First"), None),
+    CustomsOffice("second", Some("Second"), None),
+    CustomsOffice("third", Some("Third"), None)
+  )
+
+  private val arg: String = arbitrary[String].sample.value
+
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading(arg)
 
   behave like pageWithSelect()
+
+  behave like pageWithHint("Give the office location or code. For example, Dover or GB000060.")
 
   behave like pageWithSubmitButton("Continue")
 }
