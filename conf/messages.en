@@ -107,6 +107,7 @@ customsOffice.checkYourAnswersLabel = Which Customs office supervises {0}?
 customsOffice.error.required = Enter the Customs office that supervises {0}
 customsOffice.error.length = Customs office must be 8 characters or less
 customsOffice.change.hidden = which Customs office supervises {0}
+customsOffice.select = Select a customs office
 
 customsOffice.simplified.title = Which Customs office supervises the authorised consignee’s address?
 customsOffice.simplified.heading = Which Customs office supervises {0}’s address?
