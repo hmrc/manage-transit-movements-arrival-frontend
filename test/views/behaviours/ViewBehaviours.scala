@@ -92,10 +92,10 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     assertElementDoesNotExist(doc, "hmrc-language-select")
   }
 
-  def pageWithHeading(): Unit =
+  def pageWithHeading(args: String*): Unit =
     "must render heading" in {
       val heading = getElementByTag(doc, "h1")
-      assertElementIncludesText(heading, messages(s"$prefix.heading"))
+      assertElementIncludesText(heading, messages(s"$prefix.heading", args: _*))
     }
 
   def pageWithCaption(expectedText: String): Unit =

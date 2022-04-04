@@ -39,7 +39,7 @@ class GoodsLocationViewSpec extends RadioViewBehaviours[GoodsLocation] {
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading()
 
   behave like pageWithRadioItems()
 

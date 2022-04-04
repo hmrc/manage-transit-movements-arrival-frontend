@@ -31,7 +31,7 @@ class NotFoundViewSpec extends ViewBehaviours {
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading()
 
   behave like pageWithContent("p", "If you typed the web address, check it is correct.")
   behave like pageWithContent("p", "If you pasted the web address, check you copied the entire address.")

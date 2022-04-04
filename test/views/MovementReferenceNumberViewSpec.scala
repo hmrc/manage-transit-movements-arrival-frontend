@@ -38,7 +38,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading
+  behave like pageWithHeading()
 
   behave like pageWithHint(
     "It is on the top right hand corner of the Transit Accompanying Document (TAD) that is with the goods. It is 18 characters, like 19GB12345678901234."
