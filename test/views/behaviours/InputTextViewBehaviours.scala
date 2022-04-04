@@ -18,13 +18,13 @@ package views.behaviours
 
 import generators.Generators
 import org.scalacheck.Arbitrary
-import viewModels.InputSize
 import org.scalacheck.Arbitrary.arbitrary
+import viewModels.InputSize
 
 trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generators {
 
-  def validValue: T = arbitrary[T].sample.value
   implicit val arbitraryT: Arbitrary[T]
+  private lazy val validValue: T = arbitrary[T].sample.value
 
   def pageWithInputText(inputFieldClassSize: Option[InputSize] = None): Unit =
     "page with an input text field" - {
@@ -51,11 +51,10 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
       }
 
       "when rendered with a valid value" - {
-        val value             = validValue
-        val docWithFilledForm = parseView(applyView(form.fill(value)))
+        val docWithFilledForm = parseView(applyView(form.fill(validValue)))
 
         "include the form's value in the value input" in {
-          docWithFilledForm.getElementById("value").attr("value") mustBe value.toString
+          docWithFilledForm.getElementById("value").attr("value") mustBe validValue.toString
         }
 
         "must not render an error summary" in {

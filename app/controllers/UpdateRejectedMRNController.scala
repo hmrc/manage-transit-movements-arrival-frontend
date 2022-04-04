@@ -35,17 +35,18 @@ import viewModels.sections.ViewModelConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateRejectedMRNController @Inject() (override val messagesApi: MessagesApi,
-                                             navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             formProvider: UpdateRejectedMRNFormProvider,
-                                             sessionRepository: SessionRepository,
-                                             arrivalMovementMessageService: ArrivalNotificationMessageService,
-                                             userAnswersService: UserAnswersService,
-                                             val viewModelConfig: ViewModelConfig,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val renderer: Renderer,
-                                             errorHandler: ErrorHandler
+class UpdateRejectedMRNController @Inject() (
+  override val messagesApi: MessagesApi,
+  navigator: Navigator,
+  identify: IdentifierAction,
+  formProvider: UpdateRejectedMRNFormProvider,
+  sessionRepository: SessionRepository,
+  arrivalMovementMessageService: ArrivalNotificationMessageService,
+  userAnswersService: UserAnswersService,
+  val viewModelConfig: ViewModelConfig,
+  val controllerComponents: MessagesControllerComponents,
+  val renderer: Renderer,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport

@@ -79,9 +79,8 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
     val filledForm = form.fill(answer)
     val doc        = parseView(applyView(filledForm))
-    val items      = radioItems(Some(answer))
 
-    items foreach {
+    radioItems(Some(answer)) foreach {
       radioItem =>
         if (radioItem.value.get == answer.toString) {
           s"must have ${radioItem.value.get} checked" in {

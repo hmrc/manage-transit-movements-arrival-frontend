@@ -27,7 +27,7 @@ class NotFoundViewSpec extends ViewBehaviours {
 
   override val prefix: String = "pageNotFound"
 
-  val contactUrl = "https://www.gov.uk/new-computerised-transit-system"
+  private val contactUrl = "https://www.gov.uk/new-computerised-transit-system"
 
   behave like pageWithBackLink
 
