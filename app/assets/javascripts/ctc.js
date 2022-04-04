@@ -17,13 +17,7 @@ function upTo(el, tagName) {
     // It would be OK to omit the following and just
     // return undefined
     return null;
-  }
-
-
-// initialise GovUK lib
-GOVUKFrontend.initAll();
-
-
+}
 
 if (typeof accessibleAutocomplete != 'undefined' && document.querySelector('.autocomplete') != null) {
     // load autocomplete
@@ -91,9 +85,8 @@ if (typeof accessibleAutocomplete != 'undefined' && document.querySelector('.aut
             polyfillAutocomplete();
         }
     }
-
-
 }
+
 
 // back link
 var backLink = document.querySelector('.govuk-back-link');

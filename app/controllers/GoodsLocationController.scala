@@ -33,9 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsLocationController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: GoodsLocationFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GoodsLocationView
@@ -45,7 +43,7 @@ class GoodsLocationController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(GoodsLocationPage) match {
         case None        => form
@@ -55,7 +53,7 @@ class GoodsLocationController @Inject() (
       Ok(view(preparedForm, GoodsLocation.radioItems, mrn, mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -66,8 +64,8 @@ class GoodsLocationController @Inject() (
               updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsLocationPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield value match {
-              case BorderForceOffice            => Redirect(routes.CustomsSubPlaceController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
-              case AuthorisedConsigneesLocation => Redirect(routes.AuthorisedLocationController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
+              case BorderForceOffice            => Redirect(routes.CustomsSubPlaceController.onPageLoad(mrn, mode))
+              case AuthorisedConsigneesLocation => Redirect(routes.AuthorisedLocationController.onPageLoad(mrn, mode))
             }
         )
   }
