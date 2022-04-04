@@ -152,4 +152,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       val elements = getElementsByTag(doc, tag)
       assertElementExists(elements, element => condition(element.text, expectedText))
     }
+
+  def pageWithList(listClass: String, expectedListItems: String*): Unit =
+    "must render list" in {
+      val list      = getElementByClass(doc, listClass)
+      val listItems = list.getElementsByTag("li")
+      listItems.asScala.map(_.text()) mustEqual expectedListItems
+    }
 }

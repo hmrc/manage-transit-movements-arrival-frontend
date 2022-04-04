@@ -35,4 +35,18 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
   behave like pageWithBackLink
 
   behave like pageWithHeading
+
+  behave like pageWithContent("p", "Events should be recorded on the transit accompanying document (TAD) in box 55.")
+
+  behave like pageWithContent("p", "Tell us if:")
+
+  behave like pageWithList(
+    listClass = "govuk-list--bullet",
+    expectedListItems = "there was an accident",
+    "official customs seals were damaged",
+    "goods had to be unloaded",
+    "goods moved to a different vehicle",
+    "goods moved to a different type of transport",
+    "the planned route changed"
+  )
 }
