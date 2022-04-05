@@ -47,7 +47,7 @@ class Navigator @Inject() () {
       ua => Some(routes.ConsigneeAddressController.onPageLoad(ua.movementReferenceNumber, NormalMode))
     // go to simplified customs office mode if simplified route is being pursued.
     case ConsigneeAddressPage =>
-      ua => Some(routes.SimplifiedCustomsOfficeController.onPageLoad(ua.movementReferenceNumber, NormalMode))
+      ua => Some(routes.CustomsOfficeSimplifiedController.onPageLoad(ua.movementReferenceNumber, NormalMode))
     case SimplifiedCustomsOfficePage =>
       ua => Some(routes.IncidentOnRouteController.onPageLoad(ua.movementReferenceNumber, NormalMode))
     case CustomsOfficePage => customsOffice(NormalMode)
@@ -174,7 +174,7 @@ class Navigator @Inject() () {
   private def consigneeAddressRoute(mode: Mode)(ua: UserAnswers): Option[Call] =
     (ua.get(CustomsOfficePage), mode) match {
       case (Some(_), CheckMode) => Some(routes.CheckYourAnswersController.onPageLoad(ua.movementReferenceNumber))
-      case _                    => Some(routes.SimplifiedCustomsOfficeController.onPageLoad(ua.movementReferenceNumber, mode))
+      case _                    => Some(routes.CustomsOfficeSimplifiedController.onPageLoad(ua.movementReferenceNumber, mode))
     }
 
   private def customsOffice(mode: Mode)(ua: UserAnswers): Option[Call] =
