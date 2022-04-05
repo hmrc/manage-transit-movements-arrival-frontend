@@ -20,9 +20,9 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 
 trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
-  val formKey: String = "value"
+  val fieldId: String = "value"
 
-  def radioItems(formKey: String, checkedValue: Option[T] = None): Seq[RadioItem]
+  def radioItems(fieldId: String, checkedValue: Option[T] = None): Seq[RadioItem]
   def values: Seq[T]
 
   // scalastyle:off method.length
@@ -47,7 +47,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
           }
         }
 
-        radioItems(formKey) foreach {
+        radioItems(fieldId) foreach {
           radioItem =>
             s"must contain an input for the value ${radioItem.value.get}" in {
               assertRenderedById(doc, radioItem.id.get)
@@ -88,7 +88,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
     val filledForm = form.fill(answer)
     val doc        = parseView(applyView(filledForm))
 
-    radioItems(formKey, Some(answer)) foreach {
+    radioItems(fieldId, Some(answer)) foreach {
       radioItem =>
         if (radioItem.value.get == answer.toString) {
           s"must have ${radioItem.value.get} checked" in {
