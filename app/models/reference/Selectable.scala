@@ -19,15 +19,14 @@ package models.reference
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 trait Selectable {
-
   def toSelectItem(selected: Boolean = false): SelectItem
 }
 
 object Selectable {
 
-  implicit class RichSelectables(selectables: Seq[Selectable]) {
+  implicit class Selectables(selectables: Seq[Selectable]) {
 
-    def withItemSelected(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
       x => x.toSelectItem(selectedValue.contains(x))
     )
   }

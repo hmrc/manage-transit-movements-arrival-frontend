@@ -23,16 +23,18 @@
     label: String,
     hint: Option[String] = None,
     placeholder: Option[String] = None,
-    options: Seq[SelectItem]
+    selectItems: Seq[SelectItem]
 )(implicit messages: Messages)
 
 @govukSelect(
     Select(
-         hint = hint.map(x => Hint(content = Text(x))),
-         items = Seq(SelectItem(value = Some(""), text = placeholder.getOrElse(""))) ++ options,
-         formGroupClasses = "autocomplete-wrapper",
-         attributes = Map("data-autocomplete" -> ""),
-         errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
+        hint = hint.map(x => Hint(content = Text(x))),
+        items = SelectItem(value = None, text = placeholder.getOrElse("")) +: selectItems,
+        formGroupClasses = "autocomplete-wrapper",
+        attributes = Map("data-autocomplete" -> ""),
+        errorMessage = field.error.map { e =>
+            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+        }
     )
     .withFormField(field)
     .withHeading(heading = Text(label))

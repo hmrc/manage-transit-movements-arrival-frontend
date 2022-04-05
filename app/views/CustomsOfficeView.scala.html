@@ -43,7 +43,7 @@
             field = form("value"),
             label = messages("customsOffice.heading", customsOffice),
             hint = Some(messages("customsOffice.hintText")),
-            options = customsOffices.withItemSelected(form.value),
+            selectItems = customsOffices.toSelectItems(form.value),
             placeholder = Some(messages("customsOffice.placeholder"))
         )
 
