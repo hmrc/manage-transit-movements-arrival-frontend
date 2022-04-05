@@ -33,6 +33,8 @@
     showBackLink = true
 ) {
 
+    @errorSummary(form.errors)
+
     @heading("incidentOnRoute.heading")
 
     <p class="govuk-body">@messages("incidentOnRoute.hintText.tad")</p>
@@ -47,8 +49,6 @@
     </ul>
 
     @formHelper(action = routes.IncidentOnRouteController.onSubmit(mrn, mode), 'autoComplete -> "off") {
-
-        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),

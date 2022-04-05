@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package views.behaviours
+package models
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-trait YesNoViewBehaviours extends RadioViewBehaviours[Boolean] {
+trait RadioModel[T] extends Enumerable.Implicits {
 
-  override def radioItems(formKey: String, checkedValue: Option[Boolean]): Seq[RadioItem] =
-    Seq(
-      RadioItem(
-        Text(messages("site.yes")),
-        Some(formKey),
-        Some("true")
-      ),
-      RadioItem(
-        Text(messages("site.no")),
-        Some(s"$formKey-no"),
-        Some("false")
-      )
+  val messageKeyPrefix: String
+
+  val values: Seq[T]
+
+  def radioItems(formKey: String = "value", checkedValue: Option[T] = None)(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"$messageKeyPrefix.$value")),
+          id = Some(if (index == 0) formKey else s"${formKey}_$index"),
+          value = Some(value.toString),
+          checked = checkedValue.contains(value)
+        )
+    }
+
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
     )
-
-  override def values: Seq[Boolean] = Seq(true, false)
 }

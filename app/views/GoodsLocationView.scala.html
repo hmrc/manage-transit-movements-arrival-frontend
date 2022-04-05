@@ -26,7 +26,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[GoodsLocation], radios: Option[GoodsLocation] => Seq[RadioItem], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[GoodsLocation], radios: (String, Option[GoodsLocation]) => Seq[RadioItem], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("goodsLocation.title"),
@@ -40,7 +40,7 @@
         @inputRadio(
             field = form("value"),
             legend = messages("goodsLocation.heading"),
-            radioItems = radios(form.value)
+            radioItems = radios("value", form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))

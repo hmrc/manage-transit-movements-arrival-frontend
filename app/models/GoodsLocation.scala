@@ -16,38 +16,18 @@
 
 package models
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-
 sealed trait GoodsLocation
 
-object GoodsLocation extends Enumerable.Implicits {
+object GoodsLocation extends RadioModel[GoodsLocation] {
 
   case object BorderForceOffice extends WithName("borderForceOffice") with GoodsLocation
 
   case object AuthorisedConsigneesLocation extends WithName("authorisedConsigneesLocation") with GoodsLocation
 
-  val values: Seq[GoodsLocation] = Seq(
+  override val messageKeyPrefix: String = "goodsLocation"
+
+  override val values: Seq[GoodsLocation] = Seq(
     BorderForceOffice,
     AuthorisedConsigneesLocation
   )
-
-  def radioItems(checkedValue: Option[GoodsLocation] = None)(implicit messages: Messages): Seq[RadioItem] =
-    values.map {
-      value =>
-        RadioItem(
-          Text(messages(s"goodsLocation.$value")),
-          Some(value.toString),
-          Some(value.toString),
-          checked = checkedValue.contains(value)
-        )
-    }
-
-  implicit val enumerable: Enumerable[GoodsLocation] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
 }
