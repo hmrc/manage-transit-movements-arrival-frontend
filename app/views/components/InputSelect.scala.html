@@ -34,7 +34,8 @@
         attributes = Map("data-autocomplete" -> ""),
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
-        }
+        },
+        classes = "govuk-!-width-two-thirds"
     )
     .withFormField(field)
     .withHeading(heading = Text(label))
