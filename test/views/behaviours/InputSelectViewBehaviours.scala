@@ -23,7 +23,7 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
   def values: Seq[T]
 
   def pageWithSelect(): Unit =
-    "behave like a page with a string value field" - {
+    "behave like a page with a select element" - {
 
       "when rendered" - {
         "must contain an input for the value" in {
@@ -45,11 +45,15 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
       }
 
       "when rendered with a valid form" - {
-        "must have the correct selection option value 'selected' for the form input value" in {
-          val validValue = values.head
-          val filledForm = form.fill(validValue)
-          val doc        = parseView(applyView(filledForm))
-          doc.getElementsByAttribute("selected").attr("value") mustBe validValue.toSelectItem().value.get
+        "must have the correct selection option value 'selected' for the form input value" - {
+          values.foreach {
+            value =>
+              s"when $value selected" in {
+                val filledForm = form.fill(value)
+                val doc        = parseView(applyView(filledForm))
+                doc.getElementsByAttribute("selected").attr("value") mustBe value.toSelectItem().value.get
+              }
+          }
         }
       }
 
