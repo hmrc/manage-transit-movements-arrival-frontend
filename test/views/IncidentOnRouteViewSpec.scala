@@ -49,4 +49,6 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
     "goods moved to a different type of transport",
     "the planned route changed"
   )
+
+  behave like pageWithRadioItems(legendIsHeading = false)
 }

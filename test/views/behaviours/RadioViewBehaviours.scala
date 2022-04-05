@@ -23,14 +23,20 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def radioItems(checkedValue: Option[T] = None): Seq[RadioItem]
   def values: Seq[T]
 
-  def pageWithRadioItems(hintTextPrefix: Option[String] = None, args: Seq[String] = Nil): Unit =
+  // scalastyle:off method.length
+  def pageWithRadioItems(legendIsHeading: Boolean = true, hintTextPrefix: Option[String] = None, args: Seq[String] = Nil): Unit =
     "page with a radio question" - {
       "when rendered" - {
 
         "must contain a legend for the question" in {
           val legends = getElementsByTag(doc, "legend")
           legends.size mustBe 1
-          assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
+          if (legendIsHeading) {
+            assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
+          } else {
+            assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
+            assert(!legends.first().hasClass("govuk-visually-hidden"))
+          }
 
           hintTextPrefix.map {
             prefix =>
@@ -63,7 +69,6 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
       }
 
       "when rendered with an error" - {
-
         "must show an error summary" in {
           assertRenderedById(docWithError, "error-summary-title")
         }
@@ -74,6 +79,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
         }
       }
     }
+  // scalastyle:on method.length
 
   private def answeredRadioPage(answer: T): Unit = {
 
