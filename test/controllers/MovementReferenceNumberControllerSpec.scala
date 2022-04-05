@@ -69,8 +69,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         view(form)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" ignore {}
-
     "must redirect to the next page when valid data is submitted and sessionRepository returns UserAnswers value as Some(_)" in {
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
