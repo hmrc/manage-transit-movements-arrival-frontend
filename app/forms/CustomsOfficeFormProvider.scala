@@ -37,7 +37,7 @@ class CustomsOfficeFormProvider @Inject() extends Mappings {
     )
 }
 
-class SimplifiedCustomsOfficeFormProvider @Inject() extends Mappings {
+class CustomsOfficeSimplifiedFormProvider @Inject() extends Mappings {
 
   def apply(
     consigneeName: String,

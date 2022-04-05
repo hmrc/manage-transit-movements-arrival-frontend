@@ -128,7 +128,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     }
 
   def simplifiedCustomsOffice: Option[Row] =
-    customsOffice(SimplifiedCustomsOfficePage, "customsOffice.simplified", routes.SimplifiedCustomsOfficeController.onPageLoad)
+    customsOffice(SimplifiedCustomsOfficePage, "customsOffice.simplified", routes.CustomsOfficeSimplifiedController.onPageLoad)
 
   def customsOffice: Option[Row] =
     customsOffice(CustomsOfficePage, "customsOffice", routes.CustomsOfficeController.onPageLoad)
