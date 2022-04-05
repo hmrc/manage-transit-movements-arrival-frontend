@@ -15,11 +15,12 @@
  *@
 
 @import models.{MovementReferenceNumber, GoodsLocation}
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
+    heading: Heading,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
@@ -32,15 +33,27 @@
     showBackLink = true
 ) {
 
+    @heading("incidentOnRoute.heading")
+
+    <p class="govuk-body">@messages("incidentOnRoute.hintText.tad")</p>
+    <p class="govuk-body">@messages("incidentOnRoute.hintText.tellUs")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("incidentOnRoute.hintText.bullet.1")</li>
+        <li>@messages("incidentOnRoute.hintText.bullet.2")</li>
+        <li>@messages("incidentOnRoute.hintText.bullet.3")</li>
+        <li>@messages("incidentOnRoute.hintText.bullet.4")</li>
+        <li>@messages("incidentOnRoute.hintText.bullet.5")</li>
+        <li>@messages("incidentOnRoute.hintText.bullet.6")</li>
+    </ul>
+
     @formHelper(action = routes.IncidentOnRouteController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        <!-- TODO - add in additional content -->
-
         @inputYesNo(
             field = form("value"),
-            legend = messages("incidentOnRoute.heading")
+            messageKeyPrefix = "incidentOnRoute",
+            legendIsHeading = false
         )
 
         @button(attributes = Map("id" -> "submit"))
