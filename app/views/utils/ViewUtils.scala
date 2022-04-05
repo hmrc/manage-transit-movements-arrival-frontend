@@ -21,6 +21,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.implicits.{RichCharacterCountSupport, RichRadiosSupport, RichTextareaSupport}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
 import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
 
@@ -39,6 +40,11 @@ object ViewUtils {
         case Some(value) => radios.withHeadingAndSectionCaption(Text(heading), Text(value))
         case None        => radios.withHeading(Text(heading))
       }
+
+    def withLabel(label: String): Radios =
+      radios.copy(
+        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = "govuk-fieldset__legend--m", isPageHeading = false))))
+      )
   }
 
   implicit class TextAreaImplicits(textArea: Textarea)(implicit messages: Messages) extends RichTextareaSupport {

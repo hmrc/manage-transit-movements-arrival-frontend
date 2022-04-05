@@ -18,19 +18,17 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GoodsLocationFormProvider
-import matchers.JsonMatchers
 import models.{GoodsLocation, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GoodsLocationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.GoodsLocationView
 
 import scala.concurrent.Future
 
-class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val mode                    = NormalMode
   private lazy val goodsLocationRoute = routes.GoodsLocationController.onPageLoad(mrn, mode).url

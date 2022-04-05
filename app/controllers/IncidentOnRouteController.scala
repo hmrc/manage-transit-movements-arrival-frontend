@@ -22,12 +22,11 @@ import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.IncidentOnRoutePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.IncidentOnRouteView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +38,7 @@ class IncidentOnRouteController @Inject() (
   actions: Actions,
   formProvider: IncidentOnRouteFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: IncidentOnRouteView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -47,21 +46,14 @@ class IncidentOnRouteController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(IncidentOnRoutePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "mrn"    -> mrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render("incidentOnRoute.njk", json).map(Ok(_))
+      Ok(view(preparedForm, mrn, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -69,17 +61,7 @@ class IncidentOnRouteController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "mrn"    -> mrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render("incidentOnRoute.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(IncidentOnRoutePage, value))

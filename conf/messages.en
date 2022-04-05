@@ -189,8 +189,9 @@ arrivalComplete.contact.withOfficeCode = If the goods are not released or you ha
 arrivalComplete.link.pretext = Go to
 arrivalComplete.makeAnother.arrivalNotification = Make another arrival notification
 
-incidentOnRoute.title = Did any events happen on the journey?
-incidentOnRoute.heading = Did any events happen on the journey?
+incidentOnRoute.title = Events
+incidentOnRoute.heading = Events
+incidentOnRoute.label = Did any events happen on the journey?
 incidentOnRoute.hintText.tad =  Events should be recorded on the transit accompanying document (TAD) in box 55.
 incidentOnRoute.hintText.tellUs = Tell us if:
 incidentOnRoute.hintText.bullet.1 = there was an accident
