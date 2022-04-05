@@ -33,7 +33,8 @@ class GoodsLocationViewSpec extends RadioViewBehaviours[GoodsLocation] {
 
   override val prefix: String = "goodsLocation"
 
-  override def radioItems(checkedValue: Option[GoodsLocation] = None): Seq[RadioItem] = GoodsLocation.radioItems(checkedValue)
+  override def radioItems(formKey: String, checkedValue: Option[GoodsLocation] = None): Seq[RadioItem] =
+    GoodsLocation.radioItems(formKey, checkedValue)
 
   override def values: Seq[GoodsLocation] = GoodsLocation.values
 
