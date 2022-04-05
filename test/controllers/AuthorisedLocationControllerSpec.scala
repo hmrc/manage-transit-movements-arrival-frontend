@@ -18,26 +18,23 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisedLocationFormProvider
-import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.AuthorisedLocationPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.AuthorisedLocationView
 
 import scala.concurrent.Future
 
-class AuthorisedLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class AuthorisedLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new AuthorisedLocationFormProvider()
-  val form         = formProvider()
+  private val formProvider = new AuthorisedLocationFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
-  lazy val authorisedLocationRoute = routes.AuthorisedLocationController.onPageLoad(mrn, NormalMode).url
+  private lazy val authorisedLocationRoute = routes.AuthorisedLocationController.onPageLoad(mrn, mode).url
 
   "AuthorisedLocation Controller" - {
 
@@ -45,57 +42,35 @@ class AuthorisedLocationControllerSpec extends SpecBase with AppWithDefaultMockF
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val request        = FakeRequest(GET, authorisedLocationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, authorisedLocationRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[AuthorisedLocationView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "authorisedLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisedLocationPage, "answer").success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, authorisedLocationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, authorisedLocationRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
+      val view = injector.instanceOf[AuthorisedLocationView]
 
-      templateCaptor.getValue mustEqual "authorisedLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -118,28 +93,17 @@ class AuthorisedLocationControllerSpec extends SpecBase with AppWithDefaultMockF
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val request        = FakeRequest(POST, authorisedLocationRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, authorisedLocationRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[AuthorisedLocationView]
 
-      val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "authorisedLocation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
