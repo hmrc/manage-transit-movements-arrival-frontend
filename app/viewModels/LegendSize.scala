@@ -29,4 +29,5 @@ object LegendSize {
   case object S extends LegendSize("govuk-fieldset__legend--s")
 
   implicit def sizeToOptionString(size: LegendSize): Option[String] = Some(size.toString)
+  implicit def sizeToString(size: LegendSize): String               = size.toString
 }

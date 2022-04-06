@@ -53,11 +53,11 @@ trait CharacterCountViewBehaviours extends QuestionViewBehaviours[String] {
       "when rendered with an error" - {
 
         "must show an error summary" in {
-          assertRenderedById(docWithError, "error-summary-title")
+          assertRenderedById(docWithError(), "error-summary-title")
         }
 
         "must show an error in the value field's label" in {
-          val errorSpan = docWithError.getElementsByClass("govuk-error-message").first
+          val errorSpan = docWithError().getElementsByClass("govuk-error-message").first
           assertElementContainsText(errorSpan, s"${messages("error.title.prefix")} ${messages(errorMessage)}")
         }
       }

@@ -21,6 +21,7 @@
 @(
     field: Field,
     label: String,
+    labelIsHeading: Boolean = true,
     inputClass: Option[String] = None,
     hint: Option[String] = None,
     prefix: Option[String] = None,
@@ -31,6 +32,10 @@
 
 @govukInput(
     Input(
+        label = Label(
+            isPageHeading = labelIsHeading,
+            content = Text(label)
+        ),
         autocomplete = autocomplete,
         hint = hint.map(x => Hint(content = Text(x))),
         errorMessage = field.error.map { e =>
@@ -43,5 +48,4 @@
         classes = inputClass.getOrElse("")
     )
     .withFormField(field)
-    .withHeading(heading = Text(label))
 )
