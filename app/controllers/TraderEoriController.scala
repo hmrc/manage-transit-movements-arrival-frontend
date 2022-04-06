@@ -18,25 +18,28 @@ package controllers
 
 import controllers.actions._
 import forms.TraderEoriFormProvider
+import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderEoriPage, TraderNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TraderEoriView
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderEoriController @Inject() (override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      navigator: Navigator,
-                                      formProvider: TraderEoriFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: TraderEoriView,
-                                      actions: Actions
+class TraderEoriController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: TraderEoriFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TraderEoriView,
+  actions: Actions
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
