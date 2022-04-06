@@ -44,7 +44,7 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).apply {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       getPage(TraderAddressPage) {
         traderAddress =>
