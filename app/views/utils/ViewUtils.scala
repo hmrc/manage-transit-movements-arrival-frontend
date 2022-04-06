@@ -33,7 +33,7 @@ object ViewUtils {
 
   // TODO refactor this maybe? Going to need this for every ViewModel type going forward
 
-  implicit class RadioImplicits(radios: Radios)(implicit messages: Messages) extends RichRadiosSupport {
+  implicit class RadiosImplicits(radios: Radios)(implicit messages: Messages) extends RichRadiosSupport {
 
     def withHeadingAndCaption(heading: String, caption: Option[String]): Radios =
       caption match {
@@ -58,7 +58,7 @@ object ViewUtils {
       }
   }
 
-  implicit class InputCharacterCountImplicits(characterCount: CharacterCount)(implicit messages: Messages) extends RichCharacterCountSupport {
+  implicit class CharacterCountImplicits(characterCount: CharacterCount)(implicit messages: Messages) extends RichCharacterCountSupport {
 
     def withHeadingAndCaption(heading: String, caption: Option[String]): CharacterCount =
       caption match {

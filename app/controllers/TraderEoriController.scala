@@ -30,13 +30,14 @@ import views.html.TraderEoriView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderEoriController @Inject() (override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      navigator: Navigator,
-                                      formProvider: TraderEoriFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: TraderEoriView,
-                                      actions: Actions
+class TraderEoriController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: TraderEoriFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TraderEoriView,
+  actions: Actions
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

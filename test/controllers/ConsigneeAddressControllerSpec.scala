@@ -18,157 +18,111 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConsigneeAddressFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.{ConsigneeAddressPage, ConsigneeNamePage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.ConsigneeAddressView
 
 import scala.concurrent.Future
 
-class ConsigneeAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConsigneeAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new ConsigneeAddressFormProvider()
   private val form         = formProvider(consigneeName)
 
-  private lazy val consigneeAddressRoute = routes.ConsigneeAddressController.onPageLoad(mrn, NormalMode).url
+  private val mode = NormalMode
+
+  private lazy val consigneeAddressRoute = routes.ConsigneeAddressController.onPageLoad(mrn, mode).url
 
   "ConsigneeAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, "foo")
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.setValue(ConsigneeNamePage, consigneeName)
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, consigneeAddressRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, consigneeAddressRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConsigneeAddressView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "consigneeAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, mode, consigneeName)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html(consigneeName)))
-
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, consigneeName)
-        .success
-        .value
-        .set(ConsigneeAddressPage, traderAddress)
-        .success
-        .value
+        .setValue(ConsigneeNamePage, consigneeName)
+        .setValue(ConsigneeAddressPage, consigneeAddress)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, consigneeAddressRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, consigneeAddressRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConsigneeAddressView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm =
-        form.bind(
-          Map(
-            "buildingAndStreet" -> traderAddress.buildingAndStreet,
-            "city"              -> traderAddress.city,
-            "postcode"          -> traderAddress.postcode
-          )
+      val filledForm = form.bind(
+        Map(
+          "buildingAndStreet" -> consigneeAddress.buildingAndStreet,
+          "city"              -> consigneeAddress.city,
+          "postcode"          -> consigneeAddress.postcode
         )
-
-      val expectedJson = Json.obj(
-        "form"          -> filledForm,
-        "mrn"           -> mrn,
-        "mode"          -> NormalMode,
-        "consigneeName" -> consigneeName
       )
 
-      templateCaptor.getValue mustEqual "consigneeAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode, consigneeName)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, traderName)
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.setValue(ConsigneeNamePage, consigneeName)
 
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, consigneeAddressRoute)
-          .withFormUrlEncodedBody(("buildingAndStreet", traderAddress.buildingAndStreet), ("city", traderAddress.city), ("postcode", traderAddress.postcode))
+      val request = FakeRequest(POST, consigneeAddressRoute)
+        .withFormUrlEncodedBody(
+          ("buildingAndStreet", consigneeAddress.buildingAndStreet),
+          ("city", consigneeAddress.city),
+          ("postcode", consigneeAddress.postcode)
+        )
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, consigneeName)
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.setValue(ConsigneeNamePage, consigneeName)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, consigneeAddressRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, consigneeAddressRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConsigneeAddressView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"          -> boundForm,
-        "mrn"           -> mrn,
-        "mode"          -> NormalMode,
-        "consigneeName" -> consigneeName
-      )
-
-      templateCaptor.getValue mustEqual "consigneeAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, mode, consigneeName)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -188,9 +142,12 @@ class ConsigneeAddressControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, consigneeAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, consigneeAddressRoute)
+        .withFormUrlEncodedBody(
+          ("buildingAndStreet", consigneeAddress.buildingAndStreet),
+          ("city", consigneeAddress.city),
+          ("postcode", consigneeAddress.postcode)
+        )
 
       val result = route(app, request).value
 

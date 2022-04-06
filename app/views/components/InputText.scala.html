@@ -21,6 +21,7 @@
 @(
     field: Field,
     label: String,
+    labelIsHeading: Boolean = true,
     inputClass: Option[String] = None,
     hint: Option[String] = None,
     prefix: Option[String] = None,
@@ -29,7 +30,7 @@
     inputMode: Option[String] = None
 )(implicit messages: Messages)
 
-@govukInput(
+@input = @{
     Input(
         autocomplete = autocomplete,
         hint = hint.map(x => Hint(content = Text(x))),
@@ -43,5 +44,12 @@
         classes = inputClass.getOrElse("")
     )
     .withFormField(field)
-    .withHeading(heading = Text(label))
+}
+
+@govukInput(
+    if (labelIsHeading) {
+        input.withHeading(heading = Text(label))
+    } else {
+        input.copy(label = Label(isPageHeading = false, content = Text(label)))
+    }
 )
