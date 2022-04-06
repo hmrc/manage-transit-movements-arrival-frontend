@@ -18,20 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CustomsSubPlaceFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import pages.CustomsSubPlacePage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.CustomsSubPlaceView
-
-import scala.concurrent.Future
 
 class CustomsSubPlaceControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
