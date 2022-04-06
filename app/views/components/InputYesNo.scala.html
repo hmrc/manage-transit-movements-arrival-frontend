@@ -24,7 +24,9 @@
     messageKeyPrefix: String,
     caption: Option[String] = None,
     hint: Option[String] = None,
-    legendIsHeading: Boolean = true
+    legendIsHeading: Boolean = true,
+    legendIsVisible: Boolean = true,
+    legendParams: Seq[String] = Nil
 )(implicit messages: Messages)
 
 @radios = @{
@@ -49,8 +51,8 @@
 
 @govukRadios(
     if (legendIsHeading) {
-        radios.withHeadingAndCaption(messages(s"$messageKeyPrefix.heading"), caption)
+        radios.withHeadingAndCaption(messages(s"$messageKeyPrefix.heading", legendParams: _*), caption)
     } else {
-        radios.withLabel(messages(s"$messageKeyPrefix.label"))
+        radios.withLabel(messages(s"$messageKeyPrefix.label", legendParams: _*), legendIsVisible)
     }
 )
