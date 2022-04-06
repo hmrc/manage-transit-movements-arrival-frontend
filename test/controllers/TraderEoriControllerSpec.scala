@@ -34,7 +34,7 @@ class TraderEoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   private val form         = formProvider(traderName)
   private val validEori    = "GB123456789012"
 
-  lazy val traderEoriRoute = routes.TraderEoriController.onPageLoad(mrn, NormalMode).url
+  private lazy val traderEoriRoute = routes.TraderEoriController.onPageLoad(mrn, NormalMode).url
 
   "TraderEori Controller" - {
 
@@ -56,10 +56,9 @@ class TraderEoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers =
-        emptyUserAnswers
-          .setValue(TraderEoriPage, validEori)
-          .setValue(TraderNamePage, traderName)
+      val userAnswers = emptyUserAnswers
+        .setValue(TraderEoriPage, validEori)
+        .setValue(TraderNamePage, traderName)
 
       setExistingUserAnswers(userAnswers)
 
@@ -80,11 +79,12 @@ class TraderEoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(TraderNamePage, traderName)
 
-      val request =
-        FakeRequest(POST, traderEoriRoute)
-          .withFormUrlEncodedBody(("value", validEori))
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, traderEoriRoute)
+        .withFormUrlEncodedBody(("value", validEori))
 
       val result = route(app, request).value
 
@@ -126,9 +126,8 @@ class TraderEoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, traderEoriRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, traderEoriRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 

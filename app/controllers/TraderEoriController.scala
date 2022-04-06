@@ -16,9 +16,9 @@
 
 package controllers
 
+import controllers.actions.Actions._
 import controllers.actions._
 import forms.TraderEoriFormProvider
-import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderEoriPage, TraderNamePage}
@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TraderEoriView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TraderEoriController @Inject() (
@@ -42,36 +43,34 @@ class TraderEoriController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireData(mrn) {
-      implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).apply {
+    implicit request =>
+      getPage(TraderNamePage) {
+        traderName =>
+          val form = formProvider(traderName)
+          val preparedForm = request.userAnswers.get(TraderEoriPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-        val form = formProvider(traderName)
+          Ok(view(preparedForm, mrn, mode, traderName))
+      }
+  }
 
-        val preparedForm = request.userAnswers.get(TraderEoriPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, mrn, mode, traderName))
-    }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireData(mrn).async {
-      implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-        val form       = formProvider(traderName)
-
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderEoriPage, value.replaceAll("\\s", "").toUpperCase))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TraderEoriPage, mode, updatedAnswers))
-          )
-    }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      getPageF(TraderNamePage) {
+        traderName =>
+          formProvider(traderName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderEoriPage, value.replaceAll("\\s", "").toUpperCase))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TraderEoriPage, mode, updatedAnswers))
+            )
+      }
+  }
 }

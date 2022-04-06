@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.actions.Actions._
 import controllers.actions._
 import forms.TraderAddressFormProvider
 import models.{Mode, MovementReferenceNumber}
@@ -42,30 +43,35 @@ class TraderAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).apply {
     implicit request =>
-      val traderName = request.arg
-      val form       = formProvider(traderName)
-      val preparedForm = request.userAnswers.get(TraderAddressPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      getPage(TraderNamePage) {
+        traderName =>
+          val form = formProvider(traderName)
+          val preparedForm = request.userAnswers.get(TraderAddressPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, mrn, mode, traderName))
+          Ok(view(preparedForm, mrn, mode, traderName))
+      }
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val traderName = request.arg
-      formProvider(traderName)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
-        )
+      getPageF(TraderNamePage) {
+        traderName =>
+          formProvider(traderName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
+            )
+      }
+
   }
 }

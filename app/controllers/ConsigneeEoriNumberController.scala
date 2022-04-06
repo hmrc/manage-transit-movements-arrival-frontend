@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.actions.Actions._
 import controllers.actions._
 import forms.EoriNumberFormProvider
 import models.{Mode, MovementReferenceNumber}
@@ -42,27 +43,24 @@ class ConsigneeEoriNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).apply {
     implicit request =>
-      request.userAnswers.get(ConsigneeNamePage) match {
-        case Some(consigneeName) =>
+      getPage(ConsigneeNamePage) {
+        consigneeName =>
+          val form = formProvider(consigneeName)
           val preparedForm = request.userAnswers.get(ConsigneeEoriNumberPage) match {
-            case None        => formProvider(consigneeName)
-            case Some(value) => formProvider(consigneeName).fill(value)
+            case None        => form
+            case Some(value) => form.fill(value)
           }
 
           Ok(view(preparedForm, mrn, mode, consigneeName))
-
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
-
       }
-
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      request.userAnswers.get(ConsigneeNamePage) match {
-        case Some(consigneeName) =>
+      getPageF(ConsigneeNamePage) {
+        consigneeName =>
           formProvider(consigneeName)
             .bindFromRequest()
             .fold(
@@ -73,8 +71,6 @@ class ConsigneeEoriNumberController @Inject() (
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers))
             )
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-
       }
   }
 }
