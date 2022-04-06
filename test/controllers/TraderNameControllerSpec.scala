@@ -30,11 +30,11 @@ import scala.concurrent.Future
 
 class TraderNameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new TraderNameFormProvider()
-  val form         = formProvider()
-  private val mode = NormalMode
+  private val formProvider = new TraderNameFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
-  lazy val traderNameRoute = routes.TraderNameController.onPageLoad(mrn, NormalMode).url
+  lazy val traderNameRoute = routes.TraderNameController.onPageLoad(mrn, mode).url
 
   "TraderName Controller" - {
 
@@ -54,7 +54,7 @@ class TraderNameControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(TraderNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(TraderNamePage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, traderNameRoute)
