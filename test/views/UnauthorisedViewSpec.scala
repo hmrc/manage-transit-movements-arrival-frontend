@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package views
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
 import views.html.UnauthorisedView
 
-import javax.inject.Inject
+class UnauthorisedViewSpec extends ViewBehaviours {
 
-class UnauthorisedController @Inject() (view: UnauthorisedView, val controllerComponents: MessagesControllerComponents)
-    extends FrontendBaseController
-    with I18nSupport {
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[UnauthorisedView].apply()(fakeRequest, messages)
 
-  def onPageLoad: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(view())
-  }
+  override val prefix: String = "unauthorised"
+
+  behave like pageWithoutBackLink()
+
+  behave like pageWithHeading()
+
+  behave like pageWithContent("p", "You must have an account with an activated EORI number.")
 }
