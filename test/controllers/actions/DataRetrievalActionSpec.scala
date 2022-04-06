@@ -73,8 +73,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
   "a data retrieval action" - {
 
     "must return an OptionalDataRequest with an empty UserAnswers" - {
-
-      "where there are no existing answers for this MRN" in {
+      "when there are no existing answers for this MRN" in {
 
         when(sessionRepository.get(any(), any())) thenReturn Future.successful(None)
 
@@ -83,7 +82,6 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
     }
 
     "must return an OptionalDataRequest with some defined UserAnswers" - {
-
       "when there are existing answers for this MRN" in {
 
         when(sessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(mrn, eoriNumber)))
