@@ -16,37 +16,18 @@
 
 package models
 
-import play.api.data.Form
-import uk.gov.hmrc.viewmodels._
-
 sealed trait GoodsLocation
 
-object GoodsLocation extends Enumerable.Implicits {
+object GoodsLocation extends RadioModel[GoodsLocation] {
 
   case object BorderForceOffice extends WithName("borderForceOffice") with GoodsLocation
 
   case object AuthorisedConsigneesLocation extends WithName("authorisedConsigneesLocation") with GoodsLocation
 
-  val values: Seq[GoodsLocation] = Seq(
+  override val messageKeyPrefix: String = "goodsLocation"
+
+  override val values: Seq[GoodsLocation] = Seq(
     BorderForceOffice,
     AuthorisedConsigneesLocation
   )
-
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-
-    val field = form("value")
-    val items = Seq(
-      Radios.Radio(msg"goodsLocation.authorisedConsigneesLocation", AuthorisedConsigneesLocation.toString),
-      Radios.Radio(msg"goodsLocation.borderForceOffice", BorderForceOffice.toString)
-    )
-
-    Radios(field, items)
-  }
-
-  implicit val enumerable: Enumerable[GoodsLocation] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
 }

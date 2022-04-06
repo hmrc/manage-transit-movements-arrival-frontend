@@ -30,8 +30,8 @@ import scala.concurrent.Future
 
 class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new CountriesService(mockRefDataConnector)
+  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private val service                                           = new CountriesService(mockRefDataConnector)
 
   private val country1: Country       = Country(CountryCode("GB"), "United Kingdom")
   private val country2: Country       = Country(CountryCode("FR"), "France")

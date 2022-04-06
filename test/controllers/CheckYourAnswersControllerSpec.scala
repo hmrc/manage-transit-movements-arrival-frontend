@@ -24,13 +24,12 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.ArrivalSubmissionService
 import uk.gov.hmrc.http.HttpResponse
-import viewModels.sections.ViewModelConfig
 
 import scala.concurrent.Future
 
@@ -98,28 +97,20 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(BAD_REQUEST, ""))))
 
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
 
       val result = route(app, request).value
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual BAD_REQUEST
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
-
-      templateCaptor.getValue mustEqual "badRequest.njk"
+      redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
     }
 
     "must redirected to TechnicalDifficulties page when there is a server side error" in {
 
       val genServerError: Int = Gen.chooseNum(500, 599).sample.value
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-      val viewConfig = app.injector.instanceOf[ViewModelConfig]
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -129,31 +120,24 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val result = route(app, request).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      status(result) mustEqual SEE_OTHER
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      val expectedJson = Json.obj(
-        "contactUrl" -> viewConfig.nctsEnquiriesUrl
-      )
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
     "must fail with internal server error when service fails" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockService.submit(any())(any())).thenReturn(Future.successful(None))
 
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
 
       val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

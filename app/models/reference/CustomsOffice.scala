@@ -17,13 +17,16 @@
 package models.reference
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class CustomsOffice(id: String, name: Option[String], phoneNumber: Option[String]) {
+case class CustomsOffice(id: String, name: Option[String], phoneNumber: Option[String]) extends Selectable {
 
   override def toString: String = name match {
     case Some(value) => s"$value ($id)"
     case None        => id
   }
+
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(id), this.toString, selected)
 }
 
 object CustomsOffice {

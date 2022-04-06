@@ -16,7 +16,7 @@
 
 package views
 
-import base.SpecBase
+import _root_.base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 abstract class SingleViewSpec(protected val viewUnderTest: String, hasSignOutLink: Boolean = true)
     extends SpecBase
-    with ViewSpecAssertions
+    with NunjucksViewSpecAssertions
     with NunjucksSupport
     with GuiceOneAppPerSuite {
 

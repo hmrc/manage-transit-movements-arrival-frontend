@@ -18,104 +18,72 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IsTraderAddressPlaceOfNotificationFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.{IsTraderAddressPlaceOfNotificationPage, TraderAddressPage, TraderNamePage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
+import views.html.IsTraderAddressPlaceOfNotificationView
 
 import scala.concurrent.Future
 
-class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new IsTraderAddressPlaceOfNotificationFormProvider()
-  private val form         = formProvider(traderName)
-
-  lazy val isTraderAddressPlaceOfNotificationRoute = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, NormalMode).url
+  private val formProvider                                 = new IsTraderAddressPlaceOfNotificationFormProvider()
+  private val form                                         = formProvider(traderName)
+  private val mode                                         = NormalMode
+  private lazy val isTraderAddressPlaceOfNotificationRoute = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, mode).url
 
   "IsTraderAddressPlaceOfNotification Controller" - {
     "must return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers
-        .set(TraderAddressPage, traderAddress)
-        .success
-        .value
+        .setValue(TraderNamePage, traderName)
+        .setValue(TraderAddressPage, traderAddress)
+
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, isTraderAddressPlaceOfNotificationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, isTraderAddressPlaceOfNotificationRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form"           -> form,
-        "mode"           -> NormalMode,
-        "mrn"            -> mrn,
-        "traderLine1"    -> traderAddress.buildingAndStreet,
-        "traderTown"     -> traderAddress.city,
-        "traderPostcode" -> traderAddress.postcode,
-        "radios"         -> Radios.yesNo(form("value"))
-      )
+      val view = injector.instanceOf[IsTraderAddressPlaceOfNotificationView]
 
-      templateCaptor.getValue mustEqual "isTraderAddressPlaceOfNotification.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, mode, traderName, traderAddress)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers
-        .set(IsTraderAddressPlaceOfNotificationPage, true)
-        .success
-        .value
-        .set(TraderAddressPage, traderAddress)
-        .success
-        .value
+        .setValue(TraderNamePage, traderName)
+        .setValue(IsTraderAddressPlaceOfNotificationPage, true)
+        .setValue(TraderAddressPage, traderAddress)
+
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, isTraderAddressPlaceOfNotificationRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, isTraderAddressPlaceOfNotificationRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val filledForm = form.bind(Map("value" -> "true"))
-      val expectedJson = Json.obj(
-        "form"           -> filledForm,
-        "mode"           -> NormalMode,
-        "mrn"            -> mrn,
-        "traderLine1"    -> traderAddress.buildingAndStreet,
-        "traderTown"     -> traderAddress.city,
-        "traderPostcode" -> traderAddress.postcode,
-        "radios"         -> Radios.yesNo(filledForm("value"))
-      )
 
-      templateCaptor.getValue mustEqual "isTraderAddressPlaceOfNotification.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val view = injector.instanceOf[IsTraderAddressPlaceOfNotificationView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode, traderName, traderAddress)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(TraderAddressPage, traderAddress).success.value
+      val userAnswers = emptyUserAnswers.setValue(TraderAddressPage, traderAddress)
       setExistingUserAnswers(userAnswers)
 
       val request =
@@ -130,43 +98,23 @@ class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with App
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = emptyUserAnswers
-        .set(TraderNamePage, traderName)
-        .success
-        .value
-        .set(TraderAddressPage, traderAddress)
-        .success
-        .value
+        .setValue(TraderNamePage, traderName)
+        .setValue(TraderAddressPage, traderAddress)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form"           -> boundForm,
-        "mode"           -> NormalMode,
-        "mrn"            -> mrn,
-        "traderLine1"    -> traderAddress.buildingAndStreet,
-        "traderTown"     -> traderAddress.city,
-        "traderPostcode" -> traderAddress.postcode,
-        "radios"         -> Radios.yesNo(boundForm("value")),
-        "traderName"     -> traderName
-      )
+      val view = injector.instanceOf[IsTraderAddressPlaceOfNotificationView]
 
-      templateCaptor.getValue mustEqual "isTraderAddressPlaceOfNotification.njk"
-
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, mode, traderName, traderAddress)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

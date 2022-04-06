@@ -44,7 +44,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
   val countries       = CountryList(Seq(country))
   val form            = formProvider(countries)
 
-  private val mockCountriesService           = mock[CountriesService]
+  private lazy val mockCountriesService      = mock[CountriesService]
   lazy val transportNationalityRoute: String = routes.TransportNationalityController.onPageLoad(mrn, eventIndex, NormalMode).url
   private val transportNationalityTemplate   = "events/transhipments/transportNationality.njk"
 

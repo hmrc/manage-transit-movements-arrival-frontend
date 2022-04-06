@@ -18,75 +18,54 @@ package controllers
 
 import controllers.actions._
 import forms.GoodsLocationFormProvider
-import javax.inject.Inject
 import models.GoodsLocation.{AuthorisedConsigneesLocation, BorderForceOffice}
 import models.{GoodsLocation, Mode, MovementReferenceNumber}
 import pages.GoodsLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GoodsLocationView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsLocationController @Inject() (override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: GoodsLocationFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+class GoodsLocationController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  actions: Actions,
+  formProvider: GoodsLocationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: GoodsLocationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(GoodsLocationPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "mrn"    -> mrn,
-        "radios" -> GoodsLocation.radios(preparedForm)
-      )
-
-      renderer.render("goodsLocation.njk", json).map(Ok(_))
+      Ok(view(preparedForm, GoodsLocation.radioItems, mrn, mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "mrn"    -> mrn,
-              "radios" -> GoodsLocation.radios(formWithErrors)
-            )
-
-            renderer.render("goodsLocation.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, GoodsLocation.radioItems, mrn, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsLocationPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield value match {
-              case BorderForceOffice            => Redirect(routes.CustomsSubPlaceController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
-              case AuthorisedConsigneesLocation => Redirect(routes.AuthorisedLocationController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
+              case BorderForceOffice            => Redirect(routes.CustomsSubPlaceController.onPageLoad(mrn, mode))
+              case AuthorisedConsigneesLocation => Redirect(routes.AuthorisedLocationController.onPageLoad(mrn, mode))
             }
         )
   }
