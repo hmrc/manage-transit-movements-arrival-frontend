@@ -45,6 +45,7 @@ class TraderNameControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       val request = FakeRequest(GET, traderNameRoute)
 
       val result = route(app, request).value
+
       val view = injector.instanceOf[TraderNameView]
 
       status(result) mustEqual OK
