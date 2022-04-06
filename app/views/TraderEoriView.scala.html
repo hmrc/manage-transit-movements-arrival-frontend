@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ConsigneeEoriNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TraderEoriController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

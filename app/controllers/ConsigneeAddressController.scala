@@ -18,36 +18,31 @@ package controllers
 
 import controllers.actions._
 import forms.ConsigneeAddressFormProvider
-import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{ConsigneeAddressPage, ConsigneeNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.ConsigneeAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeAddressController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: ConsigneeAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: ConsigneeAddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       request.userAnswers.get(ConsigneeNamePage) match {
         case Some(consigneeName) =>
@@ -56,36 +51,19 @@ class ConsigneeAddressController @Inject() (
             case None        => formProvider(consigneeName)
           }
 
-          val json = Json.obj(
-            "form"          -> preparedForm,
-            "mrn"           -> mrn,
-            "mode"          -> mode,
-            "consigneeName" -> consigneeName
-          )
-
-          renderer.render("consigneeAddress.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+          Ok(view(preparedForm, mrn, mode, consigneeName))
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
       }
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       request.userAnswers.get(ConsigneeNamePage) match {
         case Some(consigneeName) =>
           formProvider(consigneeName)
             .bindFromRequest()
             .fold(
-              formWithErrors => {
-
-                val json = Json.obj(
-                  "form"          -> formWithErrors,
-                  "mrn"           -> mrn,
-                  "mode"          -> mode,
-                  "consigneeName" -> consigneeName
-                )
-
-                renderer.render("consigneeAddress.njk", json).map(BadRequest(_))
-              },
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))

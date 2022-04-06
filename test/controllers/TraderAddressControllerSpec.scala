@@ -19,114 +19,80 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TraderAddressFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import models.NormalMode
 import pages.{TraderAddressPage, TraderNamePage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-
-import scala.concurrent.Future
+import views.html.TraderAddressView
 
 class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  val formProvider = new TraderAddressFormProvider()
-  val form         = formProvider(traderName)
+  private val formProvider = new TraderAddressFormProvider()
+  private val form         = formProvider(traderName)
 
-  lazy val traderAddressRoute = routes.TraderAddressController.onPageLoad(mrn, NormalMode).url
+  private val mode = NormalMode
 
-  val userAnswers = UserAnswers(
-    mrn,
-    eoriNumber,
-    Json.obj(
-      TraderAddressPage.toString -> Json.obj(
-        "buildingAndStreet" -> "value 1",
-        "city"              -> "value 3",
-        "postcode"          -> "value 4"
-      )
-    )
-  )
+  private lazy val traderAddressRoute = routes.TraderAddressController.onPageLoad(mrn, NormalMode).url
 
   "Address Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val answers = emptyUserAnswers.set(TraderNamePage, traderName).success.value
 
       setExistingUserAnswers(answers)
 
-      val request        = FakeRequest(GET, traderAddressRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, traderAddressRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[TraderAddressView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"       -> form,
-        "mrn"        -> mrn,
-        "mode"       -> NormalMode,
-        "traderName" -> traderName
-      )
-
-      templateCaptor.getValue mustEqual "traderAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, mode, traderName)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      val userAnswers = emptyUserAnswers
+        .setValue(TraderNamePage, traderName)
+        .setValue(TraderAddressPage, traderAddress)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, traderAddressRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, traderAddressRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
+      val view = injector.instanceOf[TraderAddressView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      status(result) mustEqual OK
 
       val filledForm = form.bind(
         Map(
-          "buildingAndStreet" -> "value 1",
-          "city"              -> "value 3",
-          "postcode"          -> "value 4"
+          "buildingAndStreet" -> traderAddress.buildingAndStreet,
+          "city"              -> traderAddress.city,
+          "postcode"          -> traderAddress.postcode
         )
       )
 
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "traderAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode, traderName)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, traderAddressRoute)
-          .withFormUrlEncodedBody(("buildingAndStreet", "value 1"), ("city", "value 3"), ("postcode", "value 4"))
+      val request = FakeRequest(POST, traderAddressRoute)
+        .withFormUrlEncodedBody(
+          ("buildingAndStreet", traderAddress.buildingAndStreet),
+          ("city", traderAddress.city),
+          ("postcode", traderAddress.postcode)
+        )
 
       val result = route(app, request).value
 
@@ -137,36 +103,21 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = emptyUserAnswers
-        .set(TraderNamePage, traderName)
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.setValue(TraderNamePage, traderName)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, traderAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, traderAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[TraderAddressView]
 
-      val expectedJson = Json.obj(
-        "form"       -> boundForm,
-        "mrn"        -> mrn,
-        "mode"       -> NormalMode,
-        "traderName" -> traderName
-      )
-
-      templateCaptor.getValue mustEqual "traderAddress.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, mode, traderName)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -178,6 +129,7 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
@@ -185,9 +137,12 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, traderAddressRoute)
-          .withFormUrlEncodedBody(("buildingAndStreet", "value 1"), ("postcode", "value 2"))
+      val request = FakeRequest(POST, traderAddressRoute)
+        .withFormUrlEncodedBody(
+          ("buildingAndStreet", traderAddress.buildingAndStreet),
+          ("city", traderAddress.city),
+          ("postcode", traderAddress.postcode)
+        )
 
       val result = route(app, request).value
 

@@ -22,18 +22,18 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.AddressViewBehaviours
-import views.html.ConsigneeAddressView
+import views.html.TraderAddressView
 
-class ConsigneeAddressViewSpec extends AddressViewBehaviours {
+class TraderAddressViewSpec extends AddressViewBehaviours {
 
   private val name = arbitrary[String].sample.value
 
   override def form: Form[Address] = new ConsigneeAddressFormProvider()(name)
 
   override def applyView(form: Form[Address]): HtmlFormat.Appendable =
-    injector.instanceOf[ConsigneeAddressView].apply(form, mrn, NormalMode, name)(fakeRequest, messages)
+    injector.instanceOf[TraderAddressView].apply(form, mrn, NormalMode, name)(fakeRequest, messages)
 
-  override val prefix: String = "consigneeAddress"
+  override val prefix: String = "traderAddress"
 
   behave like pageWithBackLink
 
