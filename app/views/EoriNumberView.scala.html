@@ -26,20 +26,20 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, traderName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, consigneeName: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("eoriNumber.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TraderEoriController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConsigneeEoriNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
-            label = messages("eoriNumber.heading", traderName),
+            label = messages("eoriNumber.heading", consigneeName),
             hint = Some(messages("eoriNumber.hint"))
         )
 
