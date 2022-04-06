@@ -50,8 +50,7 @@ class TraderNameControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(form, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
