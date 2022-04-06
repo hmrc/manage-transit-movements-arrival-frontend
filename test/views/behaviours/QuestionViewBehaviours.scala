@@ -28,16 +28,15 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable = applyView(form)
 
-  val errorKey: String     = "value"
   val errorMessage: String = "error"
 
-  private lazy val formWithError: Form[T]               = form.withError(FormError(errorKey, errorMessage))
-  private lazy val viewWithError: HtmlFormat.Appendable = applyView(formWithError)
-  lazy val docWithError: Document                       = parseView(viewWithError)
+  private def formWithError(errorKey: String): Form[T]               = form.withError(FormError(errorKey, errorMessage))
+  private def viewWithError(errorKey: String): HtmlFormat.Appendable = applyView(formWithError(errorKey))
+  def docWithError(errorKey: String = "value"): Document             = parseView(viewWithError(errorKey))
 
   "when there are form errors" - {
     "must render error prefix in title" in {
-      val title = docWithError.title()
+      val title = docWithError().title()
       title mustBe s"Error: ${messages(s"$prefix.title")} - Manage your transit movements - GOV.UK"
     }
   }
