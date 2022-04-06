@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.CustomsSubPlaceFormProvider
+
 import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
@@ -29,63 +30,44 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.CustomsSubPlaceView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsSubPlaceController @Inject() (override val messagesApi: MessagesApi,
                                            sessionRepository: SessionRepository,
                                            navigator: Navigator,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalActionProvider,
-                                           requireData: DataRequiredAction,
                                            formProvider: CustomsSubPlaceFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           renderer: Renderer
+                                           actions: Actions,
+                                           view: CustomsSubPlaceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(CustomsSubPlacePage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(CustomsSubPlacePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        val json = Json.obj(
-          "form" -> preparedForm,
-          "mrn"  -> mrn,
-          "mode" -> mode
+      Ok(view(preparedForm, mrn, mode))
+  }
+
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsSubPlacePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(CustomsSubPlacePage, mode, updatedAnswers))
         )
-
-        renderer.render("customsSubPlace.njk", json).map(Ok(_))
-    }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
-      implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form" -> formWithErrors,
-                "mrn"  -> mrn,
-                "mode" -> mode
-              )
-
-              renderer.render("customsSubPlace.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsSubPlacePage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(CustomsSubPlacePage, mode, updatedAnswers))
-          )
-    }
+  }
 }

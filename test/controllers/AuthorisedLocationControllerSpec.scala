@@ -56,7 +56,7 @@ class AuthorisedLocationControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisedLocationPage, "answer").success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).setValue(AuthorisedLocationPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisedLocationRoute)
