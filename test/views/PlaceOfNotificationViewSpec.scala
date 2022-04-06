@@ -16,14 +16,14 @@
 
 package views
 
-import forms.{EoriNumberFormProvider, PlaceOfNotificationFormProvider}
+import forms.PlaceOfNotificationFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.{EoriNumberView, PlaceOfNotificationView}
+import views.html.PlaceOfNotificationView
 
 class PlaceOfNotificationViewSpec extends InputTextViewBehaviours[String] {
 
