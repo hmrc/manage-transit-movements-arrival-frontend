@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.UpdateRejectedMRNFormProvider
-
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{ArrivalId, MovementReferenceNumber, NormalMode}
 import navigation.Navigator
@@ -35,21 +35,22 @@ import viewModels.sections.ViewModelConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateRejectedMRNController @Inject() (override val messagesApi: MessagesApi,
-                                             navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             formProvider: UpdateRejectedMRNFormProvider,
-                                             sessionRepository: SessionRepository,
-                                             arrivalMovementMessageService: ArrivalNotificationMessageService,
-                                             userAnswersService: UserAnswersService,
-                                             val viewModelConfig: ViewModelConfig,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val renderer: Renderer
+class UpdateRejectedMRNController @Inject() (
+  override val messagesApi: MessagesApi,
+  navigator: Navigator,
+  identify: IdentifierAction,
+  formProvider: UpdateRejectedMRNFormProvider,
+  sessionRepository: SessionRepository,
+  arrivalMovementMessageService: ArrivalNotificationMessageService,
+  userAnswersService: UserAnswersService,
+  val viewModelConfig: ViewModelConfig,
+  val controllerComponents: MessagesControllerComponents,
+  val renderer: Renderer,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
-    with TechnicalDifficultiesPage {
+    with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -61,9 +62,9 @@ class UpdateRejectedMRNController @Inject() (override val messagesApi: MessagesA
             case Some(mrn) =>
               val json = Json.obj("form" -> form.fill(mrn), "arrivalId" -> arrivalId.value)
               renderer.render("updateMovementReferenceNumber.njk", json).map(Ok(_))
-            case _ => renderTechnicalDifficultiesPage
+            case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
-        case _ => renderTechnicalDifficultiesPage
+        case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 
@@ -82,7 +83,7 @@ class UpdateRejectedMRNController @Inject() (override val messagesApi: MessagesA
                 val updatedUserAnswers = userAnswers.copy(movementReferenceNumber = value, arrivalId = Some(arrivalId))
                 sessionRepository.set(updatedUserAnswers)
                 Future.successful(Redirect(navigator.nextPage(UpdateRejectedMRNPage, NormalMode, updatedUserAnswers)))
-              case _ => renderTechnicalDifficultiesPage
+              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
             }
         )
   }

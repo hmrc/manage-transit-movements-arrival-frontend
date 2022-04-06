@@ -20,13 +20,12 @@ import javax.inject.{Inject, Singleton}
 import logging.Logging
 import models.requests.DataRequest
 import play.api.PlayException
-import play.api.http.HeaderNames.CACHE_CONTROL
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, RequestHeader, Result, Results}
+import play.api.mvc.{AnyContent, RequestHeader, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
 import uk.gov.hmrc.viewmodels.NunjucksSupport
@@ -41,33 +40,25 @@ class ErrorHandler @Inject() (renderer: Renderer, val messagesApi: MessagesApi)(
     with NunjucksSupport
     with Logging {
 
-  override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] = {
-
-    implicit val rh: RequestHeader = request
-
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
     statusCode match {
       case NOT_FOUND =>
-        renderer.render("notFound.njk", Json.obj()).map(NotFound(_))
+        Future.successful(Redirect(controllers.routes.ErrorController.notFound()))
       case result if isClientError(result) =>
-        renderer.render("badRequest.njk").map(Results.Status(statusCode)(_))
+        Future.successful(Redirect(controllers.routes.ErrorController.badRequest()))
       case _ =>
-        renderer.render("technicalDifficulties.njk").map(Results.Status(statusCode)(_))
+        Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
     }
-  }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
 
-    implicit val rh: RequestHeader = request
-
     logError(request, exception)
+
     exception match {
       case ApplicationException(result, _) =>
         Future.successful(result)
       case _ =>
-        renderer.render("internalServerError.njk").map {
-          content =>
-            InternalServerError(content).withHeaders(CACHE_CONTROL -> "no-cache")
-        }
+        Future.successful(Redirect(controllers.routes.ErrorController.internalServerError()))
     }
   }
 
@@ -86,12 +77,13 @@ class ErrorHandler @Inject() (renderer: Renderer, val messagesApi: MessagesApi)(
       """
         |
         |! %sInternal server error, for (%s) [%s] ->
-        | """.stripMargin.format(ex match {
-                                   case p: PlayException => "@" + p.id + " - "
-                                   case _                => ""
-                                 },
-                                 request.method,
-                                 request.uri
+        | """.stripMargin.format(
+        ex match {
+          case p: PlayException => "@" + p.id + " - "
+          case _                => ""
+        },
+        request.method,
+        request.uri
       ),
       ex
     )

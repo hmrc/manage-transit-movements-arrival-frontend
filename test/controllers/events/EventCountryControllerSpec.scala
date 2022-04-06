@@ -39,12 +39,12 @@ import scala.concurrent.Future
 
 class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  val formProvider                   = new EventCountryFormProvider()
-  private val country                = Country(CountryCode("GB"), "United Kingdom")
-  val countries                      = CountryList(Vector(country))
-  val form                           = formProvider(countries)
-  private val mockCountriesService   = mock[CountriesService]
-  lazy val eventCountryRoute: String = routes.EventCountryController.onPageLoad(mrn, eventIndex, NormalMode).url
+  val formProvider                      = new EventCountryFormProvider()
+  private val country                   = Country(CountryCode("GB"), "United Kingdom")
+  val countries                         = CountryList(Vector(country))
+  val form                              = formProvider(countries)
+  private lazy val mockCountriesService = mock[CountriesService]
+  lazy val eventCountryRoute: String    = routes.EventCountryController.onPageLoad(mrn, eventIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

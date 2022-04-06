@@ -109,7 +109,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
             navigator
               .nextPage(ConsigneeAddressPage, NormalMode, answers)
-              .mustBe(routes.SimplifiedCustomsOfficeController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .mustBe(routes.CustomsOfficeSimplifiedController.onPageLoad(answers.movementReferenceNumber, NormalMode))
         }
       }
 

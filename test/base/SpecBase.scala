@@ -24,15 +24,19 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.i18n.Messages
-import play.api.libs.json.Json
+import pages.QuestionPage
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
+import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.FakeRequest
 
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
+    with GuiceOneAppPerSuite
     with ScalaCheckPropertyChecks
     with OptionValues
     with TryValues
@@ -54,15 +58,30 @@ trait SpecBase
   val container: Container             = Container("containerNumber")
   val domainContainer: ContainerDomain = ContainerDomain("containerNumber")
 
-  val traderName: String    = "traderName"
-  val consigneeName: String = "consigneeName"
-  val customsOffice: String = "customsOffice"
+  val traderName: String       = "traderName"
+  val consigneeName: String    = "consigneeName"
+  val traderEoriNumber: String = "AB123456A"
+  val customsOffice: String    = "customsOffice"
 
   val traderAddress: Address    = Address("buildingAndStreet", "city", "NE99 1XN")
   val consigneeAddress: Address = Address("buildingAndStreet", "city", "NE99 1XN")
   val configKey                 = "config"
 
+  def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
-  implicit def messages: Messages = Helpers.stubMessages()
+  def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit class RichUserAnswers(userAnswers: UserAnswers) {
+
+    def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
+      userAnswers.get(page).value
+
+    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
+      userAnswers.set(page, value).success.value
+
+    def removeValue(page: QuestionPage[_]): UserAnswers =
+      userAnswers.remove(page).success.value
+  }
 }

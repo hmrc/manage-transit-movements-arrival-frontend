@@ -36,10 +36,10 @@ import scala.concurrent.Future
 
 class ArrivalSubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
-  private val mockConverterService                  = mock[UserAnswersToArrivalNotificationDomain]
-  private val mockArrivalMovementConnector          = mock[ArrivalMovementConnector]
-  private val mockInterchangeControllerReference    = mock[InterchangeControlReferenceIdRepository]
-  private val mockArrivalNotificationMessageService = mock[ArrivalNotificationMessageService]
+  private lazy val mockConverterService                  = mock[UserAnswersToArrivalNotificationDomain]
+  private lazy val mockArrivalMovementConnector          = mock[ArrivalMovementConnector]
+  private lazy val mockInterchangeControllerReference    = mock[InterchangeControlReferenceIdRepository]
+  private lazy val mockArrivalNotificationMessageService = mock[ArrivalNotificationMessageService]
 
   private val traderWithoutEori  = TraderDomain("", "", "", "", "", "")
   private val normalNotification = NormalNotification(mrn, "", LocalDate.now(), "", traderWithoutEori, CustomsOffice("", Some(""), None), None)

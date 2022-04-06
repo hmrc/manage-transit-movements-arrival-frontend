@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions._
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,11 +36,11 @@ class ArrivalRejectionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   val renderer: Renderer,
   arrivalRejectionService: ArrivalRejectionService,
-  val viewModelConfig: ViewModelConfig
+  val viewModelConfig: ViewModelConfig,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with TechnicalDifficultiesPage {
+    with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
@@ -47,7 +48,7 @@ class ArrivalRejectionController @Inject() (
         case Some(rejectionMessage) =>
           val viewModel = ArrivalRejectionViewModel(rejectionMessage, viewModelConfig.nctsEnquiriesUrl, arrivalId)
           renderer.render(viewModel.page, viewModel.viewData).map(Ok(_))
-        case _ => renderTechnicalDifficultiesPage
+        case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 }

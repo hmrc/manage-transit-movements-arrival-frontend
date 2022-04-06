@@ -58,7 +58,7 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
       val result                                 = route(app, request).value
 
-      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOffice".withArgs(customsOffice.name)
+      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOffice".withArgs(customsOffice.name.get)
 
       status(result) mustEqual OK
 
@@ -100,7 +100,7 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
       val result            = route(app, request).value
 
-      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOfficeAndPhoneNumber".withArgs(customsOffice.name, customsOffice.phoneNumber.get)
+      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOfficeAndPhoneNumber".withArgs(customsOffice.name.get, customsOffice.phoneNumber.get)
 
       status(result) mustEqual OK
 

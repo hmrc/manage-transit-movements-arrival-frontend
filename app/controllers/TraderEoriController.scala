@@ -23,31 +23,27 @@ import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderEoriPage, TraderNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TraderEoriView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderEoriController @Inject() (override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      navigator: Navigator,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalActionProvider,
-                                      requireData: DataRequiredAction,
-                                      formProvider: TraderEoriFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+class TraderEoriController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: TraderEoriFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TraderEoriView,
+  actions: Actions
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn) {
       implicit request =>
         val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
 
@@ -58,18 +54,11 @@ class TraderEoriController @Inject() (override val messagesApi: MessagesApi,
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"       -> preparedForm,
-          "mrn"        -> mrn,
-          "mode"       -> mode,
-          "traderName" -> traderName
-        )
-
-        renderer.render("traderEori.njk", json).map(Ok(_))
+        Ok(view(preparedForm, mrn, mode, traderName))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
         val form       = formProvider(traderName)
@@ -77,17 +66,7 @@ class TraderEoriController @Inject() (override val messagesApi: MessagesApi,
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"       -> formWithErrors,
-                "mrn"        -> mrn,
-                "mode"       -> mode,
-                "traderName" -> traderName
-              )
-
-              renderer.render("traderEori.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderEoriPage, value.replaceAll("\\s", "").toUpperCase))

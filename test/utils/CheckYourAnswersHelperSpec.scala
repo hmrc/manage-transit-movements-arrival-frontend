@@ -555,7 +555,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 actions = List(
                   Action(
                     content = Message("site.edit"),
-                    href = routes.SimplifiedCustomsOfficeController.onPageLoad(mrn, mode).url,
+                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
                     visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
                     attributes = Map("id" -> "change-presentation-office")
                   )
@@ -585,7 +585,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 actions = List(
                   Action(
                     content = Message("site.edit"),
-                    href = routes.SimplifiedCustomsOfficeController.onPageLoad(mrn, mode).url,
+                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
                     visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
                     attributes = Map("id" -> "change-presentation-office")
                   )
@@ -618,7 +618,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 actions = List(
                   Action(
                     content = Message("site.edit"),
-                    href = routes.SimplifiedCustomsOfficeController.onPageLoad(mrn, mode).url,
+                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
                     visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
                     attributes = Map("id" -> "change-presentation-office")
                   )
@@ -648,7 +648,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 actions = List(
                   Action(
                     content = Message("site.edit"),
-                    href = routes.SimplifiedCustomsOfficeController.onPageLoad(mrn, mode).url,
+                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
                     visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
                     attributes = Map("id" -> "change-presentation-office")
                   )

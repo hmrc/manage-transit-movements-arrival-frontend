@@ -35,6 +35,8 @@ class Module extends AbstractModule {
 
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
 
+    bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
+
     bind(classOf[Clock]).toInstance(Clock.systemUTC)
   }
 }

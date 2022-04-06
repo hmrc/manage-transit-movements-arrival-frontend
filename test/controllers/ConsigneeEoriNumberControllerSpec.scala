@@ -18,105 +18,72 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EoriNumberFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.{ConsigneeEoriNumberPage, ConsigneeNamePage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.EoriNumberView
 
 import scala.concurrent.Future
 
-class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new EoriNumberFormProvider()
-  val form         = formProvider(traderName)
+  private val formProvider = new EoriNumberFormProvider()
+  private val form         = formProvider(traderName)
+  private val mode         = NormalMode
 
-  lazy val eoriNumberRoute = routes.ConsigneeEoriNumberController.onPageLoad(mrn, NormalMode).url
+  lazy val eoriNumberRoute = routes.ConsigneeEoriNumberController.onPageLoad(mrn, mode).url
 
   "EoriNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, "TestName")
-        .success
-        .value
+        .setValue(ConsigneeNamePage, consigneeName)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, eoriNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, eoriNumberRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[EoriNumberView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "eoriNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, mode, consigneeName)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, traderName)
-        .success
-        .value
-        .set(ConsigneeEoriNumberPage, eoriNumber.value)
-        .success
-        .value
+        .setValue(ConsigneeNamePage, traderName)
+        .setValue(ConsigneeEoriNumberPage, eoriNumber.value)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, eoriNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, eoriNumberRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = formProvider(traderName).bind(Map("value" -> eoriNumber.value))
 
-      val expectedJson = Json.obj(
-        "form"       -> filledForm,
-        "mrn"        -> mrn,
-        "mode"       -> NormalMode,
-        "eoriNumber" -> eoriNumber
-      )
+      val view = injector.instanceOf[EoriNumberView]
 
-      templateCaptor.getValue mustEqual "eoriNumber.njk"
+      status(result) mustEqual OK
 
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode, traderName)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, traderName)
-        .success
-        .value
+        .setValue(ConsigneeNamePage, traderName)
 
       setExistingUserAnswers(userAnswers)
 
@@ -132,34 +99,22 @@ class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, traderName)
-        .success
-        .value
+        .setValue(ConsigneeNamePage, traderName)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, eoriNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, eoriNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[EoriNumberView]
 
-      val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mrn"  -> mrn,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "eoriNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, mode, traderName)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

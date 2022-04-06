@@ -49,8 +49,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport
-    with HttpErrorFunctions
-    with TechnicalDifficultiesPage {
+    with HttpErrorFunctions {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
     implicit request =>
@@ -72,9 +71,9 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
             result.status match {
               case status if is2xx(status) => Future.successful(Redirect(routes.ConfirmationController.onPageLoad(mrn)))
               case status if is4xx(status) => errorHandler.onClientError(request, status)
-              case _                       => renderTechnicalDifficultiesPage
+              case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
             }
-          case None => errorHandler.onClientError(request, BAD_REQUEST)
+          case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
         }
     }
 
