@@ -30,12 +30,8 @@
     inputMode: Option[String] = None
 )(implicit messages: Messages)
 
-@govukInput(
+@input = @{
     Input(
-        label = Label(
-            isPageHeading = labelIsHeading,
-            content = Text(label)
-        ),
         autocomplete = autocomplete,
         hint = hint.map(x => Hint(content = Text(x))),
         errorMessage = field.error.map { e =>
@@ -48,4 +44,12 @@
         classes = inputClass.getOrElse("")
     )
     .withFormField(field)
+}
+
+@govukInput(
+    if (labelIsHeading) {
+        input.withHeading(heading = Text(label))
+    } else {
+        input.copy(label = Label(isPageHeading = false, content = Text(label)))
+    }
 )

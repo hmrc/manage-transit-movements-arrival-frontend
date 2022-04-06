@@ -18,79 +18,57 @@ package controllers
 
 import controllers.actions._
 import forms.TraderAddressFormProvider
-import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderAddressPage, TraderNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TraderAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderAddressController @Inject() (override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: TraderAddressFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+class TraderAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  actions: Actions,
+  formProvider: TraderAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TraderAddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
-      implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
 
-        val form = formProvider(traderName)
-        val preparedForm = request.userAnswers.get(TraderAddressPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+      val form = formProvider(traderName)
+      val preparedForm = request.userAnswers.get(TraderAddressPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        val json = Json.obj(
-          "form"       -> preparedForm,
-          "mrn"        -> mrn,
-          "mode"       -> mode,
-          "traderName" -> traderName
+      Ok(view(preparedForm, mrn, mode, traderName))
+  }
+
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
+      val form       = formProvider(traderName)
+
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
         )
-
-        renderer.render("traderAddress.njk", json).map(Ok(_))
-    }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
-      implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-        val form       = formProvider(traderName)
-
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "form"       -> formWithErrors,
-                "mrn"        -> mrn,
-                "mode"       -> mode,
-                "traderName" -> traderName
-              )
-
-              renderer.render("traderAddress.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
-          )
-    }
+  }
 }

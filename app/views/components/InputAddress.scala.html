@@ -23,7 +23,8 @@
 
 @(
     form: Form[_],
-    messageKeyPrefix: String
+    messageKeyPrefix: String,
+    headingArgs: String*
 )(implicit messages: Messages)
 
 @html = {
@@ -54,8 +55,8 @@
 
 @govukFieldset(Fieldset(
     legend = Some(Legend(
-        content = Text(messages(s"$messageKeyPrefix.heading")),
-        classes = LegendSize.L,
+        content = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
+        classes = LegendSize.XL,
         isPageHeading = true
     )),
     html = html

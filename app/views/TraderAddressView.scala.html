@@ -29,17 +29,17 @@
 @(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("consigneeAddress.title"),
+    title = messages("traderAddress.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ConsigneeAddressController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TraderAddressController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputAddress(
             form = form,
-            messageKeyPrefix = "consigneeAddress",
+            messageKeyPrefix = "traderAddress",
             headingArgs = name
         )
 
