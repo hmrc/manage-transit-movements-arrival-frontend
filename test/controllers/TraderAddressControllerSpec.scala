@@ -85,7 +85,9 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(TraderNamePage, traderName)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, traderAddressRoute)
         .withFormUrlEncodedBody(

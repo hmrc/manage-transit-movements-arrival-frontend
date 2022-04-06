@@ -42,11 +42,10 @@ class TraderAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage) {
     implicit request =>
-      val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-
-      val form = formProvider(traderName)
+      val traderName = request.arg
+      val form       = formProvider(traderName)
       val preparedForm = request.userAnswers.get(TraderAddressPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -55,12 +54,10 @@ class TraderAddressController @Inject() (
       Ok(view(preparedForm, mrn, mode, traderName))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage).async {
     implicit request =>
-      val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-      val form       = formProvider(traderName)
-
-      form
+      val traderName = request.arg
+      formProvider(traderName)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
