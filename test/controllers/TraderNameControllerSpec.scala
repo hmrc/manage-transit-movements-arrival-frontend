@@ -18,17 +18,12 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TraderNameFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.TraderNamePage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.TraderNameView
 
 import scala.concurrent.Future
@@ -50,13 +45,11 @@ class TraderNameControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       val request = FakeRequest(GET, traderNameRoute)
 
       val result = route(app, request).value
-
-      val view = injector.instanceOf[TraderNameView]
+      val view   = injector.instanceOf[TraderNameView]
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(form, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
