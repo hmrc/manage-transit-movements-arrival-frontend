@@ -26,7 +26,11 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def values: Seq[T]
 
   // scalastyle:off method.length
-  def pageWithRadioItems(legendIsHeading: Boolean = true, hintTextPrefix: Option[String] = None, args: Seq[String] = Nil): Unit =
+  def pageWithRadioItems(legendIsHeading: Boolean = true,
+                         hintTextPrefix: Option[String] = None,
+                         args: Seq[String] = Nil,
+                         legendIsVisible: Boolean = true
+  ): Unit =
     "page with a radio question" - {
       "when rendered" - {
 
@@ -37,7 +41,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
             assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
           } else {
             assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
-            assert(!legends.first().hasClass("govuk-visually-hidden"))
+            assert(legends.first().hasClass("govuk-visually-hidden") != legendIsVisible)
           }
 
           hintTextPrefix.map {

@@ -41,10 +41,12 @@ object ViewUtils {
         case None        => radios.withHeading(Text(heading))
       }
 
-    def withLabel(label: String): Radios =
+    def withLabel(label: String, labelIsVisible: Boolean = true): Radios = {
+      val labelClass = if (labelIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
       radios.copy(
-        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = "govuk-fieldset__legend--m", isPageHeading = false))))
+        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = labelClass, isPageHeading = false))))
       )
+    }
   }
 
   implicit class TextAreaImplicits(textArea: Textarea)(implicit messages: Messages) extends RichTextareaSupport {

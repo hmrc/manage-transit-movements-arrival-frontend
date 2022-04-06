@@ -40,5 +40,5 @@ class IsTraderAddressPlaceOfNotificationViewSpec extends YesNoViewBehaviours {
   behave like pageWithPartialContent("p", traderAddress.city)
   behave like pageWithPartialContent("p", traderAddress.postcode)
 
-  behave like pageWithRadioItems(legendIsHeading = false)
+  behave like pageWithRadioItems(legendIsHeading = false, None, Seq(traderName), legendIsVisible = false)
 }
