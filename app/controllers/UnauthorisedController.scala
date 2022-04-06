@@ -22,9 +22,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnauthorisedView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class UnauthorisedController @Inject() (view: UnauthorisedView, val controllerComponents: MessagesControllerComponents)(implicit ec: ExecutionContext)
+class UnauthorisedController @Inject() (view: UnauthorisedView, val controllerComponents: MessagesControllerComponents)
     extends FrontendBaseController
     with I18nSupport {
 
