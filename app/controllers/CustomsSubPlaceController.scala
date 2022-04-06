@@ -18,20 +18,16 @@ package controllers
 
 import controllers.actions._
 import forms.CustomsSubPlaceFormProvider
-
-import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.CustomsSubPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.CustomsSubPlaceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsSubPlaceController @Inject() (override val messagesApi: MessagesApi,
