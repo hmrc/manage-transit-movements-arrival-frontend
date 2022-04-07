@@ -16,25 +16,24 @@
 
 package handlers
 
-import javax.inject.{Inject, Singleton}
 import logging.Logging
 import models.requests.DataRequest
 import play.api.PlayException
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, RequestHeader, Result}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
+import views.html.ConcurrentRemoveErrorView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
-class ErrorHandler @Inject() (renderer: Renderer, val messagesApi: MessagesApi)(implicit ec: ExecutionContext)
+class ErrorHandler @Inject() (view: ConcurrentRemoveErrorView, val messagesApi: MessagesApi)
     extends HttpErrorHandler
     with I18nSupport
     with NunjucksSupport
@@ -62,15 +61,8 @@ class ErrorHandler @Inject() (renderer: Renderer, val messagesApi: MessagesApi)(
     }
   }
 
-  def onConcurrentError(message: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val json = Json.obj(
-      "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"$journey"),
-      "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"$journey"),
-      "linkText"     -> msg"concurrent.remove.error.$message.link.text",
-      "redirectLink" -> redirectLink
-    )
-    renderer.render("concurrentRemoveError.njk", json).map(NotFound(_))
-  }
+  def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] =
+    Future.successful(Ok(view(linkTextMessage, redirectLink, journey)))
 
   private def logError(request: RequestHeader, ex: Throwable): Unit =
     logger.error(
