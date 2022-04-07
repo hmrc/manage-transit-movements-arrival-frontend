@@ -19,7 +19,6 @@ package controllers.events
 import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.ConfirmRemoveEventFormProvider
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber, NormalMode, UserAnswers}
@@ -28,7 +27,6 @@ import pages.events.{ConfirmRemoveEventPage, EventCountryPage, EventPlacePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.Results.NotFound
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.twirl.api.Html
 import queries.EventQuery
