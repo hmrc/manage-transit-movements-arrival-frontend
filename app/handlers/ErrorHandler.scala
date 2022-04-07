@@ -17,15 +17,13 @@
 package handlers
 
 import logging.Logging
-import models.requests.DataRequest
 import play.api.PlayException
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, RequestHeader, Result}
+import play.api.mvc.{Request, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.ConcurrentRemoveErrorView
 import javax.inject.{Inject, Singleton}
 
@@ -33,10 +31,9 @@ import scala.concurrent.Future
 
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
-class ErrorHandler @Inject() (view: ConcurrentRemoveErrorView, val messagesApi: MessagesApi)
+class ErrorHandler @Inject() (concurrentRemoveErrorView: ConcurrentRemoveErrorView, val messagesApi: MessagesApi)
     extends HttpErrorHandler
     with I18nSupport
-    with NunjucksSupport
     with Logging {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
@@ -61,8 +58,8 @@ class ErrorHandler @Inject() (view: ConcurrentRemoveErrorView, val messagesApi: 
     }
   }
 
-  def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    Future.successful(NotFound(view(linkTextMessage, redirectLink, journey)))
+  def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: Request[_]): Future[Result] =
+    Future.successful(NotFound(concurrentRemoveErrorView(linkTextMessage, redirectLink, journey)))
 
   private def logError(request: RequestHeader, ex: Throwable): Unit =
     logger.error(
