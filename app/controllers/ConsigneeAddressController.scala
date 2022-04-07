@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.ConsigneeAddressFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.requests.SpecificDataRequestProvider1
+import models.{Address, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{ConsigneeAddressPage, ConsigneeNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -48,8 +50,6 @@ class ConsigneeAddressController @Inject() (
       .requireData(mrn)
       .andThen(getMandatoryPage(ConsigneeNamePage)) {
         implicit request =>
-          val consigneeName = request.arg
-          val form          = formProvider(consigneeName)
           val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
             case Some(value) => form.fill(value)
             case None        => form
@@ -64,8 +64,7 @@ class ConsigneeAddressController @Inject() (
       .andThen(getMandatoryPage(ConsigneeNamePage))
       .async {
         implicit request =>
-          val consigneeName = request.arg
-          formProvider(consigneeName)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
@@ -76,4 +75,8 @@ class ConsigneeAddressController @Inject() (
                 } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
             )
       }
+
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Address]   = formProvider(consigneeName)
+  private def consigneeName(implicit request: Request): String = request.arg
 }

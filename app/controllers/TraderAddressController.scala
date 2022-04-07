@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.TraderAddressFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.requests.SpecificDataRequestProvider1
+import models.{Address, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderAddressPage, TraderNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -48,8 +50,6 @@ class TraderAddressController @Inject() (
       .requireData(mrn)
       .andThen(getMandatoryPage(TraderNamePage)) {
         implicit request =>
-          val traderName = request.arg
-          val form       = formProvider(traderName)
           val preparedForm = request.userAnswers.get(TraderAddressPage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,8 +64,7 @@ class TraderAddressController @Inject() (
       .andThen(getMandatoryPage(TraderNamePage))
       .async {
         implicit request =>
-          val traderName = request.arg
-          formProvider(traderName)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
@@ -76,4 +75,8 @@ class TraderAddressController @Inject() (
                 } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
             )
       }
+
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Address] = formProvider(traderName)
+  private def traderName(implicit request: Request): String  = request.arg
 }

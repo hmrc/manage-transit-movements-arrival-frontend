@@ -18,10 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.IsTraderAddressPlaceOfNotificationFormProvider
+
 import javax.inject.Inject
 import models._
+import models.requests.SpecificDataRequestProvider2
 import navigation.Navigator
 import pages.{IsTraderAddressPlaceOfNotificationPage, TraderAddressPage, TraderNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -49,9 +52,6 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
       .andThen(getMandatoryPage.getFirst(TraderNamePage))
       .andThen(getMandatoryPage.getSecond(TraderAddressPage)) {
         implicit request =>
-          val traderAddress = request.arg
-          val traderName    = request.request.arg
-          val form          = formProvider(traderName)
           val preparedForm = request.userAnswers.get(IsTraderAddressPlaceOfNotificationPage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -67,9 +67,7 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
       .andThen(getMandatoryPage.getSecond(TraderAddressPage))
       .async {
         implicit request =>
-          val traderAddress = request.arg
-          val traderName    = request.request.arg
-          formProvider(traderName)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName, traderAddress))),
@@ -80,4 +78,9 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
                 } yield Redirect(navigator.nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedAnswers))
             )
       }
+
+  private type Request = SpecificDataRequestProvider2[String, Address]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Boolean]    = formProvider(traderName)
+  private def traderName(implicit request: Request): String     = request.request.arg
+  private def traderAddress(implicit request: Request): Address = request.arg
 }

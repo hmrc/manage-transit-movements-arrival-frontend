@@ -18,16 +18,18 @@ package controllers
 
 import controllers.actions._
 import forms.TraderEoriFormProvider
-import javax.inject.Inject
+import models.requests.SpecificDataRequestProvider1
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderEoriPage, TraderNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TraderEoriView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TraderEoriController @Inject() (
@@ -48,8 +50,6 @@ class TraderEoriController @Inject() (
       .requireData(mrn)
       .andThen(getMandatoryPage(TraderNamePage)) {
         implicit request =>
-          val traderName = request.arg
-          val form       = formProvider(traderName)
           val preparedForm = request.userAnswers.get(TraderEoriPage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,8 +64,7 @@ class TraderEoriController @Inject() (
       .andThen(getMandatoryPage(TraderNamePage))
       .async {
         implicit request =>
-          val traderName = request.arg
-          formProvider(traderName)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
@@ -76,4 +75,8 @@ class TraderEoriController @Inject() (
                 } yield Redirect(navigator.nextPage(TraderEoriPage, mode, updatedAnswers))
             )
       }
+
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[String] = formProvider(traderName)
+  private def traderName(implicit request: Request): String = request.arg
 }
