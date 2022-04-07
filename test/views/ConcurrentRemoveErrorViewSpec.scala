@@ -32,7 +32,7 @@ class ConcurrentRemoveErrorViewSpec extends ViewBehaviours {
 
   override val prefix: String = "concurrent.remove.error"
 
-  override val pageTitleParam = List(journeyText)
+  override val pageTitleArgs = List(journeyText)
 
   behave like pageWithBackLink
 
