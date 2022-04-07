@@ -17,34 +17,34 @@
 package models.requests
 
 import models.{EoriNumber, UserAnswers}
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.WrappedRequest
 
 case class OptionalDataRequest[A](
-  request: Request[A],
+  request: IdentifierRequest[A],
   eoriNumber: EoriNumber,
   userAnswers: Option[UserAnswers]
 ) extends WrappedRequest[A](request)
 
 case class DataRequest[A](
-  request: Request[A],
+  request: OptionalDataRequest[A],
   eoriNumber: EoriNumber,
   userAnswers: UserAnswers
 ) extends WrappedRequest[A](request)
 
-class SpecificDataRequestProvider[T] {
+class SpecificDataRequestProvider1[T1] {
 
   case class SpecificDataRequest[A](
-    request: Request[A],
+    request: DataRequest[A],
     eoriNumber: EoriNumber,
     userAnswers: UserAnswers,
-    arg: T
+    arg: T1
   ) extends WrappedRequest[A](request)
 }
 
 class SpecificDataRequestProvider2[T1, T2] {
 
   case class SpecificDataRequest[A](
-    request: SpecificDataRequestProvider[T1]#SpecificDataRequest[A],
+    request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A],
     eoriNumber: EoriNumber,
     userAnswers: UserAnswers,
     arg: T2

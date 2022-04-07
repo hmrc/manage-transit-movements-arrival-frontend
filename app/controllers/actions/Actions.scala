@@ -17,19 +17,15 @@
 package controllers.actions
 
 import models.MovementReferenceNumber
-import models.requests.{DataRequest, OptionalDataRequest, SpecificDataRequestProvider, SpecificDataRequestProvider2}
-import play.api.libs.json.Reads
+import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
-import queries.Gettable
 
 import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction,
-  specificDataRequiredActionProvider: SpecificDataRequiredActionProvider,
-  specificDataRequiredActionProvider2: SpecificDataRequiredActionProvider2
+  dataRequiredAction: DataRequiredAction
 ) {
 
   def getData(mrn: MovementReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -37,17 +33,4 @@ class Actions @Inject() (
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction
-
-  def requireSpecificData[T](
-    mrn: MovementReferenceNumber,
-    page: Gettable[T]
-  )(implicit rds: Reads[T]): ActionBuilder[SpecificDataRequestProvider[T]#SpecificDataRequest, AnyContent] =
-    requireData(mrn) andThen specificDataRequiredActionProvider(page)
-
-  def requireSpecificData2[T1, T2](
-    mrn: MovementReferenceNumber,
-    page1: Gettable[T1],
-    page2: Gettable[T2]
-  )(implicit rds1: Reads[T1], rds2: Reads[T2]): ActionBuilder[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, AnyContent] =
-    requireSpecificData(mrn, page1) andThen specificDataRequiredActionProvider2(page2)
 }

@@ -35,6 +35,7 @@ class ConsigneeEoriNumberController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: EoriNumberView
@@ -43,31 +44,37 @@ class ConsigneeEoriNumberController @Inject() (
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData(mrn, ConsigneeNamePage).apply {
-      implicit request =>
-        val consigneeName = request.arg
-        val form          = formProvider(consigneeName)
-        val preparedForm = request.userAnswers.get(ConsigneeEoriNumberPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage))
+      .apply {
+        implicit request =>
+          val consigneeName = request.arg
+          val form          = formProvider(consigneeName)
+          val preparedForm = request.userAnswers.get(ConsigneeEoriNumberPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-        Ok(view(preparedForm, mrn, mode, consigneeName))
-    }
+          Ok(view(preparedForm, mrn, mode, consigneeName))
+      }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData(mrn, ConsigneeNamePage).async {
-      implicit request =>
-        val consigneeName = request.arg
-        formProvider(consigneeName)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeEoriNumberPage, value.replaceAll("\\s", "").toUpperCase))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers))
-          )
-    }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage))
+      .async {
+        implicit request =>
+          val consigneeName = request.arg
+          formProvider(consigneeName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeEoriNumberPage, value.replaceAll("\\s", "").toUpperCase))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers))
+            )
+      }
 }

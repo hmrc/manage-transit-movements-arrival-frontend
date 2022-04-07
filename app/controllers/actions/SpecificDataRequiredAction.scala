@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.requests.{DataRequest, SpecificDataRequestProvider}
+import models.requests._
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -27,27 +27,65 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext) extends SpecificDataRequiredActionProvider {
 
-  override def apply[T](page: Gettable[T])(implicit rds: Reads[T]): ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest] =
-    new SpecificDataRequiredAction(page)
+  override def getFirst[T1](page: Gettable[T1])(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] =
+    new SpecificDataRequiredAction1(page)
+
+  override def getSecond[T1, T2](page: Gettable[T2])(implicit
+    rds: Reads[T2]
+  ): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest] =
+    new SpecificDataRequiredAction2(page)
 }
 
 trait SpecificDataRequiredActionProvider {
-  def apply[T](page: Gettable[T])(implicit rds: Reads[T]): ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest]
+
+  def apply[T1](
+    page: Gettable[T1]
+  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(page)
+
+  def getFirst[T1](
+    page: Gettable[T1]
+  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest]
+
+  def getSecond[T1, T2](
+    page: Gettable[T2]
+  )(implicit rds: Reads[T2]): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest]
 }
 
-class SpecificDataRequiredAction[T](
-  page: Gettable[T]
-)(implicit val executionContext: ExecutionContext, rds: Reads[T])
-    extends ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest] {
+trait SpecificDataRequiredAction {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider[T]#SpecificDataRequest[A]]] =
+  def getPage[A, R, T](page: Gettable[T])(request: DataRequest[A])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
     Future.successful {
       request.userAnswers.get(page) match {
         case Some(value) =>
-          Right(new SpecificDataRequestProvider[T].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value))
+          Right(block(value))
         case None =>
           Left(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
     }
+}
 
+class SpecificDataRequiredAction1[T1](
+  page: Gettable[T1]
+)(implicit val executionContext: ExecutionContext, rds: Reads[T1])
+    extends ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest]
+    with SpecificDataRequiredAction {
+
+  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+    getPage(page)(request) {
+      value => new SpecificDataRequestProvider1[T1].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+    }
+}
+
+class SpecificDataRequiredAction2[T1, T2](
+  page: Gettable[T2]
+)(implicit val executionContext: ExecutionContext, rds: Reads[T2])
+    extends ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest]
+    with SpecificDataRequiredAction {
+
+  override protected def refine[A](
+    request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
+  ): Future[Either[Result, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]]] =
+    getPage(page)(request.request) {
+      value => new SpecificDataRequestProvider2[T1, T2].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+    }
 }

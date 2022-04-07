@@ -35,6 +35,7 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: IsTraderAddressPlaceOfNotificationFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IsTraderAddressPlaceOfNotificationView
@@ -43,34 +44,41 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData2(mrn, TraderNamePage, TraderAddressPage).apply {
-      implicit request =>
-        val traderAddress = request.arg
-        val traderName    = request.request.arg
-        val form          = formProvider(traderName)
-        val preparedForm = request.userAnswers.get(IsTraderAddressPlaceOfNotificationPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(TraderNamePage))
+      .andThen(getMandatoryPage.getSecond(TraderAddressPage))
+      .apply {
+        implicit request =>
+          val traderAddress = request.arg
+          val traderName    = request.request.arg
+          val form          = formProvider(traderName)
+          val preparedForm = request.userAnswers.get(IsTraderAddressPlaceOfNotificationPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-        Ok(view(preparedForm, mrn, mode, traderName, traderAddress))
-
-    }
+          Ok(view(preparedForm, mrn, mode, traderName, traderAddress))
+      }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData2(mrn, TraderNamePage, TraderAddressPage).async {
-      implicit request =>
-        val traderAddress = request.arg
-        val traderName    = request.request.arg
-        formProvider(traderName)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName, traderAddress))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTraderAddressPlaceOfNotificationPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedAnswers))
-          )
-    }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(TraderNamePage))
+      .andThen(getMandatoryPage.getSecond(TraderAddressPage))
+      .async {
+        implicit request =>
+          val traderAddress = request.arg
+          val traderName    = request.request.arg
+          formProvider(traderName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName, traderAddress))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTraderAddressPlaceOfNotificationPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedAnswers))
+            )
+      }
 }

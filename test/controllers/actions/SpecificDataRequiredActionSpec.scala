@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests.{DataRequest, SpecificDataRequestProvider}
+import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest, SpecificDataRequestProvider1}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
@@ -33,9 +33,9 @@ import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  class Harness[T](page: Gettable[T])(implicit rds: Reads[T]) extends SpecificDataRequiredAction[T](page) {
+  class Harness[T](page: Gettable[T])(implicit rds: Reads[T]) extends SpecificDataRequiredAction1[T](page) {
 
-    def callRefine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider[T]#SpecificDataRequest[A]]] =
+    def callRefine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider1[T]#SpecificDataRequest[A]]] =
       refine(request)
   }
 
@@ -43,11 +43,11 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
     override def path: JsPath = JsPath \ "foo"
   }
 
-  private def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] = DataRequest(
-    fakeRequest,
-    eoriNumber,
-    userAnswers
-  )
+  private def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] = {
+    val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
+    val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
+    DataRequest(optionalDataRequest, eoriNumber, userAnswers)
+  }
 
   "Specific Data Required Action" - {
 

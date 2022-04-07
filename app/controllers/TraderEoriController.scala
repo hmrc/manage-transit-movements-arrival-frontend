@@ -34,40 +34,47 @@ class TraderEoriController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: TraderEoriFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TraderEoriView,
-  actions: Actions
+  view: TraderEoriView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData(mrn, TraderNamePage).apply {
-      implicit request =>
-        val traderName = request.arg
-        val form       = formProvider(traderName)
-        val preparedForm = request.userAnswers.get(TraderEoriPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(TraderNamePage))
+      .apply {
+        implicit request =>
+          val traderName = request.arg
+          val form       = formProvider(traderName)
+          val preparedForm = request.userAnswers.get(TraderEoriPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-        Ok(view(preparedForm, mrn, mode, traderName))
-    }
+          Ok(view(preparedForm, mrn, mode, traderName))
+      }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireSpecificData(mrn, TraderNamePage).async {
-      implicit request =>
-        val traderName = request.arg
-        formProvider(traderName)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderEoriPage, value.replaceAll("\\s", "").toUpperCase))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TraderEoriPage, mode, updatedAnswers))
-          )
-    }
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(TraderNamePage))
+      .async {
+        implicit request =>
+          val traderName = request.arg
+          formProvider(traderName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderEoriPage, value.replaceAll("\\s", "").toUpperCase))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TraderEoriPage, mode, updatedAnswers))
+            )
+      }
 }
