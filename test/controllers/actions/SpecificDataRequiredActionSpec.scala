@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest, SpecificDataRequestProvider1}
+import models.requests._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
@@ -33,9 +33,27 @@ import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  class Harness[T](page: Gettable[T])(implicit rds: Reads[T]) extends SpecificDataRequiredAction1[T](page) {
+  private class Harness1[T1](page: Gettable[T1])(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](page) {
 
-    def callRefine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider1[T]#SpecificDataRequest[A]]] =
+    def callRefine[A](
+      request: DataRequest[A]
+    ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+      refine(request)
+  }
+
+  private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends SpecificDataRequiredAction2[T1, T2](page) {
+
+    def callRefine[A](
+      request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
+    ): Future[Either[Result, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]]] =
+      refine(request)
+  }
+
+  private class Harness3[T1, T2, T3](page: Gettable[T3])(implicit rds: Reads[T3]) extends SpecificDataRequiredAction3[T1, T2, T3](page) {
+
+    def callRefine[A](
+      request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
+    ): Future[Either[Result, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest[A]]] =
       refine(request)
   }
 
@@ -43,44 +61,151 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
     override def path: JsPath = JsPath \ "foo"
   }
 
-  private def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] = {
-    val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
-    val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
-    DataRequest(optionalDataRequest, eoriNumber, userAnswers)
-  }
-
   "Specific Data Required Action" - {
 
-    "when required data not present in user answers" - {
-      "must redirect to session expired" in {
+    "getFirst" - {
 
-        val action = new Harness(FakePage)
+      def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] = {
+        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
+        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
+        DataRequest(optionalDataRequest, eoriNumber, userAnswers)
+      }
 
-        val futureResult = action.callRefine(request(emptyUserAnswers))
+      "when required data not present in user answers" - {
+        "must redirect to session expired" in {
 
-        whenReady(futureResult) {
-          r =>
-            val result = Future.successful(r.left.get)
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          val action = new Harness1(FakePage)
+
+          val futureResult = action.callRefine(request(emptyUserAnswers))
+
+          whenReady(futureResult) {
+            r =>
+              val result = Future.successful(r.left.get)
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          }
+        }
+      }
+
+      "when required data present in user answers" - {
+        "must add value to request" in {
+
+          val action = new Harness1(FakePage)
+
+          forAll(arbitrary[String]) {
+            str =>
+              val userAnswers = emptyUserAnswers.setValue(FakePage, str)
+
+              val futureResult = action.callRefine(request(userAnswers))
+
+              whenReady(futureResult) {
+                _.right.get.arg mustBe str
+              }
+          }
         }
       }
     }
 
-    "when required data present in user answers" - {
-      "must add value to request" in {
+    "getSecond" - {
 
-        val action = new Harness(FakePage)
+      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] = {
+        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
+        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
+        val dataRequest         = DataRequest(optionalDataRequest, eoriNumber, userAnswers)
+        new SpecificDataRequestProvider1[String].SpecificDataRequest(dataRequest, eoriNumber, userAnswers, arg1)
+      }
 
-        forAll(arbitrary[String]) {
-          str =>
-            val userAnswers = emptyUserAnswers.setValue(FakePage, str)
+      "when required data not present in user answers" - {
+        "must redirect to session expired" in {
 
-            val futureResult = action.callRefine(request(userAnswers))
+          val action = new Harness2[String, String](FakePage)
 
-            whenReady(futureResult) {
-              _.right.get.arg mustBe str
-            }
+          forAll(arbitrary[String]) {
+            str1 =>
+              val futureResult = action.callRefine(request(emptyUserAnswers, str1))
+
+              whenReady(futureResult) {
+                r =>
+                  val result = Future.successful(r.left.get)
+                  status(result) mustEqual SEE_OTHER
+                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+              }
+          }
+        }
+      }
+
+      "when required data present in user answers" - {
+        "must add value to request" in {
+
+          val action = new Harness2[String, String](FakePage)
+
+          forAll(arbitrary[String], arbitrary[String]) {
+            (str1, str2) =>
+              val userAnswers = emptyUserAnswers.setValue(FakePage, str2)
+
+              val futureResult = action.callRefine(request(userAnswers, str1))
+
+              whenReady(futureResult) {
+                r =>
+                  r.right.get.arg mustBe str2
+                  r.right.get.request.arg mustBe str1
+              }
+          }
+        }
+      }
+    }
+
+    "getThird" - {
+
+      def request(
+        userAnswers: UserAnswers,
+        arg1: String,
+        arg2: String
+      ): SpecificDataRequestProvider2[String, String]#SpecificDataRequest[AnyContentAsEmpty.type] = {
+        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
+        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
+        val dataRequest         = DataRequest(optionalDataRequest, eoriNumber, userAnswers)
+        val specificDataRequest = new SpecificDataRequestProvider1[String].SpecificDataRequest(dataRequest, eoriNumber, userAnswers, arg1)
+        new SpecificDataRequestProvider2[String, String].SpecificDataRequest(specificDataRequest, eoriNumber, userAnswers, arg2)
+      }
+
+      "when required data not present in user answers" - {
+        "must redirect to session expired" in {
+
+          val action = new Harness3[String, String, String](FakePage)
+
+          forAll(arbitrary[String], arbitrary[String]) {
+            (str1, str2) =>
+              val futureResult = action.callRefine(request(emptyUserAnswers, str1, str2))
+
+              whenReady(futureResult) {
+                r =>
+                  val result = Future.successful(r.left.get)
+                  status(result) mustEqual SEE_OTHER
+                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+              }
+          }
+        }
+      }
+
+      "when required data present in user answers" - {
+        "must add value to request" in {
+
+          val action = new Harness3[String, String, String](FakePage)
+
+          forAll(arbitrary[String], arbitrary[String], arbitrary[String]) {
+            (str1, str2, str3) =>
+              val userAnswers = emptyUserAnswers.setValue(FakePage, str3)
+
+              val futureResult = action.callRefine(request(userAnswers, str1, str2))
+
+              whenReady(futureResult) {
+                r =>
+                  r.right.get.arg mustBe str3
+                  r.right.get.request.arg mustBe str2
+                  r.right.get.request.request.arg mustBe str1
+              }
+          }
         }
       }
     }

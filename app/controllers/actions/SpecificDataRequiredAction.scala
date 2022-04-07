@@ -34,6 +34,11 @@ class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContex
     rds: Reads[T2]
   ): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest] =
     new SpecificDataRequiredAction2(page)
+
+  override def getThird[T1, T2, T3](page: Gettable[T3])(implicit
+    rds: Reads[T3]
+  ): ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest] =
+    new SpecificDataRequiredAction3(page)
 }
 
 trait SpecificDataRequiredActionProvider {
@@ -49,6 +54,12 @@ trait SpecificDataRequiredActionProvider {
   def getSecond[T1, T2](
     page: Gettable[T2]
   )(implicit rds: Reads[T2]): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest]
+
+  def getThird[T1, T2, T3](
+    page: Gettable[T3]
+  )(implicit
+    rds: Reads[T3]
+  ): ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest]
 }
 
 trait SpecificDataRequiredAction {
@@ -87,5 +98,19 @@ class SpecificDataRequiredAction2[T1, T2](
   ): Future[Either[Result, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]]] =
     getPage(page)(request.request) {
       value => new SpecificDataRequestProvider2[T1, T2].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+    }
+}
+
+class SpecificDataRequiredAction3[T1, T2, T3](
+  page: Gettable[T3]
+)(implicit val executionContext: ExecutionContext, rds: Reads[T3])
+    extends ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest]
+    with SpecificDataRequiredAction {
+
+  override protected def refine[A](
+    request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
+  ): Future[Either[Result, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest[A]]] =
+    getPage(page)(request.request.request) {
+      value => new SpecificDataRequestProvider3[T1, T2, T3].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
     }
 }

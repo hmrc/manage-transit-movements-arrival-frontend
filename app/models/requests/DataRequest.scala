@@ -50,3 +50,13 @@ class SpecificDataRequestProvider2[T1, T2] {
     arg: T2
   ) extends WrappedRequest[A](request)
 }
+
+class SpecificDataRequestProvider3[T1, T2, T3] {
+
+  case class SpecificDataRequest[A](
+    request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A],
+    eoriNumber: EoriNumber,
+    userAnswers: UserAnswers,
+    arg: T3
+  ) extends WrappedRequest[A](request)
+}
