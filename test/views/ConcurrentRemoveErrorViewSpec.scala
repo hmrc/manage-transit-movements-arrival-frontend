@@ -18,17 +18,16 @@ package views
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.{ConcurrentRemoveErrorView, TechnicalDifficultiesView}
+import views.html.ConcurrentRemoveErrorView
 
 class ConcurrentRemoveErrorViewSpec extends ViewBehaviours {
 
   private val linkText     = "multipleEvent"
   private val redirectLink = "redirectUrl"
-  private val journey      = "concurrent.event"
   private val journeyText  = "event"
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[ConcurrentRemoveErrorView].apply(linkText, redirectLink, journey)(fakeRequest, messages)
+    injector.instanceOf[ConcurrentRemoveErrorView].apply(linkText, redirectLink, journeyText)(fakeRequest, messages)
 
   override val prefix: String = "concurrent.remove.error"
 

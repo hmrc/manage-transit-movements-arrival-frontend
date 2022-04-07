@@ -25,10 +25,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.ConcurrentRemoveErrorView
-
 import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.Future
 
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
@@ -62,7 +62,7 @@ class ErrorHandler @Inject() (view: ConcurrentRemoveErrorView, val messagesApi: 
   }
 
   def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    Future.successful(Ok(view(linkTextMessage, redirectLink, journey)))
+    Future.successful(NotFound(view(linkTextMessage, redirectLink, msg"journey".toString)))
 
   private def logError(request: RequestHeader, ex: Throwable): Unit =
     logger.error(
