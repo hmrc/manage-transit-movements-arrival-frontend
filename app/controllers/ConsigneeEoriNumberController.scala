@@ -46,8 +46,7 @@ class ConsigneeEoriNumberController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(ConsigneeNamePage))
-      .apply {
+      .andThen(getMandatoryPage(ConsigneeNamePage)) {
         implicit request =>
           val consigneeName = request.arg
           val form          = formProvider(consigneeName)

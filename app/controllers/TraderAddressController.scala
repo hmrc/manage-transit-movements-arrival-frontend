@@ -46,8 +46,7 @@ class TraderAddressController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(TraderNamePage))
-      .apply {
+      .andThen(getMandatoryPage(TraderNamePage)) {
         implicit request =>
           val traderName = request.arg
           val form       = formProvider(traderName)

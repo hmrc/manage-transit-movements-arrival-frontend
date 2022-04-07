@@ -47,8 +47,7 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
     actions
       .requireData(mrn)
       .andThen(getMandatoryPage.getFirst(TraderNamePage))
-      .andThen(getMandatoryPage.getSecond(TraderAddressPage))
-      .apply {
+      .andThen(getMandatoryPage.getSecond(TraderAddressPage)) {
         implicit request =>
           val traderAddress = request.arg
           val traderName    = request.request.arg
