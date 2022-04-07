@@ -25,46 +25,65 @@ import queries.Gettable
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+// scalastyle:off no.whitespace.after.left.bracket
 class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext) extends SpecificDataRequiredActionProvider {
 
-  override def getFirst[T1](page: Gettable[T1])(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] =
-    new SpecificDataRequiredAction1(page)
+  override def getFirst[T1](
+    page: Gettable[T1]
+  )(implicit rds: Reads[T1]): ActionRefiner[
+    DataRequest,
+    SpecificDataRequestProvider1[T1]#SpecificDataRequest
+  ] = new SpecificDataRequiredAction1(page)
 
-  override def getSecond[T1, T2](page: Gettable[T2])(implicit
-    rds: Reads[T2]
-  ): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest] =
-    new SpecificDataRequiredAction2(page)
+  override def getSecond[T1, T2](
+    page: Gettable[T2]
+  )(implicit rds: Reads[T2]): ActionRefiner[
+    SpecificDataRequestProvider1[T1]#SpecificDataRequest,
+    SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
+  ] = new SpecificDataRequiredAction2(page)
 
-  override def getThird[T1, T2, T3](page: Gettable[T3])(implicit
-    rds: Reads[T3]
-  ): ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest] =
-    new SpecificDataRequiredAction3(page)
+  override def getThird[T1, T2, T3](
+    page: Gettable[T3]
+  )(implicit rds: Reads[T3]): ActionRefiner[
+    SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
+    SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest
+  ] = new SpecificDataRequiredAction3(page)
 }
 
 trait SpecificDataRequiredActionProvider {
 
   def apply[T1](
     page: Gettable[T1]
-  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(page)
+  )(implicit rds: Reads[T1]): ActionRefiner[
+    DataRequest,
+    SpecificDataRequestProvider1[T1]#SpecificDataRequest
+  ] = getFirst(page)
 
   def getFirst[T1](
     page: Gettable[T1]
-  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest]
+  )(implicit rds: Reads[T1]): ActionRefiner[
+    DataRequest,
+    SpecificDataRequestProvider1[T1]#SpecificDataRequest
+  ]
 
   def getSecond[T1, T2](
     page: Gettable[T2]
-  )(implicit rds: Reads[T2]): ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest]
+  )(implicit rds: Reads[T2]): ActionRefiner[
+    SpecificDataRequestProvider1[T1]#SpecificDataRequest,
+    SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
+  ]
 
   def getThird[T1, T2, T3](
     page: Gettable[T3]
-  )(implicit
-    rds: Reads[T3]
-  ): ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest]
+  )(implicit rds: Reads[T3]): ActionRefiner[
+    SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
+    SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest
+  ]
 }
 
 trait SpecificDataRequiredAction {
 
-  def getPage[A, R, T](page: Gettable[T])(request: DataRequest[A])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
+  def getPage[T, R](page: Gettable[T])(request: DataRequest[_])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
     Future.successful {
       request.userAnswers.get(page) match {
         case Some(value) =>
@@ -78,39 +97,69 @@ trait SpecificDataRequiredAction {
 class SpecificDataRequiredAction1[T1](
   page: Gettable[T1]
 )(implicit val executionContext: ExecutionContext, rds: Reads[T1])
-    extends ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest]
+    extends ActionRefiner[
+      DataRequest,
+      SpecificDataRequestProvider1[T1]#SpecificDataRequest
+    ]
     with SpecificDataRequiredAction {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+  override protected def refine[A](
+                                    request: DataRequest[A]
+                                  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
     getPage(page)(request) {
-      value => new SpecificDataRequestProvider1[T1].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+      value =>
+        new SpecificDataRequestProvider1[T1].SpecificDataRequest(
+          request = request,
+          eoriNumber = request.eoriNumber,
+          userAnswers = request.userAnswers,
+          arg = value
+        )
     }
 }
 
 class SpecificDataRequiredAction2[T1, T2](
   page: Gettable[T2]
 )(implicit val executionContext: ExecutionContext, rds: Reads[T2])
-    extends ActionRefiner[SpecificDataRequestProvider1[T1]#SpecificDataRequest, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest]
+    extends ActionRefiner[
+      SpecificDataRequestProvider1[T1]#SpecificDataRequest,
+      SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
+    ]
     with SpecificDataRequiredAction {
 
   override protected def refine[A](
     request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]]] =
     getPage(page)(request.request) {
-      value => new SpecificDataRequestProvider2[T1, T2].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+      value =>
+        new SpecificDataRequestProvider2[T1, T2].SpecificDataRequest(
+          request = request,
+          eoriNumber = request.eoriNumber,
+          userAnswers = request.userAnswers,
+          arg = value
+        )
     }
 }
 
 class SpecificDataRequiredAction3[T1, T2, T3](
   page: Gettable[T3]
 )(implicit val executionContext: ExecutionContext, rds: Reads[T3])
-    extends ActionRefiner[SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest]
+    extends ActionRefiner[
+      SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
+      SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest
+    ]
     with SpecificDataRequiredAction {
 
   override protected def refine[A](
     request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest[A]]] =
     getPage(page)(request.request.request) {
-      value => new SpecificDataRequestProvider3[T1, T2, T3].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)
+      value =>
+        new SpecificDataRequestProvider3[T1, T2, T3].SpecificDataRequest(
+          request = request,
+          eoriNumber = request.eoriNumber,
+          userAnswers = request.userAnswers,
+          arg = value
+        )
     }
 }
+// scalastyle:on no.whitespace.after.left.bracket
