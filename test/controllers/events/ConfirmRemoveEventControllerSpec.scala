@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import queries.EventQuery
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.Future
 
@@ -78,62 +79,40 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return error page when user tries to remove an event that does not exists" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val updatedAnswer = userAnswersWithEventPlace.remove(EventQuery(eventIndex)).success.value
       setExistingUserAnswers(updatedAnswer)
 
-      val request        = FakeRequest(GET, confirmRemoveEventRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, confirmRemoveEventRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual NOT_FOUND
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
-      val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs("event"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs("event"),
-        "linkText"     -> msg"concurrent.remove.error.noEvent.link.text",
-        "redirectLink" -> onwardRoute.url
-      )
+      contentAsString(result) mustEqual
+        view("noEvent", onwardRoute.url, "event")(request, messages).toString
 
-      templateCaptor.getValue mustEqual "concurrentRemoveError.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustEqual NOT_FOUND
     }
 
     "must return error page when there are multiple events and user tries to remove the last event that is already removed" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val routeWithLastIndex = routes.ConfirmRemoveEventController.onPageLoad(mrn, Index(2), NormalMode).url
       val updatedAnswer      = userAnswersWithEventPlace.set(EventPlacePage(Index(1)), "place").success.value
 
       setExistingUserAnswers(updatedAnswer)
 
-      val request        = FakeRequest(GET, routeWithLastIndex)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, routeWithLastIndex)
 
       val result = route(app, request).value
 
       status(result) mustEqual NOT_FOUND
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
-      val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs("event"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs("event"),
-        "linkText"     -> msg"concurrent.remove.error.multipleEvent.link.text",
-        "redirectLink" -> onwardRoute.url
-      )
-
-      templateCaptor.getValue mustEqual "concurrentRemoveError.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view("multipleEvent", onwardRoute.url, "event")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and call to remove event" in {

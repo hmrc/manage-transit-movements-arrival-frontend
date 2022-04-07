@@ -37,6 +37,8 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   val hasSignOutLink: Boolean = true
 
+  val pageTitleArgs: List[String] = Nil
+
   if (hasSignOutLink) {
     "must render sign out link in header" in {
       val link = getElementByClass(doc, "hmrc-sign-out-nav__link")
@@ -75,7 +77,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   "must render title" in {
     val title = doc.title()
-    title mustBe s"${messages(s"$prefix.title")} - Manage your transit movements - GOV.UK"
+    title mustBe s"${messages(s"$prefix.title", pageTitleArgs: _*)} - Manage your transit movements - GOV.UK"
   }
 
   "must render accessibility statement link" in {

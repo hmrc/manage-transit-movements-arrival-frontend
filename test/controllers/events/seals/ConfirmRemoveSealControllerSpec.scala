@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.Future
 
@@ -75,71 +76,42 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return error page when user tries to remove a seal that does not exists" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val updatedAnswer = userAnswersWithSeal.remove(SealIdentityPage(eventIndex, sealIndex)).success.value
       setExistingUserAnswers(updatedAnswer)
 
-      val request        = FakeRequest(GET, removeSealRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, removeSealRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConcurrentRemoveErrorView]
+
       status(result) mustEqual NOT_FOUND
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"concurrent.seal"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"concurrent.seal"),
-        "linkText"     -> msg"concurrent.remove.error.noSeal.link.text",
-        "redirectLink" -> onwardRoute.url
-      )
-
-      templateCaptor.getValue mustEqual "concurrentRemoveError.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view("noSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
     }
 
     "must return error page when there are multiple seals and user tries to remove the last seal that is already removed" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val updatedAnswer = userAnswersWithSeal
-        .set(SealIdentityPage(eventIndex, Index(1)), sealDomain)
-        .success
-        .value
-        .set(SealIdentityPage(eventIndex, Index(2)), sealDomain)
-        .success
-        .value
-        .remove(SealIdentityPage(eventIndex, Index(2)))
-        .success
-        .value
+        .setValue(SealIdentityPage(eventIndex, Index(1)), sealDomain)
+        .setValue(SealIdentityPage(eventIndex, Index(2)), sealDomain)
+        .removeValue(SealIdentityPage(eventIndex, Index(2)))
 
       val sealRoute: String = routes.ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, Index(2), NormalMode).url
 
       setExistingUserAnswers(updatedAnswer)
 
-      val request        = FakeRequest(GET, sealRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, sealRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConcurrentRemoveErrorView]
+
       status(result) mustEqual NOT_FOUND
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"concurrent.seal"),
-        "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"concurrent.seal"),
-        "linkText"     -> msg"concurrent.remove.error.multipleSeal.link.text",
-        "redirectLink" -> onwardRoute.url
-      )
-
-      templateCaptor.getValue mustEqual "concurrentRemoveError.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view("multipleSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and seal is removed" in {

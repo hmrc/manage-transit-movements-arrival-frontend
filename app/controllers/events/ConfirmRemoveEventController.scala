@@ -19,7 +19,6 @@ package controllers.events
 import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.ConfirmRemoveEventFormProvider
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber, NormalMode, UserAnswers}
@@ -35,6 +34,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,10 +45,10 @@ class ConfirmRemoveEventController @Inject() (
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  errorHandler: ErrorHandler,
   formProvider: ConfirmRemoveEventFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  concurrentRemoveErrorView: ConcurrentRemoveErrorView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -114,7 +114,8 @@ class ConfirmRemoveEventController @Inject() (
     val redirectLinkText = if (userAnswers.get(DeriveNumberOfEvents).contains(0)) "noEvent" else "multipleEvent"
     val redirectLink     = navigator.nextPage(ConfirmRemoveEventPage(eventIndex), mode, userAnswers).url
 
-    errorHandler.onConcurrentError(redirectLinkText, redirectLink, "concurrent.event")
+    Future.successful(NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.event")))
+
   }
 
 }
