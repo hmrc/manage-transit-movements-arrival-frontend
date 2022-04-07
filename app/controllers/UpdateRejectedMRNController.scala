@@ -19,20 +19,18 @@ package controllers
 import controllers.actions._
 import forms.UpdateRejectedMRNFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, MovementReferenceNumber, NormalMode}
 import navigation.Navigator
 import pages.UpdateRejectedMRNPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.{ArrivalNotificationMessageService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.sections.ViewModelConfig
+import views.html.UpdateMovementReferenceNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateRejectedMRNController @Inject() (
@@ -45,12 +43,11 @@ class UpdateRejectedMRNController @Inject() (
   userAnswersService: UserAnswersService,
   val viewModelConfig: ViewModelConfig,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer,
+  view: UpdateMovementReferenceNumberView,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -60,8 +57,7 @@ class UpdateRejectedMRNController @Inject() (
         case Some(arrivalMovementRequest) =>
           MovementReferenceNumber(arrivalMovementRequest.header.movementReferenceNumber) match {
             case Some(mrn) =>
-              val json = Json.obj("form" -> form.fill(mrn), "arrivalId" -> arrivalId.value)
-              renderer.render("updateMovementReferenceNumber.njk", json).map(Ok(_))
+              Future.successful(Ok(view(form.fill(mrn), arrivalId)))
             case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
         case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
@@ -73,10 +69,7 @@ class UpdateRejectedMRNController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            val json = Json.obj("form" -> formWithErrors, "arrivalId" -> arrivalId.value)
-            renderer.render("updateMovementReferenceNumber.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             userAnswersService.getUserAnswers(arrivalId, request.eoriNumber) flatMap {
               case Some(userAnswers) =>

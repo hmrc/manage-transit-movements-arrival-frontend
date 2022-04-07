@@ -35,32 +35,28 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.MovementReferenceNumberFormProvider
 import generators.MessagesModelGenerators
-import matchers.JsonMatchers
 import models.messages.ArrivalMovementRequest
 import models.{ArrivalId, MovementReferenceNumber}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.{ArrivalNotificationMessageService, UserAnswersService}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.UpdateMovementReferenceNumberView
 
 import scala.concurrent.Future
 
-class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with NunjucksSupport with JsonMatchers {
+class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
-  private val formProvider                           = new MovementReferenceNumberFormProvider()
-  private val form                                   = formProvider()
-  private lazy val mockArrivalMovementMessageService = mock[ArrivalNotificationMessageService]
-  private lazy val mockUserAnswersService            = mock[UserAnswersService]
-  private val arrivalId                              = ArrivalId(1)
-  private lazy val movementReferenceNumberRoute      = routes.UpdateRejectedMRNController.onPageLoad(arrivalId).url
+  private val formProvider                            = new MovementReferenceNumberFormProvider()
+  private val form                                    = formProvider()
+  private lazy val mockArrivalMovementMessageService  = mock[ArrivalNotificationMessageService]
+  private lazy val mockUserAnswersService             = mock[UserAnswersService]
+  private val arrivalId                               = ArrivalId(1)
+  private lazy val updateMovementReferenceNumberRoute = routes.UpdateRejectedMRNController.onPageLoad(arrivalId).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -80,33 +76,22 @@ class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view with pre-populated MRN for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val arrivalMovementRequest: ArrivalMovementRequest = arbitrary[ArrivalMovementRequest].sample.value
       when(mockArrivalMovementMessageService.getArrivalNotificationMessage(any())(any(), any()))
         .thenReturn(Future.successful(Some(arrivalMovementRequest)))
 
       setNoExistingUserAnswers()
 
-      val request        = FakeRequest(GET, movementReferenceNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, updateMovementReferenceNumberRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[UpdateMovementReferenceNumberView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> arrivalMovementRequest.header.movementReferenceNumber))
-
-      val expectedJson = Json.obj(
-        "form"      -> filledForm,
-        "arrivalId" -> arrivalId.value
-      )
-
-      templateCaptor.getValue mustEqual "updateMovementReferenceNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form.bind(Map("value" -> arrivalMovementRequest.header.movementReferenceNumber)), arrivalId)(request, messages).toString
     }
 
     "must render to TechnicalDifficulties page when getArrivalNotification returns None" in {
@@ -115,13 +100,12 @@ class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, movementReferenceNumberRoute)
+      val request = FakeRequest(GET, updateMovementReferenceNumberRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
-
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -134,7 +118,7 @@ class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFi
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, movementReferenceNumberRoute)
+        FakeRequest(POST, updateMovementReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", mrn))
 
       val result = route(app, request).value
@@ -153,7 +137,7 @@ class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFi
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, movementReferenceNumberRoute)
+        FakeRequest(POST, updateMovementReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", "99IT9876AB88901209"))
 
       val result = route(app, request).value
@@ -167,29 +151,19 @@ class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, movementReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, updateMovementReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[UpdateMovementReferenceNumberView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "arrivalId" -> arrivalId.value
-      )
-
-      templateCaptor.getValue mustEqual "updateMovementReferenceNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, arrivalId)(request, messages).toString
     }
   }
 }
