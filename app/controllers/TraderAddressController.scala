@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.actions.Actions._
 import controllers.actions._
 import forms.TraderAddressFormProvider
 import models.{Mode, MovementReferenceNumber}
@@ -26,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersSupport
 import views.html.TraderAddressView
 
 import javax.inject.Inject
@@ -41,7 +41,8 @@ class TraderAddressController @Inject() (
   view: TraderAddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with UserAnswersSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

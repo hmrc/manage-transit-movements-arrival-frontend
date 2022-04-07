@@ -16,11 +16,8 @@
 
 package controllers
 
-import controllers.actions.Actions.{getPage, getPageF}
 import controllers.actions._
 import forms.IsTraderAddressPlaceOfNotificationFormProvider
-
-import javax.inject.Inject
 import models._
 import navigation.Navigator
 import pages.{IsTraderAddressPlaceOfNotificationPage, TraderAddressPage, TraderNamePage}
@@ -28,8 +25,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersSupport
 import views.html.IsTraderAddressPlaceOfNotificationView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsTraderAddressPlaceOfNotificationController @Inject() (
@@ -42,7 +41,8 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
   view: IsTraderAddressPlaceOfNotificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with UserAnswersSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

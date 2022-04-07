@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils
 
 import base.SpecBase
 import models.requests.DataRequest
@@ -28,7 +28,10 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class ActionsSpec extends SpecBase with ScalaCheckPropertyChecks {
+class UserAnswersSupportSpec extends SpecBase with ScalaCheckPropertyChecks {
+
+  private class FakeClass extends UserAnswersSupport
+  private val fakeClass: FakeClass = new FakeClass
 
   private case class FakePage(child: String) extends QuestionPage[String] {
     override def path: JsPath = JsPath \ child
@@ -44,7 +47,7 @@ class ActionsSpec extends SpecBase with ScalaCheckPropertyChecks {
 
             implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-            val result = Actions.getPage(page) {
+            val result = fakeClass.getPage(page) {
               value =>
                 value mustBe str
                 Ok
@@ -61,7 +64,7 @@ class ActionsSpec extends SpecBase with ScalaCheckPropertyChecks {
           path =>
             implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers)
 
-            val result = Actions.getPage(FakePage(path)) {
+            val result = fakeClass.getPage(FakePage(path)) {
               _ => Ok
             }
 
@@ -82,7 +85,7 @@ class ActionsSpec extends SpecBase with ScalaCheckPropertyChecks {
 
             implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-            val result = Actions.getPageF(page) {
+            val result = fakeClass.getPageF(page) {
               value =>
                 value mustBe str
                 Future.successful(Ok)
@@ -99,7 +102,7 @@ class ActionsSpec extends SpecBase with ScalaCheckPropertyChecks {
           path =>
             implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers)
 
-            val result = Actions.getPageF(FakePage(path)) {
+            val result = fakeClass.getPageF(FakePage(path)) {
               _ => Future.successful(Ok)
             }
 
