@@ -20,7 +20,7 @@ import forms.CustomsOfficeFormProvider
 import generators.Generators
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, NormalMode}
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
@@ -41,7 +41,7 @@ class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] wit
     CustomsOffice("third", Some("Third"), None)
   )
 
-  private val arg: String = arbitrary[String].sample.value
+  private val arg: String = Gen.alphaNumStr.sample.value
 
   behave like pageWithBackLink
 
