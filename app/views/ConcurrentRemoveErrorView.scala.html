@@ -24,11 +24,11 @@
 @(linkText: String, redirectLink: String, journey: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("concurrent.remove.error.title", journey),
+    title = messages("concurrent.remove.error.title", messages(journey)),
     showBackLink = true
 ) {
 
-    @heading(messages("concurrent.remove.error.heading", journey))
+    @heading(messages("concurrent.remove.error.heading", messages(journey)))
 
     <p class="govuk-body">@messages("concurrent.remove.error.paragraph")</p>
 

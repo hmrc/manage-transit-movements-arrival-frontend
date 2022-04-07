@@ -62,7 +62,7 @@ class ErrorHandler @Inject() (view: ConcurrentRemoveErrorView, val messagesApi: 
   }
 
   def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    Future.successful(NotFound(view(linkTextMessage, redirectLink, msg"journey".toString)))
+    Future.successful(NotFound(view(linkTextMessage, redirectLink, journey)))
 
   private def logError(request: RequestHeader, ex: Throwable): Unit =
     logger.error(
