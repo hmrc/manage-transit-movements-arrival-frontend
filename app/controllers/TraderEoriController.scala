@@ -43,12 +43,10 @@ class TraderEoriController @Inject() (
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireData(mrn) {
+    actions.requireSpecificData(mrn, TraderNamePage).apply {
       implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-
-        val form = formProvider(traderName)
-
+        val traderName = request.arg
+        val form       = formProvider(traderName)
         val preparedForm = request.userAnswers.get(TraderEoriPage) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -58,12 +56,10 @@ class TraderEoriController @Inject() (
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
-    actions.requireData(mrn).async {
+    actions.requireSpecificData(mrn, TraderNamePage).async {
       implicit request =>
-        val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-        val form       = formProvider(traderName)
-
-        form
+        val traderName = request.arg
+        formProvider(traderName)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),

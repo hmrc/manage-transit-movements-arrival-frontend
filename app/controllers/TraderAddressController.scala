@@ -42,7 +42,7 @@ class TraderAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage).apply {
     implicit request =>
       val traderName = request.arg
       val form       = formProvider(traderName)

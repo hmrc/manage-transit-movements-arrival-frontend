@@ -42,30 +42,32 @@ class ConsigneeAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, ConsigneeNamePage) {
-    implicit request =>
-      val consigneeName = request.arg
-      val form          = formProvider(consigneeName)
-      val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
-        case Some(value) => form.fill(value)
-        case None        => form
-      }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions.requireSpecificData(mrn, ConsigneeNamePage).apply {
+      implicit request =>
+        val consigneeName = request.arg
+        val form          = formProvider(consigneeName)
+        val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
+          case Some(value) => form.fill(value)
+          case None        => form
+        }
 
-      Ok(view(preparedForm, mrn, mode, consigneeName))
-  }
+        Ok(view(preparedForm, mrn, mode, consigneeName))
+    }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, ConsigneeNamePage).async {
-    implicit request =>
-      val consigneeName = request.arg
-      formProvider(consigneeName)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
-        )
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions.requireSpecificData(mrn, ConsigneeNamePage).async {
+      implicit request =>
+        val consigneeName = request.arg
+        formProvider(consigneeName)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
+          )
+    }
 }

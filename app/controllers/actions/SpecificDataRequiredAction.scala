@@ -16,7 +16,8 @@
 
 package controllers.actions
 
-import models.requests.{DataRequest, SpecificDataRequest}
+import models.requests.{DataRequest, SpecificDataRequestProvider}
+import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import queries.Gettable
@@ -26,23 +27,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext) extends SpecificDataRequiredActionProvider {
 
-  override def apply(page: Gettable[String]): ActionRefiner[DataRequest, SpecificDataRequest] =
+  override def apply[T](page: Gettable[T])(implicit rds: Reads[T]): ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest] =
     new SpecificDataRequiredAction(page)
 }
 
 trait SpecificDataRequiredActionProvider {
-  def apply(page: Gettable[String]): ActionRefiner[DataRequest, SpecificDataRequest]
+  def apply[T](page: Gettable[T])(implicit rds: Reads[T]): ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest]
 }
 
-class SpecificDataRequiredAction(
-  page: Gettable[String]
-)(implicit val executionContext: ExecutionContext)
-    extends ActionRefiner[DataRequest, SpecificDataRequest] {
+class SpecificDataRequiredAction[T](
+  page: Gettable[T]
+)(implicit val executionContext: ExecutionContext, rds: Reads[T])
+    extends ActionRefiner[DataRequest, SpecificDataRequestProvider[T]#SpecificDataRequest] {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequest[A]]] =
-    request.userAnswers.get(page) match {
-      case Some(value) => Future.successful(Right(SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value)))
-      case None        => Future.successful(Left(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider[T]#SpecificDataRequest[A]]] =
+    Future.successful {
+      request.userAnswers.get(page) match {
+        case Some(value) =>
+          Right(new SpecificDataRequestProvider[T].SpecificDataRequest(request, request.eoriNumber, request.userAnswers, value))
+        case None =>
+          Left(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      }
     }
 
 }

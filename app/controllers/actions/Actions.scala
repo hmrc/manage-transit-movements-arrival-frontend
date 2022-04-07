@@ -17,7 +17,8 @@
 package controllers.actions
 
 import models.MovementReferenceNumber
-import models.requests.{DataRequest, OptionalDataRequest, SpecificDataRequest}
+import models.requests.{DataRequest, OptionalDataRequest, SpecificDataRequestProvider}
+import play.api.libs.json.Reads
 import play.api.mvc.{ActionBuilder, AnyContent}
 import queries.Gettable
 
@@ -36,6 +37,9 @@ class Actions @Inject() (
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction
 
-  def requireSpecificData(mrn: MovementReferenceNumber, page: Gettable[String]): ActionBuilder[SpecificDataRequest, AnyContent] =
+  def requireSpecificData[T](
+    mrn: MovementReferenceNumber,
+    page: Gettable[T]
+  )(implicit rds: Reads[T]): ActionBuilder[SpecificDataRequestProvider[T]#SpecificDataRequest, AnyContent] =
     requireData(mrn) andThen specificDataRequiredActionProvider(page)
 }

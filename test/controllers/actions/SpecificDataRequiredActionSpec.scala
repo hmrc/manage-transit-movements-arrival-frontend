@@ -18,12 +18,12 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests.{DataRequest, SpecificDataRequest}
+import models.requests.{DataRequest, SpecificDataRequestProvider}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import queries.Gettable
@@ -33,8 +33,10 @@ import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  class Harness(page: Gettable[String]) extends SpecificDataRequiredAction(page) {
-    def callRefine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequest[A]]] = refine(request)
+  class Harness[T](page: Gettable[T])(implicit rds: Reads[T]) extends SpecificDataRequiredAction[T](page) {
+
+    def callRefine[A](request: DataRequest[A]): Future[Either[Result, SpecificDataRequestProvider[T]#SpecificDataRequest[A]]] =
+      refine(request)
   }
 
   private case object FakePage extends QuestionPage[String] {
