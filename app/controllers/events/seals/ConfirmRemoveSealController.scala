@@ -19,7 +19,6 @@ package controllers.events.seals
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import forms.events.seals.ConfirmRemoveSealFormProvider
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.domain.SealDomain
 import models.requests.DataRequest

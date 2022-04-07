@@ -24,17 +24,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
-import views.html.ConcurrentRemoveErrorView
 import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.Future
 
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
-class ErrorHandler @Inject() (concurrentRemoveErrorView: ConcurrentRemoveErrorView, val messagesApi: MessagesApi)
-    extends HttpErrorHandler
-    with I18nSupport
-    with Logging {
+class ErrorHandler @Inject() (val messagesApi: MessagesApi) extends HttpErrorHandler with I18nSupport with Logging {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
     statusCode match {

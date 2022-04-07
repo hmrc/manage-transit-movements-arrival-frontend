@@ -19,7 +19,6 @@ package controllers.events.transhipments
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.domain.ContainerDomain
 import models.requests.DataRequest
