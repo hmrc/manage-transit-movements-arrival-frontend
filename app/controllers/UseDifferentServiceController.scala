@@ -20,27 +20,19 @@ import controllers.actions._
 import javax.inject.Inject
 import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import views.html.UseDifferentServiceView
 
 class UseDifferentServiceController @Inject() (override val messagesApi: MessagesApi,
-                                               identify: IdentifierAction,
-                                               getData: DataRetrievalActionProvider,
-                                               requireData: DataRequiredAction,
+                                               actions: Actions,
                                                val controllerComponents: MessagesControllerComponents,
-                                               renderer: Renderer
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+                                               view: UseDifferentServiceView
+) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val json = Json.obj("mrn" -> mrn)
-
-      renderer.render("useDifferentService.njk", json).map(Ok(_))
+      Ok(view())
   }
 }
