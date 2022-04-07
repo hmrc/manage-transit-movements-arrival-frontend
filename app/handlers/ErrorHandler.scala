@@ -22,7 +22,7 @@ import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
-import play.api.mvc.{Request, RequestHeader, Result}
+import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
 import views.html.ConcurrentRemoveErrorView
 import javax.inject.{Inject, Singleton}
@@ -57,9 +57,6 @@ class ErrorHandler @Inject() (concurrentRemoveErrorView: ConcurrentRemoveErrorVi
         Future.successful(Redirect(controllers.routes.ErrorController.internalServerError()))
     }
   }
-
-  def onConcurrentError(linkTextMessage: String, redirectLink: String, journey: String)(implicit request: Request[_]): Future[Result] =
-    Future.successful(NotFound(concurrentRemoveErrorView(linkTextMessage, redirectLink, journey)))
 
   private def logError(request: RequestHeader, ex: Throwable): Unit =
     logger.error(

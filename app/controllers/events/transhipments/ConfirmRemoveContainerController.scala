@@ -35,6 +35,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,7 +46,7 @@ class ConfirmRemoveContainerController @Inject() (
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  errorHandler: ErrorHandler,
+  concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   formProvider: ConfirmRemoveContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -113,7 +114,7 @@ class ConfirmRemoveContainerController @Inject() (
     val redirectLinkText = if (userAnswers.get(DeriveNumberOfContainers(eventIndex)).contains(0)) "noContainer" else "multipleContainer"
     val redirectLink     = navigator.nextPage(ConfirmRemoveContainerPage(eventIndex), mode, userAnswers).url
 
-    errorHandler.onConcurrentError(redirectLinkText, redirectLink, "concurrent.container")
+    Future.successful(NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.container")))
   }
 
 }

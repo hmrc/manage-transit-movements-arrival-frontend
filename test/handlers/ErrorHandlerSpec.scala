@@ -23,9 +23,7 @@ import org.scalatest.OptionValues
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.request.{RemoteConnection, RequestTarget}
 import play.api.mvc.{Headers, RequestHeader, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.Future
 
@@ -66,22 +64,6 @@ class ErrorHandlerSpec extends SpecBase with JsonMatchers with AppWithDefaultMoc
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.ErrorController.technicalDifficulties().url
     }
-  }
-
-  "must display the ConcurrentErrorView when this is called" in {
-    val linkText    = "linkText"
-    val redirectUrl = "redirect-url"
-    val journeyKey  = "journeyKey"
-
-    val request                = FakeRequest()
-    val result: Future[Result] = handler.onConcurrentError(linkText, redirectUrl, journeyKey)(request)
-
-    val view = injector.instanceOf[ConcurrentRemoveErrorView]
-
-    status(result) mustEqual NOT_FOUND
-
-    contentAsString(result) mustEqual
-      view(linkText, redirectUrl, journeyKey)(request, messages).toString
   }
 
   class FakeRequestHeader extends RequestHeader {

@@ -35,6 +35,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConcurrentRemoveErrorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,9 +47,9 @@ class ConfirmRemoveSealController @Inject() (
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: ConfirmRemoveSealFormProvider,
-  errorHandler: ErrorHandler,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  concurrentRemoveErrorView: ConcurrentRemoveErrorView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -111,6 +112,6 @@ class ConfirmRemoveSealController @Inject() (
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).contains(0)) "noSeal" else "multipleSeal"
     val redirectLink     = navigator.nextPage(ConfirmRemoveSealPage(eventIndex), mode, request.userAnswers).url
 
-    errorHandler.onConcurrentError(redirectLinkText, redirectLink, "concurrent.seal")
+    Future.successful(NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.seal")))
   }
 }
