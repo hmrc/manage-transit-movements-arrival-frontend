@@ -104,8 +104,8 @@ class SpecificDataRequiredAction1[T1](
     with SpecificDataRequiredAction {
 
   override protected def refine[A](
-                                    request: DataRequest[A]
-                                  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+    request: DataRequest[A]
+  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
     getPage(page)(request) {
       value =>
         new SpecificDataRequestProvider1[T1].SpecificDataRequest(
