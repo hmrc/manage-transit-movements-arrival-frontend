@@ -16,11 +16,13 @@
 
 package controllers.actions
 
+import models.UserAnswers
 import models.requests._
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import queries.Gettable
+import shapeless.syntax.std.tuple._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -83,9 +85,9 @@ trait SpecificDataRequiredActionProvider {
 
 trait SpecificDataRequiredAction {
 
-  def getPage[T, R](page: Gettable[T])(request: DataRequest[_])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
+  def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
     Future.successful {
-      request.userAnswers.get(page) match {
+      userAnswers.get(page) match {
         case Some(value) =>
           Right(block(value))
         case None =>
@@ -106,7 +108,7 @@ class SpecificDataRequiredAction1[T1](
   override protected def refine[A](
     request: DataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-    getPage(page)(request) {
+    getPage(request.userAnswers, page) {
       value =>
         new SpecificDataRequestProvider1[T1].SpecificDataRequest(
           request = request,
@@ -129,13 +131,13 @@ class SpecificDataRequiredAction2[T1, T2](
   override protected def refine[A](
     request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]]] =
-    getPage(page)(request.request) {
+    getPage(request.userAnswers, page) {
       value =>
         new SpecificDataRequestProvider2[T1, T2].SpecificDataRequest(
           request = request,
           eoriNumber = request.eoriNumber,
           userAnswers = request.userAnswers,
-          arg = value
+          arg = (request.arg, value)
         )
     }
 }
@@ -152,14 +154,15 @@ class SpecificDataRequiredAction3[T1, T2, T3](
   override protected def refine[A](
     request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest[A]]] =
-    getPage(page)(request.request.request) {
+    getPage(request.userAnswers, page) {
       value =>
         new SpecificDataRequestProvider3[T1, T2, T3].SpecificDataRequest(
           request = request,
           eoriNumber = request.eoriNumber,
           userAnswers = request.userAnswers,
-          arg = value
+          arg = request.arg :+ value
         )
     }
+
 }
 // scalastyle:on no.whitespace.after.left.bracket

@@ -65,11 +65,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getFirst" - {
 
-      def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] = {
-        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
-        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
-        DataRequest(optionalDataRequest, eoriNumber, userAnswers)
-      }
+      def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
+        DataRequest(fakeRequest, eoriNumber, userAnswers)
 
       "when required data not present in user answers" - {
         "must redirect to session expired" in {
@@ -108,12 +105,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getSecond" - {
 
-      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] = {
-        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
-        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
-        val dataRequest         = DataRequest(optionalDataRequest, eoriNumber, userAnswers)
-        new SpecificDataRequestProvider1[String].SpecificDataRequest(dataRequest, eoriNumber, userAnswers, arg1)
-      }
+      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] =
+        new SpecificDataRequestProvider1[String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, arg1)
 
       "when required data not present in user answers" - {
         "must redirect to session expired" in {
@@ -147,8 +140,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               whenReady(futureResult) {
                 r =>
-                  r.right.get.arg mustBe str2
-                  r.right.get.request.arg mustBe str1
+                  r.right.get.arg._1 mustBe str1
+                  r.right.get.arg._2 mustBe str2
               }
           }
         }
@@ -161,13 +154,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
         userAnswers: UserAnswers,
         arg1: String,
         arg2: String
-      ): SpecificDataRequestProvider2[String, String]#SpecificDataRequest[AnyContentAsEmpty.type] = {
-        val identifierRequest   = IdentifierRequest(fakeRequest, eoriNumber)
-        val optionalDataRequest = OptionalDataRequest(identifierRequest, eoriNumber, Some(userAnswers))
-        val dataRequest         = DataRequest(optionalDataRequest, eoriNumber, userAnswers)
-        val specificDataRequest = new SpecificDataRequestProvider1[String].SpecificDataRequest(dataRequest, eoriNumber, userAnswers, arg1)
-        new SpecificDataRequestProvider2[String, String].SpecificDataRequest(specificDataRequest, eoriNumber, userAnswers, arg2)
-      }
+      ): SpecificDataRequestProvider2[String, String]#SpecificDataRequest[AnyContentAsEmpty.type] =
+        new SpecificDataRequestProvider2[String, String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, (arg1, arg2))
 
       "when required data not present in user answers" - {
         "must redirect to session expired" in {
@@ -201,9 +189,9 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               whenReady(futureResult) {
                 r =>
-                  r.right.get.arg mustBe str3
-                  r.right.get.request.arg mustBe str2
-                  r.right.get.request.request.arg mustBe str1
+                  r.right.get.arg._1 mustBe str1
+                  r.right.get.arg._2 mustBe str2
+                  r.right.get.arg._3 mustBe str3
               }
           }
         }

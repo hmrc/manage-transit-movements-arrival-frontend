@@ -81,6 +81,6 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (
 
   private type Request = SpecificDataRequestProvider2[String, Address]#SpecificDataRequest[_]
   private def form(implicit request: Request): Form[Boolean]    = formProvider(traderName)
-  private def traderName(implicit request: Request): String     = request.request.arg
-  private def traderAddress(implicit request: Request): Address = request.arg
+  private def traderName(implicit request: Request): String     = request.arg._1
+  private def traderAddress(implicit request: Request): Address = request.arg._2
 }
