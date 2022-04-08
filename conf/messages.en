@@ -273,12 +273,15 @@ placeOfNotification.error.invalid =  Where you are completing this arrival notif
 placeOfNotification.error.length = Where are you completing this arrival notification must be 35 characters or less
 placeOfNotification.change.hidden = where you are completing this arrival notification
 
+addEvent.singular = event
+addEvent.plural = events
 addEvent.title.singular = You have added {0} event
 addEvent.title.plural = You have added {0} events
 addEvent.heading.singular = You have added {0} event
 addEvent.heading.plural = You have added {0} events
 addEvent.event.label = Event {0}
 addEvent.radio.label = Do you need to add another event?
+addEvent.label = Do you need to add another event?
 addEvent.hintText.tad = It should be recorded on the transit accompanying document (TAD).
 addEvent.hintText.tell_us = Tell us if:
 addEvent.hintText.accident = there was an accident
