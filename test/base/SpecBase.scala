@@ -62,6 +62,7 @@ trait SpecBase
   val consigneeName: String    = "consigneeName"
   val traderEoriNumber: String = "AB123456A"
   val customsOffice: String    = "customsOffice"
+  val eventTitle: String       = "eventTitle"
 
   val traderAddress: Address    = Address("buildingAndStreet", "city", "NE99 1XN")
   val consigneeAddress: Address = Address("buildingAndStreet", "city", "NE99 1XN")
