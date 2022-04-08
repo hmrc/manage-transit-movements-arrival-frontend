@@ -53,4 +53,6 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
   )
 
   behave like pageWithRadioItems(legendIsHeading = false)
+
+  behave like pageWithSubmitButton("Continue")
 }
