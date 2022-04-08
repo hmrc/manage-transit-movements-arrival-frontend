@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.EoriNumberFormProvider
+import models.requests.SpecificDataRequestProvider1
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{ConsigneeEoriNumberPage, ConsigneeNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,6 +37,7 @@ class ConsigneeEoriNumberController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: EoriNumberView
@@ -42,28 +45,26 @@ class ConsigneeEoriNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      request.userAnswers.get(ConsigneeNamePage) match {
-        case Some(consigneeName) =>
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage)) {
+        implicit request =>
           val preparedForm = request.userAnswers.get(ConsigneeEoriNumberPage) match {
-            case None        => formProvider(consigneeName)
-            case Some(value) => formProvider(consigneeName).fill(value)
+            case None        => form
+            case Some(value) => form.fill(value)
           }
 
           Ok(view(preparedForm, mrn, mode, consigneeName))
-
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
-
       }
 
-  }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      request.userAnswers.get(ConsigneeNamePage) match {
-        case Some(consigneeName) =>
-          formProvider(consigneeName)
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage))
+      .async {
+        implicit request =>
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
@@ -73,8 +74,9 @@ class ConsigneeEoriNumberController @Inject() (
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers))
             )
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-
       }
-  }
+
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[String]    = formProvider(consigneeName)
+  private def consigneeName(implicit request: Request): String = request.arg
 }

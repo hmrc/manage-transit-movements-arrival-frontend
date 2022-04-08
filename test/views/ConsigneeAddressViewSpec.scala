@@ -18,7 +18,7 @@ package views
 
 import forms.ConsigneeAddressFormProvider
 import models.{Address, NormalMode}
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.AddressViewBehaviours
@@ -26,7 +26,7 @@ import views.html.ConsigneeAddressView
 
 class ConsigneeAddressViewSpec extends AddressViewBehaviours {
 
-  private val name = arbitrary[String].sample.value
+  private val name = Gen.alphaNumStr.sample.value
 
   override def form: Form[Address] = new ConsigneeAddressFormProvider()(name)
 

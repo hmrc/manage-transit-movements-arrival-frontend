@@ -18,10 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.IsTraderAddressPlaceOfNotificationFormProvider
+
 import javax.inject.Inject
 import models._
+import models.requests.SpecificDataRequestProvider2
 import navigation.Navigator
 import pages.{IsTraderAddressPlaceOfNotificationPage, TraderAddressPage, TraderNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,43 +33,40 @@ import views.html.IsTraderAddressPlaceOfNotificationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsTraderAddressPlaceOfNotificationController @Inject() (override val messagesApi: MessagesApi,
-                                                              sessionRepository: SessionRepository,
-                                                              navigator: Navigator,
-                                                              actions: Actions,
-                                                              formProvider: IsTraderAddressPlaceOfNotificationFormProvider,
-                                                              val controllerComponents: MessagesControllerComponents,
-                                                              view: IsTraderAddressPlaceOfNotificationView
+class IsTraderAddressPlaceOfNotificationController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: IsTraderAddressPlaceOfNotificationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsTraderAddressPlaceOfNotificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      request.userAnswers.get(TraderAddressPage) match {
-        case Some(traderAddress) =>
-          val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-          val form       = formProvider(traderName)
-
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(TraderNamePage))
+      .andThen(getMandatoryPage.getSecond(TraderAddressPage)) {
+        implicit request =>
           val preparedForm = request.userAnswers.get(IsTraderAddressPlaceOfNotificationPage) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
           Ok(view(preparedForm, mrn, mode, traderName, traderAddress))
-
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
       }
 
-  }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      request.userAnswers.get(TraderAddressPage) match {
-        case Some(traderAddress) =>
-          val traderName = request.userAnswers.get(TraderNamePage).getOrElse("")
-          val form       = formProvider(traderName)
-
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(TraderNamePage))
+      .andThen(getMandatoryPage.getSecond(TraderAddressPage))
+      .async {
+        implicit request =>
           form
             .bindFromRequest()
             .fold(
@@ -77,7 +77,10 @@ class IsTraderAddressPlaceOfNotificationController @Inject() (override val messa
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedAnswers))
             )
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
-  }
+
+  private type Request = SpecificDataRequestProvider2[String, Address]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Boolean]    = formProvider(traderName)
+  private def traderName(implicit request: Request): String     = request.arg._1
+  private def traderAddress(implicit request: Request): Address = request.arg._2
 }

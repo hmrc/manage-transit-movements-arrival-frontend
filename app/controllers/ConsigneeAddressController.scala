@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.ConsigneeAddressFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.requests.SpecificDataRequestProvider1
+import models.{Address, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{ConsigneeAddressPage, ConsigneeNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,6 +37,7 @@ class ConsigneeAddressController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: ConsigneeAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ConsigneeAddressView
@@ -42,30 +45,38 @@ class ConsigneeAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, ConsigneeNamePage) {
-    implicit request =>
-      val consigneeName = request.arg
-      val form          = formProvider(consigneeName)
-      val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
-        case Some(value) => form.fill(value)
-        case None        => form
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage)) {
+        implicit request =>
+          val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
+            case Some(value) => form.fill(value)
+            case None        => form
+          }
+
+          Ok(view(preparedForm, mrn, mode, consigneeName))
       }
 
-      Ok(view(preparedForm, mrn, mode, consigneeName))
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(ConsigneeNamePage))
+      .async {
+        implicit request =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
+            )
+      }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, ConsigneeNamePage).async {
-    implicit request =>
-      val consigneeName = request.arg
-      formProvider(consigneeName)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, consigneeName))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
-        )
-  }
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Address]   = formProvider(consigneeName)
+  private def consigneeName(implicit request: Request): String = request.arg
 }
