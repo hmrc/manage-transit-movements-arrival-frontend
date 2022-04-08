@@ -18,33 +18,29 @@ package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.EventCountryFormProvider
-import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{CountryList, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.events.EventCountryPage
-import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CountriesService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.EventCountryView
 
 import scala.concurrent.Future
 
-class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider                      = new EventCountryFormProvider()
-  private val country                   = Country(CountryCode("GB"), "United Kingdom")
-  val countries                         = CountryList(Vector(country))
-  val form                              = formProvider(countries)
-  private lazy val mockCountriesService = mock[CountriesService]
-  lazy val eventCountryRoute: String    = routes.EventCountryController.onPageLoad(mrn, eventIndex, NormalMode).url
+  private val formProvider                   = new EventCountryFormProvider()
+  private val country                        = Country(CountryCode("GB"), "United Kingdom")
+  val countries                              = CountryList(Vector(country))
+  private val form                           = formProvider(countries)
+  private lazy val mockCountriesService      = mock[CountriesService]
+  private val mode                           = NormalMode
+  private lazy val eventCountryRoute: String = routes.EventCountryController.onPageLoad(mrn, eventIndex, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -54,14 +50,39 @@ class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixture
   "EventCountry Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      verifyOnPageLoad(Some(emptyUserAnswers), form, false)
+      setExistingUserAnswers(emptyUserAnswers)
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countries))
+
+      val request = FakeRequest(GET, eventCountryRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[EventCountryView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, countries.countries, mrn, mode, eventIndex)(request, messages).toString
+
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = UserAnswers(mrn, eoriNumber).set(EventCountryPage(eventIndex), country.code).success.value
       val filledForm  = form.bind(Map("value" -> "GB"))
 
-      verifyOnPageLoad(Some(userAnswers), filledForm, true)
+      setExistingUserAnswers(userAnswers)
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countries))
+
+      val request = FakeRequest(GET, eventCountryRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[EventCountryView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, countries.countries, mrn, mode, eventIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -83,38 +104,22 @@ class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countries))
-
-      val json = Seq(
-        Json.obj("text" -> "Select a country", "value" -> ""),
-        Json.obj("text" -> "United Kingdom", "value"   -> "GB", "selected" -> false)
-      )
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request                                = FakeRequest(POST, eventCountryRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm                              = form.bind(Map("value" -> ""))
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, eventCountryRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[EventCountryView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      contentAsString(result) mustEqual
+        view(boundForm, countries.countries, mrn, mode, eventIndex)(request, messages).toString
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "mode"        -> NormalMode,
-        "countries"   -> json,
-        "onSubmitUrl" -> routes.EventCountryController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/eventCountry.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -146,38 +151,4 @@ class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixture
     }
   }
 
-  private def verifyOnPageLoad(userAnswers: Option[UserAnswers], form1: Form[Country], preSelected: Boolean) = {
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
-
-    when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countries))
-
-    val countriesJson = Seq(
-      Json.obj("text" -> "Select a country", "value" -> ""),
-      Json.obj("text" -> "United Kingdom", "value"   -> "GB", "selected" -> preSelected)
-    )
-
-    userAnswers.map(setExistingUserAnswers).getOrElse(setNoExistingUserAnswers())
-
-    val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
-
-    val request = FakeRequest(GET, eventCountryRoute)
-
-    val result = route(app, request).value
-
-    status(result) mustEqual OK
-
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-    val expectedJson = Json.obj(
-      "form"      -> form1,
-      "mrn"       -> mrn,
-      "mode"      -> NormalMode,
-      "countries" -> countriesJson
-    )
-
-    templateCaptor.getValue mustEqual "events/eventCountry.njk"
-    jsonCaptor.getValue must containJson(expectedJson)
-  }
 }
