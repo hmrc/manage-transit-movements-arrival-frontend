@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import models.MovementReferenceNumber
+@import controllers.events.routes._
+@import models.{MovementReferenceNumber, Index}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     inputYesNo: InputYesNo,
@@ -26,20 +27,19 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode, eventTitle: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, eventIndex: Index)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("confirmRemoveEvent.title", eventTitle),
+@mainTemplate(
+    title = messages("isTranshipment.title"),
     showBackLink = true
 ) {
-    @formHelper(action = controllers.events.routes.ConfirmRemoveEventController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
+    @formHelper(action = IsTranshipmentController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
          @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "confirmRemoveEvent",
-            legendParams = Seq(eventTitle)
+            messageKeyPrefix = "isTranshipment",
          )
 
         @button(attributes = Map("id" -> "submit"))
