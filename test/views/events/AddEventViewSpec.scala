@@ -23,64 +23,42 @@ import play.twirl.api.HtmlFormat
 import views.behaviours._
 import views.html.events.AddEventView
 
-class AddEventViewSpec extends YesNoViewBehaviours {
+class AddEventViewSpec extends ListWithActionsViewBehaviours {
 
-  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMoreEvents = true)
+  private def formProvider = new AddEventFormProvider()
+
+  override def form: Form[Boolean] = formProvider(true)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => Nil, allowMoreEvents = true)(fakeRequest, messages)
+    injector
+      .instanceOf[AddEventView]
+      .apply(form, mrn, NormalMode, _ => listItem, allowMoreEvents = true)(fakeRequest, messages)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddEventView]
+      .apply(formProvider(false), mrn, NormalMode, _ => maxedOutListItems, allowMoreEvents = false)(fakeRequest, messages)
 
   override val prefix: String = "addEvent"
 
   behave like pageWithBackLink
 
-  behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
-  behave like pageWithContent("p", "Tell us if:")
+  behave like pageWithMoreItemsAllowed {
+    behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
 
-  behave like pageWithList(
-    listClass = "govuk-list--bullet",
-    expectedListItems = "there was an accident",
-    "goods had to be unloaded",
-    "goods moved to a different vehicle",
-    "goods moved to a different type of transport",
-    "the planned route changed"
-  )
+    behave like pageWithContent("p", "Tell us if:")
 
-  behave like pageWithRadioItems(legendIsHeading = false)
+    behave like pageWithList(
+      listClass = "govuk-list--bullet",
+      expectedListItems = "there was an accident",
+      "goods had to be unloaded",
+      "goods moved to a different vehicle",
+      "goods moved to a different type of transport",
+      "the planned route changed"
+    )
+  }
+
+  behave like pageWithItemsMaxedOut()
 
   behave like pageWithSubmitButton("Continue")
-}
-
-class MaxedOutAddEventViewSpec extends MaxedOutListWithActionsViewBehaviours {
-
-  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMore)
-
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => listItems, allowMore)(fakeRequest, messages)
-
-  override val prefix: String = "addEvent.plural"
-
-  behave like pageWithTitle(listItems.length)
-
-  behave like pageWithHeading(listItems.length)
-
-  behave like pageWithListWithActions()
-
-  behave like pageWithContent("p", "You cannot add any more events")
-}
-
-class NonMaxedOutAddEventViewSpec extends NonMaxedOutListWithActionsViewBehaviours {
-
-  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMore)
-
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => listItems, allowMore)(fakeRequest, messages)
-
-  override val prefix: String = "addEvent.singular"
-
-  behave like pageWithTitle(listItems.length)
-
-  behave like pageWithHeading(listItems.length)
-
-  behave like pageWithListWithActions()
 }

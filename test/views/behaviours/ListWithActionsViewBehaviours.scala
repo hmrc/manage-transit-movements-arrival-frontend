@@ -16,16 +16,55 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+
 import scala.collection.JavaConverters._
 
 trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
 
-  val allowMore: Boolean
+  val listItem: Seq[ListItem] = Seq(
+    ListItem("1", "change-url-1", "remove-url-1")
+  )
 
-  val listItems: Seq[ListItem]
+  val maxedOutListItems: Seq[ListItem] = Seq(
+    ListItem("1", "change-url-1", "remove-url-1"),
+    ListItem("2", "change-url-2", "remove-url-2"),
+    ListItem("3", "change-url-3", "remove-url-3")
+  )
 
-  def pageWithListWithActions(): Unit =
+  def applyMaxedOutView: HtmlFormat.Appendable
+
+  def pageWithMoreItemsAllowed(block: Unit): Unit =
+    "page with more items allowed" - {
+
+      behave like pageWithTitle(doc, s"$prefix.singular", listItem.length)
+
+      behave like pageWithHeading(doc, s"$prefix.singular", listItem.length)
+
+      behave like pageWithListWithActions(doc)
+
+      behave like pageWithRadioItems(legendIsHeading = false)
+
+      block
+    }
+
+  def pageWithItemsMaxedOut(): Unit =
+    "page with items maxed out" - {
+
+      val maxedOutDoc = parseView(applyMaxedOutView)
+
+      behave like pageWithTitle(maxedOutDoc, s"$prefix.plural", maxedOutListItems.length)
+
+      behave like pageWithHeading(maxedOutDoc, s"$prefix.plural", maxedOutListItems.length)
+
+      behave like pageWithListWithActions(maxedOutDoc)
+
+      behave like pageWithContent(maxedOutDoc, "p", messages(s"$prefix.maxLimit.label"))
+    }
+
+  private def pageWithListWithActions(doc: Document): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
@@ -34,7 +73,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
 
       val renderedItems = doc.getElementsByClass("hmrc-list-with-actions__item").asScala
 
-      listItems.zipWithIndex.foreach {
+      listItem.zipWithIndex.foreach {
         case (listItem, index) =>
           val renderedItem = renderedItems(index)
 
@@ -75,22 +114,4 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
           }
       }
     }
-}
-
-trait MaxedOutListWithActionsViewBehaviours extends ListWithActionsViewBehaviours {
-  override val allowMore: Boolean = false
-
-  override val listItems: Seq[ListItem] = Seq(
-    ListItem("1", "change-url-1", "remove-url-1"),
-    ListItem("2", "change-url-2", "remove-url-2"),
-    ListItem("3", "change-url-3", "remove-url-3")
-  )
-}
-
-trait NonMaxedOutListWithActionsViewBehaviours extends ListWithActionsViewBehaviours {
-  override val allowMore: Boolean = true
-
-  override val listItems: Seq[ListItem] = Seq(
-    ListItem("1", "change-url-1", "remove-url-1")
-  )
 }

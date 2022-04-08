@@ -88,12 +88,18 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   }
 
   def pageWithTitle(args: Any*): Unit =
+    pageWithTitle(doc, prefix, args: _*)
+
+  def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit =
     "must render title" in {
       val title = doc.title()
       title mustBe s"${messages(s"$prefix.title", args: _*)} - Manage your transit movements - GOV.UK"
     }
 
   def pageWithHeading(args: Any*): Unit =
+    pageWithHeading(doc, prefix, args: _*)
+
+  def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit =
     "must render heading" in {
       val heading = getElementByTag(doc, "h1")
       assertElementIncludesText(heading, messages(s"$prefix.heading", args: _*))
@@ -148,12 +154,15 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ equals _)
+    pageWithContent(doc, tag, expectedText)
+
+  def pageWithContent(doc: Document, tag: String, expectedText: String): Unit =
+    pageWithContent(doc, tag, expectedText, _ equals _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ contains _)
+    pageWithContent(doc, tag, expectedText, _ contains _)
 
-  private def pageWithContent(tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
+  private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
     s"must render $tag with text $expectedText" in {
       val elements = getElementsByTag(doc, tag)
       assertElementExists(elements, element => condition(element.text, expectedText))
