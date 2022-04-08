@@ -18,7 +18,6 @@ package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.AddEventFormProvider
-import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -26,12 +25,11 @@ import pages.events.{AddEventPage, EventPlacePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.events.AddEventView
 
 import scala.concurrent.Future
 
-class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new AddEventFormProvider()
   private val form         = formProvider(true)
