@@ -16,7 +16,7 @@
 
 package views.events
 
-import forms.events.{IsTranshipmentFormProvider}
+import forms.events.IsTranshipmentFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

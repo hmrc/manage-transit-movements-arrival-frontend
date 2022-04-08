@@ -71,17 +71,15 @@
 
     @formHelper(action = routes.AddEventController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
-        @{
-            if (allowMoreEvents) {
-                inputYesNo(
-                    field = form("value"),
-                    messageKeyPrefix = "addEvent",
-                    hint = Some(hint),
-                    legendIsHeading = false
-                )
-            } else {
-                <p class="govuk-body" data-testId="maxLimit">@messages("addEvent.maxLimit.label")</p>
-            }
+        @if(allowMoreEvents) {
+            @inputYesNo(
+                field = form("value"),
+                messageKeyPrefix = "addEvent",
+                hint = Some(hint),
+                legendIsHeading = false
+            )
+        } else {
+            <p class="govuk-body" data-testId="maxLimit">@messages("addEvent.maxLimit.label")</p>
         }
 
         @button(attributes = Map("id" -> "submit"))

@@ -65,6 +65,8 @@ class MaxedOutAddEventViewSpec extends MaxedOutListWithActionsViewBehaviours {
   behave like pageWithHeading(listItems.length)
 
   behave like pageWithListWithActions()
+
+  behave like pageWithContent("p", "You cannot add any more events")
 }
 
 class NonMaxedOutAddEventViewSpec extends NonMaxedOutListWithActionsViewBehaviours {
