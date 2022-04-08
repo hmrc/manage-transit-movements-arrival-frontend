@@ -23,66 +23,42 @@ import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.EventPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.EventPlaceView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EventPlaceController @Inject() (override val messagesApi: MessagesApi,
                                       sessionRepository: SessionRepository,
                                       navigator: Navigator,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalActionProvider,
-                                      requireData: DataRequiredAction,
+                                      actions: Actions,
                                       formProvider: EventPlaceFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+                                      view: EventPlaceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(EventPlacePage(eventIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
-        val json = Json.obj(
-          "form"        -> preparedForm,
-          "mrn"         -> mrn,
-          "mode"        -> mode,
-          "onSubmitUrl" -> routes.EventPlaceController.onSubmit(mrn, eventIndex, mode).url
-        )
-
-        renderer.render("events/eventPlace.njk", json).map(Ok(_))
-    }
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(EventPlacePage(eventIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, mrn, mode, eventIndex))
+  }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mrn"         -> mrn,
-                "mode"        -> mode,
-                "onSubmitUrl" -> routes.EventPlaceController.onSubmit(mrn, eventIndex, mode).url
-              )
-
-              renderer.render("events/eventPlace.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, eventIndex))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(EventPlacePage(eventIndex), value))
