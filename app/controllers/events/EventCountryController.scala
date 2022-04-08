@@ -18,43 +18,36 @@ package controllers.events
 
 import controllers.actions._
 import forms.events.EventCountryFormProvider
-import models.reference.Country
+import javax.inject.Inject
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.EventCountryPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import renderer.Renderer
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.EventCountryView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EventCountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: EventCountryFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: EventCountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
-        countriesService.getTransitCountries() flatMap {
+        countriesService.getTransitCountries() map {
           countryList =>
             val form = formProvider(countryList)
 
@@ -64,19 +57,19 @@ class EventCountryController @Inject() (
               .map(form.fill)
               .getOrElse(form)
 
-            renderPage(mrn, mode, preparedForm, countryList.countries, Results.Ok, eventIndex)
+            Ok(view(preparedForm, countryList.countries, mrn, mode, eventIndex))
         }
     }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         countriesService.getTransitCountries() flatMap {
           countryList =>
             formProvider(countryList)
               .bindFromRequest()
               .fold(
-                formWithErrors => renderPage(mrn, mode, formWithErrors, countryList.countries, Results.BadRequest, eventIndex),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryList.countries, mrn, mode, eventIndex))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(EventCountryPage(eventIndex), value.code))
@@ -85,27 +78,4 @@ class EventCountryController @Inject() (
               )
         }
     }
-
-  private def renderPage(mrn: MovementReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status, eventIndex: Index)(
-    implicit request: Request[AnyContent]
-  ): Future[Result] = {
-    val json = Json.obj(
-      "form"        -> form,
-      "mrn"         -> mrn,
-      "mode"        -> mode,
-      "countries"   -> countryJsonList(form.value, countries),
-      "onSubmitUrl" -> routes.EventCountryController.onSubmit(mrn, eventIndex, mode).url
-    )
-
-    renderer.render("events/eventCountry.njk", json).map(status(_))
-  }
-
-  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
-    val countryJsonList = countries.map {
-      country =>
-        Json.obj("text" -> country.toString, "value" -> country.code, "selected" -> value.contains(country))
-    }
-
-    Json.obj("value" -> "", "text" -> "Select a country") +: countryJsonList
-  }
 }
