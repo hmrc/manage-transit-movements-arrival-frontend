@@ -32,6 +32,8 @@ class EventReportedViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "eventReported"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

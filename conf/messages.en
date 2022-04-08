@@ -274,8 +274,6 @@ placeOfNotification.error.invalid =  Where you are completing this arrival notif
 placeOfNotification.error.length = Where are you completing this arrival notification must be 35 characters or less
 placeOfNotification.change.hidden = where you are completing this arrival notification
 
-addEvent.singular = event
-addEvent.plural = events
 addEvent.singular.title = You have added {0} event
 addEvent.plural.title = You have added {0} events
 addEvent.singular.heading = You have added {0} event
