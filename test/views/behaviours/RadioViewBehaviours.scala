@@ -29,7 +29,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def pageWithRadioItems(
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
-    args: Seq[String] = Nil,
+    args: Seq[Any] = Nil,
     legendIsVisible: Boolean = true
   ): Unit =
     "page with a radio question" - {

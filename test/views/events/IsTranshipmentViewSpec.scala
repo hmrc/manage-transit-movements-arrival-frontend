@@ -16,7 +16,7 @@
 
 package views.events
 
-import forms.events.{IsTranshipmentFormProvider}
+import forms.events.IsTranshipmentFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,11 +29,16 @@ class IsTranshipmentViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[IsTranshipmentView].apply(form, mrn, NormalMode, eventIndex)(fakeRequest, messages)
+
   override val prefix: String = "isTranshipment"
+
+  pageWithTitle()
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
+
+  behave like pageWithSubmitButton("Continue")
 }

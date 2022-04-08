@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import pages.{ConsigneeEoriNumberPage, ConsigneeNamePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.EoriNumberView
+import views.html.ConsigneeEoriNumberView
 
 import scala.concurrent.Future
 
@@ -49,7 +49,7 @@ class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[EoriNumberView]
+      val view = injector.instanceOf[ConsigneeEoriNumberView]
 
       status(result) mustEqual OK
 
@@ -71,7 +71,7 @@ class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
       val filledForm = formProvider(traderName).bind(Map("value" -> eoriNumber.value))
 
-      val view = injector.instanceOf[EoriNumberView]
+      val view = injector.instanceOf[ConsigneeEoriNumberView]
 
       status(result) mustEqual OK
 
@@ -111,7 +111,7 @@ class ConsigneeEoriNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[EoriNumberView]
+      val view = injector.instanceOf[ConsigneeEoriNumberView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode, traderName)(request, messages).toString

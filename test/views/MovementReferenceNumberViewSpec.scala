@@ -36,6 +36,8 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
 
   implicit override val arbitraryT: Arbitrary[MovementReferenceNumber] = arbitraryMovementReferenceNumber
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

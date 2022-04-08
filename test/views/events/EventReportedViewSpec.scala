@@ -29,11 +29,16 @@ class EventReportedViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[EventReportedView].apply(form, mrn, eventIndex, NormalMode)(fakeRequest, messages)
+
   override val prefix: String = "eventReported"
+
+  behave like pageWithTitle()
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
+
+  behave like pageWithSubmitButton("Continue")
 }

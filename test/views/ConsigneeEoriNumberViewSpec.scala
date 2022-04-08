@@ -22,18 +22,20 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.EoriNumberView
+import views.html.ConsigneeEoriNumberView
 
-class EoriNumberViewSpec extends InputTextViewBehaviours[String] {
+class ConsigneeEoriNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new EoriNumberFormProvider()(consigneeName)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[EoriNumberView].apply(form, mrn, NormalMode, consigneeName)(fakeRequest, messages)
+    injector.instanceOf[ConsigneeEoriNumberView].apply(form, mrn, NormalMode, consigneeName)(fakeRequest, messages)
 
   override val prefix: String = "eoriNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
+  behave like pageWithTitle()
 
   behave like pageWithBackLink
 

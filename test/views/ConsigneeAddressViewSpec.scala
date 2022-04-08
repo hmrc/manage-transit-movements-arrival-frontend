@@ -35,6 +35,8 @@ class ConsigneeAddressViewSpec extends AddressViewBehaviours {
 
   override val prefix: String = "consigneeAddress"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading(name)

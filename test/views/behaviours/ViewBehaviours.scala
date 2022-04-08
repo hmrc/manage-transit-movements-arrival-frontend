@@ -37,8 +37,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   val hasSignOutLink: Boolean = true
 
-  val pageTitleArgs: List[String] = Nil
-
   if (hasSignOutLink) {
     "must render sign out link in header" in {
       val link = getElementByClass(doc, "hmrc-sign-out-nav__link")
@@ -75,11 +73,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     getElementHref(link) must endWith("?service=CTCTraders")
   }
 
-  "must render title" in {
-    val title = doc.title()
-    title mustBe s"${messages(s"$prefix.title", pageTitleArgs: _*)} - Manage your transit movements - GOV.UK"
-  }
-
   "must render accessibility statement link" in {
     val link = doc
       .select(".govuk-footer__inline-list-item > .govuk-footer__link")
@@ -94,7 +87,19 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     assertElementDoesNotExist(doc, "hmrc-language-select")
   }
 
-  def pageWithHeading(args: String*): Unit =
+  def pageWithTitle(args: Any*): Unit =
+    pageWithTitle(doc, prefix, args: _*)
+
+  def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit =
+    "must render title" in {
+      val title = doc.title()
+      title mustBe s"${messages(s"$prefix.title", args: _*)} - Manage your transit movements - GOV.UK"
+    }
+
+  def pageWithHeading(args: Any*): Unit =
+    pageWithHeading(doc, prefix, args: _*)
+
+  def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit =
     "must render heading" in {
       val heading = getElementByTag(doc, "h1")
       assertElementIncludesText(heading, messages(s"$prefix.heading", args: _*))
@@ -149,12 +154,15 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ equals _)
+    pageWithContent(doc, tag, expectedText)
+
+  def pageWithContent(doc: Document, tag: String, expectedText: String): Unit =
+    pageWithContent(doc, tag, expectedText, _ equals _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ contains _)
+    pageWithContent(doc, tag, expectedText, _ contains _)
 
-  private def pageWithContent(tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
+  private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
     s"must render $tag with text $expectedText" in {
       val elements = getElementsByTag(doc, tag)
       assertElementExists(elements, element => condition(element.text, expectedText))

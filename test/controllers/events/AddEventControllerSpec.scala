@@ -18,160 +18,165 @@ package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.AddEventFormProvider
-import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import pages.events.{AddEventPage, IncidentInformationPage}
-import play.api.libs.json.{JsObject, Json}
+import org.mockito.Mockito.when
+import pages.events.{AddEventPage, EventPlacePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import views.html.events.AddEventView
 
 import scala.concurrent.Future
 
-class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new AddEventFormProvider()
-  val form         = formProvider(true)
+  private val formProvider = new AddEventFormProvider()
+  private val form         = formProvider(true)
 
-  lazy val addEventRoute = routes.AddEventController.onPageLoad(mrn, NormalMode).url
+  private val mode = NormalMode
+
+  private lazy val addEventRoute = routes.AddEventController.onPageLoad(mrn, mode).url
+
+  private val range = 0 to 2
+
+  private val maxedUserAnswers = range.foldLeft(emptyUserAnswers) {
+    (acc, i) =>
+      acc.setValue(EventPlacePage(Index(i)), s"$i")
+  }
+
+  private lazy val maxedListItems = range.map {
+    i =>
+      ListItem(
+        name = s"$i",
+        changeUrl = routes.CheckEventAnswersController.onPageLoad(mrn, Index(i)).url,
+        removeUrl = routes.ConfirmRemoveEventController.onPageLoad(mrn, Index(i), mode).url
+      )
+  }
 
   "AddEvent Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val request = FakeRequest(GET, addEventRoute)
 
-      val request        = FakeRequest(GET, addEventRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val view = injector.instanceOf[AddEventView]
 
-      status(result) mustEqual OK
+        status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        contentAsString(result) mustEqual
+          view(form, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+      }
 
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
+      "when max limit reached" in {
 
-      templateCaptor.getValue mustEqual "events/addEvent.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+        setExistingUserAnswers(maxedUserAnswers)
+
+        val request = FakeRequest(GET, addEventRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddEventView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, mrn, mode, _ => maxedListItems, allowMoreEvents = false)(request, messages).toString
+      }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        val userAnswers = emptyUserAnswers.setValue(AddEventPage, true)
+        setExistingUserAnswers(userAnswers)
 
-      val userAnswers = emptyUserAnswers.set(AddEventPage, true).success.value
-      setExistingUserAnswers(userAnswers)
+        val request = FakeRequest(GET, addEventRoute)
 
-      val request        = FakeRequest(GET, addEventRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val view = injector.instanceOf[AddEventView]
 
-      status(result) mustEqual OK
+        status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        val filledForm = form.bind(Map("value" -> "true"))
 
-      val filledForm = form.bind(Map("value" -> "true"))
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+      }
 
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
-      )
+      "when max limit reached" in {
 
-      templateCaptor.getValue mustEqual "events/addEvent.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+        val userAnswers = maxedUserAnswers.setValue(AddEventPage, true)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addEventRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddEventView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, mrn, mode, _ => maxedListItems, allowMoreEvents = false)(request, messages).toString
+      }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page" - {
+      "when valid data is submitted and max limit not reached" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request =
-        FakeRequest(POST, addEventRoute)
+        val request = FakeRequest(POST, addEventRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
 
-    "must redirect to the next page when invalid data but we have the max containers" in {
+      "when max limit reached" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
-        .set(IncidentInformationPage(Index(0)), "12345")
-        .success
-        .value
-        .set(IncidentInformationPage(Index(1)), "12345")
-        .success
-        .value
-        .set(IncidentInformationPage(Index(2)), "12345")
-        .success
-        .value
+        setExistingUserAnswers(maxedUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request =
-        FakeRequest(POST, addEventRoute)
+        val request = FakeRequest(POST, addEventRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val request   = FakeRequest(POST, addEventRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form.bind(Map("value" -> ""))
 
-      val request        = FakeRequest(POST, addEventRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val view = injector.instanceOf[AddEventView]
 
-      status(result) mustEqual BAD_REQUEST
+        status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "mrn"    -> mrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "events/addEvent.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+        contentAsString(result) mustEqual
+          view(boundForm, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -191,9 +196,8 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, addEventRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addEventRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

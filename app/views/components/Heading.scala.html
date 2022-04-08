@@ -16,6 +16,6 @@
 
 @this()
 
-@(headingKey: String, args: Seq[String] = Nil, headingSize: String = "govuk-heading-xl")(implicit messages: Messages)
+@(headingKey: String, args: Seq[Any] = Nil, headingSize: String = "govuk-heading-xl")(implicit messages: Messages)
 
 <h1 class="@headingSize">@messages(headingKey, args: _*)</h1>

@@ -23,7 +23,7 @@
     field: Field,
     messageKeyPrefix: String,
     caption: Option[String] = None,
-    hint: Option[String] = None,
+    hint: Option[Content] = None,
     legendIsHeading: Boolean = true,
     legendIsVisible: Boolean = true,
     legendParams: Seq[String] = Nil
@@ -32,7 +32,7 @@
 @radios = @{
     Radios(
         classes = "govuk-radios--inline",
-        hint = hint.map(x => Hint(content = Text(x))),
+        hint = hint.map(x => Hint(content = x)),
         items = Seq(
             RadioItem(
                 id = Some(field.id),

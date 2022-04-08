@@ -40,6 +40,8 @@ class EventCountryViewSpec extends InputSelectViewBehaviours[Country] with Gener
     Country(CountryCode("ES"), "Spain")
   )
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

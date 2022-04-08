@@ -27,6 +27,8 @@ class UseDifferentServiceViewSpec extends ViewBehaviours {
 
   override val prefix: String = "useDifferentService"
 
+  behave like pageWithTitle()
+
   behave like pageWithoutBackLink
 
   behave like pageWithHeading()

@@ -16,44 +16,49 @@
 
 package views.events
 
-import play.api.libs.json.Json
-import views.SingleViewSpec
+import forms.events.AddEventFormProvider
+import models.NormalMode
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import views.behaviours._
+import views.html.events.AddEventView
 
-class AddEventViewSpec extends SingleViewSpec("events/addEvent.njk") {
+class AddEventViewSpec extends ListWithActionsViewBehaviours {
 
-  "must display the maxLimitReached text when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must not be empty
+  private def formProvider = new AddEventFormProvider()
+
+  override def form: Form[Boolean] = formProvider(true)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddEventView]
+      .apply(form, mrn, NormalMode, _ => listItem, allowMoreEvents = true)(fakeRequest, messages)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddEventView]
+      .apply(formProvider(false), mrn, NormalMode, _ => maxedOutListItems, allowMoreEvents = false)(fakeRequest, messages)
+
+  override val prefix: String = "addEvent"
+
+  behave like pageWithBackLink
+
+  behave like pageWithMoreItemsAllowed {
+    behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
+
+    behave like pageWithContent("p", "Tell us if:")
+
+    behave like pageWithList(
+      listClass = "govuk-list--bullet",
+      expectedListItems = "there was an accident",
+      "goods had to be unloaded",
+      "goods moved to a different vehicle",
+      "goods moved to a different type of transport",
+      "the planned route changed"
+    )
   }
 
-  "must not display the maxLimitReached text when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must be(empty)
-  }
+  behave like pageWithItemsMaxedOut()
 
-  "must display the add another event Yes/No radio when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsClass(doc, "govuk-radios")
-  }
-  "must not display the add another event Yes/No radio when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsNoClass(doc, "govuk-radios")
-
-  }
+  behave like pageWithSubmitButton("Continue")
 }

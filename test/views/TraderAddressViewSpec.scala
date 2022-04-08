@@ -35,6 +35,8 @@ class TraderAddressViewSpec extends AddressViewBehaviours {
 
   override val prefix: String = "traderAddress"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading(name)

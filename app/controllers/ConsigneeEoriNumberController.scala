@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.EoriNumberView
+import views.html.ConsigneeEoriNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,7 @@ class ConsigneeEoriNumberController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: EoriNumberView
+  view: ConsigneeEoriNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
