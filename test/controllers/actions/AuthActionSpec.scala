@@ -334,7 +334,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe UNAUTHORIZED
 
         verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        templateCaptor.getValue mustBe "unauthorisedWithGroupAccessView.scala"
       }
 
       "must redirect to unauthorised page with group access when given user has no active legacy enrolments but legacy group has" in {
@@ -363,7 +363,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe UNAUTHORIZED
 
         verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        templateCaptor.getValue mustBe "unauthorisedWithGroupAccessView.scala"
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but new group has" in {
@@ -392,7 +392,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe UNAUTHORIZED
 
         verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        templateCaptor.getValue mustBe "unauthorisedWithGroupAccessView.scala"
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but legacy group has" in {
@@ -421,7 +421,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe UNAUTHORIZED
 
         verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        templateCaptor.getValue mustBe "unauthorisedWithGroupAccessView.scala"
       }
       "must redirect to unauthorised page with group access when given user has no enrolments but group has" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
@@ -443,7 +443,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
 
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        templateCaptor.getValue mustBe "unauthorisedWithGroupAccessView.scala"
       }
 
       "must redirect to unauthorised page without group access when given both user and group has no enrolments" in {
