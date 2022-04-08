@@ -32,6 +32,7 @@ import scala.concurrent.Future
 
 class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val eventTitle                   = "eventTitle"
   private val formProvider                 = new ConfirmRemoveEventFormProvider()
   private val form                         = formProvider(eventTitle)
   private val mode                         = NormalMode

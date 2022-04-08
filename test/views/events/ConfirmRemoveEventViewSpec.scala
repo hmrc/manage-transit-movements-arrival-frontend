@@ -25,9 +25,10 @@ import views.html.events.ConfirmRemoveEventView
 
 class ConfirmRemoveEventViewSpec extends YesNoViewBehaviours {
 
-  private val eventTitle: String       = "eventTitle"
+  private val eventTitle: String           = "eventTitle"
   override val pageTitleArgs: List[String] = List(eventTitle)
-  override def form: Form[Boolean] = new ConfirmRemoveEventFormProvider()(eventTitle)
+  override def form: Form[Boolean]         = new ConfirmRemoveEventFormProvider()(eventTitle)
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[ConfirmRemoveEventView].apply(form, mrn, eventIndex, NormalMode, eventTitle)(fakeRequest, messages)
   override val prefix: String = "confirmRemoveEvent"
