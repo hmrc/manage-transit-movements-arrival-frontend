@@ -50,7 +50,7 @@ class IsTranshipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[IsTranshipmentView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, eventIndex, mode)(request, messages).toString
+        view(form, mrn, mode, eventIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -68,7 +68,7 @@ class IsTranshipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[IsTranshipmentView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, eventIndex, mode)(request, messages).toString
+        view(filledForm, mrn, mode, eventIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -102,7 +102,7 @@ class IsTranshipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[IsTranshipmentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, eventIndex, mode)(request, messages).toString
+        view(boundForm, mrn, mode, eventIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

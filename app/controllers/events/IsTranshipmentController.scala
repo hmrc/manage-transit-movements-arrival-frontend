@@ -50,7 +50,7 @@ class IsTranshipmentController @Inject() (override val messagesApi: MessagesApi,
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, eventIndex, mode))
+      Ok(view(preparedForm, mrn, mode, eventIndex))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -58,7 +58,7 @@ class IsTranshipmentController @Inject() (override val messagesApi: MessagesApi,
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, eventIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTranshipmentPage(eventIndex), value))

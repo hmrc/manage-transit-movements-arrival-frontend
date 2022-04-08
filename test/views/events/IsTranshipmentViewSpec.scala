@@ -28,7 +28,7 @@ class IsTranshipmentViewSpec extends YesNoViewBehaviours {
   override def form: Form[Boolean] = new IsTranshipmentFormProvider()()
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[IsTranshipmentView].apply(form, mrn, eventIndex, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IsTranshipmentView].apply(form, mrn, NormalMode, eventIndex)(fakeRequest, messages)
   override val prefix: String = "isTranshipment"
 
   behave like pageWithBackLink
