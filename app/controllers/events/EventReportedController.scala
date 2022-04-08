@@ -18,72 +18,48 @@ package controllers.events
 
 import controllers.actions._
 import forms.events.EventReportedFormProvider
-import javax.inject.Inject
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.EventReportedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.events.EventReportedView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EventReportedController @Inject() (override val messagesApi: MessagesApi,
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
+                                         actions: Actions,
                                          formProvider: EventReportedFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+                                         view: EventReportedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(EventReportedPage(eventIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      val json = Json.obj(
-        "form"        -> preparedForm,
-        "mode"        -> mode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(preparedForm("value")),
-        "onSubmitUrl" -> routes.EventReportedController.onSubmit(mrn, eventIndex, mode).url
-      )
-
-      renderer.render("events/eventReported.njk", json).map(Ok(_))
+      Ok(view(preparedForm, mrn, eventIndex, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mode"        -> mode,
-                "mrn"         -> mrn,
-                "radios"      -> Radios.yesNo(formWithErrors("value")),
-                "onSubmitUrl" -> routes.EventReportedController.onSubmit(mrn, eventIndex, mode).url
-              )
-
-              renderer.render("events/eventReported.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(EventReportedPage(eventIndex), value))
