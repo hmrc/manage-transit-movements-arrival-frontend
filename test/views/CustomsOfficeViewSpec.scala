@@ -43,6 +43,8 @@ class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] wit
 
   private val arg: String = Gen.alphaNumStr.sample.value
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading(arg)

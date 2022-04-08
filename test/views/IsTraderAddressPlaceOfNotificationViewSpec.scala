@@ -32,6 +32,8 @@ class IsTraderAddressPlaceOfNotificationViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "isTraderAddressPlaceOfNotification"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading(traderName)
@@ -41,4 +43,6 @@ class IsTraderAddressPlaceOfNotificationViewSpec extends YesNoViewBehaviours {
   behave like pageWithPartialContent("p", traderAddress.postcode)
 
   behave like pageWithRadioItems(legendIsHeading = false, None, Seq(traderName), legendIsVisible = false)
+
+  behave like pageWithSubmitButton("Continue")
 }

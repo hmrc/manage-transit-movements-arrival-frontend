@@ -16,44 +16,69 @@
 
 package views.events
 
-import play.api.libs.json.Json
-import views.SingleViewSpec
+import forms.events.AddEventFormProvider
+import models.NormalMode
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import views.behaviours._
+import views.html.events.AddEventView
 
-class AddEventViewSpec extends SingleViewSpec("events/addEvent.njk") {
+class AddEventViewSpec extends YesNoViewBehaviours {
 
-  "must display the maxLimitReached text when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must not be empty
-  }
+  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMoreEvents = true)
 
-  "must not display the maxLimitReached text when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must be(empty)
-  }
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => Nil, allowMoreEvents = true)(fakeRequest, messages)
 
-  "must display the add another event Yes/No radio when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsClass(doc, "govuk-radios")
-  }
-  "must not display the add another event Yes/No radio when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreEvents" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsNoClass(doc, "govuk-radios")
+  override val prefix: String = "addEvent"
 
-  }
+  behave like pageWithBackLink
+
+  behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
+  behave like pageWithContent("p", "Tell us if:")
+
+  behave like pageWithList(
+    listClass = "govuk-list--bullet",
+    expectedListItems = "there was an accident",
+    "goods had to be unloaded",
+    "goods moved to a different vehicle",
+    "goods moved to a different type of transport",
+    "the planned route changed"
+  )
+
+  behave like pageWithRadioItems(legendIsHeading = false)
+
+  behave like pageWithSubmitButton("Continue")
+}
+
+class MaxedOutAddEventViewSpec extends MaxedOutListWithActionsViewBehaviours {
+
+  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMore)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => listItems, allowMore)(fakeRequest, messages)
+
+  override val prefix: String = "addEvent.plural"
+
+  behave like pageWithTitle(listItems.length)
+
+  behave like pageWithHeading(listItems.length)
+
+  behave like pageWithListWithActions()
+}
+
+class NonMaxedOutAddEventViewSpec extends NonMaxedOutListWithActionsViewBehaviours {
+
+  override def form: Form[Boolean] = new AddEventFormProvider().apply(allowMore)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddEventView].apply(form, mrn, NormalMode, _ => listItems, allowMore)(fakeRequest, messages)
+
+  override val prefix: String = "addEvent.singular"
+
+  behave like pageWithTitle(listItems.length)
+
+  behave like pageWithHeading(listItems.length)
+
+  behave like pageWithListWithActions()
 }

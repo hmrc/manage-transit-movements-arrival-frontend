@@ -38,6 +38,8 @@ class GoodsLocationViewSpec extends RadioViewBehaviours[GoodsLocation] {
 
   override def values: Seq[GoodsLocation] = GoodsLocation.values
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

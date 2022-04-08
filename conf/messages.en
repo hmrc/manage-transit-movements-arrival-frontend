@@ -275,10 +275,10 @@ placeOfNotification.change.hidden = where you are completing this arrival notifi
 
 addEvent.singular = event
 addEvent.plural = events
-addEvent.title.singular = You have added {0} event
-addEvent.title.plural = You have added {0} events
-addEvent.heading.singular = You have added {0} event
-addEvent.heading.plural = You have added {0} events
+addEvent.singular.title = You have added {0} event
+addEvent.plural.title = You have added {0} events
+addEvent.singular.heading = You have added {0} event
+addEvent.plural.heading = You have added {0} events
 addEvent.event.label = Event {0}
 addEvent.radio.label = Do you need to add another event?
 addEvent.label = Do you need to add another event?

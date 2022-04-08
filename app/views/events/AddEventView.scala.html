@@ -31,10 +31,14 @@
     button: Button
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, items: Seq[ListItem])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, items: Mode => Seq[ListItem], allowMoreEvents: Boolean)(implicit request: Request[_], messages: Messages)
+
+@listItems = @{
+    items(mode)
+}
 
 @singularOrPlural = @{
-    if (items.length == 1) "singular" else "plural"
+    if (listItems.length == 1) "singular" else "plural"
 }
 
 @hint = @{
@@ -55,24 +59,30 @@
 }
 
 @mainTemplate(
-    title = messages(s"addEvent.title.$singularOrPlural", items.length),
+    title = messages(s"addEvent.$singularOrPlural.title", listItems.length),
     showBackLink = true
 ) {
 
     @errorSummary(form.errors)
 
-    @heading(s"addEvent.heading.$singularOrPlural", Seq(items.length))
+    @heading(s"addEvent.$singularOrPlural.heading", Seq(listItems.length))
 
-    @listWithActions(items)
+    @listWithActions(listItems)
 
     @formHelper(action = routes.AddEventController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
-        @inputYesNo(
-            field = form("value"),
-            messageKeyPrefix = "addEvent",
-            hint = Some(hint),
-            legendIsHeading = false
-        )
+        @{
+            if (allowMoreEvents) {
+                inputYesNo(
+                    field = form("value"),
+                    messageKeyPrefix = "addEvent",
+                    hint = Some(hint),
+                    legendIsHeading = false
+                )
+            } else {
+                <p class="govuk-body" data-testId="maxLimit">@messages("addEvent.maxLimit.label")</p>
+            }
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }

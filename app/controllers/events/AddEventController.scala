@@ -21,7 +21,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.AddEventFormProvider
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.AddEventPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,21 +50,21 @@ class AddEventController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val form = formProvider(allowMoreEvents(request.userAnswers))
+      val form = formProvider(allowMoreEvents)
       val preparedForm = request.userAnswers.get(AddEventPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, mode, events(mode)))
+      Ok(view(preparedForm, mrn, mode, events, allowMoreEvents))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      formProvider(allowMoreEvents(request.userAnswers))
+      formProvider(allowMoreEvents)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, events(mode)))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, events, allowMoreEvents))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddEventPage, value))
@@ -80,6 +80,6 @@ class AddEventController @Inject() (
     }
   }
 
-  private def allowMoreEvents(ua: UserAnswers): Boolean =
-    ua.get(DeriveNumberOfEvents).getOrElse(0) < config.maxEvents
+  private def allowMoreEvents(implicit request: DataRequest[_]): Boolean =
+    request.userAnswers.get(DeriveNumberOfEvents).getOrElse(0) < config.maxEvents
 }

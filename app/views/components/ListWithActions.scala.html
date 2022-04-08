@@ -19,26 +19,26 @@
 @this(hmrcListWithActions: HmrcListWithActions)
 
 @(
-    items: Seq[ListItem]
+    listItems: Seq[ListItem]
 )(implicit messages: Messages)
 
 <div class="govuk-form-group">
     @hmrcListWithActions(
         ListWithActions(
-            items = items map (
-                item =>
+            items = listItems map (
+                listItem =>
                     ListWithActionsItem(
-                        name = Text(item.name),
+                        name = Text(listItem.name),
                         actions = Seq(
                             ListWithActionsAction(
                                 content = Text(messages("site.edit")),
-                                visuallyHiddenText = Some(messages("site.edit.hidden", item.name)),
-                                href = item.changeUrl
+                                visuallyHiddenText = Some(listItem.name),
+                                href = listItem.changeUrl
                             ),
                             ListWithActionsAction(
                                 content = Text(messages("site.delete")),
-                                visuallyHiddenText = Some(messages("site.delete.hidden", item.name)),
-                                href = item.removeUrl
+                                visuallyHiddenText = Some(listItem.name),
+                                href = listItem.removeUrl
                             )
                         )
                     )
