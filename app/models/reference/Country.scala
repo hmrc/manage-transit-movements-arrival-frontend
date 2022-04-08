@@ -18,9 +18,12 @@ package models.reference
 
 import play.api.libs.json.OFormat
 import play.api.libs.json.Json
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class Country(code: CountryCode, description: String) {
+case class Country(code: CountryCode, description: String) extends Selectable {
   override def toString: String = description
+
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code.code), this.toString, selected)
 }
 
 object Country {

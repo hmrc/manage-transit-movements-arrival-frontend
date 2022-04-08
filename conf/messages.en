@@ -212,6 +212,7 @@ eventCountry.checkYourAnswersLabel = Which country were the goods in when the ev
 eventCountry.change.hidden = which country the goods were in when the event happened
 eventCountry.error.required = Enter which country the goods were in when the event happened
 eventCountry.error.length = Country must be 2 characters or less
+eventCountry.placeholder = Select a country
 
 eventPlace.title = Where did the event happen?
 eventPlace.heading = Where did the event happen?
