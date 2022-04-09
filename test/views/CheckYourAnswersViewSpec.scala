@@ -17,6 +17,7 @@
 package views
 
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import views.behaviours.ViewBehaviours
 import views.html.CheckYourAnswersView
 
@@ -24,14 +25,23 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
   override val prefix: String = "checkYourAnswers"
 
+  val answersList: Seq[(Option[String], SummaryList)] = Seq(
+    (
+      Some(messages("checkYourAnswers.section.traderDetails")),
+      SummaryList(Nil)
+    )
+  )
+
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CheckYourAnswersView].apply(mrn)(fakeRequest, messages)
+    injector.instanceOf[CheckYourAnswersView].apply(mrn, answersList)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
   behave like pageWithContent("h2", messages("checkYourAnswers.confirmation.heading"))
+
+  behave like pageWithContent("h2", messages("checkYourAnswers.section.traderDetails"))
 
   behave like pageWithContent("p", messages("checkYourAnswers.confirmation.paragraph"))
 

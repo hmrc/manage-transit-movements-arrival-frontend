@@ -22,11 +22,12 @@
     errorSummary: ErrorSummary,
     select: InputSelect,
     heading: Heading,
+    govukSummaryList: GovukSummaryList,
     button: Button,
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, answerLists: Seq[(Option[String], SummaryList)])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("checkYourAnswers.title"),
@@ -34,6 +35,14 @@
 ) {
 
     @heading("checkYourAnswers.heading")
+
+    @for((section, answerList) <- answerLists) {
+        @for(title <- section) {
+            <h2 class="govuk-heading-m">@title</h2>
+        }
+
+        @govukSummaryList(answerList)
+    }
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
     <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>
@@ -47,9 +56,3 @@
     }
 
 }
-
-@*
-{% for section in sections %}
-{{ sectionMacro(section.sectionTitle, section.rows) }}
-{% endfor %}
-*@
