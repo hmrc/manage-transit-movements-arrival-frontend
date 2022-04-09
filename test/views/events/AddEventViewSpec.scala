@@ -43,20 +43,22 @@ class AddEventViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithBackLink
 
-  behave like pageWithMoreItemsAllowed {
-    behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
+  behave like pageWithMoreItemsAllowed(
+    additionalBehaviours = {
+      behave like pageWithContent("p", "It should be recorded on the transit accompanying document (TAD).")
 
-    behave like pageWithContent("p", "Tell us if:")
+      behave like pageWithContent("p", "Tell us if:")
 
-    behave like pageWithList(
-      listClass = "govuk-list--bullet",
-      expectedListItems = "there was an accident",
-      "goods had to be unloaded",
-      "goods moved to a different vehicle",
-      "goods moved to a different type of transport",
-      "the planned route changed"
-    )
-  }
+      behave like pageWithList(
+        listClass = "govuk-list--bullet",
+        expectedListItems = "there was an accident",
+        "goods had to be unloaded",
+        "goods moved to a different vehicle",
+        "goods moved to a different type of transport",
+        "the planned route changed"
+      )
+    }
+  )
 
   behave like pageWithItemsMaxedOut()
 
