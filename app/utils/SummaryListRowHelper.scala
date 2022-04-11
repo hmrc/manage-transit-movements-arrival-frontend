@@ -21,6 +21,7 @@ import models.{Address, CountryList, MovementReferenceNumber, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.Reads
 import play.api.mvc.Call
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Text}
 
@@ -118,6 +119,21 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
           id = id,
           changeCall = changeCall,
           removeCall = removeCall
+        )
+    }
+
+  def getAnswerAndBuildListItem[T](
+    page: QuestionPage[T],
+    formatAnswer: T => String,
+    changeCall: Call,
+    removeCall: Call
+  )(implicit rds: Reads[T]): Option[ListItem] =
+    userAnswers.get(page) map {
+      answer =>
+        ListItem(
+          name = formatAnswer(answer),
+          changeUrl = changeCall.url,
+          removeUrl = removeCall.url
         )
     }
 

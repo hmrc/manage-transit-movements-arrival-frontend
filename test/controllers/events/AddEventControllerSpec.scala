@@ -31,8 +31,8 @@ import scala.concurrent.Future
 
 class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new AddEventFormProvider()
-  private val form         = formProvider(true)
+  private val formProvider                   = new AddEventFormProvider()
+  private def form(allowMoreEvents: Boolean) = formProvider(allowMoreEvents)
 
   private val mode = NormalMode
 
@@ -59,6 +59,8 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
+        val allowMoreEvents = true
+
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, addEventRoute)
@@ -70,10 +72,12 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+          view(form(allowMoreEvents), mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
       }
 
       "when max limit reached" in {
+
+        val allowMoreEvents = false
 
         setExistingUserAnswers(maxedUserAnswers)
 
@@ -86,12 +90,14 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, mrn, mode, _ => maxedListItems, allowMoreEvents = false)(request, messages).toString
+          view(form(allowMoreEvents), mrn, mode, _ => maxedListItems, allowMoreEvents)(request, messages).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" - {
       "when max limit not reached" in {
+
+        val allowMoreEvents = true
 
         val userAnswers = emptyUserAnswers.setValue(AddEventPage, true)
         setExistingUserAnswers(userAnswers)
@@ -104,13 +110,15 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual OK
 
-        val filledForm = form.bind(Map("value" -> "true"))
+        val filledForm = form(allowMoreEvents).bind(Map("value" -> "true"))
 
         contentAsString(result) mustEqual
-          view(filledForm, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+          view(filledForm, mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
       }
 
       "when max limit reached" in {
+
+        val allowMoreEvents = false
 
         val userAnswers = maxedUserAnswers.setValue(AddEventPage, true)
         setExistingUserAnswers(userAnswers)
@@ -124,7 +132,7 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, mrn, mode, _ => maxedListItems, allowMoreEvents = false)(request, messages).toString
+          view(form(allowMoreEvents), mrn, mode, _ => maxedListItems, allowMoreEvents)(request, messages).toString
       }
     }
 
@@ -163,10 +171,12 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
 
+        val allowMoreEvents = true
+
         setExistingUserAnswers(emptyUserAnswers)
 
         val request   = FakeRequest(POST, addEventRoute).withFormUrlEncodedBody(("value", ""))
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form(allowMoreEvents).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
@@ -175,7 +185,7 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, mode, _ => Nil, allowMoreEvents = true)(request, messages).toString
+          view(boundForm, mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
       }
     }
 
