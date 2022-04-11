@@ -70,7 +70,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
       contentAsString(result) mustEqual
-        view("noEvent", onwardRoute.url, "event")(request, messages).toString
+        view(mrn, "noEvent", onwardRoute.url, "event")(request, messages).toString
 
       status(result) mustEqual NOT_FOUND
     }
@@ -91,7 +91,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
       contentAsString(result) mustEqual
-        view("multipleEvent", onwardRoute.url, "event")(request, messages).toString
+        view(mrn, "multipleEvent", onwardRoute.url, "event")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and call to remove event" in {

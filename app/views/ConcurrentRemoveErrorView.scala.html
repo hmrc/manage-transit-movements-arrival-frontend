@@ -21,11 +21,12 @@
     heading: Heading
 )
 
-@(linkText: String, redirectLink: String, journey: String)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, linkText: String, redirectLink: String, journey: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("concurrent.remove.error.title", messages(journey)),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn.toString)
 ) {
 
     @heading("concurrent.remove.error.heading", Seq(messages(journey)))

@@ -19,7 +19,6 @@ package controllers.events.seals
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import forms.events.seals.ConfirmRemoveSealFormProvider
-import javax.inject.Inject
 import models.domain.SealDomain
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber}
@@ -36,6 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import views.html.ConcurrentRemoveErrorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject() (
@@ -64,7 +64,7 @@ class ConfirmRemoveSealController @Inject() (
             val form = formProvider(seal)
             renderPage(mrn, eventIndex, sealIndex, mode, form, seal).map(Ok(_))
           case _ =>
-            renderErrorPage(eventIndex, mode)
+            renderErrorPage(mrn, eventIndex, mode)
         }
     }
 
@@ -88,7 +88,7 @@ class ConfirmRemoveSealController @Inject() (
                   }
               )
           case _ =>
-            renderErrorPage(eventIndex, mode)
+            renderErrorPage(mrn, eventIndex, mode)
         }
     }
 
@@ -107,10 +107,10 @@ class ConfirmRemoveSealController @Inject() (
 
   }
 
-  private def renderErrorPage(eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).contains(0)) "noSeal" else "multipleSeal"
     val redirectLink     = navigator.nextPage(ConfirmRemoveSealPage(eventIndex), mode, request.userAnswers).url
 
-    Future.successful(NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.seal")))
+    Future.successful(NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.seal")))
   }
 }

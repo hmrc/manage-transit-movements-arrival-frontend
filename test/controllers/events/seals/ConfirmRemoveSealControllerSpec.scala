@@ -88,7 +88,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual NOT_FOUND
 
       contentAsString(result) mustEqual
-        view("noSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
+        view(mrn, "noSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
     }
 
     "must return error page when there are multiple seals and user tries to remove the last seal that is already removed" in {
@@ -111,7 +111,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual NOT_FOUND
 
       contentAsString(result) mustEqual
-        view("multipleSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
+        view(mrn, "multipleSeal", onwardRoute.url, "concurrent.seal")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and seal is removed" in {

@@ -42,7 +42,7 @@ class ConfirmRemoveEventController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   actions: Actions,
-  view: ConfirmRemoveEventView
+  confirmRemoveEventView: ConfirmRemoveEventView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -50,8 +50,8 @@ class ConfirmRemoveEventController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       eventPlaceOrCountry(request.userAnswers, eventIndex) match {
-        case Some(placeOrCountry) => Ok(view(formProvider(placeOrCountry), mrn, eventIndex, mode, placeOrCountry))
-        case _                    => renderErrorPage(request.userAnswers, eventIndex, mode)
+        case Some(placeOrCountry) => Ok(confirmRemoveEventView(formProvider(placeOrCountry), mrn, eventIndex, mode, placeOrCountry))
+        case _                    => renderErrorPage(mrn, eventIndex, mode)
       }
   }
 
@@ -62,7 +62,7 @@ class ConfirmRemoveEventController @Inject() (
           formProvider(placeOrCountry)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode, placeOrCountry))),
+              formWithErrors => Future.successful(BadRequest(confirmRemoveEventView(formWithErrors, mrn, eventIndex, mode, placeOrCountry))),
               value =>
                 if (value) {
                   for {
@@ -73,7 +73,7 @@ class ConfirmRemoveEventController @Inject() (
                   Future.successful(Redirect(navigator.nextPage(ConfirmRemoveEventPage(eventIndex), mode, request.userAnswers)))
                 }
             )
-        case _ => Future.successful(renderErrorPage(request.userAnswers, eventIndex, mode))
+        case _ => Future.successful(renderErrorPage(mrn, eventIndex, mode))
       }
   }
 
@@ -83,10 +83,10 @@ class ConfirmRemoveEventController @Inject() (
       case _            => userAnswers.get(EventCountryPage(eventIndex)).map(_.code)
     }
 
-  private def renderErrorPage(userAnswers: UserAnswers, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
-    val redirectLinkText = if (userAnswers.get(DeriveNumberOfEvents).contains(0)) "noEvent" else "multipleEvent"
-    val redirectLink     = navigator.nextPage(ConfirmRemoveEventPage(eventIndex), mode, userAnswers).url
+  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+    val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfEvents).contains(0)) "noEvent" else "multipleEvent"
+    val redirectLink     = navigator.nextPage(ConfirmRemoveEventPage(eventIndex), mode, request.userAnswers).url
 
-    NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.event"))
+    NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.event"))
   }
 }

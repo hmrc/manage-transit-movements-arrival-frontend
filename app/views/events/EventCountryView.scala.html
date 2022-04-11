@@ -33,7 +33,8 @@
 
 @mainTemplate(
     title = messages("eventCountry.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn.toString)
 ) {
 
     @formHelper(action = EventCountryController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {

@@ -31,7 +31,8 @@
 
 @mainTemplate(
     title = messages("incidentInformation.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn.toString)
 ) {
 
     @formHelper(action = IncidentInformationController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
