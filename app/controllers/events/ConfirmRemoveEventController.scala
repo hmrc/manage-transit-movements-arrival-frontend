@@ -20,7 +20,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.ConfirmRemoveEventFormProvider
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.{ConfirmRemoveEventPage, EventCountryPage, EventPlacePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,27 +42,27 @@ class ConfirmRemoveEventController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   actions: Actions,
-  confirmRemoveEventView: ConfirmRemoveEventView
+  view: ConfirmRemoveEventView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      eventPlaceOrCountry(request.userAnswers, eventIndex) match {
-        case Some(placeOrCountry) => Ok(confirmRemoveEventView(formProvider(placeOrCountry), mrn, eventIndex, mode, placeOrCountry))
+      eventPlaceOrCountry(eventIndex) match {
+        case Some(placeOrCountry) => Ok(view(formProvider(placeOrCountry), mrn, eventIndex, mode, placeOrCountry))
         case _                    => renderErrorPage(mrn, eventIndex, mode)
       }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      eventPlaceOrCountry(request.userAnswers, eventIndex) match {
+      eventPlaceOrCountry(eventIndex) match {
         case Some(placeOrCountry) =>
           formProvider(placeOrCountry)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(confirmRemoveEventView(formWithErrors, mrn, eventIndex, mode, placeOrCountry))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode, placeOrCountry))),
               value =>
                 if (value) {
                   for {
@@ -77,11 +77,9 @@ class ConfirmRemoveEventController @Inject() (
       }
   }
 
-  private def eventPlaceOrCountry(userAnswers: UserAnswers, eventIndex: Index): Option[String] =
-    userAnswers.get(EventPlacePage(eventIndex)) match {
-      case Some(answer) => Some(answer)
-      case _            => userAnswers.get(EventCountryPage(eventIndex)).map(_.code)
-    }
+  private def eventPlaceOrCountry(eventIndex: Index)(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers.get(EventPlacePage(eventIndex)) orElse
+      request.userAnswers.get(EventCountryPage(eventIndex)).map(_.code)
 
   private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfEvents).contains(0)) "noEvent" else "multipleEvent"
