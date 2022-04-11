@@ -46,4 +46,6 @@ class ConfirmRemoveContainerViewSpec extends YesNoViewBehaviours with MessagesMo
   behave like pageWithHeading(containerDomain.containerNumber)
 
   behave like pageWithRadioItems(args = Seq(containerDomain.containerNumber))
+
+  behave like pageWithSubmitButton("Continue")
 }
