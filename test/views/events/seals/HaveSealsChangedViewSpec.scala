@@ -32,7 +32,7 @@ class HaveSealsChangedViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "haveSealsChanged"
 
-  pageWithTitle()
+  behave like pageWithTitle()
 
   behave like pageWithBackLink
 

@@ -32,7 +32,7 @@ class IsTranshipmentViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "isTranshipment"
 
-  pageWithTitle()
+  behave like pageWithTitle()
 
   behave like pageWithBackLink
 

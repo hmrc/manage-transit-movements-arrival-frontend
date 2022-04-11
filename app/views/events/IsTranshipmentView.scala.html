@@ -16,12 +16,11 @@
 
 @import controllers.events.routes._
 @import models.{MovementReferenceNumber, Index}
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
@@ -38,10 +37,10 @@
 
         @errorSummary(form.errors)
 
-         @inputYesNo(
+        @inputYesNo(
             field = form("value"),
             messageKeyPrefix = "isTranshipment",
-         )
+        )
 
         @button(attributes = Map("id" -> "submit"))
     }

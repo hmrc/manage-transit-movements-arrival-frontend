@@ -18,7 +18,7 @@
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     inputYesNo: InputYesNo,
@@ -28,7 +28,7 @@
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, traderName: String, traderAddress: Address)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("isTraderAddressPlaceOfNotification.title"),
     showBackLink = true,
     mrn = Some(mrn)
