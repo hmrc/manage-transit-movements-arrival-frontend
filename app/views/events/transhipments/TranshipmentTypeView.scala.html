@@ -1,0 +1,49 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.events.transhipments.routes
+@import views.html.components.{Button, ErrorSummary, InputRadio}
+@import models.{MovementReferenceNumber, TranshipmentType}
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    button: Button,
+    inputRadio: InputRadio,
+    errorSummary: ErrorSummary
+)
+
+@(form: Form[TranshipmentType], radios: (String, Option[TranshipmentType]) => Seq[RadioItem], mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("transhipmentType.title"),
+    showBackLink = true,
+    mrn = Some(mrn)
+) {
+
+    @formHelper(action = routes.TranshipmentTypeController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputRadio(
+            field = form("value"),
+            legend = messages("transhipmentType.heading"),
+            radioItems = fieldId => radios(fieldId, form.value)
+        )
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}
