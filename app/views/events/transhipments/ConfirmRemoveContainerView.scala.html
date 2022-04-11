@@ -14,35 +14,33 @@
  * limitations under the License.
  *@
 
-@import controllers.events.routes._
-@import views.html.components.{Button, ErrorSummary, InputTextArea}
-@import views.html.components.InputCharacterCount
-@import models.{MovementReferenceNumber, Index}
+@import controllers.events.transhipments.routes
+@import models.MovementReferenceNumber
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    button: Button,
-    inputCharacterCount: InputCharacterCount,
-    errorSummary: ErrorSummary
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, eventIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode, containerNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incidentInformation.title"),
+    title = messages("confirmRemoveContainer.title", containerNumber),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
-
-    @formHelper(action = IncidentInformationController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConfirmRemoveContainerController.onSubmit(mrn, eventIndex, containerIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputYesNo(
             field = form("value"),
-            label = messages("incidentInformation.heading"),
-            maxLength = Some(350)
+            messageKeyPrefix = "confirmRemoveContainer",
+            legendParams = Seq(containerNumber)
         )
 
         @button(attributes = Map("id" -> "submit"))

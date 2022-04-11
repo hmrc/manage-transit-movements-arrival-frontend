@@ -19,91 +19,61 @@ package controllers.events.transhipments
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.events.transhipments.{routes => transhipmentRoutes}
 import forms.events.transhipments.TranshipmentTypeFormProvider
-import matchers.JsonMatchers
 import models.{NormalMode, TranshipmentType}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.events.transhipments.TranshipmentTypePage
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.transhipments.TranshipmentTypeView
 
 import scala.concurrent.Future
 
-class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  lazy val transhipmentTypeRoute: String = transhipmentRoutes.TranshipmentTypeController.onPageLoad(mrn, eventIndex, NormalMode).url
+  private val mode = NormalMode
 
-  val formProvider                 = new TranshipmentTypeFormProvider()
-  val form: Form[TranshipmentType] = formProvider()
+  private lazy val transhipmentTypeRoute: String = transhipmentRoutes.TranshipmentTypeController.onPageLoad(mrn, eventIndex, mode).url
 
-  private val transhipmentTypeTemplate = "events/transhipments/transhipmentType.njk"
+  private val formProvider                 = new TranshipmentTypeFormProvider()
+  private val form: Form[TranshipmentType] = formProvider()
 
   "TranshipmentType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, transhipmentTypeRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, transhipmentTypeRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[TranshipmentTypeView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> TranshipmentType.radios(form),
-        "onSubmitUrl" -> routes.TranshipmentTypeController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual transhipmentTypeTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, TranshipmentType.radioItems, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = emptyUserAnswers.set(TranshipmentTypePage(eventIndex), TranshipmentType.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, transhipmentTypeRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, transhipmentTypeRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
+      val view = injector.instanceOf[TranshipmentTypeView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      status(result) mustEqual OK
 
       val filledForm = form.bind(Map("value" -> TranshipmentType.values.head.toString))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> TranshipmentType.radios(filledForm),
-        "onSubmitUrl" -> routes.TranshipmentTypeController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual transhipmentTypeTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, TranshipmentType.radioItems, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -112,9 +82,8 @@ class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, transhipmentTypeRoute)
-          .withFormUrlEncodedBody(("value", TranshipmentType.values.head.toString))
+      val request = FakeRequest(POST, transhipmentTypeRoute)
+        .withFormUrlEncodedBody(("value", TranshipmentType.values.head.toString))
 
       val result = route(app, request).value
 
@@ -125,32 +94,19 @@ class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, transhipmentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, transhipmentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[TranshipmentTypeView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> TranshipmentType.radios(boundForm),
-        "onSubmitUrl" -> routes.TranshipmentTypeController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual transhipmentTypeTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, TranshipmentType.radioItems, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -169,9 +125,8 @@ class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, transhipmentTypeRoute)
-          .withFormUrlEncodedBody(("value", TranshipmentType.values.head.toString))
+      val request = FakeRequest(POST, transhipmentTypeRoute)
+        .withFormUrlEncodedBody(("value", TranshipmentType.values.head.toString))
 
       val result = route(app, request).value
 

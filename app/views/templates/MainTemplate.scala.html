@@ -40,7 +40,7 @@
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
     showBackLink: Boolean = false,
-    mrn: Option[String] = None
+    mrn: Option[MovementReferenceNumber] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -48,7 +48,7 @@
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout = Some(appConfig.timeoutSeconds),
             countdown = Some(appConfig.countdownSeconds),
-            keepAliveUrl = Some(routes.KeepAliveController.keepAlive(mrn).url),
+            keepAliveUrl = Some(routes.KeepAliveController.keepAlive(mrn.map(_.toString)).url),
             signOutUrl = Some(appConfig.signOutUrl)
         ))
     }

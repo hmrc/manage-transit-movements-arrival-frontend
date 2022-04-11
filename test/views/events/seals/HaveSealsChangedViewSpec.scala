@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package views.events
+package views.events.seals
 
-import forms.events.IsTranshipmentFormProvider
+import forms.events.seals.HaveSealsChangedFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.events.IsTranshipmentView
+import views.html.events.seals.HaveSealsChangedView
 
-class IsTranshipmentViewSpec extends YesNoViewBehaviours {
+class HaveSealsChangedViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[Boolean] = new IsTranshipmentFormProvider()()
+  override def form: Form[Boolean] = new HaveSealsChangedFormProvider()()
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[IsTranshipmentView].apply(form, mrn, NormalMode, eventIndex)(fakeRequest, messages)
+    injector.instanceOf[HaveSealsChangedView].apply(form, mrn, eventIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "isTranshipment"
+  override val prefix: String = "haveSealsChanged"
 
   behave like pageWithTitle()
 

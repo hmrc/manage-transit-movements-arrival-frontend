@@ -18,89 +18,61 @@ package controllers.events.seals
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.seals.HaveSealsChangedFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.events.seals.HaveSealsChangedPage
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.events.seals.HaveSealsChangedView
 
 import scala.concurrent.Future
 
-class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider        = new HaveSealsChangedFormProvider()
   val form: Form[Boolean] = formProvider()
 
-  lazy val haveSealsChangedRoute: String = routes.HaveSealsChangedController.onPageLoad(mrn, eventIndex, NormalMode).url
+  private val mode = NormalMode
+
+  lazy val haveSealsChangedRoute: String = routes.HaveSealsChangedController.onPageLoad(mrn, eventIndex, mode).url
 
   "HaveSealsChanged Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, haveSealsChangedRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, haveSealsChangedRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[HaveSealsChangedView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(form("value")),
-        "onSubmitUrl" -> routes.HaveSealsChangedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/seals/haveSealsChanged.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = emptyUserAnswers.set(HaveSealsChangedPage(eventIndex), true).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, haveSealsChangedRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, haveSealsChangedRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[HaveSealsChangedView]
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(filledForm("value")),
-        "onSubmitUrl" -> routes.HaveSealsChangedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/seals/haveSealsChanged.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -109,9 +81,8 @@ class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, haveSealsChangedRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, haveSealsChangedRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -122,32 +93,19 @@ class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, haveSealsChangedRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, haveSealsChangedRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[HaveSealsChangedView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(boundForm("value")),
-        "onSubmitUrl" -> routes.HaveSealsChangedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/seals/haveSealsChanged.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -167,9 +125,8 @@ class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, haveSealsChangedRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, haveSealsChangedRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

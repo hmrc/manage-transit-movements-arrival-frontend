@@ -14,35 +14,32 @@
  * limitations under the License.
  *@
 
-@import controllers.events.routes._
-@import views.html.components.{Button, ErrorSummary, InputTextArea}
-@import views.html.components.InputCharacterCount
-@import models.{MovementReferenceNumber, Index}
+@import controllers.events.seals.routes
+@import models.{MovementReferenceNumber, GoodsLocation}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    button: Button,
-    inputCharacterCount: InputCharacterCount,
-    errorSummary: ErrorSummary
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, eventIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incidentInformation.title"),
+    title = messages("haveSealsChanged.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
-
-    @formHelper(action = IncidentInformationController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.HaveSealsChangedController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputYesNo(
             field = form("value"),
-            label = messages("incidentInformation.heading"),
-            maxLength = Some(350)
+            messageKeyPrefix = "haveSealsChanged"
         )
 
         @button(attributes = Map("id" -> "submit"))

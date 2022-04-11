@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary}
-@import views.html.components.InputText
+@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.MovementReferenceNumber
 
 @this(
@@ -30,7 +29,8 @@
 
 @mainTemplate(
     title = messages("placeOfNotification.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.PlaceOfNotificationController.onSubmit(mrn, mode), 'autoComplete -> "off") {
