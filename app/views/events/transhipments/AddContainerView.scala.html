@@ -44,7 +44,7 @@
 @mainTemplate(
     title = messages(s"addContainer.$singularOrPlural.title", listItems.length),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
 
     @errorSummary(form.errors)

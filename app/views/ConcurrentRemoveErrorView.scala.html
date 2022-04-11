@@ -26,7 +26,7 @@
 @main_template(
     title = messages("concurrent.remove.error.title", messages(journey)),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
 
     @heading("concurrent.remove.error.heading", Seq(messages(journey)))

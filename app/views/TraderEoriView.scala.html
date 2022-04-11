@@ -31,7 +31,7 @@
 @mainTemplate(
     title = messages("traderEori.title"),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.TraderEoriController.onSubmit(mrn, mode), 'autoComplete -> "off") {

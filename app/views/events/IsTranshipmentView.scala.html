@@ -32,7 +32,7 @@
 @mainTemplate(
     title = messages("isTranshipment.title"),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
     @formHelper(action = IsTranshipmentController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 

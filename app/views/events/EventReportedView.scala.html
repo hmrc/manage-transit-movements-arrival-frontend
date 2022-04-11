@@ -31,7 +31,7 @@
 @main_template(
     title = messages("eventReported.title"),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
     @formHelper(action = controllers.events.routes.EventReportedController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 

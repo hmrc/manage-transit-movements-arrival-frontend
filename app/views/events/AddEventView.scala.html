@@ -61,7 +61,7 @@
 @mainTemplate(
     title = messages(s"addEvent.$singularOrPlural.title", listItems.length),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
 
     @errorSummary(form.errors)

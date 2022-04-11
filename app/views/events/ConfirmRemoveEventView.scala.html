@@ -31,7 +31,7 @@
 @main_template(
     title = messages("confirmRemoveEvent.title", eventTitle),
     showBackLink = true,
-    mrn = Some(mrn.toString)
+    mrn = Some(mrn)
 ) {
     @formHelper(action = controllers.events.routes.ConfirmRemoveEventController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 
