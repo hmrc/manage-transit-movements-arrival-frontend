@@ -21,8 +21,7 @@ import controllers.events.seals.routes._
 import models.domain.SealDomain
 import models.{CheckMode, Mode}
 import pages.events.seals.SealIdentityPage
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddSealHelperSpec extends SpecBase {
 
@@ -32,13 +31,13 @@ class AddSealHelperSpec extends SpecBase {
 
     val seal = SealDomain("NUMBER")
 
-    ".sealRow" - {
+    ".sealListItem" - {
 
       "must return None" - {
         "when SealIdentityPage undefined" in {
 
           val helper = new AddSealHelper(emptyUserAnswers, mode)
-          helper.sealRow(eventIndex, sealIndex) mustBe None
+          helper.sealListItem(eventIndex, sealIndex) mustBe None
         }
       }
 
@@ -46,32 +45,14 @@ class AddSealHelperSpec extends SpecBase {
         "when SealIdentityPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(SealIdentityPage(eventIndex, sealIndex), seal)
-            .success
-            .value
+            .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
           val helper = new AddSealHelper(answers, mode)
-          helper.sealRow(eventIndex, sealIndex) mustBe Some(
-            Row(
-              key = Key(
-                content = Literal(seal.numberOrMark),
-                classes = Nil
-              ),
-              value = Value(Literal("")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,
-                  visuallyHiddenText = Some(Literal(seal.numberOrMark)),
-                  attributes = Map("id" -> s"change-seal-${sealIndex.display}")
-                ),
-                Action(
-                  content = Message("site.delete"),
-                  href = ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,
-                  visuallyHiddenText = Some(Literal(seal.numberOrMark)),
-                  attributes = Map("id" -> s"remove-seal-${sealIndex.display}")
-                )
-              )
+          helper.sealListItem(eventIndex, sealIndex) mustBe Some(
+            ListItem(
+              name = seal.numberOrMark,
+              changeUrl = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,
+              removeUrl = ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, sealIndex, mode).url
             )
           )
         }

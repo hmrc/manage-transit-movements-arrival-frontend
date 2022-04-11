@@ -16,40 +16,19 @@
 
 package models
 
-import play.api.data.Form
-import uk.gov.hmrc.viewmodels._
-
 sealed trait TranshipmentType
 
-object TranshipmentType extends Enumerable.Implicits {
+object TranshipmentType extends RadioModel[TranshipmentType] {
 
   case object DifferentContainer extends WithName("differentContainer") with TranshipmentType
   case object DifferentVehicle extends WithName("differentVehicle") with TranshipmentType
   case object DifferentContainerAndVehicle extends WithName("differentContainerAndVehicle") with TranshipmentType
 
-  val values: Seq[TranshipmentType] = Seq(
+  override val messageKeyPrefix: String = "transhipmentType"
+
+  override val values: Seq[TranshipmentType] = Seq(
     DifferentContainer,
     DifferentVehicle,
     DifferentContainerAndVehicle
   )
-
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-
-    val field = form("value")
-    val items = values
-      .map(_.toString)
-      .map(
-        optionName => (msg"transhipmentType.$optionName", optionName)
-      )
-      .map(Radios.Radio.tupled)
-
-    Radios(field, items)
-  }
-
-  implicit val enumerable: Enumerable[TranshipmentType] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
 }

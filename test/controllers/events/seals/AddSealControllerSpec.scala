@@ -18,142 +18,176 @@ package controllers.events.seals
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.seals.AddSealFormProvider
-import matchers.JsonMatchers
 import models.domain.SealDomain
-import models.{Index, Mode, NormalMode}
-import org.mockito.ArgumentCaptor
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import pages.events.seals.SealIdentityPage
-import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import org.mockito.Mockito.when
+import pages.events.seals.{AddSealPage, SealIdentityPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.AddSealHelper
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import views.html.events.seals.AddSealView
 
 import scala.concurrent.Future
 
-class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider        = new AddSealFormProvider()
-  val form: Form[Boolean] = formProvider(true)
-  val mode: Mode          = NormalMode
+  private val formProvider                  = new AddSealFormProvider()
+  private def form(allowMoreSeals: Boolean) = formProvider(allowMoreSeals)
 
-  lazy val addSealRoute: String = routes.AddSealController.onPageLoad(mrn, eventIndex, mode).url
+  private val mode = NormalMode
+
+  private lazy val addSealRoute = routes.AddSealController.onPageLoad(mrn, eventIndex, mode).url
+
+  private val range = 0 to 2
+
+  private val maxedUserAnswers = range.foldLeft(emptyUserAnswers) {
+    (acc, i) =>
+      acc.setValue(SealIdentityPage(eventIndex, Index(i)), SealDomain(s"$i"))
+  }
+
+  private lazy val maxedListItems = range.map {
+    i =>
+      ListItem(
+        name = s"$i",
+        changeUrl = routes.SealIdentityController.onPageLoad(mrn, eventIndex, Index(i), mode).url,
+        removeUrl = routes.ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, Index(i), mode).url
+      )
+  }
 
   "AddSeal Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        val allowMoreSeals = true
 
-      val ua = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), sealDomain).success.value
-      setExistingUserAnswers(ua)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addSealRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val request = FakeRequest(GET, addSealRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[AddSealView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        status(result) mustEqual OK
 
-      val expectedJson = Json.obj(
-        "form"           -> form,
-        "mode"           -> mode,
-        "mrn"            -> mrn,
-        "pageTitle"      -> messages("addSeal.title.singular", 1),
-        "heading"        -> messages("addSeal.heading.singular", 1),
-        "seals"          -> Json.toJson(Seq(AddSealHelper.apply(ua, mode).sealRow(eventIndex, sealIndex).value)),
-        "radios"         -> Radios.yesNo(form("value")),
-        "allowMoreSeals" -> true,
-        "onSubmitUrl"    -> routes.AddSealController.onSubmit(mrn, eventIndex, mode).url
-      )
+        contentAsString(result) mustEqual
+          view(form(allowMoreSeals), mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreSeals)(request, messages).toString
+      }
 
-      templateCaptor.getValue mustEqual "events/seals/addSeal.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      "when max limit reached" in {
+
+        val allowMoreSeals = false
+
+        setExistingUserAnswers(maxedUserAnswers)
+
+        val request = FakeRequest(GET, addSealRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddSealView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMoreSeals), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreSeals)(request, messages).toString
+      }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val allowMoreSeals = true
 
-      val request =
-        FakeRequest(POST, addSealRoute)
+        val userAnswers = emptyUserAnswers.setValue(AddSealPage(eventIndex), true)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addSealRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddSealView]
+
+        status(result) mustEqual OK
+
+        val filledForm = form(allowMoreSeals).bind(Map("value" -> "true"))
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreSeals)(request, messages).toString
+      }
+
+      "when max limit reached" in {
+
+        val allowMoreSeals = false
+
+        val userAnswers = maxedUserAnswers.setValue(AddSealPage(eventIndex), true)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addSealRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddSealView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMoreSeals), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreSeals)(request, messages).toString
+      }
+    }
+
+    "must redirect to the next page" - {
+      "when valid data is submitted and max limit not reached" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addSealRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
 
-    "must redirect to the next page when invalid data but we have the max containers" in {
+      "when max limit reached" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
-        .set(SealIdentityPage(Index(0), Index(0)), SealDomain("12345"))
-        .success
-        .value
-        .set(SealIdentityPage(Index(0), Index(1)), SealDomain("12345"))
-        .success
-        .value
-        .set(SealIdentityPage(Index(0), Index(2)), SealDomain("12345"))
-        .success
-        .value
+        setExistingUserAnswers(maxedUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request =
-        FakeRequest(POST, addSealRoute)
+        val request = FakeRequest(POST, addSealRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-      val ua = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), sealDomain).success.value
-      setExistingUserAnswers(ua)
+        val allowMoreSeals = true
 
-      val request        = FakeRequest(POST, addSealRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val result = route(app, request).value
+        val request   = FakeRequest(POST, addSealRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form(allowMoreSeals).bind(Map("value" -> ""))
 
-      status(result) mustEqual BAD_REQUEST
+        val result = route(app, request).value
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        val view = injector.instanceOf[AddSealView]
 
-      val expectedJson = Json.obj(
-        "form"           -> boundForm,
-        "mode"           -> mode,
-        "mrn"            -> mrn,
-        "pageTitle"      -> messages("addSeal.title.singular", 1),
-        "heading"        -> messages("addSeal.heading.singular", 1),
-        "seals"          -> Json.toJson(Seq(AddSealHelper.apply(ua, mode).sealRow(eventIndex, sealIndex).value)),
-        "radios"         -> Radios.yesNo(boundForm("value")),
-        "allowMoreSeals" -> true,
-        "onSubmitUrl"    -> routes.AddSealController.onSubmit(mrn, eventIndex, mode).url
-      )
+        status(result) mustEqual BAD_REQUEST
 
-      templateCaptor.getValue mustEqual "events/seals/addSeal.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+        contentAsString(result) mustEqual
+          view(boundForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreSeals)(request, messages).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -173,9 +207,8 @@ class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, addSealRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addSealRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

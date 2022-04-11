@@ -17,17 +17,15 @@
 package controllers.actions
 
 import models.MovementReferenceNumber
-import models.requests.{DataRequest, OptionalDataRequest, SpecificDataRequest}
+import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
-import queries.Gettable
 
 import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction,
-  specificDataRequiredActionProvider: SpecificDataRequiredActionProvider
+  dataRequiredAction: DataRequiredAction
 ) {
 
   def getData(mrn: MovementReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -35,7 +33,4 @@ class Actions @Inject() (
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction
-
-  def requireSpecificData(mrn: MovementReferenceNumber, page: Gettable[String]): ActionBuilder[SpecificDataRequest, AnyContent] =
-    requireData(mrn) andThen specificDataRequiredActionProvider(page)
 }

@@ -16,6 +16,7 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
 trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
@@ -29,7 +30,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def pageWithRadioItems(
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
-    args: Seq[String] = Nil,
+    args: Seq[Any] = Nil,
     legendIsVisible: Boolean = true
   ): Unit =
     "page with a radio question" - {
@@ -110,4 +111,15 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
       assertNotRenderedById(doc, "error-summary_header")
     }
   }
+
+  def pageWithoutRadioItems(doc: Document): Unit =
+    "page without radio items" - {
+      "must not render radio inputs" in {
+        assertElementDoesNotExist(doc, "govuk-radios__input")
+      }
+
+      "must not render a hint" in {
+        assertElementDoesNotExist(doc, "govuk-hint")
+      }
+    }
 }

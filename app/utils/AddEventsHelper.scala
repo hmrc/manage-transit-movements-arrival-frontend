@@ -19,36 +19,35 @@ package utils
 import controllers.events.{routes => eventRoutes}
 import models.{Index, Mode, UserAnswers}
 import pages.events._
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import uk.gov.hmrc.viewmodels._
 
 class AddEventsHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
 
-  def listOfEvent(eventIndex: Index): Option[Row] =
+  def eventListItem(eventIndex: Index): Option[ListItem] =
     placeOfEvent(eventIndex).map {
       answer =>
-        buildRemovableRow(
-          label = lit"$answer",
-          id = s"event-${eventIndex.display}",
-          changeCall = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
-          removeCall = eventRoutes.ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode)
+        ListItem(
+          name = answer,
+          changeUrl = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
+          removeUrl = eventRoutes.ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode).url
         )
     }
 
-  // format: off
   def cyaListOfEvent(eventIndex: Index): Option[Row] =
     placeOfEvent(eventIndex) map {
       answer =>
         buildSimpleRow(
           prefix = "addEvent",
-          label  = msg"addEvent.event.label".withArgs(eventIndex.display),
+          label = msg"addEvent.event.label".withArgs(eventIndex.display),
           answer = lit"$answer",
-          id     = None,
-          call   = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
-          args   = eventIndex.display, answer
+          id = None,
+          call = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
+          args = eventIndex.display,
+          answer
         )
     }
-  // format: on
 
   private def placeOfEvent(eventIndex: Index): Option[String] =
     userAnswers.get(EventPlacePage(eventIndex)) orElse

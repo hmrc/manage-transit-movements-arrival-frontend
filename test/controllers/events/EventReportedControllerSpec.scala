@@ -18,27 +18,25 @@ package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.EventReportedFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.events.EventReportedPage
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.events.EventReportedView
 
 import scala.concurrent.Future
 
-class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider        = new EventReportedFormProvider()
-  val form: Form[Boolean] = formProvider()
+  private val formProvider        = new EventReportedFormProvider()
+  private val form: Form[Boolean] = formProvider()
+  private val mode                = NormalMode
 
-  lazy val eventReportedRoute: String = routes.EventReportedController.onPageLoad(mrn, eventIndex, NormalMode).url
+  lazy val eventReportedRoute: String = routes.EventReportedController.onPageLoad(mrn, eventIndex, mode).url
 
   "EventReported Controller" - {
 
@@ -49,26 +47,16 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, eventReportedRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, eventReportedRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[EventReportedView]
 
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(form("value")),
-        "onSubmitUrl" -> routes.EventReportedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/eventReported.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -79,28 +67,18 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val userAnswers = emptyUserAnswers.set(EventReportedPage(eventIndex), true).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, eventReportedRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, eventReportedRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(filledForm("value")),
-        "onSubmitUrl" -> routes.EventReportedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
+      val view = injector.instanceOf[EventReportedView]
 
-      templateCaptor.getValue mustEqual "events/eventReported.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -127,27 +105,17 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, eventReportedRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, eventReportedRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[EventReportedView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(boundForm("value")),
-        "onSubmitUrl" -> routes.EventReportedController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "events/eventReported.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

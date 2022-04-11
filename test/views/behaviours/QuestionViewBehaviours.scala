@@ -28,6 +28,8 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable = applyView(form)
 
+  override val urlContainsMrn: Boolean = true
+
   val errorMessage: String = "error"
 
   private def formWithError(errorKey: String): Form[T]               = form.withError(FormError(errorKey, errorMessage))
@@ -37,7 +39,7 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours {
   "when there are form errors" - {
     "must render error prefix in title" in {
       val title = docWithError().title()
-      title mustBe s"Error: ${messages(s"$prefix.title")} - Manage your transit movements - GOV.UK"
+      title must startWith("Error: ")
     }
   }
 }

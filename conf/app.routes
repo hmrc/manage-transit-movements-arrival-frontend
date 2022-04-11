@@ -2,8 +2,8 @@
 
 GET        /assets/*file                                     controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /keep-alive                                      controllers.KeepAliveController.keepAlive(mrn: Option[String] = None)
-GET         /:mrn/keep-alive                                 controllers.KeepAliveController.keepAlive(mrn: Option[String])
+GET        /keep-alive                                       controllers.KeepAliveController.keepAlive(mrn: Option[String] = None)
+GET        /:mrn/keep-alive                                  controllers.KeepAliveController.keepAlive(mrn: Option[String])
 
 GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
 POST       /this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit()
@@ -18,6 +18,7 @@ GET        /internal-server-error                            controllers.ErrorCo
 GET        /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPageLoad(mrn: MovementReferenceNumber)
 POST       /:mrn/check-your-answers-arrival                  controllers.CheckYourAnswersController.onPost(mrn: MovementReferenceNumber)
 
+GET        /unauthorised-group-access                        controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 GET        /cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
 
 GET        /movement-reference-number                        controllers.MovementReferenceNumberController.onPageLoad()

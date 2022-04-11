@@ -20,12 +20,12 @@
 @this(govukTextarea: GovukTextarea)
 
 @(
-        field: Field,
-        label: String,
-        caption: Option[String] = None,
-        inputClass: Option[String] = None,
-        hint: Option[String] = None,
-        rows: Int = 5
+    field: Field,
+    label: String,
+    caption: Option[String] = None,
+    inputClass: Option[String] = None,
+    hint: Option[String] = None,
+    rows: Int = 5
 )(implicit messages: Messages)
 
 @govukTextarea(
@@ -42,5 +42,4 @@
     )
     .withFormField(field)
     .withHeadingAndCaption(label, caption)
-
 )

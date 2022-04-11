@@ -18,18 +18,18 @@
 @import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate,
-        heading: Heading,
-        config: FrontendAppConfig
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    config: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("pageNotFound.title"),
     showBackLink = true
 ) {
-    @heading(messages("pageNotFound.heading"))
+    @heading("pageNotFound.heading")
 
     <p class="govuk-body">@messages("pageNotFound.paragraph1")</p>
     <p class="govuk-body">@messages("pageNotFound.paragraph2")</p>

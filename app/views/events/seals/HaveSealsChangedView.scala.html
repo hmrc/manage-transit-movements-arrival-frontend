@@ -14,33 +14,32 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary}
-@import views.html.components.InputText
-@import models.MovementReferenceNumber
+@import controllers.events.seals.routes
+@import models.{MovementReferenceNumber, GoodsLocation}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    button: Button,
-    inputText: InputText,
-    errorSummary: ErrorSummary
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, consigneeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("eoriNumber.title"),
-    showBackLink = true
+    title = messages("haveSealsChanged.title"),
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
-
-    @formHelper(action = routes.ConsigneeEoriNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.HaveSealsChangedController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputYesNo(
             field = form("value"),
-            label = messages("eoriNumber.heading", consigneeName),
-            hint = Some(messages("eoriNumber.hint"))
+            messageKeyPrefix = "haveSealsChanged"
         )
 
         @button(attributes = Map("id" -> "submit"))

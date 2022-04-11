@@ -20,15 +20,13 @@ import controllers.events.seals.routes._
 import models.domain.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.events.seals._
-import uk.gov.hmrc.viewmodels.SummaryList.Row
-import uk.gov.hmrc.viewmodels._
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddSealHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
 
-  def sealRow(eventIndex: Index, sealIndex: Index): Option[Row] = getAnswerAndBuildRemovableRow[SealDomain](
+  def sealListItem(eventIndex: Index, sealIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
-    formatAnswer = seal => lit"${seal.numberOrMark}",
-    id = s"seal-${sealIndex.display}",
+    formatAnswer = _.numberOrMark,
     changeCall = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode),
     removeCall = ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, sealIndex, mode)
   )

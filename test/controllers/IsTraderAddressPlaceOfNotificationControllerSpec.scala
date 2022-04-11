@@ -60,8 +60,8 @@ class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with App
 
       val userAnswers = emptyUserAnswers
         .setValue(TraderNamePage, traderName)
-        .setValue(IsTraderAddressPlaceOfNotificationPage, true)
         .setValue(TraderAddressPage, traderAddress)
+        .setValue(IsTraderAddressPlaceOfNotificationPage, true)
 
       setExistingUserAnswers(userAnswers)
 
@@ -83,12 +83,14 @@ class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with App
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.setValue(TraderAddressPage, traderAddress)
+      val userAnswers = emptyUserAnswers
+        .setValue(TraderNamePage, traderName)
+        .setValue(TraderAddressPage, traderAddress)
+
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -140,9 +142,8 @@ class IsTraderAddressPlaceOfNotificationControllerSpec extends SpecBase with App
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, isTraderAddressPlaceOfNotificationRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

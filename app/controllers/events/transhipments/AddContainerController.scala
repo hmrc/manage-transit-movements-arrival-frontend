@@ -20,81 +20,69 @@ import config.FrontendAppConfig
 import controllers.actions._
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.AddContainerFormProvider
-import javax.inject.Inject
-import models.{Index, Mode, MovementReferenceNumber, UserAnswers}
+import models.requests.DataRequest
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.transhipments.AddContainerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import viewModels.AddContainerViewModel
+import utils.AddContainerHelper
+import views.html.events.transhipments.AddContainerView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddContainerController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: AddContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: AddContainerView,
   config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val form = formProvider(allowMoreContainers(request.userAnswers, eventIndex))
-      val json = Json.obj(
-        "form"                -> form,
-        "mode"                -> mode,
-        "mrn"                 -> mrn,
-        "radios"              -> Radios.yesNo(form("value")),
-        "allowMoreContainers" -> allowMoreContainers(request.userAnswers, eventIndex),
-        "onSubmitUrl"         -> routes.AddContainerController.onSubmit(mrn, eventIndex, mode).url
-      ) ++ Json.toJsObject {
-        AddContainerViewModel(eventIndex, request.userAnswers, mode)
+      val form = formProvider(allowMoreContainers(eventIndex))
+      val preparedForm = request.userAnswers.get(AddContainerPage(eventIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
 
-      renderer.render("events/transhipments/addContainer.njk", json).map(Ok(_))
+      Ok(view(preparedForm, mrn, eventIndex, mode, containers, allowMoreContainers))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      formProvider(allowMoreContainers(request.userAnswers, eventIndex))
+      formProvider(allowMoreContainers(eventIndex))
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"                -> formWithErrors,
-              "mode"                -> mode,
-              "mrn"                 -> mrn,
-              "radios"              -> Radios.yesNo(formWithErrors("value")),
-              "allowMoreContainers" -> allowMoreContainers(request.userAnswers, eventIndex),
-              "onSubmitUrl"         -> routes.AddContainerController.onSubmit(mrn, eventIndex, mode).url
-            ) ++ Json.toJsObject {
-              AddContainerViewModel(eventIndex, request.userAnswers, mode)
-            }
-
-            renderer.render("events/transhipments/addContainer.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode, containers, allowMoreContainers))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddContainerPage(eventIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddContainerPage(eventIndex), mode, updatedAnswers))
         )
   }
 
-  private def allowMoreContainers(ua: UserAnswers, eventIndex: Index): Boolean =
-    ua.get(DeriveNumberOfContainers(eventIndex)).getOrElse(0) < config.maxContainers
+  private def containers(eventIndex: Index, mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
+    val addContainerHelper = new AddContainerHelper(request.userAnswers, mode)
+    (0 to numberOfContainers(eventIndex)) flatMap {
+      x => addContainerHelper.containerListItem(eventIndex, Index(x))
+    }
+  }
+
+  private def allowMoreContainers(eventIndex: Index)(implicit request: DataRequest[_]): Boolean =
+    numberOfContainers(eventIndex) < config.maxContainers
+
+  private def numberOfContainers(eventIndex: Index)(implicit request: DataRequest[_]): Int =
+    request.userAnswers.get(DeriveNumberOfContainers(eventIndex)).getOrElse(0)
 }

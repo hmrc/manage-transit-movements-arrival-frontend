@@ -212,6 +212,7 @@ eventCountry.checkYourAnswersLabel = Which country were the goods in when the ev
 eventCountry.change.hidden = which country the goods were in when the event happened
 eventCountry.error.required = Enter which country the goods were in when the event happened
 eventCountry.error.length = Country must be 2 characters or less
+eventCountry.placeholder = Select a country
 
 eventPlace.title = Where did the event happen?
 eventPlace.heading = Where did the event happen?
@@ -273,12 +274,13 @@ placeOfNotification.error.invalid =  Where you are completing this arrival notif
 placeOfNotification.error.length = Where are you completing this arrival notification must be 35 characters or less
 placeOfNotification.change.hidden = where you are completing this arrival notification
 
-addEvent.title.singular = You have added {0} event
-addEvent.title.plural = You have added {0} events
-addEvent.heading.singular = You have added {0} event
-addEvent.heading.plural = You have added {0} events
+addEvent.singular.title = You have added {0} event
+addEvent.plural.title = You have added {0} events
+addEvent.singular.heading = You have added {0} event
+addEvent.plural.heading = You have added {0} events
 addEvent.event.label = Event {0}
 addEvent.radio.label = Do you need to add another event?
+addEvent.label = Do you need to add another event?
 addEvent.hintText.tad = It should be recorded on the transit accompanying document (TAD).
 addEvent.hintText.tell_us = Tell us if:
 addEvent.hintText.accident = there was an accident
@@ -327,9 +329,11 @@ containerNumber.error.invalid = New container number must only include letters a
 containerNumber.change.hidden = container {0}
 containerNumber.error.duplicate = Enter a container number you have not given before
 
-addContainer.title.singular = You have added {0} container
-addContainer.title.plural = You have added {0} containers
-addContainer.radio.label = Do you need to add another container?
+addContainer.singular.title = You have added {0} container
+addContainer.plural.title = You have added {0} containers
+addContainer.singular.heading = You have added {0} container
+addContainer.plural.heading = You have added {0} containers
+addContainer.label = Do you need to add another container?
 addContainer.checkYourAnswersLabel = You have added {0} containers
 addContainer.error.required = Select yes if you need to add another container
 addContainer.containerList.label = Container {0}
@@ -350,11 +354,11 @@ sealIdentity.error.invalid = The new official customs seal number must only incl
 sealIdentity.error.duplicate = Enter an official customs seal number or mark you have not given before
 sealIdentity.change.hidden = official customs seal {0}
 
-addSeal.title.singular = You have added {0} official customs seal
-addSeal.title.plural = You have added {0} official customs seals
-addSeal.heading.singular = You have added {0} official customs seal
-addSeal.heading.plural = You have added {0} official customs seals
-addSeal.radio.label = Do you need to add another official customs seal?
+addSeal.singular.title = You have added {0} official customs seal
+addSeal.plural.title = You have added {0} official customs seals
+addSeal.singular.heading = You have added {0} official customs seal
+addSeal.plural.heading = You have added {0} official customs seals
+addSeal.label = Do you need to add another official customs seal?
 addSeal.checkYourAnswersLabel = You have added {0} official customs seals
 addSeal.error.required = Select yes if you need to add another official customs seal
 addSeal.sealList.heading = Official customs seals
@@ -444,5 +448,5 @@ pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpd
 
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
-unauthorisedWithGroupAccess.p = If you already have access, you must contact your group administrator to update your access rights.
+unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 

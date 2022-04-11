@@ -28,11 +28,13 @@ class ConcurrentRemoveErrorViewSpec extends ViewBehaviours {
   private val journeyText  = "event"
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[ConcurrentRemoveErrorView].apply(linkText, redirectLink, journey)(fakeRequest, messages)
+    injector.instanceOf[ConcurrentRemoveErrorView].apply(mrn, linkText, redirectLink, journey)(fakeRequest, messages)
 
   override val prefix: String = "concurrent.remove.error"
 
-  override val pageTitleArgs = List(journeyText)
+  override val urlContainsMrn: Boolean = true
+
+  behave like pageWithTitle(journeyText)
 
   behave like pageWithBackLink
 

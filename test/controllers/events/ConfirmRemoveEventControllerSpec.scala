@@ -18,63 +18,42 @@ package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.ConfirmRemoveEventFormProvider
-import matchers.JsonMatchers
 import models.{Index, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import pages.events.EventPlacePage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import queries.EventQuery
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import views.html.ConcurrentRemoveErrorView
+import views.html.events.ConfirmRemoveEventView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val eventTitle   = "eventTitle"
-  private val formProvider = new ConfirmRemoveEventFormProvider()
-  private val form         = formProvider(eventTitle)
-
-  private lazy val confirmRemoveEventRoute = routes.ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, NormalMode).url
-  private val confirmRemoveEventTemplate   = "events/confirmRemoveEvent.njk"
-
-  private val userAnswersWithEventPlace = emptyUserAnswers.set(EventPlacePage(eventIndex), eventTitle).success.value
+  private val eventTitle                   = "eventTitle"
+  private val formProvider                 = new ConfirmRemoveEventFormProvider()
+  private val form                         = formProvider(eventTitle)
+  private val mode                         = NormalMode
+  private lazy val confirmRemoveEventRoute = routes.ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode).url
+  private val userAnswersWithEventPlace    = emptyUserAnswers.set(EventPlacePage(eventIndex), eventTitle).success.value
 
   "ConfirmRemoveEvent Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(userAnswersWithEventPlace)
 
-      val request        = FakeRequest(GET, confirmRemoveEventRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, confirmRemoveEventRoute)
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConfirmRemoveEventView]
 
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "eventTitle"  -> eventTitle,
-        "radios"      -> Radios.yesNo(form("value")),
-        "onSubmitUrl" -> routes.ConfirmRemoveEventController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual confirmRemoveEventTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, eventIndex, mode, eventTitle)(request, messages).toString
     }
 
     "must return error page when user tries to remove an event that does not exists" in {
@@ -91,7 +70,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
       contentAsString(result) mustEqual
-        view("noEvent", onwardRoute.url, "event")(request, messages).toString
+        view(mrn, "noEvent", onwardRoute.url, "event")(request, messages).toString
 
       status(result) mustEqual NOT_FOUND
     }
@@ -112,7 +91,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
       contentAsString(result) mustEqual
-        view("multipleEvent", onwardRoute.url, "event")(request, messages).toString
+        view(mrn, "multipleEvent", onwardRoute.url, "event")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and call to remove event" in {
@@ -170,32 +149,18 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(userAnswersWithEventPlace)
 
-      val request        = FakeRequest(POST, confirmRemoveEventRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request   = FakeRequest(POST, confirmRemoveEventRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
+      val result    = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConfirmRemoveEventView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(boundForm("value")),
-        "onSubmitUrl" -> routes.ConfirmRemoveEventController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual confirmRemoveEventTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, mode, eventTitle)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

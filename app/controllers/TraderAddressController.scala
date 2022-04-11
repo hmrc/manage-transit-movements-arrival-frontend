@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.TraderAddressFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.requests.SpecificDataRequestProvider1
+import models.{Address, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.{TraderAddressPage, TraderNamePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,6 +37,7 @@ class TraderAddressController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: TraderAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TraderAddressView
@@ -42,30 +45,38 @@ class TraderAddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage) {
-    implicit request =>
-      val traderName = request.arg
-      val form       = formProvider(traderName)
-      val preparedForm = request.userAnswers.get(TraderAddressPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(TraderNamePage)) {
+        implicit request =>
+          val preparedForm = request.userAnswers.get(TraderAddressPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          Ok(view(preparedForm, mrn, mode, traderName))
       }
 
-      Ok(view(preparedForm, mrn, mode, traderName))
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage(TraderNamePage))
+      .async {
+        implicit request =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
+            )
+      }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireSpecificData(mrn, TraderNamePage).async {
-    implicit request =>
-      val traderName = request.arg
-      formProvider(traderName)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, traderName))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderAddressPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TraderAddressPage, mode, updatedAnswers))
-        )
-  }
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private def form(implicit request: Request): Form[Address] = formProvider(traderName)
+  private def traderName(implicit request: Request): String  = request.arg
 }

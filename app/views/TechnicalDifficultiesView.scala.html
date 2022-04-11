@@ -17,18 +17,18 @@
 @import views.html.components.Heading
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     heading: Heading
 )
 
 @(contactUrl: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("technicalDifficulties.title"),
     showBackLink = true
 ) {
 
-    @heading(messages("technicalDifficulties.heading"))
+    @heading("technicalDifficulties.heading")
 
     <p class="govuk-body">@messages("technicalDifficulties.tryAgain")</p>
 

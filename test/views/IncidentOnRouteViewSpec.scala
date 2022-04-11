@@ -32,6 +32,8 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "incidentOnRoute"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()
@@ -51,4 +53,6 @@ class IncidentOnRouteViewSpec extends YesNoViewBehaviours {
   )
 
   behave like pageWithRadioItems(legendIsHeading = false)
+
+  behave like pageWithSubmitButton("Continue")
 }
