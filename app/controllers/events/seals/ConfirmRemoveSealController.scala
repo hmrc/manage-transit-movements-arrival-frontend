@@ -54,7 +54,7 @@ class ConfirmRemoveSealController @Inject() (
             val form = formProvider(seal)
             Ok(view(form, mrn, eventIndex, sealIndex, mode, seal.numberOrMark))
           case _ =>
-            renderErrorPage(eventIndex, mode)
+            renderErrorPage(mrn, eventIndex, mode)
         }
     }
 
@@ -78,14 +78,14 @@ class ConfirmRemoveSealController @Inject() (
                   }
               )
           case _ =>
-            Future.successful(renderErrorPage(eventIndex, mode))
+            Future.successful(renderErrorPage(mrn, eventIndex, mode))
         }
     }
 
-  private def renderErrorPage(eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).contains(0)) "noSeal" else "multipleSeal"
     val redirectLink     = navigator.nextPage(ConfirmRemoveSealPage(eventIndex), mode, request.userAnswers).url
 
-    NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.seal"))
+    NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.seal"))
   }
 }

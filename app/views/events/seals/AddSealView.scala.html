@@ -43,7 +43,8 @@
 
 @mainTemplate(
     title = messages(s"addSeal.$singularOrPlural.title", listItems.length),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @errorSummary(form.errors)

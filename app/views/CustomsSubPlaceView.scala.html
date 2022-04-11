@@ -30,7 +30,8 @@
 
 @mainTemplate(
     title = messages("customsSubPlace.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.CustomsSubPlaceController.onSubmit(mrn, mode), 'autoComplete -> "off") {

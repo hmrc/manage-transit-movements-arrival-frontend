@@ -32,7 +32,8 @@
 
 @mainTemplate(
     title = messages("customsOffice.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.CustomsOfficeController.onSubmit(mrn, mode), 'autoComplete -> "off") {

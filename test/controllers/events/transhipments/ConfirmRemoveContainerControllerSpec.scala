@@ -90,7 +90,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
       status(result) mustEqual NOT_FOUND
 
       contentAsString(result) mustEqual
-        view("noContainer", onwardRoute.url, "container")(request, messages).toString
+        view(mrn, "noContainer", onwardRoute.url, "container")(request, messages).toString
     }
 
     "must return error page when there are multiple containers and user tries to remove the last container that is already removed" in {
@@ -113,7 +113,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
       val view = injector.instanceOf[ConcurrentRemoveErrorView]
 
       contentAsString(result) mustEqual
-        view("multipleContainer", onwardRoute.url, "container")(request, messages).toString
+        view(mrn, "multipleContainer", onwardRoute.url, "container")(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and call to remove data when true" in {

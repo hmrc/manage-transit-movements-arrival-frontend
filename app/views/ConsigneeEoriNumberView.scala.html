@@ -30,7 +30,8 @@
 
 @mainTemplate(
     title = messages("eoriNumber.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.ConsigneeEoriNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {

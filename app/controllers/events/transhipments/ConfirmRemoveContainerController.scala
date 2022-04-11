@@ -19,10 +19,9 @@ package controllers.events.transhipments
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
-import javax.inject.Inject
 import models.domain.ContainerDomain
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.transhipments.{ConfirmRemoveContainerPage, ContainerNumberPage}
 import play.api.data.Form
@@ -36,6 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import views.html.ConcurrentRemoveErrorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveContainerController @Inject() (
@@ -64,7 +64,7 @@ class ConfirmRemoveContainerController @Inject() (
             val form = formProvider(container)
             renderPage(mrn, eventIndex, containerIndex, form, mode, container).map(Ok(_))
           case _ =>
-            renderErrorPage(eventIndex, mode, request.userAnswers)
+            renderErrorPage(mrn, eventIndex, mode)
         }
 
     }
@@ -89,7 +89,7 @@ class ConfirmRemoveContainerController @Inject() (
                   }
               )
           case _ =>
-            renderErrorPage(eventIndex, mode, request.userAnswers)
+            renderErrorPage(mrn, eventIndex, mode)
         }
     }
 
@@ -109,11 +109,11 @@ class ConfirmRemoveContainerController @Inject() (
     renderer.render(confirmRemoveContainerTemplate, json)
   }
 
-  private def renderErrorPage(eventIndex: Index, mode: Mode, userAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val redirectLinkText = if (userAnswers.get(DeriveNumberOfContainers(eventIndex)).contains(0)) "noContainer" else "multipleContainer"
-    val redirectLink     = navigator.nextPage(ConfirmRemoveContainerPage(eventIndex), mode, userAnswers).url
+  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfContainers(eventIndex)).contains(0)) "noContainer" else "multipleContainer"
+    val redirectLink     = navigator.nextPage(ConfirmRemoveContainerPage(eventIndex), mode, request.userAnswers).url
 
-    Future.successful(NotFound(concurrentRemoveErrorView(redirectLinkText, redirectLink, "concurrent.container")))
+    Future.successful(NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.container")))
   }
 
 }

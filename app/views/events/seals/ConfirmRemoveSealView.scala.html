@@ -30,7 +30,8 @@
 
 @main_template(
     title = messages("confirmRemoveSeal.title", sealNumber),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
     @formHelper(action = controllers.events.seals.routes.ConfirmRemoveSealController.onSubmit(mrn, eventIndex, sealIndex, mode), 'autoComplete -> "off") {
 

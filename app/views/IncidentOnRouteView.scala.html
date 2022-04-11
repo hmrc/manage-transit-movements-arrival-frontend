@@ -30,7 +30,8 @@
 
 @main_template(
     title = messages("incidentOnRoute.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @errorSummary(form.errors)

@@ -30,7 +30,8 @@
 
 @mainTemplate(
     title = messages("traderAddress.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.TraderAddressController.onSubmit(mrn, mode), 'autoComplete -> "off") {

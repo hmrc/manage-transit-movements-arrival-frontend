@@ -30,7 +30,8 @@
 
 @mainTemplate(
     title = messages("goodsLocation.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
 
     @formHelper(action = routes.GoodsLocationController.onSubmit(mrn, mode), 'autoComplete -> "off") {
