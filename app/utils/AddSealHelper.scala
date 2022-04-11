@@ -24,7 +24,7 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddSealHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
 
-  def sealRow(eventIndex: Index, sealIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[SealDomain](
+  def sealListItem(eventIndex: Index, sealIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
     formatAnswer = _.numberOrMark,
     changeCall = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode),

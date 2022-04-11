@@ -20,15 +20,13 @@ import controllers.events.transhipments.routes.{ConfirmRemoveContainerController
 import models.domain.ContainerDomain
 import models.{Index, Mode, UserAnswers}
 import pages.events.transhipments.ContainerNumberPage
-import uk.gov.hmrc.viewmodels.SummaryList.Row
-import uk.gov.hmrc.viewmodels._
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddContainerHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
 
-  def containerRow(eventIndex: Index, containerIndex: Index): Option[Row] = getAnswerAndBuildRemovableRow[ContainerDomain](
+  def containerListItem(eventIndex: Index, containerIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),
-    formatAnswer = container => lit"${container.containerNumber}",
-    id = s"container-${containerIndex.display}",
+    formatAnswer = _.containerNumber,
     changeCall = ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode),
     removeCall = ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, containerIndex, mode)
   )

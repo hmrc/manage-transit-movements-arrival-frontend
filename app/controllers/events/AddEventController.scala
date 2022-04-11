@@ -73,13 +73,15 @@ class AddEventController @Inject() (
   }
 
   private def events(mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
-    val numberOfEvents  = request.userAnswers.get(DeriveNumberOfEvents).getOrElse(0)
     val addEventsHelper = new AddEventsHelper(request.userAnswers, mode)
     (0 to numberOfEvents) flatMap {
-      x => addEventsHelper.listOfEvent(Index(x))
+      x => addEventsHelper.eventListItem(Index(x))
     }
   }
 
   private def allowMoreEvents(implicit request: DataRequest[_]): Boolean =
-    request.userAnswers.get(DeriveNumberOfEvents).getOrElse(0) < config.maxEvents
+    numberOfEvents < config.maxEvents
+
+  private def numberOfEvents(implicit request: DataRequest[_]): Int =
+    request.userAnswers.get(DeriveNumberOfEvents).getOrElse(0)
 }

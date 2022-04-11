@@ -25,7 +25,7 @@ import uk.gov.hmrc.viewmodels._
 
 class AddEventsHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
 
-  def listOfEvent(eventIndex: Index): Option[ListItem] =
+  def eventListItem(eventIndex: Index): Option[ListItem] =
     placeOfEvent(eventIndex).map {
       answer =>
         ListItem(

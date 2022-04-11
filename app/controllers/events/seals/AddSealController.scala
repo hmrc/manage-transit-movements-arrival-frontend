@@ -73,13 +73,15 @@ class AddSealController @Inject() (
   }
 
   private def seals(eventIndex: Index, mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
-    val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0)
     val addSealHelper = new AddSealHelper(request.userAnswers, mode)
-    (0 to numberOfSeals) flatMap {
-      x => addSealHelper.sealRow(eventIndex, Index(x))
+    (0 to numberOfSeals(eventIndex)) flatMap {
+      x => addSealHelper.sealListItem(eventIndex, Index(x))
     }
   }
 
   private def allowMoreSeals(eventIndex: Index)(implicit request: DataRequest[_]): Boolean =
-    request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0) < config.maxSeals
+    numberOfSeals(eventIndex) < config.maxSeals
+
+  private def numberOfSeals(eventIndex: Index)(implicit request: DataRequest[_]): Int =
+    request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0)
 }
