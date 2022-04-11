@@ -41,4 +41,6 @@ class ConfirmRemoveEventViewSpec extends YesNoViewBehaviours {
   behave like pageWithHeading(eventTitle)
 
   behave like pageWithRadioItems(args = Seq(eventTitle))
+
+  behave like pageWithSubmitButton("Continue")
 }

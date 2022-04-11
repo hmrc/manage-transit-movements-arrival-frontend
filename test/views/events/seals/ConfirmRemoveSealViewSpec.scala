@@ -42,4 +42,6 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
   behave like pageWithHeading(sealNumber.numberOrMark)
 
   behave like pageWithRadioItems(args = Seq(sealNumber.numberOrMark))
+
+  behave like pageWithSubmitButton("Continue")
 }

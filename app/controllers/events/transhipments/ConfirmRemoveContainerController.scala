@@ -16,24 +16,19 @@
 
 package controllers.events.transhipments
 
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
-import models.domain.ContainerDomain
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.transhipments.{ConfirmRemoveContainerPage, ContainerNumberPage}
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import play.twirl.api.Html
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import views.html.ConcurrentRemoveErrorView
+import views.html.events.transhipments.ConfirmRemoveContainerView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,42 +37,36 @@ class ConfirmRemoveContainerController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   formProvider: ConfirmRemoveContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: ConfirmRemoveContainerView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
-
-  private val confirmRemoveContainerTemplate = "events/transhipments/confirmRemoveContainer.njk"
+    with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn) {
       implicit request =>
         request.userAnswers.get(ContainerNumberPage(eventIndex, containerIndex)) match {
           case Some(container) =>
             val form = formProvider(container)
-            renderPage(mrn, eventIndex, containerIndex, form, mode, container).map(Ok(_))
+            Ok(view(form, mrn, eventIndex, containerIndex, mode, container.containerNumber))
           case _ =>
             renderErrorPage(mrn, eventIndex, mode)
         }
-
     }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         request.userAnswers.get(ContainerNumberPage(eventIndex, containerIndex)) match {
           case Some(container) =>
             formProvider(container)
               .bindFromRequest()
               .fold(
-                formWithErrors => renderPage(mrn, eventIndex, containerIndex, formWithErrors, mode, container).map(BadRequest(_)),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, containerIndex, mode, container.containerNumber))),
                 value =>
                   if (value) {
                     for {
@@ -89,31 +78,15 @@ class ConfirmRemoveContainerController @Inject() (
                   }
               )
           case _ =>
-            renderErrorPage(mrn, eventIndex, mode)
+            Future.successful(renderErrorPage(mrn, eventIndex, mode))
         }
     }
 
-  private def renderPage(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, form: Form[Boolean], mode: Mode, container: ContainerDomain)(
-    implicit request: DataRequest[AnyContent]
-  ): Future[Html] = {
-
-    val json = Json.obj(
-      "form"            -> form,
-      "mode"            -> mode,
-      "mrn"             -> mrn,
-      "containerNumber" -> container.containerNumber,
-      "radios"          -> Radios.yesNo(form("value")),
-      "onSubmitUrl"     -> routes.ConfirmRemoveContainerController.onSubmit(mrn, eventIndex, containerIndex, mode).url
-    )
-
-    renderer.render(confirmRemoveContainerTemplate, json)
-  }
-
-  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  private def renderErrorPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfContainers(eventIndex)).contains(0)) "noContainer" else "multipleContainer"
     val redirectLink     = navigator.nextPage(ConfirmRemoveContainerPage(eventIndex), mode, request.userAnswers).url
 
-    Future.successful(NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.container")))
+    NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.container"))
   }
 
 }
