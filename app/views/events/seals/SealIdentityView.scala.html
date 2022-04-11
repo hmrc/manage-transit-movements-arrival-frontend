@@ -31,7 +31,8 @@
 
 @mainTemplate(
     title = messages("sealIdentity.title"),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
     @formHelper(action = SealIdentityController.onSubmit(mrn, eventIndex, sealIndex, mode), 'autoComplete -> "off") {
 
