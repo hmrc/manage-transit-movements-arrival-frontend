@@ -352,11 +352,11 @@ sealIdentity.error.invalid = The new official customs seal number must only incl
 sealIdentity.error.duplicate = Enter an official customs seal number or mark you have not given before
 sealIdentity.change.hidden = official customs seal {0}
 
-addSeal.title.singular = You have added {0} official customs seal
-addSeal.title.plural = You have added {0} official customs seals
-addSeal.heading.singular = You have added {0} official customs seal
-addSeal.heading.plural = You have added {0} official customs seals
-addSeal.radio.label = Do you need to add another official customs seal?
+addSeal.singular.title = You have added {0} official customs seal
+addSeal.plural.title = You have added {0} official customs seals
+addSeal.singular.heading = You have added {0} official customs seal
+addSeal.plural.heading = You have added {0} official customs seals
+addSeal.label = Do you need to add another official customs seal?
 addSeal.checkYourAnswersLabel = You have added {0} official customs seals
 addSeal.error.required = Select yes if you need to add another official customs seal
 addSeal.sealList.heading = Official customs seals

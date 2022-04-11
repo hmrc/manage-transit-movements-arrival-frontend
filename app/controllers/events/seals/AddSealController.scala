@@ -17,54 +17,54 @@
 package controllers.events.seals
 
 import config.FrontendAppConfig
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import derivable.DeriveNumberOfSeals
 import forms.events.seals.AddSealFormProvider
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.seals.AddSealPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
-import renderer.Renderer
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.AddSealHelper
-import javax.inject.Inject
+import views.html.events.seals.AddSealView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddSealController @Inject() (override val messagesApi: MessagesApi,
-                                   navigator: Navigator,
-                                   identify: IdentifierAction,
-                                   getData: DataRetrievalActionProvider,
-                                   requireData: DataRequiredAction,
-                                   formProvider: AddSealFormProvider,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   renderer: Renderer,
-                                   config: FrontendAppConfig
+class AddSealController @Inject() (
+  override val messagesApi: MessagesApi,
+  navigator: Navigator,
+  actions: Actions,
+  formProvider: AddSealFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddSealView,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      renderPage(mrn, eventIndex, mode, formProvider(allowMoreSeals(request.userAnswers, eventIndex)))
-        .map(Ok(_))
+      val form = formProvider(allowMoreSeals(eventIndex))
+      val preparedForm = request.userAnswers.get(AddSealPage(eventIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+
+      Ok(view(preparedForm, mrn, eventIndex, mode, seals, allowMoreSeals))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      formProvider(allowMoreSeals(request.userAnswers, eventIndex))
+      formProvider(allowMoreSeals(eventIndex))
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            renderPage(mrn, eventIndex, mode, formWithErrors)
-              .map(BadRequest(_)),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, mode, seals, allowMoreSeals))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealPage(eventIndex), value))
@@ -72,35 +72,14 @@ class AddSealController @Inject() (override val messagesApi: MessagesApi,
         )
   }
 
-  private def renderPage(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode, form: Form[Boolean])(implicit
-    request: DataRequest[AnyContent]
-  ): Future[Html] = {
-
-    val numberOfSeals    = request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0)
-    val listOfSealsIndex = List.range(0, numberOfSeals).map(Index(_))
-    val sealsRows = listOfSealsIndex.flatMap {
-      index =>
-        AddSealHelper.apply(request.userAnswers, mode).sealRow(eventIndex, index)
-
+  private def seals(eventIndex: Index, mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
+    val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0)
+    val addSealHelper = new AddSealHelper(request.userAnswers, mode)
+    (0 to numberOfSeals) flatMap {
+      x => addSealHelper.sealRow(eventIndex, Index(x))
     }
-
-    val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
-
-    val json = Json.obj(
-      "form"           -> form,
-      "mode"           -> mode,
-      "mrn"            -> mrn,
-      "pageTitle"      -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
-      "heading"        -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
-      "seals"          -> sealsRows,
-      "allowMoreSeals" -> allowMoreSeals(request.userAnswers, eventIndex),
-      "radios"         -> Radios.yesNo(form("value")),
-      "onSubmitUrl"    -> routes.AddSealController.onSubmit(mrn, eventIndex, mode).url
-    )
-
-    renderer.render("events/seals/addSeal.njk", json)
   }
 
-  private def allowMoreSeals(ua: UserAnswers, eventIndex: Index): Boolean =
-    ua.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0) < config.maxSeals
+  private def allowMoreSeals(eventIndex: Index)(implicit request: DataRequest[_]): Boolean =
+    request.userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0) < config.maxSeals
 }

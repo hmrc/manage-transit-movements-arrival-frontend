@@ -36,35 +36,37 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
-  def pageWithMoreItemsAllowed(block: Unit): Unit =
+  def pageWithMoreItemsAllowed(additionalBehaviours: Unit = ()): Unit =
     "page with more items allowed" - {
 
       behave like pageWithTitle(doc, s"$prefix.singular", listItem.length)
 
       behave like pageWithHeading(doc, s"$prefix.singular", listItem.length)
 
-      behave like pageWithListWithActions(doc)
+      behave like pageWithListWithActions(doc, listItem)
 
       behave like pageWithRadioItems(legendIsHeading = false)
 
-      block
+      additionalBehaviours
     }
 
   def pageWithItemsMaxedOut(): Unit =
     "page with items maxed out" - {
 
-      val maxedOutDoc = parseView(applyMaxedOutView)
+      val doc = parseView(applyMaxedOutView)
 
-      behave like pageWithTitle(maxedOutDoc, s"$prefix.plural", maxedOutListItems.length)
+      behave like pageWithTitle(doc, s"$prefix.plural", maxedOutListItems.length)
 
-      behave like pageWithHeading(maxedOutDoc, s"$prefix.plural", maxedOutListItems.length)
+      behave like pageWithHeading(doc, s"$prefix.plural", maxedOutListItems.length)
 
-      behave like pageWithListWithActions(maxedOutDoc)
+      behave like pageWithListWithActions(doc, maxedOutListItems)
 
-      behave like pageWithContent(maxedOutDoc, "p", messages(s"$prefix.maxLimit.label"))
+      behave like pageWithoutRadioItems(doc)
+
+      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label"))
     }
 
-  private def pageWithListWithActions(doc: Document): Unit =
+  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
@@ -73,7 +75,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
 
       val renderedItems = doc.getElementsByClass("hmrc-list-with-actions__item").asScala
 
-      listItem.zipWithIndex.foreach {
+      listItems.zipWithIndex.foreach {
         case (listItem, index) =>
           val renderedItem = renderedItems(index)
 
@@ -88,29 +90,28 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
               actions.size() mustBe 2
             }
 
-            "must contain a change link" in {
-              val changeLink = renderedItem
-                .getElementsByClass("hmrc-list-with-actions__action")
-                .first()
-                .getElementsByClass("govuk-link")
-                .first()
+            def withActionLink(linkType: String, index: Int, url: String): Unit =
+              s"must contain a $linkType link" in {
+                val link = renderedItem
+                  .getElementsByClass("hmrc-list-with-actions__action")
+                  .asScala(index)
+                  .getElementsByClass("govuk-link")
+                  .first()
 
-              assertElementContainsHref(changeLink, listItem.changeUrl)
+                assertElementContainsHref(link, url)
 
-              changeLink.text() mustBe s"Change ${listItem.name}"
-            }
+                val spans = link.getElementsByTag("span")
+                spans.size() mustBe 2
 
-            "must contain a remove link" in {
-              val removeLink = renderedItem
-                .getElementsByClass("hmrc-list-with-actions__action")
-                .last()
-                .getElementsByClass("govuk-link")
-                .first()
+                spans.first().text() mustBe linkType
+                assert(spans.first().hasAttr("aria-hidden"))
 
-              assertElementContainsHref(removeLink, listItem.removeUrl)
+                spans.last().text() mustBe s"$linkType ${listItem.name}"
+                assert(spans.last().hasClass("govuk-visually-hidden"))
+              }
 
-              removeLink.text() mustBe s"Remove ${listItem.name}"
-            }
+            withActionLink("Change", 0, listItem.changeUrl)
+            withActionLink("Remove", 1, listItem.removeUrl)
           }
       }
     }
