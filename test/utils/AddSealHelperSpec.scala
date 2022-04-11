@@ -31,13 +31,13 @@ class AddSealHelperSpec extends SpecBase {
 
     val seal = SealDomain("NUMBER")
 
-    ".sealRow" - {
+    ".sealListItem" - {
 
       "must return None" - {
         "when SealIdentityPage undefined" in {
 
           val helper = new AddSealHelper(emptyUserAnswers, mode)
-          helper.sealRow(eventIndex, sealIndex) mustBe None
+          helper.sealListItem(eventIndex, sealIndex) mustBe None
         }
       }
 
@@ -48,7 +48,7 @@ class AddSealHelperSpec extends SpecBase {
             .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
           val helper = new AddSealHelper(answers, mode)
-          helper.sealRow(eventIndex, sealIndex) mustBe Some(
+          helper.sealListItem(eventIndex, sealIndex) mustBe Some(
             ListItem(
               name = seal.numberOrMark,
               changeUrl = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,

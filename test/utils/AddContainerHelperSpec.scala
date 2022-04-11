@@ -21,8 +21,7 @@ import controllers.events.transhipments.routes.{ConfirmRemoveContainerController
 import models.domain.ContainerDomain
 import models.{CheckMode, Mode}
 import pages.events.transhipments.ContainerNumberPage
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddContainerHelperSpec extends SpecBase {
 
@@ -32,13 +31,13 @@ class AddContainerHelperSpec extends SpecBase {
 
     val container = ContainerDomain("NUMBER")
 
-    ".containerRow" - {
+    ".containerListItem" - {
 
       "must return None" - {
         "when ContainerNumberPage undefined" in {
 
           val helper = new AddContainerHelper(emptyUserAnswers, mode)
-          helper.containerRow(eventIndex, containerIndex) mustBe None
+          helper.containerListItem(eventIndex, containerIndex) mustBe None
         }
       }
 
@@ -46,32 +45,14 @@ class AddContainerHelperSpec extends SpecBase {
         "when ContainerNumberPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(ContainerNumberPage(eventIndex, containerIndex), container)
-            .success
-            .value
+            .setValue(ContainerNumberPage(eventIndex, containerIndex), container)
 
           val helper = new AddContainerHelper(answers, mode)
-          helper.containerRow(eventIndex, containerIndex) mustBe Some(
-            Row(
-              key = Key(
-                content = Literal(container.containerNumber),
-                classes = Nil
-              ),
-              value = Value(Literal("")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode).url,
-                  visuallyHiddenText = Some(Literal(container.containerNumber)),
-                  attributes = Map("id" -> s"change-container-${containerIndex.display}")
-                ),
-                Action(
-                  content = Message("site.delete"),
-                  href = ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, containerIndex, mode).url,
-                  visuallyHiddenText = Some(Literal(container.containerNumber)),
-                  attributes = Map("id" -> s"remove-container-${containerIndex.display}")
-                )
-              )
+          helper.containerListItem(eventIndex, containerIndex) mustBe Some(
+            ListItem(
+              name = container.containerNumber,
+              changeUrl = ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode).url,
+              removeUrl = ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, containerIndex, mode).url
             )
           )
         }

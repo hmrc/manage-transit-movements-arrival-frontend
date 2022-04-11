@@ -16,44 +16,36 @@
 
 package views.events.transhipments
 
-import play.api.libs.json.Json
-import views.SingleViewSpec
+import forms.events.transhipments.AddContainerFormProvider
+import models.NormalMode
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import views.behaviours.ListWithActionsViewBehaviours
+import views.html.events.transhipments.AddContainerView
 
-class AddContainerViewSpec extends SingleViewSpec("events/transhipments/addContainer.njk") {
+class AddContainerViewSpec extends ListWithActionsViewBehaviours {
 
-  "must display the maxLimitReached text when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreContainers" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must not be empty
-  }
+  private def formProvider = new AddContainerFormProvider()
 
-  "must not display the maxLimitReached text when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreContainers" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    getByElementTestIdSelector(doc, "maxLimit") must be(empty)
-  }
+  override def form: Form[Boolean] = formProvider(true)
 
-  "must display the add another container Yes/No radio when below maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreContainers" -> true
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsClass(doc, "govuk-radios")
-  }
-  "must not display the add another container Yes/No radio when reached maximum item limit" in {
-    val baseJson =
-      Json.obj(
-        "allowMoreContainers" -> false
-      )
-    val doc = renderDocument(baseJson).futureValue
-    assertContainsNoClass(doc, "govuk-radios")
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddContainerView]
+      .apply(form, mrn, eventIndex, NormalMode, (_, _) => listItem, allowMoreContainers = _ => true)(fakeRequest, messages)
 
-  }
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddContainerView]
+      .apply(formProvider(false), mrn, eventIndex, NormalMode, (_, _) => maxedOutListItems, allowMoreContainers = _ => false)(fakeRequest, messages)
+
+  override val prefix: String = "addContainer"
+
+  behave like pageWithBackLink
+
+  behave like pageWithMoreItemsAllowed()
+
+  behave like pageWithItemsMaxedOut()
+
+  behave like pageWithSubmitButton("Continue")
 }

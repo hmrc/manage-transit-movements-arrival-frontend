@@ -18,144 +18,176 @@ package controllers.events.transhipments
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.AddContainerFormProvider
-import generators.MessagesModelGenerators
-import matchers.JsonMatchers
 import models.domain.ContainerDomain
-import models.{Index, Mode, NormalMode}
-import org.mockito.ArgumentCaptor
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
-import pages.events.transhipments.ContainerNumberPage
-import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import org.mockito.Mockito.when
+import pages.events.transhipments.{AddContainerPage, ContainerNumberPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.AddContainerHelper
-import viewModels.sections.Section
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import views.html.events.transhipments.AddContainerView
 
 import scala.concurrent.Future
 
-class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers with MessagesModelGenerators {
+class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider        = new AddContainerFormProvider()
-  private val form: Form[Boolean] = formProvider(true)
-  val mode: Mode                  = NormalMode
+  private val formProvider                       = new AddContainerFormProvider()
+  private def form(allowMoreContainers: Boolean) = formProvider(allowMoreContainers)
 
-  private lazy val addContainerRoute: String = routes.AddContainerController.onPageLoad(mrn, eventIndex, mode).url
-  private lazy val addContainerTemplate      = "events/transhipments/addContainer.njk"
+  private val mode = NormalMode
+
+  private lazy val addContainerRoute = routes.AddContainerController.onPageLoad(mrn, eventIndex, mode).url
+
+  private val range = 0 to 2
+
+  private val maxedUserAnswers = range.foldLeft(emptyUserAnswers) {
+    (acc, i) =>
+      acc.setValue(ContainerNumberPage(eventIndex, Index(i)), ContainerDomain(s"$i"))
+  }
+
+  private lazy val maxedListItems = range.map {
+    i =>
+      ListItem(
+        name = s"$i",
+        changeUrl = routes.ContainerNumberController.onPageLoad(mrn, eventIndex, Index(i), mode).url,
+        removeUrl = routes.ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, Index(i), mode).url
+      )
+  }
 
   "AddContainer Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        val allowMoreContainers = true
 
-      val containerNumber = arbitrary[ContainerDomain].sample.value
-      val ua              = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), containerNumber).success.value
-      setExistingUserAnswers(ua)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addContainerRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val request = FakeRequest(GET, addContainerRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[AddContainerView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        status(result) mustEqual OK
 
-      val expectedJson = Json.obj(
-        "form"                -> form,
-        "mode"                -> mode,
-        "mrn"                 -> mrn,
-        "radios"              -> Radios.yesNo(form("value")),
-        "containers"          -> Section(Seq(AddContainerHelper(ua, mode).containerRow(eventIndex, containerIndex).value)),
-        "allowMoreContainers" -> true,
-        "onSubmitUrl"         -> routes.AddContainerController.onSubmit(mrn, eventIndex, mode).url
-      )
+        contentAsString(result) mustEqual
+          view(form(allowMoreContainers), mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreContainers)(request, messages).toString
+      }
 
-      templateCaptor.getValue mustEqual addContainerTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      "when max limit reached" in {
+
+        val allowMoreContainers = false
+
+        setExistingUserAnswers(maxedUserAnswers)
+
+        val request = FakeRequest(GET, addContainerRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddContainerView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMoreContainers), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreContainers)(request, messages).toString
+      }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val allowMoreContainers = true
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = emptyUserAnswers.setValue(AddContainerPage(eventIndex), true)
+        setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, addContainerRoute)
+        val request = FakeRequest(GET, addContainerRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddContainerView]
+
+        status(result) mustEqual OK
+
+        val filledForm = form(allowMoreContainers).bind(Map("value" -> "true"))
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreContainers)(request, messages).toString
+      }
+
+      "when max limit reached" in {
+
+        val allowMoreContainers = false
+
+        val userAnswers = maxedUserAnswers.setValue(AddContainerPage(eventIndex), true)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addContainerRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddContainerView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMoreContainers), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreContainers)(request, messages).toString
+      }
+    }
+
+    "must redirect to the next page" - {
+      "when valid data is submitted and max limit not reached" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addContainerRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
 
-    "must redirect to the next page when invalid data but we have the max containers" in {
+      "when max limit reached" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
-        .set(ContainerNumberPage(Index(0), Index(0)), ContainerDomain("12345"))
-        .success
-        .value
-        .set(ContainerNumberPage(Index(0), Index(1)), ContainerDomain("12345"))
-        .success
-        .value
-        .set(ContainerNumberPage(Index(0), Index(2)), ContainerDomain("12345"))
-        .success
-        .value
+        setExistingUserAnswers(maxedUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request =
-        FakeRequest(POST, addContainerRoute)
+        val request = FakeRequest(POST, addContainerRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+        val allowMoreContainers = true
 
-      setExistingUserAnswers(emptyUserAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, addContainerRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val request   = FakeRequest(POST, addContainerRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form(allowMoreContainers).bind(Map("value" -> ""))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+        val view = injector.instanceOf[AddContainerView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        status(result) mustEqual BAD_REQUEST
 
-      val expectedJson = Json.obj(
-        "form"                -> boundForm,
-        "mode"                -> mode,
-        "mrn"                 -> mrn,
-        "radios"              -> Radios.yesNo(boundForm("value")),
-        "allowMoreContainers" -> true,
-        "onSubmitUrl"         -> routes.AddContainerController.onSubmit(mrn, eventIndex, mode).url
-      )
-
-      templateCaptor.getValue mustEqual addContainerTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+        contentAsString(result) mustEqual
+          view(boundForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreContainers)(request, messages).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -175,9 +207,8 @@ class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, addContainerRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addContainerRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

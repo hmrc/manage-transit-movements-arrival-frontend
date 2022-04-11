@@ -31,13 +31,13 @@ class AddEventsHelperSpec extends SpecBase {
 
   "AddEventsHelper" - {
 
-    ".listOfEvent" - {
+    ".eventListItem" - {
 
       "must return None" - {
         "when EventPlacePage and EventCountryPage undefined" in {
 
           val helper = new AddEventsHelper(emptyUserAnswers, mode)
-          helper.listOfEvent(eventIndex) mustBe None
+          helper.eventListItem(eventIndex) mustBe None
         }
       }
 
@@ -50,7 +50,7 @@ class AddEventsHelperSpec extends SpecBase {
             .setValue(EventPlacePage(eventIndex), place)
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.listOfEvent(eventIndex) mustBe Some(
+          helper.eventListItem(eventIndex) mustBe Some(
             ListItem(
               name = place,
               changeUrl = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
@@ -69,7 +69,7 @@ class AddEventsHelperSpec extends SpecBase {
             .value
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.listOfEvent(eventIndex) mustBe Some(
+          helper.eventListItem(eventIndex) mustBe Some(
             ListItem(
               name = countryCode.code,
               changeUrl = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
