@@ -17,13 +17,13 @@
 @import views.html.components.Heading
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     heading: Heading
 )
 
 @(mrn: MovementReferenceNumber, linkText: String, redirectLink: String, journey: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("concurrent.remove.error.title", messages(journey)),
     showBackLink = true,
     mrn = Some(mrn)

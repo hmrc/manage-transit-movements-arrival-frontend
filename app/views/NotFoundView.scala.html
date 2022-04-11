@@ -18,14 +18,14 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     heading: Heading,
     config: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("pageNotFound.title"),
     showBackLink = true
 ) {
