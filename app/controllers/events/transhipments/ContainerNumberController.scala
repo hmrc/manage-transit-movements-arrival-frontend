@@ -18,74 +18,51 @@ package controllers.events.transhipments
 
 import controllers.actions._
 import forms.events.transhipments.ContainerNumberFormProvider
-import javax.inject.Inject
 import models.domain.ContainerDomain
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.transhipments.ContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.ContainersQuery
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.transhipments.ContainerNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContainerNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: ContainerNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: ContainerNumberView,
+  actions: Actions
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn) {
       implicit request =>
         val preparedForm = request.userAnswers.get(ContainerNumberPage(eventIndex, containerIndex)) match {
           case None        => formProvider(containerIndex)
           case Some(value) => formProvider(containerIndex).fill(value.containerNumber)
         }
-
-        val json = Json.obj(
-          "form"        -> preparedForm,
-          "mrn"         -> mrn,
-          "mode"        -> mode,
-          "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, mode).url
-        )
-
-        renderer.render("events/transhipments/containerNumber.njk", json).map(Ok(_))
+        Ok(view(preparedForm, mrn, eventIndex, containerIndex, mode))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(mrn) andThen requireData).async {
+    actions.requireData(mrn).async {
       implicit request =>
         val containers = request.userAnswers.get(ContainersQuery(eventIndex)).getOrElse(Seq.empty)
 
         formProvider(containerIndex, containers)
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mrn"         -> mrn,
-                "mode"        -> mode,
-                "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, mode).url
-              )
-
-              renderer.render("events/transhipments/containerNumber.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, eventIndex, containerIndex, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain(value)))
