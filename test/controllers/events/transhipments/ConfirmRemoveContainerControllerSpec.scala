@@ -18,62 +18,44 @@ package controllers.events.transhipments
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
-import matchers.JsonMatchers
 import models.{Index, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import pages.events.transhipments.ContainerNumberPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import views.html.ConcurrentRemoveErrorView
+import views.html.events.transhipments.ConfirmRemoveContainerView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new ConfirmRemoveContainerFormProvider()
   private val form         = formProvider(domainContainer)
 
-  private lazy val confirmRemoveContainerRoute    = routes.ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, containerIndex, NormalMode).url
-  private lazy val confirmRemoveContainerTemplate = "events/transhipments/confirmRemoveContainer.njk"
+  private val mode = NormalMode
 
-  private val presetUserAnswers =
-    emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), domainContainer).success.value
+  private lazy val confirmRemoveContainerRoute = routes.ConfirmRemoveContainerController.onPageLoad(mrn, eventIndex, containerIndex, mode).url
+
+  private val presetUserAnswers = emptyUserAnswers.setValue(ContainerNumberPage(eventIndex, containerIndex), domainContainer)
 
   "ConfirmRemoveContainer Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(presetUserAnswers)
 
-      val request        = FakeRequest(GET, confirmRemoveContainerRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, confirmRemoveContainerRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConfirmRemoveContainerView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"            -> form,
-        "mode"            -> NormalMode,
-        "mrn"             -> mrn,
-        "containerNumber" -> container.containerNumber,
-        "radios"          -> Radios.yesNo(form("value")),
-        "onSubmitUrl"     -> routes.ConfirmRemoveContainerController.onSubmit(mrn, eventIndex, containerIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual confirmRemoveContainerTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, eventIndex, containerIndex, mode, domainContainer.containerNumber)(request, messages).toString
     }
 
     "must return error page when user tries to remove a container that does not exists" in {
@@ -172,32 +154,19 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(presetUserAnswers)
 
-      val request        = FakeRequest(POST, confirmRemoveContainerRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, confirmRemoveContainerRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ConfirmRemoveContainerView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mode"        -> NormalMode,
-        "mrn"         -> mrn,
-        "radios"      -> Radios.yesNo(boundForm("value")),
-        "onSubmitUrl" -> routes.ConfirmRemoveContainerController.onSubmit(mrn, eventIndex, containerIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual confirmRemoveContainerTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, containerIndex, mode, domainContainer.containerNumber)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
