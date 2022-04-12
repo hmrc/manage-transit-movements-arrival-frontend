@@ -70,7 +70,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         }
     }
 
-  def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
     val mrn    = Section(Seq(helper.movementReferenceNumber))
 
