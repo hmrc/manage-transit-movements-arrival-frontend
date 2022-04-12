@@ -29,8 +29,6 @@ trait SummaryListViewBehaviours extends ViewBehaviours {
   def pageWithSummaryLists(): Unit =
     "page with summary lists" - {
 
-      println(doc.html())
-
       val renderedLists = doc.getElementsByClass("govuk-summary-list").asScala
 
       summaryLists.zipWithIndex.foreach {
