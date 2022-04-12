@@ -14,31 +14,34 @@
  * limitations under the License.
  */
 
-package views.events
+package views.events.seals
 
-import forms.events.IsTranshipmentFormProvider
+import forms.events.seals.ConfirmRemoveSealFormProvider
 import models.NormalMode
+import models.domain.SealDomain
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.events.IsTranshipmentView
+import views.html.events.seals.ConfirmRemoveSealView
 
-class IsTranshipmentViewSpec extends YesNoViewBehaviours {
+class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[Boolean] = new IsTranshipmentFormProvider()()
+  private val sealNumber: SealDomain = SealDomain("sealNumber")
+
+  override def form: Form[Boolean] = new ConfirmRemoveSealFormProvider()(sealNumber)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[IsTranshipmentView].apply(form, mrn, NormalMode, eventIndex)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, eventIndex, sealIndex, NormalMode, sealNumber.numberOrMark)(fakeRequest, messages)
 
-  override val prefix: String = "isTranshipment"
+  override val prefix: String = "confirmRemoveSeal"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(sealNumber.numberOrMark)
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(sealNumber.numberOrMark)
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(sealNumber.numberOrMark))
 
   behave like pageWithSubmitButton("Continue")
 }

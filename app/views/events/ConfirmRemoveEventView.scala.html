@@ -15,12 +15,11 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
@@ -28,19 +27,20 @@
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode, eventTitle: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("confirmRemoveEvent.title", eventTitle),
-    showBackLink = true
+    showBackLink = true,
+    mrn = Some(mrn)
 ) {
     @formHelper(action = controllers.events.routes.ConfirmRemoveEventController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-         @inputYesNo(
+        @inputYesNo(
             field = form("value"),
             messageKeyPrefix = "confirmRemoveEvent",
             legendParams = Seq(eventTitle)
-         )
+        )
 
         @button(attributes = Map("id" -> "submit"))
     }

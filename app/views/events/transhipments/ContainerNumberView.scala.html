@@ -14,35 +14,34 @@
  * limitations under the License.
  *@
 
-@import controllers.events.routes._
-@import views.html.components.{Button, ErrorSummary, InputTextArea}
-@import views.html.components.InputCharacterCount
+@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.{MovementReferenceNumber, Index}
+@import controllers.events.transhipments.routes
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     button: Button,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     errorSummary: ErrorSummary
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, eventIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, eventIndex: Index, containerIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incidentInformation.title"),
+    title = messages("containerNumber.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = IncidentInformationController.onSubmit(mrn, eventIndex, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputText(
             field = form("value"),
-            label = messages("incidentInformation.heading"),
-            maxLength = Some(350)
+            label = messages("containerNumber.heading"),
+            inputClass = InputSize.Width20
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package views.events
+package views.events.transhipments
 
-import forms.events.IsTranshipmentFormProvider
+import forms.events.transhipments.TransportIdentityFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.events.IsTranshipmentView
+import viewModels.InputSize
+import views.behaviours.InputTextViewBehaviours
+import views.html.events.transhipments.TransportIdentityView
 
-class IsTranshipmentViewSpec extends YesNoViewBehaviours {
+class TransportIdentityViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[Boolean] = new IsTranshipmentFormProvider()()
+  override def form: Form[String] = new TransportIdentityFormProvider()()
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[IsTranshipmentView].apply(form, mrn, NormalMode, eventIndex)(fakeRequest, messages)
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[TransportIdentityView].apply(form, mrn, eventIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "isTranshipment"
+  override val prefix: String = "transportIdentity"
+
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle()
 
@@ -38,7 +42,9 @@ class IsTranshipmentViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithRadioItems()
+  behave like pageWithoutHint
+
+  behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
 }

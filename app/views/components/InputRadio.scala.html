@@ -23,7 +23,7 @@
     legend: String,
     hint: Option[String] = None,
     radioItems: String => Seq[RadioItem],
-    inline: Boolean = true
+    inline: Boolean = false
 )(implicit messages: Messages)
 
 @govukRadios(

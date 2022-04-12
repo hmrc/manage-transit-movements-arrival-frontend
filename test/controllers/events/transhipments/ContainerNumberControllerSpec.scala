@@ -19,90 +19,62 @@ package controllers.events.transhipments
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.ContainerNumberFormProvider
 import generators.MessagesModelGenerators
-import matchers.JsonMatchers
 import models.domain.ContainerDomain
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.events.transhipments.ContainerNumberPage
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.transhipments.ContainerNumberView
 
 import scala.concurrent.Future
 
-class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers with MessagesModelGenerators {
+class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
-  private val formProvider       = new ContainerNumberFormProvider()
-  private val form: Form[String] = formProvider(containerIndex, Seq.empty)
+  private val formProvider                                                                                      = new ContainerNumberFormProvider()
+  private def form(index: Index = containerIndex, declaredContainers: Seq[ContainerDomain] = Nil): Form[String] = formProvider(index, declaredContainers)
+  private val mode                                                                                              = NormalMode
 
-  private def containerNumberRoute(index: Index = containerIndex): String = routes.ContainerNumberController.onPageLoad(mrn, eventIndex, index, NormalMode).url
-  private lazy val containerNumberTemplate                                = "events/transhipments/containerNumber.njk"
+  private def containerNumberRoute(index: Index = containerIndex): String = routes.ContainerNumberController.onPageLoad(mrn, eventIndex, index, mode).url
 
   "ContainerNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, containerNumberRoute())
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, containerNumberRoute())
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ContainerNumberView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mrn"         -> mrn,
-        "mode"        -> NormalMode,
-        "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual containerNumberTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form(), mrn, eventIndex, containerIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("answer")).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, containerNumberRoute())
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, containerNumberRoute())
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[ContainerNumberView]
+
+      val filledForm = form().bind(Map("value" -> "answer"))
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "answer"))
-
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mrn"         -> mrn,
-        "mode"        -> NormalMode,
-        "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual containerNumberTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, eventIndex, containerIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,9 +83,7 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, containerNumberRoute())
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, containerNumberRoute()).withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
@@ -130,9 +100,7 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, containerNumberRoute())
-          .withFormUrlEncodedBody(("value", container.containerNumber))
+      val request = FakeRequest(POST, containerNumberRoute()).withFormUrlEncodedBody(("value", container.containerNumber))
 
       val result = route(app, request).value
 
@@ -140,56 +108,42 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must return a Bad Request and errors when an existing container is submitted and index is different to current index" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
+    "must return a Bad Request and errors when an existing container number is submitted" in {
       val container   = arbitrary[ContainerDomain].sample.value
       val userAnswers = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), container).success.value
       val nextIndex   = Index(1)
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, containerNumberRoute(nextIndex)).withFormUrlEncodedBody(("value", container.containerNumber))
-      val result         = route(app, request).value
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, containerNumberRoute(nextIndex)).withFormUrlEncodedBody(("value", container.containerNumber))
+      val result    = route(app, request).value
+      val boundForm = form(nextIndex, Seq(container)).bind(Map("value" -> container.containerNumber))
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ContainerNumberView]
 
-      templateCaptor.getValue mustEqual containerNumberTemplate
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, nextIndex, mode)(request, messages).toString
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, containerNumberRoute()).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, containerNumberRoute()).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form().bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ContainerNumberView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "mode"        -> NormalMode,
-        "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(mrn, eventIndex, containerIndex, NormalMode).url
-      )
+      status(result) mustEqual BAD_REQUEST
 
-      templateCaptor.getValue mustEqual containerNumberTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, eventIndex, containerIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
