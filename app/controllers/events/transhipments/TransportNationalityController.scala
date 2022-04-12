@@ -27,7 +27,6 @@ import play.api.mvc._
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.events.transhipments.TransportNationalityView
 
 import scala.concurrent.{ExecutionContext, Future}
