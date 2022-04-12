@@ -21,9 +21,8 @@ import controllers.routes
 import models.reference.CustomsOffice
 import models.{Address, CheckMode, Mode}
 import pages._
-import uk.gov.hmrc.viewmodels.Html
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, HtmlContent, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
@@ -72,19 +71,24 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             .value
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
+
           checkYourAnswersHelper.eoriNumber mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("eoriNumber.checkYourAnswersLabel").withArgs(name),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("eoriNumber.checkYourAnswersLabel", name).toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(eori)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.ConsigneeEoriNumberController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("eoriNumber.change.hidden").withArgs(name)),
-                  attributes = Map("id" -> "change-eori-number")
+              value = Value(eori.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.ConsigneeEoriNumberController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("eoriNumber.change.hidden", name)),
+                      attributes = Map("id" -> "change-eori-number")
+                    )
+                  )
                 )
               )
             )
@@ -113,18 +117,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeName mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("consigneeName.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("consigneeName.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(name)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.ConsigneeNameController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("consigneeName.change.hidden")),
-                  attributes = Map("id" -> "change-consignee-name")
+              value = Value(name.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.ConsigneeNameController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("consigneeName.change.hidden")),
+                      attributes = Map("id" -> "change-consignee-name")
+                    )
+                  )
                 )
               )
             )
@@ -153,18 +161,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.placeOfNotification mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("placeOfNotification.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("placeOfNotification.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(location)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.PlaceOfNotificationController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("placeOfNotification.change.hidden")),
-                  attributes = Map("id" -> "change-place-of-notification")
+              value = Value(location.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.PlaceOfNotificationController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("placeOfNotification.change.hidden")),
+                      attributes = Map("id" -> "change-place-of-notification")
+                    )
+                  )
                 )
               )
             )
@@ -193,18 +205,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.isTraderAddressPlaceOfNotification mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("isTraderAddressPlaceOfNotification.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("isTraderAddressPlaceOfNotification.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Message("site.yes")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("isTraderAddressPlaceOfNotification.change.hidden")),
-                  attributes = Map("id" -> "change-trader-address-place-of-notification")
+              value = Value(messages("site.yes").toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("isTraderAddressPlaceOfNotification.change.hidden")),
+                      attributes = Map("id" -> "change-trader-address-place-of-notification")
+                    )
+                  )
                 )
               )
             )
@@ -233,18 +249,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.incidentOnRoute mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("incidentOnRoute.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("incidentOnRoute.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Message("site.yes")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.IncidentOnRouteController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("incidentOnRoute.change.hidden")),
-                  attributes = Map("id" -> "change-incident-on-route")
+              value = Value(messages("site.yes").toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.IncidentOnRouteController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("incidentOnRoute.change.hidden")),
+                      attributes = Map("id" -> "change-incident-on-route")
+                    )
+                  )
                 )
               )
             )
@@ -273,18 +293,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderName mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("traderName.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("traderName.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(name)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.TraderNameController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("traderName.change.hidden")),
-                  attributes = Map("id" -> "change-trader-name")
+              value = Value(name.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.TraderNameController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("traderName.change.hidden")),
+                      attributes = Map("id" -> "change-trader-name")
+                    )
+                  )
                 )
               )
             )
@@ -313,18 +337,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderEori mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("traderEori.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("traderEori.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(eori)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.TraderEoriController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("traderEori.change.hidden")),
-                  attributes = Map("id" -> "change-trader-eori")
+              value = Value(eori.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.TraderEoriController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("traderEori.change.hidden")),
+                      attributes = Map("id" -> "change-trader-eori")
+                    )
+                  )
                 )
               )
             )
@@ -353,18 +381,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderAddress mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("traderAddress.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("traderAddress.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Html(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.TraderAddressController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("traderAddress.change.hidden")),
-                  attributes = Map("id" -> "change-trader-address")
+              value = Value(HtmlContent(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.TraderAddressController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("traderAddress.change.hidden")),
+                      attributes = Map("id" -> "change-trader-address")
+                    )
+                  )
                 )
               )
             )
@@ -408,18 +440,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeAddress mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("consigneeAddress.checkYourAnswersLabel").withArgs(name),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("consigneeAddress.checkYourAnswersLabel", name).toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Html(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.ConsigneeAddressController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("consigneeAddress.change.hidden").withArgs(name)),
-                  attributes = Map("id" -> "change-consignee-address")
+              value = Value(HtmlContent(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.ConsigneeAddressController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("consigneeAddress.change.hidden", name)),
+                      attributes = Map("id" -> "change-consignee-address")
+                    )
+                  )
                 )
               )
             )
@@ -448,18 +484,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.authorisedLocation mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("authorisedLocation.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("authorisedLocation.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(location)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.AuthorisedLocationController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("authorisedLocation.change.hidden")),
-                  attributes = Map("id" -> "change-authorised-location")
+              value = Value(location.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.AuthorisedLocationController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("authorisedLocation.change.hidden")),
+                      attributes = Map("id" -> "change-authorised-location")
+                    )
+                  )
                 )
               )
             )
@@ -488,18 +528,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.customsSubPlace mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("customsSubPlace.checkYourAnswersLabel"),
-                classes = Seq("govuk-!-width-one-half")
+                content = messages("customsSubPlace.checkYourAnswersLabel").toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(location)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = routes.CustomsSubPlaceController.onPageLoad(mrn, mode).url,
-                  visuallyHiddenText = Some(Message("customsSubPlace.change.hidden")),
-                  attributes = Map("id" -> "change-customs-sub-place")
+              value = Value(location.toText),
+              actions = Some(
+                new Actions(
+                  items = Seq(
+                    new ActionItem(
+                      content = messages("site.edit").toText,
+                      href = routes.CustomsSubPlaceController.onPageLoad(mrn, mode).url,
+                      visuallyHiddenText = Some(messages("customsSubPlace.change.hidden")),
+                      attributes = Map("id" -> "change-customs-sub-place")
+                    )
+                  )
                 )
               )
             )
@@ -546,18 +590,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.simplified.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(customsOfficeId)),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(customsOfficeId.toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -576,18 +624,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.simplified.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(customsOfficeId)),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(customsOfficeId.toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -609,18 +661,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.simplified.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(s"$customsOfficeName ($customsOfficeId)")),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -639,18 +695,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.simplified.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(s"$customsOfficeName ($customsOfficeId)")),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.simplified.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -698,18 +758,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(customsOfficeId)),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(customsOfficeId.toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -728,18 +792,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(customsOfficeId)),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(customsOfficeId.toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -761,18 +829,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(s"$customsOfficeName ($customsOfficeId)")),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )
@@ -791,18 +863,22 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
-              Row(
+              SummaryListRow(
                 key = Key(
-                  content = Message("customsOffice.checkYourAnswersLabel", location),
-                  classes = Seq("govuk-!-width-one-half")
+                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  classes = "govuk-!-width-one-half"
                 ),
-                value = Value(Literal(s"$customsOfficeName ($customsOfficeId)")),
-                actions = List(
-                  Action(
-                    content = Message("site.edit"),
-                    href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                    visuallyHiddenText = Some(Message("customsOffice.change.hidden", location)),
-                    attributes = Map("id" -> "change-presentation-office")
+                value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
+                actions = Some(
+                  new Actions(
+                    items = Seq(
+                      new ActionItem(
+                        content = messages("site.edit").toText,
+                        href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
+                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        attributes = Map("id" -> "change-presentation-office")
+                      )
+                    )
                   )
                 )
               )

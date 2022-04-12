@@ -20,9 +20,10 @@ import controllers.events.transhipments.routes.{ConfirmRemoveContainerController
 import models.domain.ContainerDomain
 import models.{Index, Mode, UserAnswers}
 import pages.events.transhipments.ContainerNumberPage
+import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-class AddContainerHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
+class AddContainerHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
   def containerListItem(eventIndex: Index, containerIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),
@@ -33,5 +34,5 @@ class AddContainerHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryLi
 }
 
 object AddContainerHelper {
-  def apply(userAnswers: UserAnswers, mode: Mode): AddContainerHelper = new AddContainerHelper(userAnswers, mode)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddContainerHelper = new AddContainerHelper(userAnswers, mode)
 }

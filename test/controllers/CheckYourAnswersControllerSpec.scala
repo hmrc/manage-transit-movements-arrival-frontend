@@ -17,23 +17,23 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.ArrivalSubmissionService
 import uk.gov.hmrc.http.HttpResponse
+import utils.CheckYourAnswersHelper
+import viewModels.sections.Section
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val mockService: ArrivalSubmissionService = mock[ArrivalSubmissionService]
 
@@ -42,27 +42,41 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       .guiceApplicationBuilder()
       .overrides(bind[ArrivalSubmissionService].toInstance(mockService))
 
+  lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad(mrn).url
+
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(mrn).url)
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, checkYourAnswersRoute)
+      val view    = injector.instanceOf[CheckYourAnswersView]
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val helper = new CheckYourAnswersHelper(emptyUserAnswers, CheckMode)
+      val sections = Seq(
+        Section(
+          Seq(helper.movementReferenceNumber)
+        ),
+        Section(
+          messages("checkYourAnswers.section.goodsLocation"),
+          Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten
+        ),
+        Section(
+          messages("checkYourAnswers.section.consigneeDetails"),
+          Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten
+        ),
+        Section(
+          messages("checkYourAnswers.section.events"),
+          helper.incidentOnRoute.toSeq
+        )
+      )
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual "check-your-answers.njk"
+      contentAsString(result) mustEqual
+        view(mrn, sections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

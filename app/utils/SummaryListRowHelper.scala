@@ -19,32 +19,31 @@ package utils
 import models.reference.CountryCode
 import models.{Address, CountryList, MovementReferenceNumber, UserAnswers}
 import pages.QuestionPage
+import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.html.components._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Text}
 
-private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
+private[utils] class SummaryListRowHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def mrn: MovementReferenceNumber = userAnswers.movementReferenceNumber
 
   def formatAsYesOrNo(answer: Boolean): Content =
     if (answer) {
-      msg"site.yes"
+      messages("site.yes").toText
     } else {
-      msg"site.no"
+      messages("site.no").toText
     }
 
-  def formatAsAddress(address: Address): Html = Html(
-    Seq(address.buildingAndStreet, address.city, address.postcode)
-      .mkString("<br>")
-  )
+  def formatAsAddress(address: Address): Content =
+    HtmlContent(Seq(address.buildingAndStreet, address.city, address.postcode).mkString("<br>"))
 
-  def formatAsLiteral[T](answer: T): Content = lit"$answer"
+  def formatAsLiteral[T](answer: T): Content = s"$answer".toText
 
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
-    lit"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}"
+    s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
 
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
@@ -53,7 +52,7 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
     id: Option[String],
     call: Call,
     args: Any*
-  )(implicit rds: Reads[T]): Option[Row] =
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
         buildRow(
@@ -72,7 +71,7 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
     prefix: String,
     id: Option[String],
     call: Call
-  )(implicit rds: Reads[T]): Option[Row] =
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(namePage) flatMap {
       name =>
         getAnswerAndBuildRow[T](
@@ -92,13 +91,13 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
     label: Content,
     id: Option[String],
     call: Call
-  )(implicit rds: Reads[T]): Option[Row] =
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
         buildSimpleRow(
           prefix = prefix,
           label = label,
-          answer = lit"${formatAnswer(answer)}",
+          answer = s"${formatAnswer(answer)}".toText,
           id = id,
           call = call,
           args = formatAnswer(answer)
@@ -107,11 +106,11 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
 
   def getAnswerAndBuildRemovableRow[T](
     page: QuestionPage[T],
-    formatAnswer: T => Text,
+    formatAnswer: T => Content,
     id: String,
     changeCall: Call,
     removeCall: Call
-  )(implicit rds: Reads[T]): Option[Row] =
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
         buildRemovableRow(
@@ -143,10 +142,10 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
     id: Option[String],
     call: Call,
     args: Any*
-  ): Row =
+  ): SummaryListRow =
     buildSimpleRow(
       prefix = prefix,
-      label = msg"$prefix.checkYourAnswersLabel".withArgs(args: _*),
+      label = messages(s"$prefix.checkYourAnswersLabel", args: _*).toText,
       answer = answer,
       id = id,
       call = call,
@@ -160,44 +159,52 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers) {
     id: Option[String],
     call: Call,
     args: Any*
-  ): Row =
-    Row(
-      key = Key(label, classes = Seq("govuk-!-width-one-half")),
+  ): SummaryListRow =
+    SummaryListRow(
+      key = Key(label, classes = "govuk-!-width-one-half"),
       value = Value(answer),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = call.url,
-          visuallyHiddenText = Some(msg"$prefix.change.hidden".withArgs(args: _*)),
-          attributes = id.fold[Map[String, String]](Map.empty)(
-            id => Map("id" -> id)
+      actions = Some(
+        Actions(items =
+          List(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = call.url,
+              visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+              attributes = id.fold[Map[String, String]](Map.empty)(
+                id => Map("id" -> id)
+              )
+            )
           )
         )
       )
     )
 
   def buildRemovableRow(
-    label: Text,
+    label: Content,
     value: String = "",
     id: String,
     changeCall: Call,
     removeCall: Call
-  ): Row =
-    Row(
+  ): SummaryListRow =
+    SummaryListRow(
       key = Key(label),
-      value = Value(lit"$value"),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = changeCall.url,
-          visuallyHiddenText = Some(label),
-          attributes = Map("id" -> s"change-$id")
-        ),
-        Action(
-          content = msg"site.delete",
-          href = removeCall.url,
-          visuallyHiddenText = Some(label),
-          attributes = Map("id" -> s"remove-$id")
+      value = Value(s"$value".toText),
+      actions = Some(
+        Actions(items =
+          List(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = changeCall.url,
+              visuallyHiddenText = Some(label.toString),
+              attributes = Map("id" -> s"change-$id")
+            ),
+            ActionItem(
+              content = messages("site.delete").toText,
+              href = removeCall.url,
+              visuallyHiddenText = Some(label.toString),
+              attributes = Map("id" -> s"remove-$id")
+            )
+          )
         )
       )
     )

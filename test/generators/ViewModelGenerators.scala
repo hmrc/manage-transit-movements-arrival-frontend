@@ -18,6 +18,9 @@ package generators
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import uk.gov.hmrc.govukfrontend.views.Aliases
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 import uk.gov.hmrc.viewmodels.{Content, Text}
@@ -66,6 +69,30 @@ trait ViewModelGenerators {
     } yield Value(content, classes)
   }
 
+  implicit lazy val arbitraryTwirlText: Arbitrary[Aliases.Text] = Arbitrary {
+    for {
+      content <- arbitrary[String]
+    } yield content.toText
+  }
+
+  implicit lazy val arbitraryTwirlContent: Arbitrary[Aliases.Content] = Arbitrary {
+    arbitrary[Aliases.Text]
+  }
+
+  implicit lazy val arbitraryTwirlKey: Arbitrary[Aliases.Key] = Arbitrary {
+    for {
+      content <- arbitrary[Aliases.Content]
+      classes <- arbitrary[String]
+    } yield Aliases.Key(content, classes)
+  }
+
+  implicit lazy val arbitraryTwirlValue: Arbitrary[Aliases.Value] = Arbitrary {
+    for {
+      content <- arbitrary[Aliases.Content]
+      classes <- arbitrary[String]
+    } yield Aliases.Value(content, classes)
+  }
+
   implicit lazy val arbitraryAction: Arbitrary[Action] = Arbitrary {
     for {
       content            <- arbitrary[Content]
@@ -86,11 +113,36 @@ trait ViewModelGenerators {
     } yield Row(key, value, actions)
   }
 
+  implicit lazy val arbitraryActionItem: Arbitrary[ActionItem] = Arbitrary {
+    for {
+      content            <- arbitrary[Aliases.Content]
+      href               <- arbitrary[String]
+      visuallyHiddenText <- arbitrary[Option[String]]
+      classes            <- arbitrary[String]
+      attributes         <- Gen.const(Map.empty[String, String]) // TODO: Do we need to have valid attributes generated here? Use case?
+    } yield ActionItem(href, content, visuallyHiddenText, classes, attributes)
+  }
+
+  implicit lazy val arbitraryActions: Arbitrary[Actions] = Arbitrary {
+    for {
+      length <- Gen.choose(1, maxSeqLength)
+      items  <- Gen.containerOfN[Seq, ActionItem](length, arbitrary[ActionItem])
+    } yield Actions(items = items)
+  }
+
+  implicit lazy val arbitrarySummaryListRow: Arbitrary[SummaryListRow] = Arbitrary {
+    for {
+      key     <- arbitrary[Aliases.Key]
+      value   <- arbitrary[Aliases.Value]
+      actions <- arbitrary[Option[Actions]]
+    } yield SummaryListRow(key, value, "", actions)
+  }
+
   implicit lazy val arbitrarySection: Arbitrary[Section] = Arbitrary {
     for {
-      sectionTitle <- arbitrary[Option[Text]]
+      sectionTitle <- arbitrary[String]
       length       <- Gen.choose(1, maxSeqLength)
-      row          <- Gen.containerOfN[Seq, Row](length, arbitrary[Row])
-    } yield Section(sectionTitle, row)
+      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+    } yield Section(sectionTitle, rows)
   }
 }
