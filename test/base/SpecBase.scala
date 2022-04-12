@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import models.domain.{ContainerDomain, SealDomain}
 import models.messages.{Container, Seal}
 import models.{Address, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
@@ -72,6 +73,8 @@ trait SpecBase
 
   def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

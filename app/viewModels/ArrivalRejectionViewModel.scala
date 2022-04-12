@@ -21,9 +21,6 @@ import models.ArrivalId
 import models.messages.ErrorType._
 import models.messages.{ArrivalNotificationRejectionMessage, FunctionalError}
 import play.api.libs.json.{JsObject, Json, OWrites}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-
-object NunjucksSupportObject extends NunjucksSupport
 
 sealed trait RejectionViewData
 
