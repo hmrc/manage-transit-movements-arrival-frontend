@@ -104,7 +104,7 @@ class AddEventsHelperSpec extends SpecBase {
           helper.cyaListOfEvent(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("addEvent.event.label", eventIndex.display).toText,
+                content = s"Event ${eventIndex.display}".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(place.toText),
@@ -112,9 +112,9 @@ class AddEventsHelperSpec extends SpecBase {
                 Actions(items =
                   Seq(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                      visuallyHiddenText = Some(messages("addEvent.change.hidden", eventIndex.display, place))
+                      visuallyHiddenText = Some(s"event ${eventIndex.display} at $place")
                     )
                   )
                 )
@@ -136,7 +136,7 @@ class AddEventsHelperSpec extends SpecBase {
           helper.cyaListOfEvent(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("addEvent.event.label", eventIndex.display).toText,
+                content = s"Event ${eventIndex.display}".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(countryCode.code.toText),
@@ -144,9 +144,9 @@ class AddEventsHelperSpec extends SpecBase {
                 Actions(items =
                   Seq(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                      visuallyHiddenText = Some(messages("addEvent.change.hidden", eventIndex.display, countryCode.code))
+                      visuallyHiddenText = Some(s"event ${eventIndex.display} at ${countryCode.code}")
                     )
                   )
                 )

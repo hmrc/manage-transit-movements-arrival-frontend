@@ -75,7 +75,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.eoriNumber mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("eoriNumber.checkYourAnswersLabel", name).toText,
+                content = s"What is the EORI number for $name?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(eori.toText),
@@ -83,9 +83,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.ConsigneeEoriNumberController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("eoriNumber.change.hidden", name)),
+                      visuallyHiddenText = Some(s"the EORI number for $name"),
                       attributes = Map("id" -> "change-eori-number")
                     )
                   )
@@ -119,7 +119,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.consigneeName mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("consigneeName.checkYourAnswersLabel").toText,
+                content = "What is the name of the authorised consignee?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(name.toText),
@@ -127,9 +127,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.ConsigneeNameController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("consigneeName.change.hidden")),
+                      visuallyHiddenText = Some("the name of the authorised consignee"),
                       attributes = Map("id" -> "change-consignee-name")
                     )
                   )
@@ -163,7 +163,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.placeOfNotification mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("placeOfNotification.checkYourAnswersLabel").toText,
+                content = "Where are you completing this arrival notification?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(location.toText),
@@ -171,9 +171,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.PlaceOfNotificationController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("placeOfNotification.change.hidden")),
+                      visuallyHiddenText = Some("where you are completing this arrival notification"),
                       attributes = Map("id" -> "change-place-of-notification")
                     )
                   )
@@ -207,17 +207,17 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.isTraderAddressPlaceOfNotification mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("isTraderAddressPlaceOfNotification.checkYourAnswersLabel").toText,
+                content = "Are you completing this arrival notification at the trader’s address?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages("site.yes").toText),
+              value = Value("Yes".toText),
               actions = Some(
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("isTraderAddressPlaceOfNotification.change.hidden")),
+                      visuallyHiddenText = Some("if you are completing this arrival notification at the trader’s address"),
                       attributes = Map("id" -> "change-trader-address-place-of-notification")
                     )
                   )
@@ -251,17 +251,17 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.incidentOnRoute mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("incidentOnRoute.checkYourAnswersLabel").toText,
+                content = "Did any events happen on the journey?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages("site.yes").toText),
+              value = Value("Yes".toText),
               actions = Some(
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.IncidentOnRouteController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("incidentOnRoute.change.hidden")),
+                      visuallyHiddenText = Some("if there was an event on the journey"),
                       attributes = Map("id" -> "change-incident-on-route")
                     )
                   )
@@ -295,7 +295,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.traderName mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("traderName.checkYourAnswersLabel").toText,
+                content = "Name".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(name.toText),
@@ -303,9 +303,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.TraderNameController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("traderName.change.hidden")),
+                      visuallyHiddenText = Some("name of trader"),
                       attributes = Map("id" -> "change-trader-name")
                     )
                   )
@@ -339,7 +339,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.traderEori mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("traderEori.checkYourAnswersLabel").toText,
+                content = "EORI number".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(eori.toText),
@@ -347,9 +347,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.TraderEoriController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("traderEori.change.hidden")),
+                      visuallyHiddenText = Some("EORI number of trader"),
                       attributes = Map("id" -> "change-trader-eori")
                     )
                   )
@@ -383,7 +383,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.traderAddress mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("traderAddress.checkYourAnswersLabel").toText,
+                content = "Address".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(HtmlContent(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
@@ -391,9 +391,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.TraderAddressController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("traderAddress.change.hidden")),
+                      visuallyHiddenText = Some("address of trader"),
                       attributes = Map("id" -> "change-trader-address")
                     )
                   )
@@ -442,7 +442,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.consigneeAddress mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("consigneeAddress.checkYourAnswersLabel", name).toText,
+                content = s"Address".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(HtmlContent(s"${address.buildingAndStreet}<br>${address.city}<br>${address.postcode}")),
@@ -450,9 +450,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.ConsigneeAddressController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("consigneeAddress.change.hidden", name)),
+                      visuallyHiddenText = Some(s"$name’s address"),
                       attributes = Map("id" -> "change-consignee-address")
                     )
                   )
@@ -486,7 +486,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.authorisedLocation mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("authorisedLocation.checkYourAnswersLabel").toText,
+                content = "Authorised location".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(location.toText),
@@ -494,9 +494,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.AuthorisedLocationController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("authorisedLocation.change.hidden")),
+                      visuallyHiddenText = Some("the authorised location"),
                       attributes = Map("id" -> "change-authorised-location")
                     )
                   )
@@ -530,7 +530,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           checkYourAnswersHelper.customsSubPlace mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("customsSubPlace.checkYourAnswersLabel").toText,
+                content = "Which Customs-approved location has the goods?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(location.toText),
@@ -538,9 +538,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = Seq(
                     new ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = routes.CustomsSubPlaceController.onPageLoad(mrn, mode).url,
-                      visuallyHiddenText = Some(messages("customsSubPlace.change.hidden")),
+                      visuallyHiddenText = Some("the customs sub-place or approved location"),
                       attributes = Map("id" -> "change-customs-sub-place")
                     )
                   )
@@ -592,7 +592,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location’s address?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(customsOfficeId.toText),
@@ -600,9 +600,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -626,7 +626,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location’s address?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(customsOfficeId.toText),
@@ -634,9 +634,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -663,7 +663,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location’s address?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
@@ -671,9 +671,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -697,7 +697,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.simplified.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location’s address?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
@@ -705,9 +705,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeSimplifiedController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.simplified.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -760,7 +760,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.customsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(customsOfficeId.toText),
@@ -768,9 +768,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -794,7 +794,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.customsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(customsOfficeId.toText),
@@ -802,9 +802,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -831,7 +831,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.customsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
@@ -839,9 +839,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )
@@ -865,7 +865,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             checkYourAnswersHelper.customsOffice mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("customsOffice.checkYourAnswersLabel", location).toText,
+                  content = s"Which Customs office supervises $location?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(s"$customsOfficeName ($customsOfficeId)".toText),
@@ -873,9 +873,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = Seq(
                       new ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = routes.CustomsOfficeController.onPageLoad(mrn, mode).url,
-                        visuallyHiddenText = Some(messages("customsOffice.change.hidden", location)),
+                        visuallyHiddenText = Some(s"which Customs office supervises $location"),
                         attributes = Map("id" -> "change-presentation-office")
                       )
                     )

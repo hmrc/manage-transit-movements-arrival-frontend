@@ -57,17 +57,17 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.isTranshipment(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("isTranshipment.checkYourAnswersLabel").toText,
+                content = "Were the goods moved to a different vehicle or container?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages("site.yes").toText),
+              value = Value("Yes".toText),
               actions = Some(
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = IsTranshipmentController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("isTranshipment.change.hidden")),
+                      visuallyHiddenText = Some("if the goods were moved to a different vehicle or container"),
                       attributes = Map("id" -> s"change-is-transhipment-${eventIndex.display}")
                     )
                   )
@@ -103,17 +103,17 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.transhipmentType(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("transhipmentType.checkYourAnswersLabel").toText,
+                content = "Where were the goods moved?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages(s"transhipmentType.checkYourAnswers.$transhipmentType").toText),
+              value = Value("A different container".toText),
               actions = Some(
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = TranshipmentTypeController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("transhipmentType.change.hidden")),
+                      visuallyHiddenText = Some("where the goods moved to"),
                       attributes = Map("id" -> s"transhipment-type-${eventIndex.display}")
                     )
                   )
@@ -149,7 +149,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.containerNumber(eventIndex, containerIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("addContainer.containerList.label", containerIndex.display).toText,
+                content = s"Container ${containerIndex.display}".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(containerDomain.containerNumber.toText),
@@ -157,9 +157,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode).url,
-                      visuallyHiddenText = Some(messages("containerNumber.change.hidden", containerDomain.containerNumber)),
+                      visuallyHiddenText = Some(s"container ${containerDomain.containerNumber}"),
                       attributes = Map("id" -> s"change-container-${containerIndex.display}")
                     )
                   )
@@ -197,7 +197,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             helper.eventCountry(eventIndex)(CountryList(Nil)) mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("eventCountry.checkYourAnswersLabel").toText,
+                  content = "Which country were the goods in when the event happened?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(countryCode.code.toText),
@@ -205,9 +205,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = List(
                       ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = EventCountryController.onPageLoad(mrn, eventIndex, mode).url,
-                        visuallyHiddenText = Some(messages("eventCountry.change.hidden")),
+                        visuallyHiddenText = Some("which country the goods were in when the event happened"),
                         attributes = Map("id" -> s"change-event-country-${eventIndex.display}")
                       )
                     )
@@ -230,7 +230,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             helper.eventCountry(eventIndex)(CountryList(Seq(country))) mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("eventCountry.checkYourAnswersLabel").toText,
+                  content = "Which country were the goods in when the event happened?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(country.description.toText),
@@ -238,9 +238,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = List(
                       ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = EventCountryController.onPageLoad(mrn, eventIndex, mode).url,
-                        visuallyHiddenText = Some(messages("eventCountry.change.hidden")),
+                        visuallyHiddenText = Some("which country the goods were in when the event happened"),
                         attributes = Map("id" -> s"change-event-country-${eventIndex.display}")
                       )
                     )
@@ -277,7 +277,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.eventPlace(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("eventPlace.checkYourAnswersLabel").toText,
+                content = "Where did the event happen?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(place.toText),
@@ -285,9 +285,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = EventPlaceController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("eventPlace.change.hidden")),
+                      visuallyHiddenText = Some("where the event happened"),
                       attributes = Map("id" -> s"change-event-place-${eventIndex.display}")
                     )
                   )
@@ -321,17 +321,17 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.eventReported(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("eventReported.checkYourAnswersLabel").toText,
+                content = "Has this event been reported to customs?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages("site.no").toText),
+              value = Value("No".toText),
               actions = Some(
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = EventReportedController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("eventReported.change.hidden")),
+                      visuallyHiddenText = Some("if this event has been reported to customs"),
                       attributes = Map("id" -> s"change-event-reported-${eventIndex.display}")
                     )
                   )
@@ -367,7 +367,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.incidentInformation(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("incidentInformation.checkYourAnswersLabel").toText,
+                content = "What happened on the journey?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(incident.toText),
@@ -375,9 +375,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = IncidentInformationController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("incidentInformation.change.hidden")),
+                      visuallyHiddenText = Some("what happened on the journey"),
                       attributes = Map("id" -> s"change-incident-information-${eventIndex.display}")
                     )
                   )
@@ -413,7 +413,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.transportIdentity(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("transportIdentity.checkYourAnswersLabel").toText,
+                content = "What is the name, registration or reference of the new vehicle?".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(vehicle.toText),
@@ -421,9 +421,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = TransportIdentityController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("transportIdentity.change.hidden")),
+                      visuallyHiddenText = Some("the name, registration or reference of the new vehicle"),
                       attributes = Map("id" -> s"transport-identity-${eventIndex.display}")
                     )
                   )
@@ -461,7 +461,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             helper.transportNationality(eventIndex)(CountryList(Nil)) mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("transportNationality.checkYourAnswersLabel").toText,
+                  content = "Which country is the vehicle registered in?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(countryCode.code.toText),
@@ -469,9 +469,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = List(
                       ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = TransportNationalityController.onPageLoad(mrn, eventIndex, mode).url,
-                        visuallyHiddenText = Some(messages("transportNationality.change.hidden")),
+                        visuallyHiddenText = Some("the country where the vehicle is registered"),
                         attributes = Map("id" -> s"transport-nationality-${eventIndex.display}")
                       )
                     )
@@ -494,7 +494,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             helper.transportNationality(eventIndex)(CountryList(Seq(country))) mustBe Some(
               SummaryListRow(
                 key = Key(
-                  content = messages("transportNationality.checkYourAnswersLabel").toText,
+                  content = "Which country is the vehicle registered in?".toText,
                   classes = "govuk-!-width-one-half"
                 ),
                 value = Value(country.description.toText),
@@ -502,9 +502,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                   new Actions(
                     items = List(
                       ActionItem(
-                        content = messages("site.edit").toText,
+                        content = "Change".toText,
                         href = TransportNationalityController.onPageLoad(mrn, eventIndex, mode).url,
-                        visuallyHiddenText = Some(messages("transportNationality.change.hidden")),
+                        visuallyHiddenText = Some("the country where the vehicle is registered"),
                         attributes = Map("id" -> s"transport-nationality-${eventIndex.display}")
                       )
                     )
@@ -539,17 +539,17 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.haveSealsChanged(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("haveSealsChanged.checkYourAnswersLabel").toText,
+                content = "Have any of the official customs seals changed?".toText,
                 classes = "govuk-!-width-one-half"
               ),
-              value = Value(messages("site.yes").toText),
+              value = Value("Yes".toText),
               actions = Some(
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = HaveSealsChangedController.onPageLoad(mrn, eventIndex, mode).url,
-                      visuallyHiddenText = Some(messages("haveSealsChanged.change.hidden")),
+                      visuallyHiddenText = Some("if any of the official customs seals have changed"),
                       attributes = Map("id" -> s"seals-changed-${eventIndex.display}")
                     )
                   )
@@ -585,7 +585,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           helper.sealIdentity(eventIndex, sealIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = messages("addSeal.sealList.label", sealIndex.display).toText,
+                content = s"Official customs seal ${sealIndex.display}".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(seal.numberOrMark.toText),
@@ -593,9 +593,9 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                 new Actions(
                   items = List(
                     ActionItem(
-                      content = messages("site.edit").toText,
+                      content = "Change".toText,
                       href = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,
-                      visuallyHiddenText = Some(messages("sealIdentity.change.hidden", seal.numberOrMark)),
+                      visuallyHiddenText = Some(s"official customs seal ${seal.numberOrMark}"),
                       attributes = Map("id" -> s"change-seal-${sealIndex.display}")
                     )
                   )

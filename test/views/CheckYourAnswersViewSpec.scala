@@ -17,34 +17,41 @@
 package views
 
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import views.behaviours.ViewBehaviours
+import views.behaviours.SummaryListViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends ViewBehaviours {
+class CheckYourAnswersViewSpec extends SummaryListViewBehaviours {
 
   override val prefix: String = "checkYourAnswers"
 
-  val answersList: Seq[Section] = Seq(
+  val sections: Seq[Section] = Seq(
     Section(
-      messages("checkYourAnswers.section.traderDetails"),
+      "Section title",
       Nil
     )
   )
 
+  override def summaryLists: Seq[SummaryList] = sections.map(
+    section => new SummaryList(section.rows)
+  )
+
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CheckYourAnswersView].apply(mrn, answersList)(fakeRequest, messages)
+    injector.instanceOf[CheckYourAnswersView].apply(mrn, sections)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("h2", messages("checkYourAnswers.confirmation.heading"))
+  behave like pageWithSummaryLists()
 
-  behave like pageWithContent("h2", messages("checkYourAnswers.section.traderDetails"))
+  behave like pageWithContent("h2", "Section title")
 
-  behave like pageWithContent("p", messages("checkYourAnswers.confirmation.paragraph"))
+  behave like pageWithContent("h2", "Now send your arrival notification")
 
-  behave like pageWithSubmitButton(messages("site.confirmAndSend"))
+  behave like pageWithContent("p", "By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.")
+
+  behave like pageWithSubmitButton("Confirm and send")
 
 }
