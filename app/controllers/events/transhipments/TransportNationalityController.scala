@@ -16,44 +16,37 @@
 
 package controllers.events.transhipments
 
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import forms.events.transhipments.TransportNationalityFormProvider
-import models.reference.Country
+import javax.inject.Inject
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.events.transhipments.TransportNationalityPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import renderer.Renderer
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.transhipments.TransportNationalityView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportNationalityController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: TransportNationalityFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  view: TransportNationalityView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      countriesService.getCountries() flatMap {
+      countriesService.getCountries() map {
         countryList =>
           val form = formProvider(countryList)
 
@@ -63,11 +56,11 @@ class TransportNationalityController @Inject() (
             .map(form.fill)
             .getOrElse(form)
 
-          renderPage(mrn, mode, preparedForm, countryList.countries, Ok, eventIndex)
+          Ok(view(preparedForm, countryList.countries, mrn, eventIndex, mode))
       }
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       countriesService.getCountries() flatMap {
         countryList =>
@@ -76,7 +69,7 @@ class TransportNationalityController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => renderPage(mrn, mode, formWithErrors, countryList.countries, BadRequest, eventIndex),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryList.countries, mrn, eventIndex, mode))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportNationalityPage(eventIndex), value.code))
@@ -84,28 +77,5 @@ class TransportNationalityController @Inject() (
                 } yield Redirect(navigator.nextPage(TransportNationalityPage(eventIndex), mode, updatedAnswers))
             )
       }
-  }
-
-  private def renderPage(mrn: MovementReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Status, eventIndex: Index)(implicit
-    request: Request[AnyContent]
-  ): Future[Result] = {
-    val json = Json.obj(
-      "form"        -> form,
-      "mrn"         -> mrn,
-      "mode"        -> mode,
-      "countries"   -> countryJsonList(form.value, countries),
-      "onSubmitUrl" -> routes.TransportNationalityController.onSubmit(mrn, eventIndex, mode).url
-    )
-
-    renderer.render("events/transhipments/transportNationality.njk", json).map(status(_))
-  }
-
-  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
-    val countryJsonList = countries.map {
-      country =>
-        Json.obj("text" -> country.toString, "value" -> country.code, "selected" -> value.contains(country))
-    }
-
-    Json.obj("value" -> "", "text" -> "Select a country") +: countryJsonList
   }
 }

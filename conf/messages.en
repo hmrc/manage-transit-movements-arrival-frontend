@@ -319,6 +319,7 @@ transportNationality.checkYourAnswersLabel = Which country is the vehicle regist
 transportNationality.error.required = Enter which country the vehicle is registered in
 transportNationality.error.length = TransportNationality must be TransportNationality characters or less
 transportNationality.change.hidden = the country where the vehicle is registered
+transportNationality.placeholder = Select a country
 
 containerNumber.title = What is the new container number?
 containerNumber.heading = What is the new container number?
