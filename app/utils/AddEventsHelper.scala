@@ -19,11 +19,12 @@ package utils
 import controllers.events.{routes => eventRoutes}
 import models.{Index, Mode, UserAnswers}
 import pages.events._
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.viewmodels.SummaryList.Row
-import uk.gov.hmrc.viewmodels._
 
-class AddEventsHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
+class AddEventsHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
   def eventListItem(eventIndex: Index): Option[ListItem] =
     placeOfEvent(eventIndex).map {
@@ -35,13 +36,13 @@ class AddEventsHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListR
         )
     }
 
-  def cyaListOfEvent(eventIndex: Index): Option[Row] =
+  def cyaListOfEvent(eventIndex: Index): Option[SummaryListRow] =
     placeOfEvent(eventIndex) map {
       answer =>
         buildSimpleRow(
           prefix = "addEvent",
-          label = msg"addEvent.event.label".withArgs(eventIndex.display),
-          answer = lit"$answer",
+          label = messages("addEvent.event.label", eventIndex.display).toText,
+          answer = s"$answer".toText,
           id = None,
           call = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
           args = eventIndex.display,

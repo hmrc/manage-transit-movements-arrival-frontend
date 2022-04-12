@@ -26,7 +26,7 @@ case class CheckEventAnswersViewModel(sections: Seq[Section])
 
 object CheckEventAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, eventIndex: Index, mode: Mode, codeList: CountryList): CheckEventAnswersViewModel = {
+  def apply(userAnswers: UserAnswers, eventIndex: Index, mode: Mode, codeList: CountryList)(implicit messages: Messages): CheckEventAnswersViewModel = {
 
     val isTranshipment: Boolean = userAnswers.get(IsTranshipmentPage(eventIndex)).getOrElse(false)
 

@@ -20,13 +20,14 @@ import controllers.routes
 import models.reference.CustomsOffice
 import models.{Address, GoodsLocation, Mode, MovementReferenceNumber, UserAnswers}
 import pages._
+import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels._
+import uk.gov.hmrc.govukfrontend.views.html.components._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
-  def eoriNumber: Option[Row] = getAnswerAndBuildNamedRow[String](
+  def eoriNumber: Option[SummaryListRow] = getAnswerAndBuildNamedRow[String](
     namePage = ConsigneeNamePage,
     answerPage = ConsigneeEoriNumberPage,
     formatAnswer = formatAsLiteral,
@@ -35,7 +36,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.ConsigneeEoriNumberController.onPageLoad(mrn, mode)
   )
 
-  def consigneeName: Option[Row] = getAnswerAndBuildRow[String](
+  def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsigneeNamePage,
     formatAnswer = formatAsLiteral,
     prefix = "consigneeName",
@@ -43,7 +44,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.ConsigneeNameController.onPageLoad(mrn, mode)
   )
 
-  def placeOfNotification: Option[Row] = getAnswerAndBuildRow[String](
+  def placeOfNotification: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = PlaceOfNotificationPage,
     formatAnswer = formatAsLiteral,
     prefix = "placeOfNotification",
@@ -51,7 +52,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.PlaceOfNotificationController.onPageLoad(mrn, mode)
   )
 
-  def isTraderAddressPlaceOfNotification: Option[Row] = getAnswerAndBuildRow[Boolean](
+  def isTraderAddressPlaceOfNotification: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IsTraderAddressPlaceOfNotificationPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "isTraderAddressPlaceOfNotification",
@@ -59,7 +60,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(mrn, mode)
   )
 
-  def incidentOnRoute: Option[Row] = getAnswerAndBuildRow[Boolean](
+  def incidentOnRoute: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IncidentOnRoutePage,
     formatAnswer = formatAsYesOrNo,
     prefix = "incidentOnRoute",
@@ -67,7 +68,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.IncidentOnRouteController.onPageLoad(mrn, mode)
   )
 
-  def traderName: Option[Row] = getAnswerAndBuildRow[String](
+  def traderName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = TraderNamePage,
     formatAnswer = formatAsLiteral,
     prefix = "traderName",
@@ -75,7 +76,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.TraderNameController.onPageLoad(mrn, mode)
   )
 
-  def traderEori: Option[Row] = getAnswerAndBuildRow[String](
+  def traderEori: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = TraderEoriPage,
     formatAnswer = formatAsLiteral,
     prefix = "traderEori",
@@ -83,7 +84,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.TraderEoriController.onPageLoad(mrn, mode)
   )
 
-  def traderAddress: Option[Row] = getAnswerAndBuildRow[Address](
+  def traderAddress: Option[SummaryListRow] = getAnswerAndBuildRow[Address](
     page = TraderAddressPage,
     formatAnswer = formatAsAddress,
     prefix = "traderAddress",
@@ -91,7 +92,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.TraderAddressController.onPageLoad(mrn, mode)
   )
 
-  def consigneeAddress: Option[Row] = getAnswerAndBuildNamedRow[Address](
+  def consigneeAddress: Option[SummaryListRow] = getAnswerAndBuildNamedRow[Address](
     namePage = ConsigneeNamePage,
     answerPage = ConsigneeAddressPage,
     formatAnswer = formatAsAddress,
@@ -100,7 +101,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.ConsigneeAddressController.onPageLoad(mrn, mode)
   )
 
-  def authorisedLocation: Option[Row] = getAnswerAndBuildRow[String](
+  def authorisedLocation: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = AuthorisedLocationPage,
     formatAnswer = formatAsLiteral,
     prefix = "authorisedLocation",
@@ -108,7 +109,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.AuthorisedLocationController.onPageLoad(mrn, mode)
   )
 
-  def customsSubPlace: Option[Row] = getAnswerAndBuildRow[String](
+  def customsSubPlace: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = CustomsSubPlacePage,
     formatAnswer = formatAsLiteral,
     prefix = "customsSubPlace",
@@ -116,32 +117,36 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
     call = routes.CustomsSubPlaceController.onPageLoad(mrn, mode)
   )
 
-  def movementReferenceNumber: Row = Row(
-    key = Key(msg"movementReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-    value = Value(lit"$mrn")
+  def movementReferenceNumber: SummaryListRow = new SummaryListRow(
+    key = Key(messages("movementReferenceNumber.checkYourAnswersLabel").toText, "govuk-!-width-one-half"),
+    value = Value(s"$mrn".toText)
   )
 
-  def pickCustomsOffice: Option[Row] =
+  def pickCustomsOffice: Option[SummaryListRow] =
     userAnswers.get(SimplifiedCustomsOfficePage) match {
       case Some(_) => simplifiedCustomsOffice
       case None    => customsOffice
     }
 
-  def simplifiedCustomsOffice: Option[Row] =
+  def simplifiedCustomsOffice: Option[SummaryListRow] =
     customsOffice(SimplifiedCustomsOfficePage, "customsOffice.simplified", routes.CustomsOfficeSimplifiedController.onPageLoad)
 
-  def customsOffice: Option[Row] =
+  def customsOffice: Option[SummaryListRow] =
     customsOffice(CustomsOfficePage, "customsOffice", routes.CustomsOfficeController.onPageLoad)
 
-  def goodsLocation: Option[Row] = getAnswerAndBuildRow[GoodsLocation](
+  def goodsLocation: Option[SummaryListRow] = getAnswerAndBuildRow[GoodsLocation](
     page = GoodsLocationPage,
-    formatAnswer = goodsLocation => msg"goodsLocation.$goodsLocation",
+    formatAnswer = goodsLocation => messages(s"goodsLocation.$goodsLocation").toText,
     prefix = "goodsLocation",
     id = Some("change-goods-location"),
     call = routes.GoodsLocationController.onPageLoad(mrn, mode)
   )
 
-  private def customsOffice(page: QuestionPage[CustomsOffice], messageKeyPrefix: String, call: (MovementReferenceNumber, Mode) => Call): Option[Row] =
+  private def customsOffice(
+    page: QuestionPage[CustomsOffice],
+    messageKeyPrefix: String,
+    call: (MovementReferenceNumber, Mode) => Call
+  ): Option[SummaryListRow] =
     userAnswers.get(page) flatMap {
       answer =>
         val location: Option[String] = (userAnswers.get(CustomsSubPlacePage), userAnswers.get(ConsigneeNamePage)) match {
@@ -154,7 +159,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summa
           arg =>
             buildRow(
               prefix = messageKeyPrefix,
-              answer = lit"${answer.toString}",
+              answer = s"${answer.toString}".toText,
               id = Some("change-presentation-office"),
               call = call(mrn, mode),
               args = arg

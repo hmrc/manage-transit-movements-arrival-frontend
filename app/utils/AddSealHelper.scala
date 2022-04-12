@@ -20,9 +20,10 @@ import controllers.events.seals.routes._
 import models.domain.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.events.seals._
+import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-class AddSealHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
+class AddSealHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
   def sealListItem(eventIndex: Index, sealIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
@@ -33,5 +34,5 @@ class AddSealHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRow
 }
 
 object AddSealHelper {
-  def apply(userAnswers: UserAnswers, mode: Mode): AddSealHelper = new AddSealHelper(userAnswers, mode)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddSealHelper = new AddSealHelper(userAnswers, mode)
 }

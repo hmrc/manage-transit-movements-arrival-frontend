@@ -16,8 +16,10 @@ or
 
 ### Running manually or for journey tests
 
-<pre>sm --start CTC_TRADERS_PRELODGE -r
-sm --stop MANAGE_TRANSIT_MOVEMENT_ARRIVAL_FRONTEND
+<pre>
+sm --start CTC_TRADERS_PRELODGE -r
+sm --start TRANSIT_MOVEMENTS_TRADER_REFERENCE_DATA_TEST_ONLY // running locally
+sm --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND
 sbt run
 </pre>
 

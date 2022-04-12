@@ -28,18 +28,9 @@ import pages.IncidentOnRoutePage
 import pages.events._
 import pages.events.seals.{HaveSealsChangedPage, SealIdentityPage}
 import pages.events.transhipments._
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.viewmodels.SummaryList.Row
-import viewModels.sections.Section
 
 // format: off
-
 class CheckEventAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators {
-  "must be able to deserialize to a JsObject" in {
-    val vm = CheckEventAnswersViewModel(Seq(Section(Seq.empty[Row])))
-
-    Json.toJsObject(vm) mustBe a[JsObject]
-  }
 
   val genCountryList = arbitrary[Seq[Country]].sample.value
   val countryList = CountryList(genCountryList)

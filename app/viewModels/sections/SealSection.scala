@@ -18,12 +18,12 @@ package viewModels.sections
 
 import derivable.DeriveNumberOfSeals
 import models.{Index, Mode, UserAnswers}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
-object SealSection extends NunjucksSupport {
+object SealSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index): Section = {
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index)(implicit messages: Messages): Section = {
 
     val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
 
@@ -34,6 +34,6 @@ object SealSection extends NunjucksSupport {
         helper.sealIdentity(eventIndex, index)
     }
 
-    Section(msg"addSeal.sealList.heading", (helper.haveSealsChanged(eventIndex) ++ seals).toSeq)
+    Section(messages("addSeal.sealList.heading"), (helper.haveSealsChanged(eventIndex) ++ seals).toSeq)
   }
 }

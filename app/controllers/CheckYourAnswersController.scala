@@ -21,18 +21,17 @@ import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, Ide
 import derivable.DeriveNumberOfEvents
 import handlers.ErrorHandler
 import models.GoodsLocation.{AuthorisedConsigneesLocation, BorderForceOffice}
-import models.{CheckMode, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, MovementReferenceNumber, UserAnswers}
 import pages.GoodsLocationPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.ArrivalSubmissionService
+import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, SummaryList}
 import utils.{AddEventsHelper, CheckYourAnswersHelper}
-import viewModels.sections.{Section, ViewModelConfig}
+import viewModels.sections.ViewModelConfig
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,23 +43,17 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
                                             errorHandler: ErrorHandler,
                                             val viewModelConfig: ViewModelConfig,
                                             val controllerComponents: MessagesControllerComponents,
-                                            val renderer: Renderer
+                                            view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
     with HttpErrorFunctions {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData) {
     implicit request =>
-      val answers: Seq[Section] = createSections(request.userAnswers, request.eoriNumber)
+      val answers = createSections(request.userAnswers)
 
-      val json = Json.obj(
-        "sections"    -> Json.toJson(answers),
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.CheckYourAnswersController.onPost(mrn).url
-      )
-      renderer.render("check-your-answers.njk", json).map(Ok(_))
+      Ok(view(mrn, answers))
   }
 
   def onPost(mrn: MovementReferenceNumber): Action[AnyContent] =
@@ -77,45 +70,45 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         }
     }
 
-  private def createSections(userAnswers: UserAnswers, eori: EoriNumber): Seq[Section] = {
+  def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[(Option[String], SummaryList)] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
-    val mrn    = Section(Seq(helper.movementReferenceNumber))
+    val mrn    = (None, new SummaryList(Seq(helper.movementReferenceNumber)))
 
-    val whereAreTheGoods = Section(
-      msg"checkYourAnswers.section.goodsLocation",
-      (userAnswers.get(GoodsLocationPage) match {
-        case Some(AuthorisedConsigneesLocation) => Seq(helper.goodsLocation, helper.authorisedLocation)
-        case _                                  => Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice)
-
-      }).flatten
+    val whereAreTheGoods = (
+      Some(messages("checkYourAnswers.section.goodsLocation")),
+      userAnswers.get(GoodsLocationPage) match {
+        case Some(AuthorisedConsigneesLocation) =>
+          new SummaryList(Seq(helper.goodsLocation, helper.authorisedLocation).flatten)
+        case _ =>
+          new SummaryList(Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten)
+      }
     )
 
-    val traderDetails = Section(
-      msg"checkYourAnswers.section.traderDetails",
-      Seq(
-        helper.traderName,
-        helper.traderEori,
-        helper.traderAddress
-      ).flatten
+    val traderDetails = (
+      Some(messages("checkYourAnswers.section.traderDetails")),
+      new SummaryList(
+        Seq(helper.traderName, helper.traderEori, helper.traderAddress).flatten
+      )
     )
-    val consigneeDetails = Section(
-      msg"checkYourAnswers.section.consigneeDetails",
-      Seq(
-        helper.consigneeName,
-        helper.eoriNumber,
-        helper.consigneeAddress,
-        helper.pickCustomsOffice
-      ).flatten
+
+    val consigneeDetails = (
+      Some(messages("checkYourAnswers.section.consigneeDetails")),
+      new SummaryList(
+        Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten
+      )
     )
-    val placeOfNotification = Section(
-      msg"checkYourAnswers.section.placeOfNotificationDetails",
-      Seq(
-        helper.isTraderAddressPlaceOfNotification,
-        helper.placeOfNotification
-      ).flatten
+
+    val placeOfNotification = (
+      Some(messages("checkYourAnswers.section.placeOfNotificationDetails")),
+      new SummaryList(
+        Seq(helper.isTraderAddressPlaceOfNotification, helper.placeOfNotification).flatten
+      )
     )
-    val eventSeq = helper.incidentOnRoute.toSeq ++ eventList(userAnswers)
-    val events   = Section(msg"checkYourAnswers.section.events", eventSeq)
+
+    val events = (
+      Some(messages("checkYourAnswers.section.events")),
+      new SummaryList(helper.incidentOnRoute.toSeq ++ eventList(userAnswers))
+    )
 
     userAnswers.get(GoodsLocationPage) match {
       case Some(BorderForceOffice) => Seq(mrn, whereAreTheGoods, traderDetails, placeOfNotification, events)
@@ -123,7 +116,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
     }
   }
 
-  private def eventList(userAnswers: UserAnswers): Seq[SummaryList.Row] = {
+  private def eventList(userAnswers: UserAnswers)(implicit messages: Messages): List[SummaryListRow] = {
     val numberOfEvents = userAnswers.get(DeriveNumberOfEvents).getOrElse(0)
     val cyaHelper      = new AddEventsHelper(userAnswers, CheckMode)
     val listOfEvents   = List.range(0, numberOfEvents).map(Index(_))
