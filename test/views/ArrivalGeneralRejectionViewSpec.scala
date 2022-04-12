@@ -16,53 +16,43 @@
 
 package views
 
-import generators.{Generators, MessagesModelGenerators}
+import generators.MessagesModelGenerators
 import models.messages.FunctionalError
-import org.jsoup.nodes.Element
-import play.api.libs.json.Json
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import views.behaviours.SummaryListViewBehaviours
+import views.html.ArrivalGeneralRejectionView
 
-class ArrivalGeneralRejectionViewSpec extends SingleViewSpec("arrivalGeneralRejection.njk") with Generators with MessagesModelGenerators {
+class ArrivalGeneralRejectionViewSpec extends SummaryListViewBehaviours with MessagesModelGenerators {
 
-  val baseJson =
-    Json.obj(
-      "mrn"              -> mrn,
-      "errors"           -> Seq.empty[FunctionalError],
-      "contactUrl"       -> "enquiriesUrl",
-      "createArrivalUrl" -> "createArrivalUrl"
-    )
+  private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError]().sample.value
 
-  "rows for functional errors" - {
-    "must not display a row when there are no errors" in {
-      val doc = renderDocument(baseJson).futureValue
+  override def summaryLists: Seq[SummaryList] = functionalErrors.map(_.toSummaryList)
 
-      getByElementTestIdSelector(doc, "error-row-error-type") must be(empty)
-    }
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[ArrivalGeneralRejectionView].apply(functionalErrors)(fakeRequest, messages)
 
-    "must display a row for each error with the error type and error pointer" in {
-      forAll(listWithMaxLength[FunctionalError]()) {
-        functionalError =>
-          val json = baseJson ++ Json.obj(
-            "errors" -> functionalError
-          )
+  override val prefix: String = "arrivalRejection"
 
-          val doc = renderDocument(json).futureValue
+  behave like pageWithTitle()
 
-          val errorRows: Seq[Element] = getByElementTestIdSelector(doc, "error-row-error-type")
-          errorRows.length mustEqual functionalError.length
+  behave like pageWithBackLink()
 
-          val errorTypes: Seq[Element] = getByElementTestIdSelector(doc, "error-row-error-type")
-          errorTypes.length mustEqual functionalError.length
+  behave like pageWithHeading()
 
-          val errorPointer: Seq[Element] = getByElementTestIdSelector(doc, "error-row-error-pointer")
-          errorPointer.length mustEqual functionalError.length
+  behave like pageWithSummaryLists()
 
-          for {
-            FunctionalError(errorType, pointer, _, _) <- functionalError
-          } yield {
-            errorTypes.find(_.text() == errorType.code.toString) must not be empty
-            errorPointer.find(_.text() == pointer.value) must not be empty
-          }
-      }
-    }
-  }
+  behave like pageWithPartialContent("p", "You must review the error and ")
+  behave like pageWithLink(
+    id = "send_new_arrival",
+    expectedText = "send a new arrival notification with the right information",
+    expectedHref = controllers.routes.MovementReferenceNumberController.onPageLoad().url
+  )
+
+  behave like pageWithPartialContent("p", "You can ")
+  behave like pageWithLink(
+    id = "contact",
+    expectedText = "contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)",
+    expectedHref = frontendAppConfig.nctsEnquiriesUrl
+  )
 }
