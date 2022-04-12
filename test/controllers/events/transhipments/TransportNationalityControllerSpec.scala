@@ -18,35 +18,29 @@ package controllers.events.transhipments
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.TransportNationalityFormProvider
-import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{CountryList, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.events.transhipments.TransportNationalityPage
-import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CountriesService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.events.transhipments.TransportNationalityView
 
 import scala.concurrent.Future
 
-class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider    = new TransportNationalityFormProvider()
-  private val country = Country(CountryCode("GB"), "United Kingdom")
-  val countries       = CountryList(Seq(country))
-  val form            = formProvider(countries)
-
-  private lazy val mockCountriesService      = mock[CountriesService]
-  lazy val transportNationalityRoute: String = routes.TransportNationalityController.onPageLoad(mrn, eventIndex, NormalMode).url
-  private val transportNationalityTemplate   = "events/transhipments/transportNationality.njk"
+  private val formProvider                           = new TransportNationalityFormProvider()
+  private val country                                = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                              = CountryList(Seq(country))
+  private val form                                   = formProvider(countries)
+  private val mode                                   = NormalMode
+  private lazy val mockCountriesService              = mock[CountriesService]
+  private lazy val transportNationalityRoute: String = routes.TransportNationalityController.onPageLoad(mrn, eventIndex, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -56,16 +50,39 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
   "TransportNationality Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countries))
 
-      verifyOnPageLoad(form, userAnswers = emptyUserAnswers, preSelect = false)
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, transportNationalityRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[TransportNationalityView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, countries.countries, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countries))
       val filledForm  = form.bind(Map("value" -> "GB"))
       val userAnswers = UserAnswers(mrn, eoriNumber).set(TransportNationalityPage(eventIndex), country.code).success.value
 
-      verifyOnPageLoad(filledForm, userAnswers, preSelect = true)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, transportNationalityRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[TransportNationalityView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, countries.countries, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,32 +105,20 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countries))
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request                                = FakeRequest(POST, transportNationalityRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm                              = form.bind(Map("value" -> ""))
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, transportNationalityRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[TransportNationalityView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "mode"        -> NormalMode,
-        "countries"   -> countriesJson(),
-        "onSubmitUrl" -> routes.TransportNationalityController.onSubmit(mrn, eventIndex, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual transportNationalityTemplate
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, countries.countries, mrn, eventIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -145,39 +150,4 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
     }
   }
 
-  private def verifyOnPageLoad(form: Form[Country], userAnswers: UserAnswers, preSelect: Boolean) = {
-
-    when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countries))
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
-
-    setExistingUserAnswers(userAnswers)
-
-    val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
-
-    val request = FakeRequest(GET, transportNationalityRoute)
-
-    val result = route(app, request).value
-
-    status(result) mustEqual OK
-
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-    val expectedJson = Json.obj(
-      "form"      -> form,
-      "mrn"       -> mrn,
-      "mode"      -> NormalMode,
-      "countries" -> countriesJson(preSelect)
-    )
-
-    templateCaptor.getValue mustEqual transportNationalityTemplate
-    jsonCaptor.getValue must containJson(expectedJson)
-  }
-
-  private def countriesJson(preSelect: Boolean = false): Seq[JsObject] =
-    Seq(
-      Json.obj("text" -> "Select a country", "value" -> ""),
-      Json.obj("text" -> "United Kingdom", "value"   -> "GB", "selected" -> preSelect)
-    )
 }
