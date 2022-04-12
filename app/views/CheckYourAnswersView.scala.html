@@ -15,6 +15,7 @@
  *@
 
 @import views.html.components.{ErrorSummary, Button, InputSelect, Heading}
+@import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
 @this(
@@ -27,7 +28,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, answerLists: Seq[(Option[String], SummaryList)])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("checkYourAnswers.title"),
@@ -36,12 +37,12 @@
 
     @heading("checkYourAnswers.heading")
 
-    @for((section, answerList) <- answerLists) {
-        @for(title <- section) {
+    @for(section <- sections) {
+        @for(title <- section.sectionTitle) {
             <h2 class="govuk-heading-m">@title</h2>
         }
 
-        @govukSummaryList(answerList)
+        @govukSummaryList(new SummaryList(section.rows))
     }
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>

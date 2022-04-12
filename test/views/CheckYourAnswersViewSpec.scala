@@ -17,7 +17,7 @@
 package views
 
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import viewModels.sections.Section
 import views.behaviours.ViewBehaviours
 import views.html.CheckYourAnswersView
 
@@ -25,10 +25,10 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
   override val prefix: String = "checkYourAnswers"
 
-  val answersList: Seq[(Option[String], SummaryList)] = Seq(
-    (
-      Some(messages("checkYourAnswers.section.traderDetails")),
-      SummaryList(Nil)
+  val answersList: Seq[Section] = Seq(
+    Section(
+      messages("checkYourAnswers.section.traderDetails"),
+      Nil
     )
   )
 

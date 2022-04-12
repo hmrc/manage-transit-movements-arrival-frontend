@@ -26,9 +26,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ArrivalSubmissionService
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.http.HttpResponse
 import utils.CheckYourAnswersHelper
+import viewModels.sections.Section
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
@@ -58,21 +58,20 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val helper = new CheckYourAnswersHelper(emptyUserAnswers, CheckMode)
       val sections = Seq(
-        (
-          None,
-          new SummaryList(Seq(helper.movementReferenceNumber))
+        Section(
+          Seq(helper.movementReferenceNumber)
         ),
-        (
-          Some(messages("checkYourAnswers.section.goodsLocation")),
-          new SummaryList(Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten)
+        Section(
+          messages("checkYourAnswers.section.goodsLocation"),
+          Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten
         ),
-        (
-          Some(messages("checkYourAnswers.section.consigneeDetails")),
-          new SummaryList(Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten)
+        Section(
+          messages("checkYourAnswers.section.consigneeDetails"),
+          Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten
         ),
-        (
-          Some(messages("checkYourAnswers.section.events")),
-          new SummaryList(helper.incidentOnRoute.toSeq)
+        Section(
+          messages("checkYourAnswers.section.events"),
+          helper.incidentOnRoute.toSeq
         )
       )
 

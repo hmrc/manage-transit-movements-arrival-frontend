@@ -26,11 +26,11 @@ import pages.GoodsLocationPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ArrivalSubmissionService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryListRow}
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{AddEventsHelper, CheckYourAnswersHelper}
-import viewModels.sections.ViewModelConfig
+import viewModels.sections.{Section, ViewModelConfig}
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData) {
     implicit request =>
-      val answers = createSections(request.userAnswers)
+      val answers: Seq[Section] = createSections(request.userAnswers)
 
       Ok(view(mrn, answers))
   }
@@ -70,44 +70,50 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         }
     }
 
-  def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[(Option[String], SummaryList)] = {
+  def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
-    val mrn    = (None, new SummaryList(Seq(helper.movementReferenceNumber)))
+    val mrn    = Section(Seq(helper.movementReferenceNumber))
 
-    val whereAreTheGoods = (
-      Some(messages("checkYourAnswers.section.goodsLocation")),
+    val whereAreTheGoods = Section(
+      messages("checkYourAnswers.section.goodsLocation"),
       userAnswers.get(GoodsLocationPage) match {
         case Some(AuthorisedConsigneesLocation) =>
-          new SummaryList(Seq(helper.goodsLocation, helper.authorisedLocation).flatten)
+          Seq(helper.goodsLocation, helper.authorisedLocation).flatten
         case _ =>
-          new SummaryList(Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten)
+          Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten
       }
     )
 
-    val traderDetails = (
-      Some(messages("checkYourAnswers.section.traderDetails")),
-      new SummaryList(
-        Seq(helper.traderName, helper.traderEori, helper.traderAddress).flatten
-      )
+    val traderDetails = Section(
+      messages("checkYourAnswers.section.traderDetails"),
+      Seq(
+        helper.traderName,
+        helper.traderEori,
+        helper.traderAddress
+      ).flatten
     )
 
-    val consigneeDetails = (
-      Some(messages("checkYourAnswers.section.consigneeDetails")),
-      new SummaryList(
-        Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten
-      )
+    val consigneeDetails = Section(
+      messages("checkYourAnswers.section.consigneeDetails"),
+      Seq(
+        helper.consigneeName,
+        helper.eoriNumber,
+        helper.consigneeAddress,
+        helper.pickCustomsOffice
+      ).flatten
     )
 
-    val placeOfNotification = (
-      Some(messages("checkYourAnswers.section.placeOfNotificationDetails")),
-      new SummaryList(
-        Seq(helper.isTraderAddressPlaceOfNotification, helper.placeOfNotification).flatten
-      )
+    val placeOfNotification = Section(
+      messages("checkYourAnswers.section.placeOfNotificationDetails"),
+      Seq(
+        helper.isTraderAddressPlaceOfNotification,
+        helper.placeOfNotification
+      ).flatten
     )
 
-    val events = (
-      Some(messages("checkYourAnswers.section.events")),
-      new SummaryList(helper.incidentOnRoute.toSeq ++ eventList(userAnswers))
+    val events = Section(
+      messages("checkYourAnswers.section.events"),
+      helper.incidentOnRoute.toSeq ++ eventList(userAnswers)
     )
 
     userAnswers.get(GoodsLocationPage) match {
