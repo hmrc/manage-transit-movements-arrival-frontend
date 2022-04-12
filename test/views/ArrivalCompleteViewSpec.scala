@@ -25,6 +25,8 @@ class ArrivalCompleteViewSpec extends PanelViewBehaviours {
 
   private lazy val makeAnotherUrl = routes.MovementReferenceNumberController.onPageLoad().url
 
+  override val urlContainsMrn: Boolean = true
+
   override val prefix: String = "arrivalComplete"
 
   override def view: HtmlFormat.Appendable =

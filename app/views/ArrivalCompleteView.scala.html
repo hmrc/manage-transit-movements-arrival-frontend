@@ -29,7 +29,8 @@
 
 @main_template(
     title = messages("arrivalComplete.title"),
-    showBackLink = false
+    showBackLink = false,
+    mrn = Some(mrn)
 ) {
 
     @govukPanel(Panel(
