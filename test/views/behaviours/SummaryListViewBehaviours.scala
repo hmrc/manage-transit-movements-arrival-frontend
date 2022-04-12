@@ -57,7 +57,7 @@ trait SummaryListViewBehaviours extends ViewBehaviours {
                   row.actions match {
                     case None =>
                       "must not render any actions" in {
-                        assert(renderedRow.hasClass("govuk-summary-list__row--no-actions"))
+                        assert(renderedRow.getElementsByClass("govuk-summary-list__actions").isEmpty)
                       }
                     case Some(value) =>
                       val actions = renderedRow

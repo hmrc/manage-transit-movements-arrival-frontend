@@ -40,7 +40,7 @@ class TechnicalDifficultiesViewSpec extends ViewBehaviours {
   behave like pageWithPartialContent("p", "You can ")
   behave like pageWithLink(
     "contact",
-    "contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).",
+    "contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab)",
     contactUrl
   )
 }
