@@ -38,7 +38,7 @@
     @heading("checkYourAnswers.heading")
 
     @for(section <- sections) {
-        @for(title <- section.sectionTitle) {
+        @section.sectionTitle.map{ title =>
             <h2 class="govuk-heading-m">@title</h2>
         }
 

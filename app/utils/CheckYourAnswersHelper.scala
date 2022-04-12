@@ -159,7 +159,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           arg =>
             buildRow(
               prefix = messageKeyPrefix,
-              answer = s"${answer.toString}".toText,
+              answer = answer.toString.toText,
               id = Some("change-presentation-office"),
               call = call(mrn, mode),
               args = arg

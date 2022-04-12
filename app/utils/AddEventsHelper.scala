@@ -42,7 +42,7 @@ class AddEventsHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: M
         buildSimpleRow(
           prefix = "addEvent",
           label = messages("addEvent.event.label", eventIndex.display).toText,
-          answer = s"$answer".toText,
+          answer = answer.toText,
           id = None,
           call = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
           args = eventIndex.display,
