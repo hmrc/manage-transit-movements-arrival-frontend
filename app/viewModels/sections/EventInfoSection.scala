@@ -31,7 +31,7 @@ object EventInfoSection {
         helper.eventCountry(eventIndex)(codeList),
         helper.eventPlace(eventIndex),
         helper.eventReported(eventIndex),
-        if (isTranshipment) None else { helper.isTranshipment(eventIndex) },
+        if (isTranshipment) None else helper.isTranshipment(eventIndex),
         helper.incidentInformation(eventIndex)
       ).flatten
     )

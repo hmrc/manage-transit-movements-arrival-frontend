@@ -17,53 +17,42 @@
 package controllers.events
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import models.{CheckMode, Index, MovementReferenceNumber, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.CheckEventAnswersViewModel
+import views.html.events.CheckEventAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckEventAnswersController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   countriesService: CountriesService,
-  renderer: Renderer
+  view: CheckEventAnswersView,
+  viewModel: CheckEventAnswersViewModel
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       countriesService
         .getTransitCountries()
-        .flatMap {
+        .map {
           countryList =>
-            val json = Json.obj(
-              "mrn"         -> mrn,
-              "onSubmitUrl" -> routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url
-            ) ++ Json.toJsObject {
-              CheckEventAnswersViewModel(request.userAnswers, eventIndex, CheckMode, countryList)
-            }
-
-            renderer.render("events/check-event-answers.njk", json).map(Ok(_))
+            val sections = viewModel(request.userAnswers, eventIndex, CheckMode, countryList)
+            Ok(view(mrn, sections))
         }
-
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      Future.successful(Redirect(controllers.events.routes.AddEventController.onPageLoad(mrn, NormalMode)))
+      Redirect(controllers.events.routes.AddEventController.onPageLoad(mrn, NormalMode))
   }
 
 }

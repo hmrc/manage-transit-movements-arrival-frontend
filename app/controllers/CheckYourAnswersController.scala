@@ -70,6 +70,7 @@ class CheckYourAnswersController @Inject() (
         }
     }
 
+  // TODO - move to some kind of view model class
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
     val mrn    = Section(Seq(helper.movementReferenceNumber))
