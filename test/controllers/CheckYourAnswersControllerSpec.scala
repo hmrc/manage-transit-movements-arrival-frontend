@@ -98,7 +98,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       when(mockService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(ACCEPTED, ""))))
 
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 
@@ -113,7 +113,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       when(mockService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(BAD_REQUEST, ""))))
 
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       when(mockService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse.apply(genServerError, ""))))
 
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 
@@ -145,7 +145,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       when(mockService.submit(any())(any())).thenReturn(Future.successful(None))
 
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPost(mrn).url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 

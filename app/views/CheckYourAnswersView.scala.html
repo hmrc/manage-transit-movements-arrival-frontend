@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{ErrorSummary, Button, InputSelect, Heading}
+@import views.html.components.{Button, Heading}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
 @this(
     mainTemplate: MainTemplate,
-    errorSummary: ErrorSummary,
-    select: InputSelect,
     heading: Heading,
     govukSummaryList: GovukSummaryList,
     button: Button,
@@ -42,13 +40,13 @@
             <h2 class="govuk-heading-m">@title</h2>
         }
 
-        @govukSummaryList(new SummaryList(section.rows))
+        @govukSummaryList(SummaryList(section.rows))
     }
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
     <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>
 
-    @formHelper(action = routes.CheckYourAnswersController.onPost(mrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckYourAnswersController.onSubmit(mrn), 'autoComplete -> "off") {
         @button(
             messageKey = "site.confirmAndSend",
             preventDoubleClick = true,

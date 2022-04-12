@@ -43,5 +43,5 @@ object CheckEventAnswersViewModel {
     )
   }
 
-  implicit def writes(implicit messages: Messages): OWrites[CheckEventAnswersViewModel] = Json.writes[CheckEventAnswersViewModel]
+  implicit val writes: OWrites[CheckEventAnswersViewModel] = Json.writes[CheckEventAnswersViewModel]
 }

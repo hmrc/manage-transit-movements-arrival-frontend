@@ -22,8 +22,8 @@ import models.{Address, GoodsLocation, Mode, MovementReferenceNumber, UserAnswer
 import pages._
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
@@ -117,7 +117,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
     call = routes.CustomsSubPlaceController.onPageLoad(mrn, mode)
   )
 
-  def movementReferenceNumber: SummaryListRow = new SummaryListRow(
+  def movementReferenceNumber: SummaryListRow = SummaryListRow(
     key = Key(messages("movementReferenceNumber.checkYourAnswersLabel").toText, "govuk-!-width-one-half"),
     value = Value(s"$mrn".toText)
   )
@@ -149,11 +149,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
   ): Option[SummaryListRow] =
     userAnswers.get(page) flatMap {
       answer =>
-        val location: Option[String] = (userAnswers.get(CustomsSubPlacePage), userAnswers.get(ConsigneeNamePage)) match {
-          case (Some(customsSubPlace), None) => Some(customsSubPlace)
-          case (None, Some(consigneeName))   => Some(consigneeName)
-          case _                             => None
-        }
+        val location: Option[String] = userAnswers.get(CustomsSubPlacePage) orElse userAnswers.get(ConsigneeNamePage)
 
         location map {
           arg =>
