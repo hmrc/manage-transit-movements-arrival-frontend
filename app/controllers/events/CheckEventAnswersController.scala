@@ -46,7 +46,7 @@ class CheckEventAnswersController @Inject() (
         .map {
           countryList =>
             val sections = viewModel(request.userAnswers, eventIndex, CheckMode, countryList)
-            Ok(view(mrn, sections))
+            Ok(view(mrn, eventIndex, sections))
         }
   }
 

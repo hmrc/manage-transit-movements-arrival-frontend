@@ -70,7 +70,7 @@ class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mrn, sampleSections)(request, messages).toString
+        view(mrn, eventIndex, sampleSections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

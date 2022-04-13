@@ -34,7 +34,7 @@ class CheckEventAnswersViewSpec extends SummaryListViewBehaviours with Generator
   )
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CheckEventAnswersView].apply(mrn, sections)(fakeRequest, messages)
+    injector.instanceOf[CheckEventAnswersView].apply(mrn, eventIndex, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
