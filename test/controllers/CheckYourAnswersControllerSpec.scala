@@ -17,9 +17,10 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.CheckMode
+import generators.{Generators, ViewModelGenerators}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -27,26 +28,33 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ArrivalSubmissionService
 import uk.gov.hmrc.http.HttpResponse
-import utils.CheckYourAnswersHelper
+import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
 
-  val mockService: ArrivalSubmissionService = mock[ArrivalSubmissionService]
+  private val mockService: ArrivalSubmissionService = mock[ArrivalSubmissionService]
+  private lazy val mockViewModel                    = mock[CheckYourAnswersViewModel]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[ArrivalSubmissionService].toInstance(mockService))
+      .overrides(bind[CheckYourAnswersViewModel].toInstance(mockViewModel))
 
-  lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad(mrn).url
+  private lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad(mrn).url
 
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
+
+      val sampleSections = arbitrary[Seq[Section]].sample.value
+
+      when(mockViewModel.apply(any())(any()))
+        .thenReturn(sampleSections)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -56,27 +64,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual OK
 
-      val helper = new CheckYourAnswersHelper(emptyUserAnswers, CheckMode)
-      val sections = Seq(
-        Section(
-          Seq(helper.movementReferenceNumber)
-        ),
-        Section(
-          messages("checkYourAnswers.section.goodsLocation"),
-          Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten
-        ),
-        Section(
-          messages("checkYourAnswers.section.consigneeDetails"),
-          Seq(helper.consigneeName, helper.eoriNumber, helper.consigneeAddress, helper.pickCustomsOffice).flatten
-        ),
-        Section(
-          messages("checkYourAnswers.section.events"),
-          helper.incidentOnRoute.toSeq
-        )
-      )
-
       contentAsString(result) mustEqual
-        view(mrn, sections)(request, messages).toString
+        view(mrn, sampleSections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

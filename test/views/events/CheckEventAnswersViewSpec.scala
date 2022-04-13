@@ -43,6 +43,11 @@ class CheckEventAnswersViewSpec extends SummaryListViewBehaviours with Generator
 
   behave like pageWithHeading()
 
+  sections.foreach(_.sectionTitle.map {
+    sectionTitle =>
+      behave like pageWithContent("h2", sectionTitle)
+  })
+
   behave like pageWithSummaryLists()
 
   behave like pageWithFormAction(routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url)

@@ -36,7 +36,7 @@ class AddEventsHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: M
         )
     }
 
-  def cyaListOfEvent(eventIndex: Index): Option[SummaryListRow] =
+  def eventSummaryListRow(eventIndex: Index): Option[SummaryListRow] =
     placeOfEvent(eventIndex) map {
       answer =>
         buildSimpleRow(

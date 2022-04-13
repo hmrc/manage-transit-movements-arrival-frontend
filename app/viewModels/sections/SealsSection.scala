@@ -21,9 +21,13 @@ import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
-object SealSection {
+class SealsSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index)(implicit messages: Messages): Section = {
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode,
+    eventIndex: Index
+  )(implicit messages: Messages): Section = {
 
     val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
 
