@@ -31,7 +31,6 @@ import scala.xml.NodeSeq
 
 class MetaSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
 
-  //format off
   "Meta" - {
 
     val syntaxIdentifier     = "UNOC"
@@ -131,5 +130,4 @@ class MetaSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModel
       }
     }
   }
-  // format: on
 }

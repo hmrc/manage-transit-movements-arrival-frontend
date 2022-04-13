@@ -25,7 +25,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class ProcedureTypeFlagSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
 
-  //format off
   "ProcedureTypeFlag" - {
 
     "must deserialize from xml" in {
@@ -46,5 +45,4 @@ class ProcedureTypeFlagSpec extends SpecBase with ScalaCheckPropertyChecks with 
       result mustBe an[ParseFailure]
     }
   }
-  // format: on
 }
