@@ -16,6 +16,7 @@
 
 package views.events
 
+import controllers.events.routes
 import generators.{Generators, ViewModelGenerators}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -43,6 +44,8 @@ class CheckEventAnswersViewSpec extends SummaryListViewBehaviours with Generator
   behave like pageWithHeading()
 
   behave like pageWithSummaryLists()
+
+  behave like pageWithFormAction(routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url)
 
   behave like pageWithSubmitButton("Continue")
 
