@@ -30,17 +30,17 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
+import views.html.ArrivalCompleteView
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with NunjucksSupport {
+class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+
+  private lazy val confirmRoute = routes.ConfirmationController.onPageLoad(mrn).url
 
   "Confirmation Controller" - {
 
     "return OK and the correct view when there is no phone number for a GET then remove data" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val customsOffice = CustomsOffice("id", Some("name"), None)
       val userAnswers = emptyUserAnswers
@@ -52,36 +52,25 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
         .value
       setExistingUserAnswers(userAnswers)
 
-      val frontendAppConfig                      = app.injector.instanceOf[FrontendAppConfig]
-      val request                                = FakeRequest(GET, routes.ConfirmationController.onPageLoad(mrn).url)
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
-      val result                                 = route(app, request).value
+      when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))
 
-      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOffice".withArgs(customsOffice.name.get)
+      val request = FakeRequest(GET, confirmRoute)
+      val result  = route(app, request).value
+
+      val view = injector.instanceOf[ArrivalCompleteView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       verify(mockSessionRepository, times(1)).remove(mrn.toString, eoriNumber)
 
-      val expectedJson =
-        Json.obj(
-          "mrn"                       -> mrn,
-          "paragraph"                 -> msg"arrivalComplete.para1.simplified",
-          "contactUs"                 -> contactUsMessage,
-          "manageTransitMovementsUrl" -> frontendAppConfig.manageTransitMovementsViewArrivalsUrl,
-          "movementReferencePageUrl"  -> routes.MovementReferenceNumberController.onPageLoad().url
-        )
+      val expectedParagraph = "and find out when unloading permission has been granted."
+      val expectedContact   = "If the goods are not released or you have another problem, contact Customs at name."
 
-      templateCaptor.getValue mustEqual "arrivalComplete.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(mrn, expectedParagraph, expectedContact)(request, messages).toString
     }
 
     "return OK and the correct view when there is phone number for a GET the data" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val customsOffice = CustomsOffice("id", Some("name"), Some("phoneNumber"))
       val userAnswers = emptyUserAnswers
@@ -94,35 +83,25 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(userAnswers)
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val request           = FakeRequest(GET, routes.ConfirmationController.onPageLoad(mrn).url)
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-      val result            = route(app, request).value
+      when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))
 
-      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOfficeAndPhoneNumber".withArgs(customsOffice.name.get, customsOffice.phoneNumber.get)
+      val request = FakeRequest(GET, confirmRoute)
+      val result  = route(app, request).value
+
+      val view = injector.instanceOf[ArrivalCompleteView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       verify(mockSessionRepository, times(1)).remove(mrn.toString, eoriNumber)
 
-      val expectedJson = Json.obj(
-        "mrn"                       -> mrn,
-        "contactUs"                 -> contactUsMessage,
-        "paragraph"                 -> msg"arrivalComplete.para1.normal",
-        "manageTransitMovementsUrl" -> frontendAppConfig.manageTransitMovementsViewArrivalsUrl,
-        "movementReferencePageUrl"  -> routes.MovementReferenceNumberController.onPageLoad().url
-      )
+      val expectedParagraph = "and find out when the goods have been released."
+      val expectedContact   = "If the goods are not released or you have another problem, contact Customs at name, telephone phoneNumber."
 
-      templateCaptor.getValue mustEqual "arrivalComplete.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(mrn, expectedParagraph, expectedContact)(request, messages).toString
     }
 
     "return OK and the correct view when there is no phone number and office name for a GET the data" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val customsOffice = CustomsOffice("id", None, None)
       val userAnswers = emptyUserAnswers
@@ -134,29 +113,22 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
         .value
       setExistingUserAnswers(userAnswers)
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val request           = FakeRequest(GET, routes.ConfirmationController.onPageLoad(mrn).url)
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-      val result            = route(app, request).value
+      when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))
 
-      val contactUsMessage: Text.Message = msg"arrivalComplete.contact.withOfficeCode".withArgs("id")
+      val request = FakeRequest(GET, routes.ConfirmationController.onPageLoad(mrn).url)
+      val result  = route(app, request).value
+
+      val view = injector.instanceOf[ArrivalCompleteView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       verify(mockSessionRepository, times(1)).remove(mrn.toString, eoriNumber)
 
-      val expectedJson = Json.obj(
-        "mrn"                       -> mrn,
-        "contactUs"                 -> contactUsMessage,
-        "paragraph"                 -> msg"arrivalComplete.para1.normal",
-        "manageTransitMovementsUrl" -> frontendAppConfig.manageTransitMovementsViewArrivalsUrl,
-        "movementReferencePageUrl"  -> routes.MovementReferenceNumberController.onPageLoad().url
-      )
+      val expectedParagraph = "and find out when the goods have been released."
+      val expectedContact   = "If the goods are not released or you have another problem, contact Customs at the supervising office (id)."
 
-      templateCaptor.getValue mustEqual "arrivalComplete.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(mrn, expectedParagraph, expectedContact)(request, messages).toString
     }
   }
 }
