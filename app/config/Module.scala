@@ -18,7 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import services.{ArrivalRejectionService, DateTimeService, DateTimeServiceImpl}
+import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
 
