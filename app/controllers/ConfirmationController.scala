@@ -18,17 +18,20 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+
 import javax.inject.Inject
 import models.GoodsLocation.AuthorisedConsigneesLocation
 import models.MovementReferenceNumber
+import models.reference.CustomsOffice
 import pages.{CustomsOfficePage, GoodsLocationPage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.ArrivalCompleteView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,39 +42,38 @@ class ConfirmationController @Inject() (override val messagesApi: MessagesApi,
                                         getData: DataRetrievalActionProvider,
                                         requireData: DataRequiredAction,
                                         val controllerComponents: MessagesControllerComponents,
-                                        renderer: Renderer
+                                        renderer: Renderer,
+                                        arrivalCompleteView: ArrivalCompleteView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
+  private def contactUsMessage(office: CustomsOffice)(implicit request: Request[_]) = (office.name, office.phoneNumber) match {
+    case (Some(office), Some(telephone)) =>
+      Messages("arrivalComplete.contact.withOfficeAndPhoneNumber", office, telephone)
+    case (Some(office), None) =>
+      Messages("arrivalComplete.contact.withOffice", office)
+    case _ =>
+      Messages("arrivalComplete.contact.withOfficeCode", office.id)
+  }
+
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
     implicit request =>
       request.userAnswers.get(CustomsOfficePage) match {
         case Some(customsOffice) =>
-          val contactUsMessage = (customsOffice.name, customsOffice.phoneNumber) match {
-            case (Some(office), Some(telephone)) => msg"arrivalComplete.contact.withOfficeAndPhoneNumber".withArgs(office, telephone)
-            case (Some(office), None)            => msg"arrivalComplete.contact.withOffice".withArgs(office)
-            case _                               => msg"arrivalComplete.contact.withOfficeCode".withArgs(customsOffice.id)
-          }
-
           val paragraph = if (request.userAnswers.get(GoodsLocationPage).contains(AuthorisedConsigneesLocation)) {
-            msg"arrivalComplete.para1.simplified"
+            Messages("arrivalComplete.para1.simplified")
           } else {
-            msg"arrivalComplete.para1.normal"
+            Messages("arrivalComplete.para1.normal")
           }
 
-          val json = Json.obj(
-            "mrn"                       -> mrn,
-            "paragraph"                 -> paragraph,
-            "contactUs"                 -> contactUsMessage,
-            "manageTransitMovementsUrl" -> appConfig.manageTransitMovementsViewArrivalsUrl,
-            "movementReferencePageUrl"  -> routes.MovementReferenceNumberController.onPageLoad().url
-          )
-          sessionRepository.remove(mrn.toString, request.eoriNumber)
-          renderer.render("arrivalComplete.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-
+          sessionRepository.remove(mrn.toString, request.eoriNumber).map {
+            _ =>
+              Ok(arrivalCompleteView(mrn, paragraph, contactUsMessage(customsOffice)))
+          }
+        case _ =>
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
   }
 

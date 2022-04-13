@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val mockArrivalRejectionService = mock[ArrivalRejectionService]
+  private val mockArrivalRejectionService = mock[ArrivalRejectionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -49,6 +49,8 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
       )
 
   private val arrivalId = ArrivalId(1)
+
+  private lazy val rejectionRoute = routes.ArrivalRejectionController.onPageLoad(arrivalId).url
 
   "ArrivalRejection Controller" - {
 
@@ -67,7 +69,7 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
           when(mockArrivalRejectionService.arrivalRejectionMessage(any())(any(), any()))
             .thenReturn(Future.successful(Some(ArrivalNotificationRejectionMessage(mrn.toString, LocalDate.now, None, None, errors))))
 
-          val request = FakeRequest(GET, routes.ArrivalRejectionController.onPageLoad(arrivalId).url)
+          val request = FakeRequest(GET, rejectionRoute)
 
           val result = route(app, request).value
 
@@ -91,7 +93,7 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
       when(mockArrivalRejectionService.arrivalRejectionMessage(any())(any(), any()))
         .thenReturn(Future.successful(Some(ArrivalNotificationRejectionMessage(mrn.toString, LocalDate.now, None, None, errors))))
 
-      val request = FakeRequest(GET, routes.ArrivalRejectionController.onPageLoad(arrivalId).url)
+      val request = FakeRequest(GET, rejectionRoute)
 
       val result = route(app, request).value
 
@@ -112,7 +114,7 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
       when(mockArrivalRejectionService.arrivalRejectionMessage(any())(any(), any()))
         .thenReturn(Future.successful(None))
 
-      val request = FakeRequest(GET, routes.ArrivalRejectionController.onPageLoad(arrivalId).url)
+      val request = FakeRequest(GET, rejectionRoute)
 
       val result = route(app, request).value
 
