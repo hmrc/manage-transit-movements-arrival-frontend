@@ -212,8 +212,8 @@ class Navigator @Inject() () {
 
   private def transportIdentity(eventIndex: Index)(ua: UserAnswers): Option[Call] =
     ua.get(TransportNationalityPage(eventIndex)) match {
-      case (Some(_)) => Some(eventRoutes.CheckEventAnswersController.onPageLoad(ua.movementReferenceNumber, eventIndex))
-      case _         => Some(transhipmentRoutes.TransportNationalityController.onPageLoad(ua.movementReferenceNumber, eventIndex, CheckMode))
+      case Some(_) => Some(eventRoutes.CheckEventAnswersController.onPageLoad(ua.movementReferenceNumber, eventIndex))
+      case _       => Some(transhipmentRoutes.TransportNationalityController.onPageLoad(ua.movementReferenceNumber, eventIndex, CheckMode))
     }
 
   private def removeSeal(eventIndex: Index, mode: Mode)(ua: UserAnswers) =
