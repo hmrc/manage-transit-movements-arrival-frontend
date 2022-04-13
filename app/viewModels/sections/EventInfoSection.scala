@@ -17,20 +17,21 @@
 package viewModels.sections
 
 import models.{CountryList, Index, Mode, UserAnswers}
+import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
 object EventInfoSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList): Section = {
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList)(implicit messages: Messages): Section = {
 
     val helper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Section(
-      Seq(
+      rows = Seq(
         helper.eventCountry(eventIndex)(codeList),
         helper.eventPlace(eventIndex),
         helper.eventReported(eventIndex),
-        if (isTranshipment) None else { helper.isTranshipment(eventIndex) },
+        if (isTranshipment) None else helper.isTranshipment(eventIndex),
         helper.incidentInformation(eventIndex)
       ).flatten
     )

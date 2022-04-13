@@ -20,42 +20,38 @@ import derivable.DeriveNumberOfContainers
 import models.TranshipmentType.{DifferentContainer, DifferentContainerAndVehicle, DifferentVehicle}
 import models.{CountryList, Index, Mode, UserAnswers}
 import pages.events.transhipments.TranshipmentTypePage
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
+import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
-object EventTypeSection extends NunjucksSupport {
+object EventTypeSection {
 
-  val differentContainerTitleKey: Text =
-    msg"checkEventAnswers.section.title.differentContainer"
-
-  val differentContainerAndVehicleTitleKey: Text =
-    msg"checkEventAnswers.section.title.differentContainerAndVehicle"
-
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList): Seq[Section] =
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList)(implicit
+    messages: Messages
+  ): Seq[Section] =
     userAnswers
       .get(TranshipmentTypePage(eventIndex))
       .map {
         case DifferentVehicle =>
           DifferentVehicleSection(userAnswers, mode, eventIndex, isTranshipment, codeList)
         case DifferentContainer =>
-          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, differentContainerTitleKey)
+          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, "checkEventAnswers.section.title.differentContainer")
         case DifferentContainerAndVehicle =>
-          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, differentContainerAndVehicleTitleKey) ++
+          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, "checkEventAnswers.section.title.differentContainerAndVehicle") ++
             VehicleInformationSection(userAnswers, mode, eventIndex, codeList)
       }
       .getOrElse(Seq.empty)
 }
 
-object VehicleInformationSection extends NunjucksSupport {
+object VehicleInformationSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, codeList: CountryList): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, codeList: CountryList)(implicit messages: Messages): Seq[Section] = {
 
     val helper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Seq(
       Section(
-        msg"checkEventAnswers.section.title.vehicleInformation",
-        Seq(
+        sectionTitle = messages("checkEventAnswers.section.title.vehicleInformation"),
+        rows = Seq(
           helper.transportIdentity(eventIndex),
           helper.transportNationality(eventIndex)(codeList)
         ).flatten
@@ -64,41 +60,53 @@ object VehicleInformationSection extends NunjucksSupport {
   }
 }
 
-object DifferentContainerSection extends NunjucksSupport {
+object DifferentContainerSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, sectionText: Text): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, sectionText: String)(implicit
+    messages: Messages
+  ): Seq[Section] = {
 
     val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Seq(
       Some(
-        Section(sectionText, Seq(helper.isTranshipment(eventIndex), helper.transhipmentType(eventIndex)).flatten)
+        Section(
+          sectionTitle = messages(sectionText),
+          rows = Seq(
+            helper.isTranshipment(eventIndex),
+            helper.transhipmentType(eventIndex)
+          ).flatten
+        )
       ),
       userAnswers
         .get(DeriveNumberOfContainers(eventIndex))
         .map {
           containerCount =>
-            val listOfContainerIndexes = List.range(0, containerCount).map(Index(_))
-            val rows = listOfContainerIndexes.flatMap {
-              index =>
-                helper.containerNumber(eventIndex, index)
+            val rows = (0 to containerCount).flatMap {
+              x =>
+                helper.containerNumber(eventIndex, Index(x))
             }
-            Section(msg"checkEventAnswers.section.title.containerNumbers", rows)
+            Section(
+              sectionTitle = messages("checkEventAnswers.section.title.containerNumbers"),
+              rows = rows
+            )
         }
     ).flatten
   }
 }
 
-object DifferentVehicleSection extends NunjucksSupport {
+object DifferentVehicleSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList)(implicit
+    messages: Messages
+  ): Seq[Section] = {
 
     val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Seq(
       Section(
-        msg"checkEventAnswers.section.title.differentVehicle",
-        Seq(
+        sectionTitle = messages("checkEventAnswers.section.title.differentVehicle"),
+        rows = Seq(
           if (isTranshipment) helper.isTranshipment(eventIndex) else None,
           helper.transhipmentType(eventIndex),
           helper.transportIdentity(eventIndex),

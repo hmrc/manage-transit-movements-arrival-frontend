@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ArrivalNotificationMessageService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.sections.ViewModelConfig
 import views.html.UpdateMovementReferenceNumberView
 
 import javax.inject.Inject
@@ -41,7 +40,6 @@ class UpdateRejectedMRNController @Inject() (
   sessionRepository: SessionRepository,
   arrivalMovementMessageService: ArrivalNotificationMessageService,
   userAnswersService: UserAnswersService,
-  val viewModelConfig: ViewModelConfig,
   val controllerComponents: MessagesControllerComponents,
   view: UpdateMovementReferenceNumberView,
   errorHandler: ErrorHandler

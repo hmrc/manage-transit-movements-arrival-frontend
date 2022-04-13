@@ -18,26 +18,26 @@ package controllers
 
 import controllers.actions._
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.ArrivalId
+import models.messages.ErrorType.{DuplicateMrn, InvalidMrn, MRNError, UnknownMrn}
+import models.messages.FunctionalError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.ArrivalRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.ArrivalRejectionViewModel
-import viewModels.sections.ViewModelConfig
+import views.html.{ArrivalGeneralRejectionView, MovementReferenceNumberRejectionView}
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ArrivalRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer,
   arrivalRejectionService: ArrivalRejectionService,
-  val viewModelConfig: ViewModelConfig,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  mrnRejectionView: MovementReferenceNumberRejectionView,
+  arrivalRejectionView: ArrivalGeneralRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,9 +46,21 @@ class ArrivalRejectionController @Inject() (
     implicit request =>
       arrivalRejectionService.arrivalRejectionMessage(arrivalId).flatMap {
         case Some(rejectionMessage) =>
-          val viewModel = ArrivalRejectionViewModel(rejectionMessage, viewModelConfig.nctsEnquiriesUrl, arrivalId)
-          renderer.render(viewModel.page, viewModel.viewData).map(Ok(_))
+          Future.successful {
+            rejectionMessage.errors match {
+              case FunctionalError(mrnError: MRNError, _, _, _) :: Nil =>
+                Ok(mrnRejectionView(arrivalId, errorKey(mrnError), rejectionMessage.movementReferenceNumber))
+              case errors =>
+                Ok(arrivalRejectionView(errors))
+            }
+          }
         case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
+  }
+
+  private def errorKey(error: MRNError): String = error match {
+    case UnknownMrn   => "movementReferenceNumberRejection.error.unknown"
+    case DuplicateMrn => "movementReferenceNumberRejection.error.duplicate"
+    case InvalidMrn   => "movementReferenceNumberRejection.error.invalid"
   }
 }

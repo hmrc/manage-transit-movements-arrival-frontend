@@ -28,159 +28,148 @@ import pages.IncidentOnRoutePage
 import pages.events._
 import pages.events.seals.{HaveSealsChangedPage, SealIdentityPage}
 import pages.events.transhipments._
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.viewmodels.SummaryList.Row
-import viewModels.sections.Section
-
-// format: off
 
 class CheckEventAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators {
-  "must be able to deserialize to a JsObject" in {
-    val vm = CheckEventAnswersViewModel(Seq(Section(Seq.empty[Row])))
 
-    Json.toJsObject(vm) mustBe a[JsObject]
-  }
-
-  val genCountryList = arbitrary[Seq[Country]].sample.value
-  val countryList = CountryList(genCountryList)
+  private val genCountryList = arbitrary[Seq[Country]].sample.value
+  private val countryList    = CountryList(genCountryList)
 
   "when event is an incident" - {
     "and hasn't been reported and did not move to different vehicle/container and no seals changed" in {
 
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), false).success.value
-        .set(IncidentInformationPage(eventIndex), "value").success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), false)
+        .setValue(IncidentInformationPage(eventIndex), "value")
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.length mustEqual 2
-      vm.sections.head.rows.length mustEqual 5
+      sections.head.sectionTitle must not be defined
+      sections.length mustEqual 2
+      sections.head.rows.length mustEqual 5
     }
 
     "and has been reported, did not move to different vehicle/container and no seals changed" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), false).success.value
-        .set(IncidentInformationPage(eventIndex), "value").success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), false)
+        .setValue(IncidentInformationPage(eventIndex), "value")
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.head.rows.length mustEqual 5
+      sections.head.sectionTitle must not be defined
+      sections.head.rows.length mustEqual 5
     }
 
     "and has been reported, did not move to different vehicle/container and seals changed" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), false).success.value
-        .set(IncidentInformationPage(eventIndex), "value").success.value
-        .set(HaveSealsChangedPage(eventIndex), true).success.value
-        .set(SealIdentityPage(eventIndex, Index(0)), SealDomain("seal1")).success.value
-        .set(SealIdentityPage(eventIndex, Index(1)), SealDomain("seal2")).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), false)
+        .setValue(IncidentInformationPage(eventIndex), "value")
+        .setValue(HaveSealsChangedPage(eventIndex), true)
+        .setValue(SealIdentityPage(eventIndex, Index(0)), SealDomain("seal1"))
+        .setValue(SealIdentityPage(eventIndex, Index(1)), SealDomain("seal2"))
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.head.rows.length mustEqual 5
+      sections.head.sectionTitle must not be defined
+      sections.head.rows.length mustEqual 5
     }
 
     "and has been reported and did not move to different vehicle/container show the event info only" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), true).success.value
-        .set(IsTranshipmentPage(eventIndex), false).success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), true)
+        .setValue(IsTranshipmentPage(eventIndex), false)
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.head.rows.length mustEqual 4
+      sections.head.sectionTitle must not be defined
+      sections.head.rows.length mustEqual 4
     }
   }
 
   "when event is a transhipment" - {
     "and the goods have moved to different vehicle display event info and vehicle info sections" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), true).success.value
-        .set(TranshipmentTypePage(eventIndex), DifferentVehicle).success.value
-        .set(TransportIdentityPage(eventIndex), "value").success.value
-        .set(TransportNationalityPage(eventIndex), CountryCode("GB")).success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), true)
+        .setValue(TranshipmentTypePage(eventIndex), DifferentVehicle)
+        .setValue(TransportIdentityPage(eventIndex), "value")
+        .setValue(TransportNationalityPage(eventIndex), CountryCode("GB"))
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.head.rows.length mustEqual 3
-      vm.sections(1).sectionTitle must be(defined)
-      vm.sections(1).rows.length mustEqual 4
+      sections.head.sectionTitle must not be defined
+      sections.head.rows.length mustEqual 3
+      sections(1).sectionTitle must be(defined)
+      sections(1).rows.length mustEqual 4
     }
 
     "and the goods have moved to different container display event info and container info sections" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), true).success.value
-        .set(TranshipmentTypePage(eventIndex), DifferentContainer).success.value
-        .set(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value")).success.value
-        .set(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value")).success.value
-        .set(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value")).success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), true)
+        .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
+        .setValue(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value"))
+        .setValue(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value"))
+        .setValue(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value"))
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections.head.rows.length mustEqual 3
-      vm.sections(1).sectionTitle must be(defined)
-      vm.sections(1).rows.length mustEqual 2
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
+      sections.head.sectionTitle must not be defined
+      sections.head.rows.length mustEqual 3
+      sections(1).sectionTitle must be(defined)
+      sections(1).rows.length mustEqual 2
     }
 
     "and the goods have moved to both different containers and vehicles  display event info and vehicle and containers info sections" in {
       val ua = emptyUserAnswers
-        .set(IncidentOnRoutePage, true).success.value
-        .set(EventCountryPage(eventIndex), CountryCode("GB")).success.value
-        .set(EventPlacePage(eventIndex), "value").success.value
-        .set(EventReportedPage(eventIndex), false).success.value
-        .set(IsTranshipmentPage(eventIndex), true).success.value
-        .set(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle).success.value
-        .set(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value")).success.value
-        .set(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value")).success.value
-        .set(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value")).success.value
-        .set(TransportIdentityPage(eventIndex), "value").success.value
-        .set(TransportNationalityPage(eventIndex), CountryCode("GB")).success.value
-        .set(HaveSealsChangedPage(eventIndex), false).success.value
+        .setValue(IncidentOnRoutePage, true)
+        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
+        .setValue(EventPlacePage(eventIndex), "value")
+        .setValue(EventReportedPage(eventIndex), false)
+        .setValue(IsTranshipmentPage(eventIndex), true)
+        .setValue(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle)
+        .setValue(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value"))
+        .setValue(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value"))
+        .setValue(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value"))
+        .setValue(TransportIdentityPage(eventIndex), "value")
+        .setValue(TransportNationalityPage(eventIndex), CountryCode("GB"))
+        .setValue(HaveSealsChangedPage(eventIndex), false)
 
-      val vm = CheckEventAnswersViewModel(ua, eventIndex, CheckMode, countryList)
+      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
 
-      vm.sections.length mustEqual 5
-      vm.sections.head.sectionTitle must not be defined
-      vm.sections(1).sectionTitle must be(defined)
-      vm.sections(1).rows.length mustEqual 2
-      vm.sections(2).sectionTitle must be(defined)
-      vm.sections(2).rows.length mustEqual 3
+      sections.length mustEqual 5
+      sections.head.sectionTitle must not be defined
+      sections(1).sectionTitle must be(defined)
+      sections(1).rows.length mustEqual 2
+      sections(2).sectionTitle must be(defined)
+      sections(2).rows.length mustEqual 3
 
     }
 
   }
 
 }
-// format: on

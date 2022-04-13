@@ -56,6 +56,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, service: Servic
   lazy val countdownSeconds: Int      = configuration.get[Int]("session.countdownSeconds")
   lazy val enrolmentProxyUrl: String  = service.baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy"
   lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
+  lazy val nctsEnquiriesUrl: String   = configuration.get[String]("urls.nctsEnquiries")
 
   lazy val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")

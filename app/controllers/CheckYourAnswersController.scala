@@ -21,49 +21,42 @@ import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, Ide
 import derivable.DeriveNumberOfEvents
 import handlers.ErrorHandler
 import models.GoodsLocation.{AuthorisedConsigneesLocation, BorderForceOffice}
-import models.{CheckMode, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, MovementReferenceNumber, UserAnswers}
 import pages.GoodsLocationPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.ArrivalSubmissionService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, SummaryList}
 import utils.{AddEventsHelper, CheckYourAnswersHelper}
-import viewModels.sections.{Section, ViewModelConfig}
+import viewModels.sections.Section
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject() (override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            service: ArrivalSubmissionService,
-                                            errorHandler: ErrorHandler,
-                                            val viewModelConfig: ViewModelConfig,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val renderer: Renderer
+class CheckYourAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  service: ArrivalSubmissionService,
+  errorHandler: ErrorHandler,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
     with HttpErrorFunctions {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData) {
     implicit request =>
-      val answers: Seq[Section] = createSections(request.userAnswers, request.eoriNumber)
+      val answers: Seq[Section] = createSections(request.userAnswers)
 
-      val json = Json.obj(
-        "sections"    -> Json.toJson(answers),
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.CheckYourAnswersController.onPost(mrn).url
-      )
-      renderer.render("check-your-answers.njk", json).map(Ok(_))
+      Ok(view(mrn, answers))
   }
 
-  def onPost(mrn: MovementReferenceNumber): Action[AnyContent] =
+  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] =
     (identify andThen getData(mrn) andThen requireData).async {
       implicit request =>
         service.submit(request.userAnswers) flatMap {
@@ -77,29 +70,32 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         }
     }
 
-  private def createSections(userAnswers: UserAnswers, eori: EoriNumber): Seq[Section] = {
+  // TODO - move to some kind of view model class
+  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
     val mrn    = Section(Seq(helper.movementReferenceNumber))
 
     val whereAreTheGoods = Section(
-      msg"checkYourAnswers.section.goodsLocation",
-      (userAnswers.get(GoodsLocationPage) match {
-        case Some(AuthorisedConsigneesLocation) => Seq(helper.goodsLocation, helper.authorisedLocation)
-        case _                                  => Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice)
-
-      }).flatten
+      messages("checkYourAnswers.section.goodsLocation"),
+      userAnswers.get(GoodsLocationPage) match {
+        case Some(AuthorisedConsigneesLocation) =>
+          Seq(helper.goodsLocation, helper.authorisedLocation).flatten
+        case _ =>
+          Seq(helper.goodsLocation, helper.authorisedLocation, helper.customsSubPlace, helper.customsOffice).flatten
+      }
     )
 
     val traderDetails = Section(
-      msg"checkYourAnswers.section.traderDetails",
+      messages("checkYourAnswers.section.traderDetails"),
       Seq(
         helper.traderName,
         helper.traderEori,
         helper.traderAddress
       ).flatten
     )
+
     val consigneeDetails = Section(
-      msg"checkYourAnswers.section.consigneeDetails",
+      messages("checkYourAnswers.section.consigneeDetails"),
       Seq(
         helper.consigneeName,
         helper.eoriNumber,
@@ -107,15 +103,19 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         helper.pickCustomsOffice
       ).flatten
     )
+
     val placeOfNotification = Section(
-      msg"checkYourAnswers.section.placeOfNotificationDetails",
+      messages("checkYourAnswers.section.placeOfNotificationDetails"),
       Seq(
         helper.isTraderAddressPlaceOfNotification,
         helper.placeOfNotification
       ).flatten
     )
-    val eventSeq = helper.incidentOnRoute.toSeq ++ eventList(userAnswers)
-    val events   = Section(msg"checkYourAnswers.section.events", eventSeq)
+
+    val events = Section(
+      messages("checkYourAnswers.section.events"),
+      helper.incidentOnRoute.toSeq ++ eventList(userAnswers)
+    )
 
     userAnswers.get(GoodsLocationPage) match {
       case Some(BorderForceOffice) => Seq(mrn, whereAreTheGoods, traderDetails, placeOfNotification, events)
@@ -123,7 +123,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
     }
   }
 
-  private def eventList(userAnswers: UserAnswers): Seq[SummaryList.Row] = {
+  private def eventList(userAnswers: UserAnswers)(implicit messages: Messages): List[SummaryListRow] = {
     val numberOfEvents = userAnswers.get(DeriveNumberOfEvents).getOrElse(0)
     val cyaHelper      = new AddEventsHelper(userAnswers, CheckMode)
     val listOfEvents   = List.range(0, numberOfEvents).map(Index(_))

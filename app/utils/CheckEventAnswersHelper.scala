@@ -25,12 +25,13 @@ import models.{CountryList, Index, Mode, TranshipmentType, UserAnswers}
 import pages.events._
 import pages.events.seals._
 import pages.events.transhipments._
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels._
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends SummaryListRowHelper(userAnswers) {
+class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
 
-  def isTranshipment(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[Boolean](
+  def isTranshipment(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IsTranshipmentPage(eventIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "isTranshipment",
@@ -38,24 +39,24 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = eventRoutes.IsTranshipmentController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def transhipmentType(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[TranshipmentType](
+  def transhipmentType(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[TranshipmentType](
     page = TranshipmentTypePage(eventIndex),
-    formatAnswer = transhipmentType => msg"transhipmentType.checkYourAnswers.$transhipmentType",
+    formatAnswer = transhipmentType => messages(s"transhipmentType.checkYourAnswers.$transhipmentType").toText,
     prefix = "transhipmentType",
     id = Some(s"transhipment-type-${eventIndex.display}"),
     call = transhipmentRoutes.TranshipmentTypeController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def containerNumber(eventIndex: Index, containerIndex: Index): Option[Row] = getAnswerAndBuildSectionRow[ContainerDomain](
+  def containerNumber(eventIndex: Index, containerIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),
     formatAnswer = _.containerNumber,
     prefix = "containerNumber",
-    label = msg"addContainer.containerList.label".withArgs(containerIndex.display),
+    label = messages("addContainer.containerList.label", containerIndex.display).toText,
     id = Some(s"change-container-${containerIndex.display}"),
     call = transhipmentRoutes.ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode)
   )
 
-  def eventCountry(eventIndex: Index)(codeList: CountryList): Option[Row] = getAnswerAndBuildRow[CountryCode](
+  def eventCountry(eventIndex: Index)(codeList: CountryList): Option[SummaryListRow] = getAnswerAndBuildRow[CountryCode](
     page = EventCountryPage(eventIndex),
     formatAnswer = formatAsCountry(codeList),
     prefix = "eventCountry",
@@ -63,7 +64,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = eventRoutes.EventCountryController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def eventPlace(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[String](
+  def eventPlace(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = EventPlacePage(eventIndex),
     formatAnswer = formatAsLiteral,
     prefix = "eventPlace",
@@ -71,7 +72,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = eventRoutes.EventPlaceController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def eventReported(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[Boolean](
+  def eventReported(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = EventReportedPage(eventIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "eventReported",
@@ -79,7 +80,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = eventRoutes.EventReportedController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def incidentInformation(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[String](
+  def incidentInformation(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IncidentInformationPage(eventIndex),
     formatAnswer = formatAsLiteral,
     prefix = "incidentInformation",
@@ -87,7 +88,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = eventRoutes.IncidentInformationController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def transportIdentity(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[String](
+  def transportIdentity(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = TransportIdentityPage(eventIndex),
     formatAnswer = formatAsLiteral,
     prefix = "transportIdentity",
@@ -95,7 +96,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = transhipmentRoutes.TransportIdentityController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def transportNationality(eventIndex: Index)(codeList: CountryList): Option[Row] = getAnswerAndBuildRow[CountryCode](
+  def transportNationality(eventIndex: Index)(codeList: CountryList): Option[SummaryListRow] = getAnswerAndBuildRow[CountryCode](
     page = TransportNationalityPage(eventIndex),
     formatAnswer = formatAsCountry(codeList),
     prefix = "transportNationality",
@@ -103,7 +104,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = transhipmentRoutes.TransportNationalityController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def haveSealsChanged(eventIndex: Index): Option[Row] = getAnswerAndBuildRow[Boolean](
+  def haveSealsChanged(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = HaveSealsChangedPage(eventIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "haveSealsChanged",
@@ -111,11 +112,11 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode) extends Summ
     call = sealRoutes.HaveSealsChangedController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def sealIdentity(eventIndex: Index, sealIndex: Index): Option[Row] = getAnswerAndBuildSectionRow[SealDomain](
+  def sealIdentity(eventIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
     formatAnswer = _.numberOrMark,
     prefix = "sealIdentity",
-    label = msg"addSeal.sealList.label".withArgs(sealIndex.display),
+    label = messages("addSeal.sealList.label", sealIndex.display).toText,
     id = Some(s"change-seal-${sealIndex.display}"),
     call = sealRoutes.SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode)
   )

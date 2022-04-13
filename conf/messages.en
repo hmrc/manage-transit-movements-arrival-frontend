@@ -82,7 +82,7 @@ technicalDifficulties.title = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.contact = You can
-technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab)
 
 movementReferenceNumber.title = What is the movement reference number (MRN)?
 movementReferenceNumber.heading = What is the movement reference number (MRN)?
@@ -319,6 +319,7 @@ transportNationality.checkYourAnswersLabel = Which country is the vehicle regist
 transportNationality.error.required = Enter which country the vehicle is registered in
 transportNationality.error.length = TransportNationality must be TransportNationality characters or less
 transportNationality.change.hidden = the country where the vehicle is registered
+transportNationality.placeholder = Select a country
 
 containerNumber.title = What is the new container number?
 containerNumber.heading = What is the new container number?
@@ -437,7 +438,8 @@ movementReferenceNumberRejection.error.unknown = The movement reference number c
 movementReferenceNumberRejection.error.duplicate = The movement reference number is already in use.
 movementReferenceNumberRejection.error.invalid = The movement reference number is not real.
 movementReferenceNumberRejection.contact.message = If this information is correct, you will need to
-movementReferenceNumberRejection.change.hidden = Change - movement reference number
+movementReferenceNumberRejection.change.hidden = movement reference number
+movementReferenceNumberRejection.contact = contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)
 
 pageNotFound.title = Page not found
 pageNotFound.heading = Page not found

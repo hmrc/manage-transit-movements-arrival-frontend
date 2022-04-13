@@ -17,44 +17,47 @@
 package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
-import matchers.JsonMatchers
+import generators.{MessagesModelGenerators, ViewModelGenerators}
 import models.reference.Country
 import models.{CountryList, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.CountriesService
+import viewModels.CheckEventAnswersViewModel
+import viewModels.sections.Section
+import views.html.events.CheckEventAnswersView
 
 import scala.concurrent.Future
 
-class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with MessagesModelGenerators {
+class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
 
   private lazy val mockCountriesService = mock[CountriesService]
+  private lazy val mockViewModel        = mock[CheckEventAnswersViewModel]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[CountriesService].toInstance(mockCountriesService))
+      .overrides(bind[CheckEventAnswersViewModel].toInstance(mockViewModel))
 
   "Check Event Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val sampleCountryList = arbitrary[Seq[Country]].sample.value
+      val sampleSections    = arbitrary[Seq[Section]].sample.value
 
       when(mockCountriesService.getTransitCountries()(any()))
         .thenReturn(Future.successful(CountryList(sampleCountryList)))
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      when(mockViewModel.apply(any(), any(), any(), any())(any()))
+        .thenReturn(sampleSections)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -62,14 +65,12 @@ class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[CheckEventAnswersView]
+
       status(result) mustEqual OK
 
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject]   = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual "events/check-event-answers.njk"
+      contentAsString(result) mustEqual
+        view(mrn, eventIndex, sampleSections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

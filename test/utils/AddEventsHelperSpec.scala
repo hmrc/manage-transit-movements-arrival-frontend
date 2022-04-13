@@ -22,8 +22,8 @@ import models.reference.CountryCode
 import models.{CheckMode, Mode}
 import pages.events.{EventCountryPage, EventPlacePage}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class AddEventsHelperSpec extends SpecBase {
 
@@ -102,17 +102,21 @@ class AddEventsHelperSpec extends SpecBase {
 
           val helper = new AddEventsHelper(answers, mode)
           helper.cyaListOfEvent(eventIndex) mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("addEvent.event.label", eventIndex.display),
-                classes = Seq("govuk-!-width-one-half")
+                content = s"Event ${eventIndex.display}".toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(place)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                  visuallyHiddenText = Some(Message("addEvent.change.hidden", eventIndex.display, place))
+              value = Value(place.toText),
+              actions = Some(
+                Actions(items =
+                  Seq(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
+                      visuallyHiddenText = Some(s"event ${eventIndex.display} at $place")
+                    )
+                  )
                 )
               )
             )
@@ -130,17 +134,21 @@ class AddEventsHelperSpec extends SpecBase {
 
           val helper = new AddEventsHelper(answers, mode)
           helper.cyaListOfEvent(eventIndex) mustBe Some(
-            Row(
+            SummaryListRow(
               key = Key(
-                content = Message("addEvent.event.label", eventIndex.display),
-                classes = Seq("govuk-!-width-one-half")
+                content = s"Event ${eventIndex.display}".toText,
+                classes = "govuk-!-width-one-half"
               ),
-              value = Value(Literal(countryCode.code)),
-              actions = List(
-                Action(
-                  content = Message("site.edit"),
-                  href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                  visuallyHiddenText = Some(Message("addEvent.change.hidden", eventIndex.display, countryCode.code))
+              value = Value(countryCode.code.toText),
+              actions = Some(
+                Actions(items =
+                  Seq(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
+                      visuallyHiddenText = Some(s"event ${eventIndex.display} at ${countryCode.code}")
+                    )
+                  )
                 )
               )
             )
