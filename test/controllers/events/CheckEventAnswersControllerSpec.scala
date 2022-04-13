@@ -17,7 +17,7 @@
 package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.{MessagesModelGenerators, ViewModelGenerators}
+import generators.Generators
 import models.reference.Country
 import models.{CountryList, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -34,7 +34,7 @@ import views.html.events.CheckEventAnswersView
 
 import scala.concurrent.Future
 
-class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
+class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val mockCountriesService = mock[CountriesService]
   private lazy val mockViewModel        = mock[CheckEventAnswersViewModel]

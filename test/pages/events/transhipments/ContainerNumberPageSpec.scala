@@ -16,11 +16,10 @@
 
 package pages.events.transhipments
 
-import generators.MessagesModelGenerators
 import models.domain.ContainerDomain
 import pages.behaviours.PageBehaviours
 
-class ContainerNumberPageSpec extends PageBehaviours with MessagesModelGenerators {
+class ContainerNumberPageSpec extends PageBehaviours {
 
   "ContainerNumberPage" - {
 

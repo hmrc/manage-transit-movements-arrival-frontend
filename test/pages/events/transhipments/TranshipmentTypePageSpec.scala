@@ -16,7 +16,6 @@
 
 package pages.events.transhipments
 
-import generators.MessagesModelGenerators
 import models.TranshipmentType._
 import models.domain.ContainerDomain
 import models.reference.CountryCode
@@ -25,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import queries.ContainersQuery
 
-class TranshipmentTypePageSpec extends PageBehaviours with MessagesModelGenerators {
+class TranshipmentTypePageSpec extends PageBehaviours {
 
   "TranshipmentTypePage" - {
 

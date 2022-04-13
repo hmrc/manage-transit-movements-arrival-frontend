@@ -18,7 +18,7 @@ package controllers.events.transhipments
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.ContainerNumberFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.domain.ContainerDomain
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +32,7 @@ import views.html.events.transhipments.ContainerNumberView
 
 import scala.concurrent.Future
 
-class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                                                                                      = new ContainerNumberFormProvider()
   private def form(index: Index = containerIndex, declaredContainers: Seq[ContainerDomain] = Nil): Form[String] = formProvider(index, declaredContainers)

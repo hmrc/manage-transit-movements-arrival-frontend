@@ -16,16 +16,14 @@
 
 package models.domain
 
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models.messages.{ContainerTranshipment, IncidentWithInformation, VehicularTranshipment}
 import models.{TranshipmentType, _}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsObject, Json}
 
-class EventDetailsDomainSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators {
+class EventDetailsDomainSpec extends SpecBase with Generators {
 
   "IncidentDomain" - {
 

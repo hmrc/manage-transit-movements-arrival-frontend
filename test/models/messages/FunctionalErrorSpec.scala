@@ -18,11 +18,10 @@ package models.messages
 
 import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-class FunctionalErrorSpec extends SpecBase with ScalaCheckDrivenPropertyChecks with MessagesModelGenerators {
+class FunctionalErrorSpec extends SpecBase with Generators {
 
   "FunctionalError" - {
     "must deserialize from XML" in {

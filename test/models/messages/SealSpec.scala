@@ -16,27 +16,17 @@
 
 package models.messages
 
+import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.ModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import models.domain.SealDomain
-import models.messages.behaviours.JsonBehaviours
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.StreamlinedXmlEquality
 
 import scala.xml.Node
 
-class SealSpec
-    extends AnyFreeSpec
-    with Matchers
-    with ScalaCheckPropertyChecks
-    with ModelGenerators
-    with JsonBehaviours
-    with StreamlinedXmlEquality
-    with OptionValues {
+class SealSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "Seal" - {
     "must create valid xml" in {

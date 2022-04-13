@@ -16,13 +16,11 @@
 
 package models
 
+import base.SpecBase
 import org.scalacheck.Gen
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class EoriNumberSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks {
+class EoriNumberSpec extends SpecBase {
 
   "EoriNumber" - {
 

@@ -18,7 +18,7 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ArrivalMovementConnector
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.ArrivalId
 import models.domain.{NormalNotification, TraderDomain}
 import models.messages.InterchangeControlReference
@@ -29,12 +29,13 @@ import play.api.http.Status._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
+import services.conversion.UserAnswersToArrivalNotificationDomain
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+
 import java.time.LocalDate
-import conversion.UserAnswersToArrivalNotificationDomain
 import scala.concurrent.Future
 
-class ArrivalSubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class ArrivalSubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val mockConverterService                  = mock[UserAnswersToArrivalNotificationDomain]
   private lazy val mockArrivalMovementConnector          = mock[ArrivalMovementConnector]

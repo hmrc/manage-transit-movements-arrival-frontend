@@ -16,17 +16,14 @@
 
 package models.domain
 
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models._
 import models.messages.EnRouteEvent
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
-class EnRouteEventDomainSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators with OptionValues {
+class EnRouteEventDomainSpec extends SpecBase with Generators {
 
   "must serialise" in {
 

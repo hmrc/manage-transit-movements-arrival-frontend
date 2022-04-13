@@ -16,25 +16,15 @@
 
 package models.messages
 
+import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.LanguageCodeEnglish
 import models.XMLWrites._
-import models.messages.behaviours.JsonBehaviours
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.StreamlinedXmlEquality
 
-class EnRouteEventSpec
-    extends AnyFreeSpec
-    with Matchers
-    with ScalaCheckPropertyChecks
-    with MessagesModelGenerators
-    with JsonBehaviours
-    with OptionValues
-    with StreamlinedXmlEquality {
+class EnRouteEventSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "EnRouteEvent" - {
 

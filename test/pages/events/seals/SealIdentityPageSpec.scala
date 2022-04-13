@@ -16,11 +16,10 @@
 
 package pages.events.seals
 
-import generators.MessagesModelGenerators
 import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 
-class SealIdentityPageSpec extends PageBehaviours with MessagesModelGenerators {
+class SealIdentityPageSpec extends PageBehaviours {
 
   "SealIdentityPage" - {
 

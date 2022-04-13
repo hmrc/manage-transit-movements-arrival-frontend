@@ -18,7 +18,7 @@ package controllers.events.seals
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.seals.SealIdentityFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.domain.SealDomain
 import models.messages.Seal
 import models.{Index, NormalMode}
@@ -33,7 +33,7 @@ import views.html.events.seals.SealIdentityView
 
 import scala.concurrent.Future
 
-class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                                        = new SealIdentityFormProvider()
   private val form: Form[String]                                  = formProvider(sealIndex)

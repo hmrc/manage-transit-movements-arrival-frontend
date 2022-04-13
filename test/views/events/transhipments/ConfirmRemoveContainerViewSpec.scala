@@ -17,7 +17,7 @@
 package views.events.transhipments
 
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.NormalMode
 import models.domain.ContainerDomain
 import org.scalacheck.Arbitrary.arbitrary
@@ -26,7 +26,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.events.transhipments.ConfirmRemoveContainerView
 
-class ConfirmRemoveContainerViewSpec extends YesNoViewBehaviours with MessagesModelGenerators {
+class ConfirmRemoveContainerViewSpec extends YesNoViewBehaviours with Generators {
 
   private val containerDomain: ContainerDomain = arbitrary[ContainerDomain].sample.value
 

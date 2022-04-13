@@ -16,14 +16,14 @@
 
 package views
 
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.FunctionalError
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.behaviours.SummaryListViewBehaviours
 import views.html.ArrivalGeneralRejectionView
 
-class ArrivalGeneralRejectionViewSpec extends SummaryListViewBehaviours with MessagesModelGenerators {
+class ArrivalGeneralRejectionViewSpec extends SummaryListViewBehaviours with Generators {
 
   private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError]().sample.value
 

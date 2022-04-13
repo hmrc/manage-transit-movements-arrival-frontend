@@ -16,17 +16,15 @@
 
 package models
 
+import base.SpecBase
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{EitherValues, OptionValues}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.EitherValues
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.PathBindable
 
-class MovementReferenceNumberSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with EitherValues with OptionValues {
+class MovementReferenceNumberSpec extends SpecBase with Generators with EitherValues {
 
   "a Movement Reference Number" - {
 
@@ -160,7 +158,7 @@ class MovementReferenceNumberSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       forAll(gen) {
         case (mrn, invalidCheckDigit) =>
-          val invalidMrn = mrn.toString.updated(checkDigitPosition, invalidCheckDigit)
+          val invalidMrn = mrn.updated(checkDigitPosition, invalidCheckDigit)
 
           MovementReferenceNumber(invalidMrn) must not be defined
       }

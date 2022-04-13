@@ -18,7 +18,7 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.ArrivalMovementRequest
 import models.reference.CustomsOffice
 import models.{ArrivalId, EoriNumber, UserAnswers}
@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockArrivalNotificationMessageService = mock[ArrivalNotificationMessageService]
   val mockReferenceDataConnector            = mock[ReferenceDataConnector]

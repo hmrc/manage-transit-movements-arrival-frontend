@@ -18,14 +18,14 @@ package forms.events.seals
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.Index
 import models.domain.SealDomain
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class SealIdentityFormProviderSpec extends StringFieldBehaviours with MessagesModelGenerators with SpecBase {
+class SealIdentityFormProviderSpec extends SpecBase with StringFieldBehaviours with Generators {
 
   val requiredKey  = "sealIdentity.error.required"
   val lengthKey    = "sealIdentity.error.length"

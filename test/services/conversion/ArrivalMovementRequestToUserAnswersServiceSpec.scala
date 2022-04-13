@@ -17,14 +17,13 @@
 package services.conversion
 
 import base.SpecBase
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.{ArrivalMovementRequest, Header}
 import models.reference.CustomsOffice
 import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class ArrivalMovementRequestToUserAnswersServiceSpec extends SpecBase with MessagesModelGenerators with ScalaCheckPropertyChecks {
+class ArrivalMovementRequestToUserAnswersServiceSpec extends SpecBase with Generators {
 
   private val arrivalMovementRequestToUserAnswersService = ArrivalMovementRequestToUserAnswersService
 

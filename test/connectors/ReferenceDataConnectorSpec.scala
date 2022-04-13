@@ -18,24 +18,18 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import generators.MessagesModelGenerators
+import generators.Generators
 import helper.WireMockServerHandler
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with WireMockServerHandler
-    with MessagesModelGenerators
-    with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
 
   private val startUrl = "transit-movements-trader-reference-data"
   private val country  = CountryCode("GB")
