@@ -16,33 +16,25 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions._
-
-import javax.inject.Inject
 import models.GoodsLocation.AuthorisedConsigneesLocation
 import models.MovementReferenceNumber
 import models.reference.CustomsOffice
 import pages.{CustomsOfficePage, GoodsLocationPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.ArrivalCompleteView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationController @Inject() (override val messagesApi: MessagesApi,
-                                        appConfig: FrontendAppConfig,
                                         sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
                                         val controllerComponents: MessagesControllerComponents,
-                                        renderer: Renderer,
+                                        actions: Actions,
                                         arrivalCompleteView: ArrivalCompleteView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -58,7 +50,7 @@ class ConfirmationController @Inject() (override val messagesApi: MessagesApi,
       Messages("arrivalComplete.contact.withOfficeCode", office.id)
   }
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = (identify andThen getData(mrn) andThen requireData).async {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       request.userAnswers.get(CustomsOfficePage) match {
         case Some(customsOffice) =>
