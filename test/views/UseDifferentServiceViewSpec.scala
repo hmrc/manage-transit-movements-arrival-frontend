@@ -40,7 +40,7 @@ class UseDifferentServiceViewSpec extends ViewBehaviours {
     "https://www.gov.uk/new-computerised-transit-system"
   )
 
-  behave like pageWithPartialContent("p", "if the goods are at an authorised consignee’s location.")
+  behave like pageWithPartialContent("p", " if the goods are at an authorised consignee’s location.")
 
   behave like pageWithContent("p", "We are improving this service. You will be able to do this in future.")
 }

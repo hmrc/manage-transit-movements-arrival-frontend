@@ -104,23 +104,6 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers)(implicit mes
         )
     }
 
-  def getAnswerAndBuildRemovableRow[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    id: String,
-    changeCall: Call,
-    removeCall: Call
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRemovableRow(
-          label = formatAnswer(answer),
-          id = id,
-          changeCall = changeCall,
-          removeCall = removeCall
-        )
-    }
-
   def getAnswerAndBuildListItem[T](
     page: QuestionPage[T],
     formatAnswer: T => String,
@@ -173,36 +156,6 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers)(implicit mes
               attributes = id.fold[Map[String, String]](Map.empty)(
                 id => Map("id" -> id)
               )
-            )
-          )
-        )
-      )
-    )
-
-  def buildRemovableRow(
-    label: Content,
-    value: String = "",
-    id: String,
-    changeCall: Call,
-    removeCall: Call
-  ): SummaryListRow =
-    SummaryListRow(
-      key = Key(label),
-      value = Value(s"$value".toText),
-      actions = Some(
-        Actions(items =
-          List(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = changeCall.url,
-              visuallyHiddenText = Some(label.toString),
-              attributes = Map("id" -> s"change-$id")
-            ),
-            ActionItem(
-              content = messages("site.delete").toText,
-              href = removeCall.url,
-              visuallyHiddenText = Some(label.toString),
-              attributes = Map("id" -> s"remove-$id")
             )
           )
         )

@@ -50,8 +50,8 @@ object VehicleInformationSection {
 
     Seq(
       Section(
-        messages("checkEventAnswers.section.title.vehicleInformation"),
-        Seq(
+        sectionTitle = messages("checkEventAnswers.section.title.vehicleInformation"),
+        rows = Seq(
           helper.transportIdentity(eventIndex),
           helper.transportNationality(eventIndex)(codeList)
         ).flatten
@@ -70,18 +70,26 @@ object DifferentContainerSection {
 
     Seq(
       Some(
-        Section(messages(sectionText), Seq(helper.isTranshipment(eventIndex), helper.transhipmentType(eventIndex)).flatten)
+        Section(
+          sectionTitle = messages(sectionText),
+          rows = Seq(
+            helper.isTranshipment(eventIndex),
+            helper.transhipmentType(eventIndex)
+          ).flatten
+        )
       ),
       userAnswers
         .get(DeriveNumberOfContainers(eventIndex))
         .map {
           containerCount =>
-            val listOfContainerIndexes = List.range(0, containerCount).map(Index(_))
-            val rows = listOfContainerIndexes.flatMap {
-              index =>
-                helper.containerNumber(eventIndex, index)
+            val rows = (0 to containerCount).flatMap {
+              x =>
+                helper.containerNumber(eventIndex, Index(x))
             }
-            Section(messages("checkEventAnswers.section.title.containerNumbers"), rows)
+            Section(
+              sectionTitle = messages("checkEventAnswers.section.title.containerNumbers"),
+              rows = rows
+            )
         }
     ).flatten
   }
@@ -97,8 +105,8 @@ object DifferentVehicleSection {
 
     Seq(
       Section(
-        messages("checkEventAnswers.section.title.differentVehicle"),
-        Seq(
+        sectionTitle = messages("checkEventAnswers.section.title.differentVehicle"),
+        rows = Seq(
           if (isTranshipment) helper.isTranshipment(eventIndex) else None,
           helper.transhipmentType(eventIndex),
           helper.transportIdentity(eventIndex),

@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import controllers.routes._
 @import models.messages.FunctionalError
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.html.components.Heading
 
 @this(
@@ -41,13 +42,13 @@
         SummaryList(
             rows = Seq(
                 SummaryListRow(
-                    key = Key(content = Text(messages("site.movement.reference.number"))),
-                    value = Value(content = Text(mrn)),
+                    key = messages("site.movement.reference.number").toKey,
+                    value = Value(mrn.toText),
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
                                 href = UpdateRejectedMRNController.onPageLoad(arrivalId).url,
-                                content = Text(messages("site.edit")),
+                                content = messages("site.edit").toText,
                                 visuallyHiddenText = Some(messages("movementReferenceNumberRejection.change.hidden"))
                             )
                         )
@@ -57,5 +58,7 @@
         )
     )
 
-    <p class="govuk-body">@messages("movementReferenceNumberRejection.contact.message") <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">@messages("technicalDifficulties.contact.link")</a>.</p>
+    <p class="govuk-body">@messages("movementReferenceNumberRejection.contact.message")
+        <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id="contact">@messages("technicalDifficulties.contact.link")</a>.
+    </p>
 }

@@ -26,24 +26,24 @@ import pages.GoodsLocationPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ArrivalSubmissionService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{AddEventsHelper, CheckYourAnswersHelper}
-import viewModels.sections.{Section, ViewModelConfig}
+import viewModels.sections.Section
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject() (override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            service: ArrivalSubmissionService,
-                                            errorHandler: ErrorHandler,
-                                            val viewModelConfig: ViewModelConfig,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
+class CheckYourAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  service: ArrivalSubmissionService,
+  errorHandler: ErrorHandler,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -56,7 +56,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
       Ok(view(mrn, answers))
   }
 
-  def onPost(mrn: MovementReferenceNumber): Action[AnyContent] =
+  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] =
     (identify andThen getData(mrn) andThen requireData).async {
       implicit request =>
         service.submit(request.userAnswers) flatMap {
@@ -70,6 +70,7 @@ class CheckYourAnswersController @Inject() (override val messagesApi: MessagesAp
         }
     }
 
+  // TODO - move to some kind of view model class
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers, CheckMode)
     val mrn    = Section(Seq(helper.movementReferenceNumber))

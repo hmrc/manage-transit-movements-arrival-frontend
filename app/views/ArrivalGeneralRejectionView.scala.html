@@ -39,7 +39,11 @@
         @govukSummaryList(error.toSummaryList)
     }
 
-    <p class="govuk-body">@messages("arrivalRejection.review") <a class="govuk-link" href=@MovementReferenceNumberController.onPageLoad().url id="send_new_arrival">@messages("arrivalRejection.sendNewArrival")</a>.</p>
+    <p class="govuk-body">@messages("arrivalRejection.review")
+        <a class="govuk-link" href=@MovementReferenceNumberController.onPageLoad().url id="send_new_arrival">@messages("arrivalRejection.sendNewArrival")</a>.
+    </p>
 
-    <p class="govuk-body">@messages("arrivalRejection.youCan") <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">@messages("arrivalRejection.contact")</a>.</p>
+    <p class="govuk-body">@messages("arrivalRejection.youCan")
+        <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id="contact">@messages("arrivalRejection.contact")</a>.
+    </p>
 }

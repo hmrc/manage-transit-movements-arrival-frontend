@@ -25,7 +25,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ArrivalRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.sections.ViewModelConfig
 import views.html.{ArrivalGeneralRejectionView, MovementReferenceNumberRejectionView}
 
 import javax.inject.Inject
@@ -36,7 +35,6 @@ class ArrivalRejectionController @Inject() (
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   arrivalRejectionService: ArrivalRejectionService,
-  val viewModelConfig: ViewModelConfig,
   errorHandler: ErrorHandler,
   mrnRejectionView: MovementReferenceNumberRejectionView,
   arrivalRejectionView: ArrivalGeneralRejectionView

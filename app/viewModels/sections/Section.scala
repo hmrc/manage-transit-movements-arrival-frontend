@@ -16,7 +16,6 @@
 
 package viewModels.sections
 
-import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +27,7 @@ object Section {
 
   def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows)
 
-  implicit def sectionWrites(implicit messages: Messages): OWrites[Section] =
+  implicit val sectionWrites: OWrites[Section] =
     (
       (__ \ "sectionTitle").write[Option[String]] and
         (__ \ "rows").write[Seq[SummaryListRow]]

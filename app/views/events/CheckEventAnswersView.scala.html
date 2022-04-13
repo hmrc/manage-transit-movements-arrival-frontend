@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.events.routes
 @import views.html.components.{Button, Heading}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
@@ -26,29 +27,26 @@
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, eventIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("checkYourAnswers.title"),
+    title = messages("checkEventAnswers.title"),
     showBackLink = true
 ) {
 
-    @heading("checkYourAnswers.heading")
+    @heading("checkEventAnswers.heading")
 
     @for(section <- sections) {
-        @section.sectionTitle.map{ title =>
+        @section.sectionTitle.map { title =>
             <h2 class="govuk-heading-m">@title</h2>
         }
 
         @govukSummaryList(SummaryList(section.rows))
     }
 
-    <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
-    <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>
-
-    @formHelper(action = routes.CheckYourAnswersController.onSubmit(mrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckEventAnswersController.onSubmit(mrn, eventIndex), 'autoComplete -> "off") {
         @button(
-            messageKey = "site.confirmAndSend",
+            messageKey = "site.continue",
             preventDoubleClick = true,
             attributes = Map("id" -> "submit")
         )
