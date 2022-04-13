@@ -19,20 +19,22 @@ package viewModels
 import models.{CountryList, Index, Mode, UserAnswers}
 import pages.events.IsTranshipmentPage
 import play.api.i18n.Messages
-import viewModels.sections.{EventInfoSection, EventTypeSection, SealSection, Section}
+import viewModels.sections.{EventInfoSection, EventTypeSection, SealsSection, Section}
 
-class CheckEventAnswersViewModel {
+import javax.inject.Inject
+
+class CheckEventAnswersViewModel @Inject() (
+  eventInfoSection: EventInfoSection,
+  eventTypeSection: EventTypeSection,
+  sealSection: SealsSection
+) {
 
   def apply(userAnswers: UserAnswers, eventIndex: Index, mode: Mode, codeList: CountryList)(implicit messages: Messages): Seq[Section] = {
 
     val isTranshipment: Boolean = userAnswers.get(IsTranshipmentPage(eventIndex)).getOrElse(false)
 
-    val eventInfoSection: Section = EventInfoSection(userAnswers, mode, eventIndex, isTranshipment, codeList)
-
-    val eventTypeSection: Seq[Section] = EventTypeSection(userAnswers, mode, eventIndex, isTranshipment, codeList)
-
-    val sealSection: Section = SealSection(userAnswers, mode, eventIndex)
-
-    eventInfoSection +: eventTypeSection :+ sealSection
+    eventInfoSection(userAnswers, mode, eventIndex, isTranshipment, codeList) +:
+      eventTypeSection(userAnswers, mode, eventIndex, isTranshipment, codeList) :+
+      sealSection(userAnswers, mode, eventIndex)
   }
 }

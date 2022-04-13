@@ -123,10 +123,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
   )
 
   def pickCustomsOffice: Option[SummaryListRow] =
-    userAnswers.get(SimplifiedCustomsOfficePage) match {
-      case Some(_) => simplifiedCustomsOffice
-      case None    => customsOffice
-    }
+    simplifiedCustomsOffice orElse customsOffice
 
   def simplifiedCustomsOffice: Option[SummaryListRow] =
     customsOffice(SimplifiedCustomsOfficePage, "customsOffice.simplified", routes.CustomsOfficeSimplifiedController.onPageLoad)

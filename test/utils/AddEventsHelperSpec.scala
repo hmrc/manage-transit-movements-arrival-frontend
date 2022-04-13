@@ -80,13 +80,13 @@ class AddEventsHelperSpec extends SpecBase {
       }
     }
 
-    ".cyaListOfEvent" - {
+    ".eventSummaryListRow" - {
 
       "must return None" - {
         "when EventPlacePage and EventCountryPage undefined" in {
 
           val helper = new AddEventsHelper(emptyUserAnswers, mode)
-          helper.cyaListOfEvent(eventIndex) mustBe None
+          helper.eventSummaryListRow(eventIndex) mustBe None
         }
       }
 
@@ -101,7 +101,7 @@ class AddEventsHelperSpec extends SpecBase {
             .value
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.cyaListOfEvent(eventIndex) mustBe Some(
+          helper.eventSummaryListRow(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Event ${eventIndex.display}".toText,
@@ -133,7 +133,7 @@ class AddEventsHelperSpec extends SpecBase {
             .value
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.cyaListOfEvent(eventIndex) mustBe Some(
+          helper.eventSummaryListRow(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Event ${eventIndex.display}".toText,
