@@ -17,19 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
-import matchers.JsonMatchers
 import models.GoodsLocation
 import models.reference.CustomsOffice
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import pages.{CustomsOfficePage, GoodsLocationPage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
 import views.html.ArrivalCompleteView
 
 import scala.concurrent.Future

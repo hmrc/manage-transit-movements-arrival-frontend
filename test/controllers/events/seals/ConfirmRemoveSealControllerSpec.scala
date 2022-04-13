@@ -25,7 +25,6 @@ import pages.events.seals.SealIdentityPage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import views.html.ConcurrentRemoveErrorView
 import views.html.events.seals.ConfirmRemoveSealView
 
@@ -122,8 +121,6 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(userAnswersWithSeal)
 

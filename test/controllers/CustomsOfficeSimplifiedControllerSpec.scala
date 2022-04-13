@@ -29,7 +29,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CustomsOfficesService
 import views.html.CustomsOfficeSimplifiedView
 
@@ -115,9 +114,6 @@ class CustomsOfficeSimplifiedControllerSpec extends SpecBase with AppWithDefault
     }
 
     "must redirect to session expired page when user hasn't answered the customs sub place question" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
 

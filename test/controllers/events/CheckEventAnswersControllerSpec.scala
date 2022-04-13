@@ -27,7 +27,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CountriesService
 import viewModels.CheckEventAnswersViewModel
 import viewModels.sections.Section
@@ -89,8 +88,6 @@ class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must redirect to Add event page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val request = FakeRequest(POST, controllers.events.routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url)
 

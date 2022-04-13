@@ -19,7 +19,6 @@ package controllers.events.seals
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.seals.SealIdentityFormProvider
 import generators.MessagesModelGenerators
-import matchers.JsonMatchers
 import models.domain.SealDomain
 import models.messages.Seal
 import models.{Index, NormalMode}
@@ -30,12 +29,11 @@ import pages.events.seals.SealIdentityPage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.events.seals.SealIdentityView
 
 import scala.concurrent.Future
 
-class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers with MessagesModelGenerators {
+class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
   private val formProvider                                        = new SealIdentityFormProvider()
   private val form: Form[String]                                  = formProvider(sealIndex)

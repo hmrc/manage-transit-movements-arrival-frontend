@@ -18,7 +18,6 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CustomsOfficeFormProvider
-import matchers.JsonMatchers
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -30,12 +29,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CustomsOfficesService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.CustomsOfficeView
 
 import scala.concurrent.Future
 
-class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val mode              = NormalMode
   private val formProvider      = new CustomsOfficeFormProvider()

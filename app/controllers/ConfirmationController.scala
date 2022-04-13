@@ -25,21 +25,20 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.ArrivalCompleteView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationController @Inject() (override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        actions: Actions,
-                                        arrivalCompleteView: ArrivalCompleteView
+class ConfirmationController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  val controllerComponents: MessagesControllerComponents,
+  actions: Actions,
+  view: ArrivalCompleteView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private def contactUsMessage(office: CustomsOffice)(implicit request: Request[_]) = (office.name, office.phoneNumber) match {
     case (Some(office), Some(telephone)) =>
@@ -62,7 +61,7 @@ class ConfirmationController @Inject() (override val messagesApi: MessagesApi,
 
           sessionRepository.remove(mrn.toString, request.eoriNumber).map {
             _ =>
-              Ok(arrivalCompleteView(mrn, paragraph, contactUsMessage(customsOffice)))
+              Ok(view(mrn, paragraph, contactUsMessage(customsOffice)))
           }
         case _ =>
           Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))

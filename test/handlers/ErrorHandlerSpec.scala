@@ -17,7 +17,6 @@
 package handlers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import matchers.JsonMatchers
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import play.api.libs.typedmap.TypedMap
@@ -28,7 +27,7 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 // scalastyle:off magic.number
-class ErrorHandlerSpec extends SpecBase with JsonMatchers with AppWithDefaultMockFixtures with OptionValues {
+class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures with OptionValues {
 
   private lazy val handler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
 

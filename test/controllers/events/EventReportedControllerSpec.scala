@@ -25,7 +25,6 @@ import pages.events.EventReportedPage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import views.html.events.EventReportedView
 
 import scala.concurrent.Future
@@ -42,9 +41,6 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, eventReportedRoute)
@@ -60,9 +56,6 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(EventReportedPage(eventIndex), true).success.value
       setExistingUserAnswers(userAnswers)
@@ -99,9 +92,6 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
