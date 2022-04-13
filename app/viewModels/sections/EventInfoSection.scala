@@ -16,8 +16,8 @@
 
 package viewModels.sections
 
-import play.api.i18n.Messages
 import models.{CountryList, Index, Mode, UserAnswers}
+import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
 object EventInfoSection {
@@ -27,7 +27,7 @@ object EventInfoSection {
     val helper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Section(
-      Seq(
+      rows = Seq(
         helper.eventCountry(eventIndex)(codeList),
         helper.eventPlace(eventIndex),
         helper.eventReported(eventIndex),
