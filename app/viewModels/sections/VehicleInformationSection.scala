@@ -20,27 +20,24 @@ import models.{CountryList, Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.CheckEventAnswersHelper
 
-class EventInfoSection {
+class VehicleInformationSection {
 
   def apply(
     userAnswers: UserAnswers,
     mode: Mode,
     eventIndex: Index,
-    isTranshipment: Boolean,
     codeList: CountryList
   )(implicit messages: Messages): Section = {
 
     val helper = new CheckEventAnswersHelper(userAnswers, mode)
 
     Section(
+      sectionTitle = messages("checkEventAnswers.section.title.vehicleInformation"),
       rows = Seq(
-        helper.eventCountry(eventIndex)(codeList),
-        helper.eventPlace(eventIndex),
-        helper.eventReported(eventIndex),
-        if (isTranshipment) None else helper.isTranshipment(eventIndex),
-        helper.incidentInformation(eventIndex)
+        helper.transportIdentity(eventIndex),
+        helper.transportNationality(eventIndex)(codeList)
       ).flatten
     )
-  }
 
+  }
 }

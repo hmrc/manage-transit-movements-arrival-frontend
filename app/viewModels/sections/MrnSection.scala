@@ -16,31 +16,18 @@
 
 package viewModels.sections
 
-import models.{CountryList, Index, Mode, UserAnswers}
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import utils.CheckEventAnswersHelper
+import utils.CheckYourAnswersHelper
 
-class EventInfoSection {
+class MrnSection {
 
-  def apply(
-    userAnswers: UserAnswers,
-    mode: Mode,
-    eventIndex: Index,
-    isTranshipment: Boolean,
-    codeList: CountryList
-  )(implicit messages: Messages): Section = {
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
 
-    val helper = new CheckEventAnswersHelper(userAnswers, mode)
+    val helper: CheckYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, CheckMode)
 
     Section(
-      rows = Seq(
-        helper.eventCountry(eventIndex)(codeList),
-        helper.eventPlace(eventIndex),
-        helper.eventReported(eventIndex),
-        if (isTranshipment) None else helper.isTranshipment(eventIndex),
-        helper.incidentInformation(eventIndex)
-      ).flatten
+      rows = Seq(helper.movementReferenceNumber)
     )
   }
-
 }

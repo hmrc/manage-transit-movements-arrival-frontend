@@ -39,7 +39,6 @@ class ArrivalSubmissionService @Inject() (
             userAnswers.arrivalId match {
               case Some(arrivalId) => connector.updateArrivalMovement(arrivalId, arrivalMovementRequest)
               case _               => connector.submitArrivalMovement(arrivalMovementRequest)
-
             }
         )
       )

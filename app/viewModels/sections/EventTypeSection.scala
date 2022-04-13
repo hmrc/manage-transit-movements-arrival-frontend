@@ -16,103 +16,36 @@
 
 package viewModels.sections
 
-import derivable.DeriveNumberOfContainers
 import models.TranshipmentType.{DifferentContainer, DifferentContainerAndVehicle, DifferentVehicle}
 import models.{CountryList, Index, Mode, UserAnswers}
 import pages.events.transhipments.TranshipmentTypePage
 import play.api.i18n.Messages
-import utils.CheckEventAnswersHelper
 
-object EventTypeSection {
+import javax.inject.Inject
 
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList)(implicit
-    messages: Messages
-  ): Seq[Section] =
+class EventTypeSection @Inject() (
+  vehicleInformationSection: VehicleInformationSection,
+  differentContainerSection: DifferentContainerSection,
+  differentVehicleSection: DifferentVehicleSection
+) {
+
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode,
+    eventIndex: Index,
+    isTranshipment: Boolean,
+    codeList: CountryList
+  )(implicit messages: Messages): Seq[Section] =
     userAnswers
       .get(TranshipmentTypePage(eventIndex))
       .map {
         case DifferentVehicle =>
-          DifferentVehicleSection(userAnswers, mode, eventIndex, isTranshipment, codeList)
+          differentVehicleSection(userAnswers, mode, eventIndex, isTranshipment, codeList) :: Nil
         case DifferentContainer =>
-          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, "checkEventAnswers.section.title.differentContainer")
+          differentContainerSection(userAnswers, mode, eventIndex, "checkEventAnswers.section.title.differentContainer")
         case DifferentContainerAndVehicle =>
-          DifferentContainerSection(userAnswers, mode, eventIndex, isTranshipment, "checkEventAnswers.section.title.differentContainerAndVehicle") ++
-            VehicleInformationSection(userAnswers, mode, eventIndex, codeList)
+          differentContainerSection(userAnswers, mode, eventIndex, "checkEventAnswers.section.title.differentContainerAndVehicle") :+
+            vehicleInformationSection(userAnswers, mode, eventIndex, codeList)
       }
       .getOrElse(Seq.empty)
-}
-
-object VehicleInformationSection {
-
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, codeList: CountryList)(implicit messages: Messages): Seq[Section] = {
-
-    val helper = new CheckEventAnswersHelper(userAnswers, mode)
-
-    Seq(
-      Section(
-        sectionTitle = messages("checkEventAnswers.section.title.vehicleInformation"),
-        rows = Seq(
-          helper.transportIdentity(eventIndex),
-          helper.transportNationality(eventIndex)(codeList)
-        ).flatten
-      )
-    )
-  }
-}
-
-object DifferentContainerSection {
-
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, sectionText: String)(implicit
-    messages: Messages
-  ): Seq[Section] = {
-
-    val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
-
-    Seq(
-      Some(
-        Section(
-          sectionTitle = messages(sectionText),
-          rows = Seq(
-            helper.isTranshipment(eventIndex),
-            helper.transhipmentType(eventIndex)
-          ).flatten
-        )
-      ),
-      userAnswers
-        .get(DeriveNumberOfContainers(eventIndex))
-        .map {
-          containerCount =>
-            val rows = (0 to containerCount).flatMap {
-              x =>
-                helper.containerNumber(eventIndex, Index(x))
-            }
-            Section(
-              sectionTitle = messages("checkEventAnswers.section.title.containerNumbers"),
-              rows = rows
-            )
-        }
-    ).flatten
-  }
-}
-
-object DifferentVehicleSection {
-
-  def apply(userAnswers: UserAnswers, mode: Mode, eventIndex: Index, isTranshipment: Boolean, codeList: CountryList)(implicit
-    messages: Messages
-  ): Seq[Section] = {
-
-    val helper: CheckEventAnswersHelper = new CheckEventAnswersHelper(userAnswers, mode)
-
-    Seq(
-      Section(
-        sectionTitle = messages("checkEventAnswers.section.title.differentVehicle"),
-        rows = Seq(
-          if (isTranshipment) helper.isTranshipment(eventIndex) else None,
-          helper.transhipmentType(eventIndex),
-          helper.transportIdentity(eventIndex),
-          helper.transportNationality(eventIndex)(codeList)
-        ).flatten
-      )
-    )
-  }
 }

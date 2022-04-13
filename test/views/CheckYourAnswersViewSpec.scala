@@ -16,22 +16,18 @@
 
 package views
 
+import generators.{Generators, ViewModelGenerators}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
 import views.behaviours.SummaryListViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends SummaryListViewBehaviours {
+class CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
 
   override val prefix: String = "checkYourAnswers"
 
-  val sections: Seq[Section] = Seq(
-    Section(
-      "Section title",
-      Nil
-    )
-  )
+  private val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => new SummaryList(section.rows)
@@ -44,9 +40,12 @@ class CheckYourAnswersViewSpec extends SummaryListViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithSummaryLists()
+  sections.foreach(_.sectionTitle.map {
+    sectionTitle =>
+      behave like pageWithContent("h2", sectionTitle)
+  })
 
-  behave like pageWithContent("h2", "Section title")
+  behave like pageWithSummaryLists()
 
   behave like pageWithContent("h2", "Now send your arrival notification")
 

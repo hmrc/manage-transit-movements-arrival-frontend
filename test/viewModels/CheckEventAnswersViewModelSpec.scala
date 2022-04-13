@@ -17,159 +17,108 @@
 package viewModels
 
 import base.SpecBase
-import generators.MessagesModelGenerators
-import models.TranshipmentType._
-import models.domain.{ContainerDomain, SealDomain}
-import models.reference.{Country, CountryCode}
-import models.{CheckMode, CountryList, Index}
+import generators.{Generators, ViewModelGenerators}
+import models.reference.Country
+import models.{CheckMode, CountryList}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.IncidentOnRoutePage
+import org.scalatest.BeforeAndAfterEach
 import pages.events._
-import pages.events.seals.{HaveSealsChangedPage, SealIdentityPage}
-import pages.events.transhipments._
+import viewModels.sections.{EventInfoSection, EventTypeSection, SealsSection, Section}
 
-class CheckEventAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators {
+class CheckEventAnswersViewModelSpec extends SpecBase with Generators with ViewModelGenerators with BeforeAndAfterEach {
 
   private val genCountryList = arbitrary[Seq[Country]].sample.value
   private val countryList    = CountryList(genCountryList)
 
-  "when event is an incident" - {
-    "and hasn't been reported and did not move to different vehicle/container and no seals changed" in {
+  private val mockEventInfoSection: EventInfoSection = mock[EventInfoSection]
+  private val mockEventTypeSection: EventTypeSection = mock[EventTypeSection]
+  private val mockSealSection: SealsSection          = mock[SealsSection]
 
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), false)
-        .setValue(IncidentInformationPage(eventIndex), "value")
-        .setValue(HaveSealsChangedPage(eventIndex), false)
+  private val sampleEventInfoSection  = arbitrary[Section].sample.value
+  private val sampleEventTypeSections = arbitrary[Seq[Section]].sample.value
+  private val sampleSealSection       = arbitrary[Section].sample.value
 
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
+  private val mode = CheckMode
 
-      sections.head.sectionTitle must not be defined
-      sections.length mustEqual 2
-      sections.head.rows.length mustEqual 5
-    }
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-    "and has been reported, did not move to different vehicle/container and no seals changed" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), false)
-        .setValue(IncidentInformationPage(eventIndex), "value")
-        .setValue(HaveSealsChangedPage(eventIndex), false)
+    reset(mockEventInfoSection, mockEventTypeSection, mockSealSection)
 
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
+    when(mockEventInfoSection.apply(any(), any(), any(), any(), any())(any()))
+      .thenReturn(sampleEventInfoSection)
 
-      sections.head.sectionTitle must not be defined
-      sections.head.rows.length mustEqual 5
-    }
+    when(mockEventTypeSection.apply(any(), any(), any(), any(), any())(any()))
+      .thenReturn(sampleEventTypeSections)
 
-    "and has been reported, did not move to different vehicle/container and seals changed" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), false)
-        .setValue(IncidentInformationPage(eventIndex), "value")
-        .setValue(HaveSealsChangedPage(eventIndex), true)
-        .setValue(SealIdentityPage(eventIndex, Index(0)), SealDomain("seal1"))
-        .setValue(SealIdentityPage(eventIndex, Index(1)), SealDomain("seal2"))
-
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
-
-      sections.head.sectionTitle must not be defined
-      sections.head.rows.length mustEqual 5
-    }
-
-    "and has been reported and did not move to different vehicle/container show the event info only" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), true)
-        .setValue(IsTranshipmentPage(eventIndex), false)
-        .setValue(HaveSealsChangedPage(eventIndex), false)
-
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
-
-      sections.head.sectionTitle must not be defined
-      sections.head.rows.length mustEqual 4
-    }
+    when(mockSealSection.apply(any(), any(), any())(any()))
+      .thenReturn(sampleSealSection)
   }
 
-  "when event is a transhipment" - {
-    "and the goods have moved to different vehicle display event info and vehicle info sections" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), true)
-        .setValue(TranshipmentTypePage(eventIndex), DifferentVehicle)
-        .setValue(TransportIdentityPage(eventIndex), "value")
-        .setValue(TransportNationalityPage(eventIndex), CountryCode("GB"))
-        .setValue(HaveSealsChangedPage(eventIndex), false)
+  "must return sections" - {
+    "when 'is transhipment' is true" in {
 
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
+      val userAnswers = emptyUserAnswers.setValue(IsTranshipmentPage(eventIndex), true)
 
-      sections.head.sectionTitle must not be defined
-      sections.head.rows.length mustEqual 3
-      sections(1).sectionTitle must be(defined)
-      sections(1).rows.length mustEqual 4
+      val viewModel = new CheckEventAnswersViewModel(mockEventInfoSection, mockEventTypeSection, mockSealSection)
+
+      val sections = viewModel.apply(userAnswers, eventIndex, mode, countryList)
+
+      sections.size mustBe sampleEventTypeSections.size + 2
+
+      sections.head mustBe sampleEventInfoSection
+      sections.slice(1, sampleEventTypeSections.size + 1) mustBe sampleEventTypeSections
+      sections.last mustBe sampleSealSection
+
+      verify(mockEventInfoSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(true), eqTo(countryList))(any())
+
+      verify(mockEventTypeSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(true), eqTo(countryList))(any())
+
+      verify(mockSealSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex))(any())
     }
 
-    "and the goods have moved to different container display event info and container info sections" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), true)
-        .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
-        .setValue(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value"))
-        .setValue(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value"))
-        .setValue(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value"))
-        .setValue(HaveSealsChangedPage(eventIndex), false)
+    "when 'is transhipment' is false" in {
 
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
-      sections.head.sectionTitle must not be defined
-      sections.head.rows.length mustEqual 3
-      sections(1).sectionTitle must be(defined)
-      sections(1).rows.length mustEqual 2
+      val userAnswers = emptyUserAnswers.setValue(IsTranshipmentPage(eventIndex), false)
+
+      val viewModel = new CheckEventAnswersViewModel(mockEventInfoSection, mockEventTypeSection, mockSealSection)
+
+      val sections = viewModel.apply(userAnswers, eventIndex, mode, countryList)
+
+      sections.size mustBe sampleEventTypeSections.size + 2
+
+      sections.head mustBe sampleEventInfoSection
+      sections.slice(1, sampleEventTypeSections.size + 1) mustBe sampleEventTypeSections
+      sections.last mustBe sampleSealSection
+
+      verify(mockEventInfoSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(false), eqTo(countryList))(any())
+
+      verify(mockEventTypeSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(false), eqTo(countryList))(any())
+
+      verify(mockSealSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex))(any())
     }
 
-    "and the goods have moved to both different containers and vehicles  display event info and vehicle and containers info sections" in {
-      val ua = emptyUserAnswers
-        .setValue(IncidentOnRoutePage, true)
-        .setValue(EventCountryPage(eventIndex), CountryCode("GB"))
-        .setValue(EventPlacePage(eventIndex), "value")
-        .setValue(EventReportedPage(eventIndex), false)
-        .setValue(IsTranshipmentPage(eventIndex), true)
-        .setValue(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle)
-        .setValue(ContainerNumberPage(eventIndex, Index(0)), ContainerDomain("value"))
-        .setValue(ContainerNumberPage(eventIndex, Index(1)), ContainerDomain("value"))
-        .setValue(ContainerNumberPage(eventIndex, Index(2)), ContainerDomain("value"))
-        .setValue(TransportIdentityPage(eventIndex), "value")
-        .setValue(TransportNationalityPage(eventIndex), CountryCode("GB"))
-        .setValue(HaveSealsChangedPage(eventIndex), false)
+    "when 'is transhipment' is undefined" in {
 
-      val sections = new CheckEventAnswersViewModel().apply(ua, eventIndex, CheckMode, countryList)
+      val userAnswers = emptyUserAnswers
 
-      sections.length mustEqual 5
-      sections.head.sectionTitle must not be defined
-      sections(1).sectionTitle must be(defined)
-      sections(1).rows.length mustEqual 2
-      sections(2).sectionTitle must be(defined)
-      sections(2).rows.length mustEqual 3
+      val viewModel = new CheckEventAnswersViewModel(mockEventInfoSection, mockEventTypeSection, mockSealSection)
 
+      val sections = viewModel.apply(userAnswers, eventIndex, mode, countryList)
+
+      sections.size mustBe sampleEventTypeSections.size + 2
+
+      sections.head mustBe sampleEventInfoSection
+      sections.slice(1, sampleEventTypeSections.size + 1) mustBe sampleEventTypeSections
+      sections.last mustBe sampleSealSection
+
+      verify(mockEventInfoSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(false), eqTo(countryList))(any())
+
+      verify(mockEventTypeSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex), eqTo(false), eqTo(countryList))(any())
+
+      verify(mockSealSection).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex))(any())
     }
-
   }
-
 }
