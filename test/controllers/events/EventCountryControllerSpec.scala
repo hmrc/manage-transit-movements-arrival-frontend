@@ -67,7 +67,7 @@ class EventCountryControllerSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(EventCountryPage(eventIndex), country.code).success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).setValue(EventCountryPage(eventIndex), country.code)
       val filledForm  = form.bind(Map("value" -> "GB"))
 
       setExistingUserAnswers(userAnswers)

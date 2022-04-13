@@ -36,15 +36,9 @@ class GoodsLocationPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers], arbitrary[String]) {
         (answers, location) =>
           val result = answers
-            .set(GoodsLocationPage, AuthorisedConsigneesLocation)
-            .success
-            .value
-            .set(AuthorisedLocationPage, location)
-            .success
-            .value
-            .set(GoodsLocationPage, BorderForceOffice)
-            .success
-            .value
+            .setValue(GoodsLocationPage, AuthorisedConsigneesLocation)
+            .setValue(AuthorisedLocationPage, location)
+            .setValue(GoodsLocationPage, BorderForceOffice)
 
           result.get(AuthorisedLocationPage) must not be defined
           result.get(ConsigneeNamePage) must not be defined
@@ -60,15 +54,9 @@ class GoodsLocationPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers], arbitrary[String]) {
         (answers, location) =>
           val result = answers
-            .set(GoodsLocationPage, BorderForceOffice)
-            .success
-            .value
-            .set(AuthorisedLocationPage, location)
-            .success
-            .value
-            .set(GoodsLocationPage, AuthorisedConsigneesLocation)
-            .success
-            .value
+            .setValue(GoodsLocationPage, BorderForceOffice)
+            .setValue(AuthorisedLocationPage, location)
+            .setValue(GoodsLocationPage, AuthorisedConsigneesLocation)
 
           result.get(CustomsSubPlacePage) must not be defined
           result.get(CustomsOfficePage) must not be defined

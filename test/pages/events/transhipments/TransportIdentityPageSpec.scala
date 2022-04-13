@@ -16,12 +16,9 @@
 
 package pages.events.transhipments
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class TransportIdentityPageSpec extends PageBehaviours {
-
-  val eventIndex = Index(0)
 
   "TransportIdentityPage" - {
 

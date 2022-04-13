@@ -52,7 +52,7 @@ class IncidentOnRouteControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IncidentOnRoutePage, true).success.value
+      val userAnswers = emptyUserAnswers.setValue(IncidentOnRoutePage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentOnRouteRoute)

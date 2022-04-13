@@ -16,13 +16,11 @@
 
 package pages.events
 
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class EventReportedPageSpec extends PageBehaviours {
-
-  val eventIndex = Index(0)
 
   "EventReportedPage" - {
 
@@ -37,22 +35,13 @@ class EventReportedPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[Boolean], arbitrary[String]) {
           (userAnswers, eventReportedAnswer, incidentInformationAnswer) =>
             val ua = userAnswers
-              .set(IsTranshipmentPage(eventIndex), false)
-              .success
-              .value
-              .set(IncidentInformationPage(eventIndex), incidentInformationAnswer)
-              .success
-              .value
-              .set(IsTranshipmentPage(eventIndex), true)
-              .success
-              .value
+              .setValue(IsTranshipmentPage(eventIndex), false)
+              .setValue(IncidentInformationPage(eventIndex), incidentInformationAnswer)
+              .setValue(IsTranshipmentPage(eventIndex), true)
 
-            val result = ua
-              .set(EventReportedPage(eventIndex), eventReportedAnswer)
-              .success
-              .value
+            val result = ua.setValue(EventReportedPage(eventIndex), eventReportedAnswer)
 
-            result.get(IsTranshipmentPage(eventIndex)).value mustEqual true
+            result.getValue(IsTranshipmentPage(eventIndex)) mustEqual true
             result.get(IncidentInformationPage(eventIndex)) must not be defined
         }
       }
@@ -61,20 +50,12 @@ class EventReportedPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[String]) {
           (userAnswers, incidentInformation) =>
             val result = userAnswers
-              .set(EventReportedPage(eventIndex), false)
-              .success
-              .value
-              .set(IsTranshipmentPage(eventIndex), false)
-              .success
-              .value
-              .set(IncidentInformationPage(eventIndex), incidentInformation)
-              .success
-              .value
-              .set(EventReportedPage(eventIndex), true)
-              .success
-              .value
+              .setValue(EventReportedPage(eventIndex), false)
+              .setValue(IsTranshipmentPage(eventIndex), false)
+              .setValue(IncidentInformationPage(eventIndex), incidentInformation)
+              .setValue(EventReportedPage(eventIndex), true)
 
-            result.get(IsTranshipmentPage(eventIndex)).value mustEqual false
+            result.getValue(IsTranshipmentPage(eventIndex)) mustEqual false
             result.get(IncidentInformationPage(eventIndex)) must not be defined
         }
       }
@@ -83,19 +64,12 @@ class EventReportedPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[String]) {
           (userAnswers, incidentInformation) =>
             val ua = userAnswers
-              .set(IsTranshipmentPage(eventIndex), false)
-              .success
-              .value
-              .set(IncidentInformationPage(eventIndex), incidentInformation)
-              .success
-              .value
+              .setValue(IsTranshipmentPage(eventIndex), false)
+              .setValue(IncidentInformationPage(eventIndex), incidentInformation)
 
-            val result = ua
-              .set(EventReportedPage(eventIndex), false)
-              .success
-              .value
+            val result = ua.setValue(EventReportedPage(eventIndex), false)
 
-            result.get(IsTranshipmentPage(eventIndex)).value mustEqual false
+            result.getValue(IsTranshipmentPage(eventIndex)) mustEqual false
             result.get(IncidentInformationPage(eventIndex)) must be(defined)
         }
       }

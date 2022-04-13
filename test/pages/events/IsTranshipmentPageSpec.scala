@@ -16,7 +16,7 @@
 
 package pages.events
 
-import models.{Index, TranshipmentType, UserAnswers}
+import models.{TranshipmentType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.events.transhipments.TranshipmentTypePage
@@ -24,7 +24,6 @@ import pages.events.transhipments.TranshipmentTypePage
 class IsTranshipmentPageSpec extends PageBehaviours {
 
   "IsTranshipmentPage" - {
-    val eventIndex = Index(0)
 
     beRetrievable[Boolean](IsTranshipmentPage(eventIndex))
 
@@ -38,15 +37,9 @@ class IsTranshipmentPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[String]) {
           (userAnswers, incidentInfo) =>
             val result = userAnswers
-              .set(IsTranshipmentPage(eventIndex), false)
-              .success
-              .value
-              .set(IncidentInformationPage(eventIndex), incidentInfo)
-              .success
-              .value
-              .set(IsTranshipmentPage(eventIndex), true)
-              .success
-              .value
+              .setValue(IsTranshipmentPage(eventIndex), false)
+              .setValue(IncidentInformationPage(eventIndex), incidentInfo)
+              .setValue(IsTranshipmentPage(eventIndex), true)
 
             result.get(IncidentInformationPage(eventIndex)) must not be defined
         }
@@ -57,15 +50,9 @@ class IsTranshipmentPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[TranshipmentType]) {
           (userAnswers, transhipmentType) =>
             val result = userAnswers
-              .set(IsTranshipmentPage(eventIndex), true)
-              .success
-              .value
-              .set(TranshipmentTypePage(eventIndex), transhipmentType)
-              .success
-              .value
-              .set(IsTranshipmentPage(eventIndex), false)
-              .success
-              .value
+              .setValue(IsTranshipmentPage(eventIndex), true)
+              .setValue(TranshipmentTypePage(eventIndex), transhipmentType)
+              .setValue(IsTranshipmentPage(eventIndex), false)
 
             result.get(TranshipmentTypePage(eventIndex)) must not be defined
         }
@@ -76,15 +63,9 @@ class IsTranshipmentPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[String], arbitrary[TranshipmentType]) {
           (userAnswers, incidentInfo, transhipmentType) =>
             val result = userAnswers
-              .set(IncidentInformationPage(eventIndex), incidentInfo)
-              .success
-              .value
-              .set(TranshipmentTypePage(eventIndex), transhipmentType)
-              .success
-              .value
-              .remove(IsTranshipmentPage(eventIndex))
-              .success
-              .value
+              .setValue(IncidentInformationPage(eventIndex), incidentInfo)
+              .setValue(TranshipmentTypePage(eventIndex), transhipmentType)
+              .removeValue(IsTranshipmentPage(eventIndex))
 
             result.get(IncidentInformationPage(eventIndex)) must not be defined
             result.get(TranshipmentTypePage(eventIndex)) must not be defined

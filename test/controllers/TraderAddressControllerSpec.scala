@@ -37,7 +37,7 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
 
-      val answers = emptyUserAnswers.set(TraderNamePage, traderName).success.value
+      val answers = emptyUserAnswers.setValue(TraderNamePage, traderName)
 
       setExistingUserAnswers(answers)
 

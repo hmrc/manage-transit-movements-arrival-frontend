@@ -16,19 +16,16 @@
 
 package pages.behaviours
 
+import base.SpecBase
 import generators.Generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
 
-trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
+trait PageBehaviours extends SpecBase with Generators {
 
   class BeRetrievable[A] {
 
@@ -92,8 +89,8 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
 
         forAll(gen) {
           case (page, newValue, userAnswers) =>
-            val updatedAnswers = userAnswers.set(page, newValue).success.value
-            updatedAnswers.get(page).value mustEqual newValue
+            val updatedAnswers = userAnswers.setValue(page, newValue)
+            updatedAnswers.getValue(page) mustEqual newValue
         }
       }
   }
@@ -107,11 +104,11 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
           page        <- genP
           savedValue  <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
-        } yield (page, userAnswers.set(page, savedValue).success.value)
+        } yield (page, userAnswers.setValue(page, savedValue))
 
         forAll(gen) {
           case (page, userAnswers) =>
-            val updatedAnswers = userAnswers.remove(page).success.value
+            val updatedAnswers = userAnswers.removeValue(page)
             updatedAnswers.get(page) must be(empty)
         }
       }

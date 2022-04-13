@@ -17,14 +17,10 @@
 package pages.events.transhipments
 
 import generators.MessagesModelGenerators
-import models.Index
 import models.domain.ContainerDomain
 import pages.behaviours.PageBehaviours
 
 class ContainerNumberPageSpec extends PageBehaviours with MessagesModelGenerators {
-
-  val eventIndex     = Index(0)
-  val containerIndex = Index(0)
 
   "ContainerNumberPage" - {
 

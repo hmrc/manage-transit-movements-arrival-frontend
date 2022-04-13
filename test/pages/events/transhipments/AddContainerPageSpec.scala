@@ -16,12 +16,9 @@
 
 package pages.events.transhipments
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class AddContainerPageSpec extends PageBehaviours {
-
-  val eventIndex = Index(0)
 
   "AddContainerPage" - {
 

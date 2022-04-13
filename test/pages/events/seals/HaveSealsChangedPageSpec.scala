@@ -38,15 +38,9 @@ class HaveSealsChangedPageSpec extends PageBehaviours with SpecBase {
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val result = userAnswers
-              .set(HaveSealsChangedPage(eventIndex), true)
-              .success
-              .value
-              .set(SealIdentityPage(eventIndex, sealIndex), sealDomain)
-              .success
-              .value
-              .set(HaveSealsChangedPage(eventIndex), false)
-              .success
-              .value
+              .setValue(HaveSealsChangedPage(eventIndex), true)
+              .setValue(SealIdentityPage(eventIndex, sealIndex), sealDomain)
+              .setValue(HaveSealsChangedPage(eventIndex), false)
 
             result.get(SealIdentityPage(eventIndex, sealIndex)) must not be defined
             result.get(SealsQuery(eventIndex)) must not be defined
@@ -58,15 +52,9 @@ class HaveSealsChangedPageSpec extends PageBehaviours with SpecBase {
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val result = userAnswers
-              .set(HaveSealsChangedPage(eventIndex), false)
-              .success
-              .value
-              .set(SealIdentityPage(eventIndex, sealIndex), sealDomain)
-              .success
-              .value
-              .set(HaveSealsChangedPage(eventIndex), true)
-              .success
-              .value
+              .setValue(HaveSealsChangedPage(eventIndex), false)
+              .setValue(SealIdentityPage(eventIndex, sealIndex), sealDomain)
+              .setValue(HaveSealsChangedPage(eventIndex), true)
 
             result.get(SealIdentityPage(eventIndex, sealIndex)) mustBe defined
             result.get(SealsQuery(eventIndex)) mustBe defined

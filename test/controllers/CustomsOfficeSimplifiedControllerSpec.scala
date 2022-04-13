@@ -133,7 +133,7 @@ class CustomsOfficeSimplifiedControllerSpec extends SpecBase with AppWithDefault
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(CustomsSubPlacePage, "sub place").success.value
+      val userAnswers = emptyUserAnswers.setValue(CustomsSubPlacePage, "sub place")
       setExistingUserAnswers(userAnswers)
 
       val request =

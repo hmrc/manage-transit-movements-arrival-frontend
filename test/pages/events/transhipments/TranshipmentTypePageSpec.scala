@@ -27,8 +27,6 @@ import queries.ContainersQuery
 
 class TranshipmentTypePageSpec extends PageBehaviours with MessagesModelGenerators {
 
-  val eventIndex = Index(0)
-
   "TranshipmentTypePage" - {
 
     beRetrievable[TranshipmentType](TranshipmentTypePage(eventIndex))
@@ -43,18 +41,10 @@ class TranshipmentTypePageSpec extends PageBehaviours with MessagesModelGenerato
         forAll(arbitrary[UserAnswers], arbitrary[String], arbitrary[CountryCode]) {
           (userAnswers, transportIdentity, transportNationality) =>
             val result = userAnswers
-              .set(TranshipmentTypePage(eventIndex), DifferentVehicle)
-              .success
-              .value
-              .set(TransportIdentityPage(eventIndex), transportIdentity)
-              .success
-              .value
-              .set(TransportNationalityPage(eventIndex), transportNationality)
-              .success
-              .value
-              .set(TranshipmentTypePage(eventIndex), DifferentContainer)
-              .success
-              .value
+              .setValue(TranshipmentTypePage(eventIndex), DifferentVehicle)
+              .setValue(TransportIdentityPage(eventIndex), transportIdentity)
+              .setValue(TransportNationalityPage(eventIndex), transportNationality)
+              .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
 
             result.get(TransportIdentityPage(eventIndex)) must not be defined
             result.get(TransportNationalityPage(eventIndex)) must not be defined
@@ -66,18 +56,10 @@ class TranshipmentTypePageSpec extends PageBehaviours with MessagesModelGenerato
         forAll(arbitrary[UserAnswers], arbitrary[ContainerDomain]) {
           (userAnswers, containerNumber) =>
             val result = userAnswers
-              .set(TranshipmentTypePage(eventIndex), DifferentContainer)
-              .success
-              .value
-              .set(ContainerNumberPage(eventIndex, Index(0)), containerNumber)
-              .success
-              .value
-              .set(ContainerNumberPage(eventIndex, Index(1)), containerNumber)
-              .success
-              .value
-              .set(TranshipmentTypePage(eventIndex), TranshipmentType.DifferentVehicle)
-              .success
-              .value
+              .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
+              .setValue(ContainerNumberPage(eventIndex, Index(0)), containerNumber)
+              .setValue(ContainerNumberPage(eventIndex, Index(1)), containerNumber)
+              .setValue(TranshipmentTypePage(eventIndex), TranshipmentType.DifferentVehicle)
 
             result.get(ContainersQuery(eventIndex)) must not be defined
         }
@@ -88,21 +70,11 @@ class TranshipmentTypePageSpec extends PageBehaviours with MessagesModelGenerato
         forAll(arbitrary[UserAnswers], arbitrary[String], arbitrary[ContainerDomain], arbitrary[CountryCode]) {
           (userAnswers, stringAnswer, container, country) =>
             val result = userAnswers
-              .set(TransportIdentityPage(eventIndex), stringAnswer)
-              .success
-              .value
-              .set(TransportNationalityPage(eventIndex), country)
-              .success
-              .value
-              .set(ContainerNumberPage(eventIndex, Index(0)), container)
-              .success
-              .value
-              .set(ContainerNumberPage(eventIndex, Index(1)), container)
-              .success
-              .value
-              .remove(TranshipmentTypePage(eventIndex))
-              .success
-              .value
+              .setValue(TransportIdentityPage(eventIndex), stringAnswer)
+              .setValue(TransportNationalityPage(eventIndex), country)
+              .setValue(ContainerNumberPage(eventIndex, Index(0)), container)
+              .setValue(ContainerNumberPage(eventIndex, Index(1)), container)
+              .removeValue(TranshipmentTypePage(eventIndex))
 
             result.get(TransportIdentityPage(eventIndex)) must not be defined
             result.get(TransportNationalityPage(eventIndex)) must not be defined

@@ -55,7 +55,7 @@ class PlaceOfNotificationControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PlaceOfNotificationPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(PlaceOfNotificationPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, placeOfNotificationRoute)

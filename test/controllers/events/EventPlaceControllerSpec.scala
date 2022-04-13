@@ -54,7 +54,7 @@ class EventPlaceControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(EventPlacePage(eventIndex), "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(EventPlacePage(eventIndex), "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, eventPlaceRoute)

@@ -36,7 +36,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val form: Form[Boolean]          = formProvider(sealDomain)
   private val mode                         = NormalMode
   private lazy val removeSealRoute: String = routes.ConfirmRemoveSealController.onPageLoad(mrn, eventIndex, sealIndex, mode).url
-  private val userAnswersWithSeal          = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), sealDomain).success.value
+  private val userAnswersWithSeal          = emptyUserAnswers.setValue(SealIdentityPage(eventIndex, sealIndex), sealDomain)
 
   "ConfirmRemoveSealController" - {
 
@@ -57,7 +57,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return error page when user tries to remove a seal that does not exists" in {
-      val updatedAnswer = userAnswersWithSeal.remove(SealIdentityPage(eventIndex, sealIndex)).success.value
+      val updatedAnswer = userAnswersWithSeal.removeValue(SealIdentityPage(eventIndex, sealIndex))
       setExistingUserAnswers(updatedAnswer)
 
       val request = FakeRequest(GET, removeSealRoute)
@@ -112,7 +112,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       val newUserAnswers = UserAnswers(
         movementReferenceNumber = userAnswersWithSeal.movementReferenceNumber,
         eoriNumber = userAnswersWithSeal.eoriNumber,
-        userAnswersWithSeal.remove(SealIdentityPage(eventIndex, sealIndex)).success.value.data,
+        userAnswersWithSeal.removeValue(SealIdentityPage(eventIndex, sealIndex)).data,
         userAnswersWithSeal.lastUpdated,
         id = userAnswersWithSeal.id
       )

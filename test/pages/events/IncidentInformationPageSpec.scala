@@ -16,14 +16,11 @@
 
 package pages.events
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class IncidentInformationPageSpec extends PageBehaviours {
 
   "IncidentInformationPage" - {
-
-    val eventIndex = Index(0)
 
     beRetrievable[String](IncidentInformationPage(eventIndex))
 

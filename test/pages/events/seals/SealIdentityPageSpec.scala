@@ -17,14 +17,10 @@
 package pages.events.seals
 
 import generators.MessagesModelGenerators
-import models.Index
 import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 
 class SealIdentityPageSpec extends PageBehaviours with MessagesModelGenerators {
-
-  val eventIndex: Index = Index(0)
-  val sealIndex: Index  = Index(0)
 
   "SealIdentityPage" - {
 

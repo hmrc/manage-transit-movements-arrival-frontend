@@ -58,7 +58,7 @@ class TransportIdentityControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(TransportIdentityPage(eventIndex), "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(TransportIdentityPage(eventIndex), "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, transportIdentityRoute)

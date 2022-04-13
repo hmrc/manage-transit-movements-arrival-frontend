@@ -16,8 +16,8 @@
 
 package pages
 
+import models.UserAnswers
 import models.reference.CountryCode
-import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.events.{EventCountryPage, EventPlacePage, EventReportedPage}
@@ -25,7 +25,6 @@ import queries.EventsQuery
 
 class IncidentOnRoutePageSpec extends PageBehaviours {
 
-  private val eventIndex = Index(0)
   "IncidentOnRoutePage" - {
 
     beRetrievable[Boolean](IncidentOnRoutePage)
@@ -38,20 +37,12 @@ class IncidentOnRoutePageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers], arbitrary[CountryCode], stringsWithMaxLength(35), arbitrary[Boolean]) {
         (answers, eventCountry, eventPlace, eventReported) =>
           val ua = answers
-            .set(IncidentOnRoutePage, true)
-            .success
-            .value
-            .set(EventCountryPage(eventIndex), eventCountry)
-            .success
-            .value
-            .set(EventPlacePage(eventIndex), eventPlace)
-            .success
-            .value
-            .set(EventReportedPage(eventIndex), eventReported)
-            .success
-            .value
+            .setValue(IncidentOnRoutePage, true)
+            .setValue(EventCountryPage(eventIndex), eventCountry)
+            .setValue(EventPlacePage(eventIndex), eventPlace)
+            .setValue(EventReportedPage(eventIndex), eventReported)
 
-          val result = ua.set(IncidentOnRoutePage, false).success.value
+          val result = ua.setValue(IncidentOnRoutePage, false)
 
           result.get(EventsQuery) must not be defined
       }
@@ -61,20 +52,12 @@ class IncidentOnRoutePageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers], arbitrary[CountryCode], stringsWithMaxLength(35), arbitrary[Boolean]) {
         (answers, eventCountry, eventPlace, eventReported) =>
           val ua = answers
-            .set(IncidentOnRoutePage, true)
-            .success
-            .value
-            .set(EventCountryPage(eventIndex), eventCountry)
-            .success
-            .value
-            .set(EventPlacePage(eventIndex), eventPlace)
-            .success
-            .value
-            .set(EventReportedPage(eventIndex), eventReported)
-            .success
-            .value
+            .setValue(IncidentOnRoutePage, true)
+            .setValue(EventCountryPage(eventIndex), eventCountry)
+            .setValue(EventPlacePage(eventIndex), eventPlace)
+            .setValue(EventReportedPage(eventIndex), eventReported)
 
-          val result = ua.set(IncidentOnRoutePage, true).success.value
+          val result = ua.setValue(IncidentOnRoutePage, true)
 
           result.get(EventCountryPage(eventIndex)) must be(defined)
           result.get(EventPlacePage(eventIndex)) must be(defined)
@@ -87,20 +70,12 @@ class IncidentOnRoutePageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers], arbitrary[CountryCode], stringsWithMaxLength(35), arbitrary[Boolean]) {
         (answers, eventCountry, eventPlace, eventReported) =>
           val ua = answers
-            .set(IncidentOnRoutePage, true)
-            .success
-            .value
-            .set(EventCountryPage(eventIndex), eventCountry)
-            .success
-            .value
-            .set(EventPlacePage(eventIndex), eventPlace)
-            .success
-            .value
-            .set(EventReportedPage(eventIndex), eventReported)
-            .success
-            .value
+            .setValue(IncidentOnRoutePage, true)
+            .setValue(EventCountryPage(eventIndex), eventCountry)
+            .setValue(EventPlacePage(eventIndex), eventPlace)
+            .setValue(EventReportedPage(eventIndex), eventReported)
 
-          val result = ua.remove(IncidentOnRoutePage).success.value
+          val result = ua.removeValue(IncidentOnRoutePage)
 
           result.get(EventsQuery) must not be defined
       }

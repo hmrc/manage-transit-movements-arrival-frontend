@@ -59,7 +59,7 @@ class TranshipmentTypeControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(TranshipmentTypePage(eventIndex), TranshipmentType.values.head).success.value
+      val userAnswers = emptyUserAnswers.setValue(TranshipmentTypePage(eventIndex), TranshipmentType.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, transhipmentTypeRoute)

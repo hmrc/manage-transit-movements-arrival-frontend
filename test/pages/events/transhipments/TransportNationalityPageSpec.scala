@@ -16,13 +16,10 @@
 
 package pages.events.transhipments
 
-import models.Index
 import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class TransportNationalityPageSpec extends PageBehaviours {
-
-  val eventIndex = Index(0)
 
   "TransportNationalityPage" - {
 

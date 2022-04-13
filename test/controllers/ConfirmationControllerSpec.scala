@@ -38,12 +38,8 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", Some("name"), None)
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.AuthorisedConsigneesLocation)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.AuthorisedConsigneesLocation)
+        .setValue(CustomsOfficePage, customsOffice)
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))
@@ -68,12 +64,8 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", Some("name"), Some("phoneNumber"))
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.BorderForceOffice)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+        .setValue(CustomsOfficePage, customsOffice)
 
       setExistingUserAnswers(userAnswers)
 
@@ -99,12 +91,9 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", None, None)
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.BorderForceOffice)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+        .setValue(CustomsOfficePage, customsOffice)
+
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))

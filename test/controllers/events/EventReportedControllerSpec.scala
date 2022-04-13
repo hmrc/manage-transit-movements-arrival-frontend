@@ -57,7 +57,7 @@ class EventReportedControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(EventReportedPage(eventIndex), true).success.value
+      val userAnswers = emptyUserAnswers.setValue(EventReportedPage(eventIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, eventReportedRoute)
