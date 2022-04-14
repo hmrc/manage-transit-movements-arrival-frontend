@@ -16,6 +16,7 @@
 
 package controllers.events.seals
 
+import config.annotations.Seal
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import forms.events.seals.ConfirmRemoveSealFormProvider
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Seal navigator: Navigator,
   actions: Actions,
   formProvider: ConfirmRemoveSealFormProvider,
   val controllerComponents: MessagesControllerComponents,

@@ -16,6 +16,7 @@
 
 package base
 
+import config.annotations._
 import controllers.actions._
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
@@ -69,6 +70,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[Navigator].toInstance(fakeNavigator)
+        bind[Navigator].toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[Event]).toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[Container]).toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator)
       )
 }

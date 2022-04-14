@@ -17,6 +17,7 @@
 package controllers.events
 
 import config.FrontendAppConfig
+import config.annotations.Event
 import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.AddEventFormProvider
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddEventController @Inject() (
   override val messagesApi: MessagesApi,
-  navigator: Navigator,
+  @Event navigator: Navigator,
   actions: Actions,
   formProvider: AddEventFormProvider,
   val controllerComponents: MessagesControllerComponents,

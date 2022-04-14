@@ -30,13 +30,14 @@ import views.html.CustomsSubPlaceView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsSubPlaceController @Inject() (override val messagesApi: MessagesApi,
-                                           sessionRepository: SessionRepository,
-                                           navigator: Navigator,
-                                           formProvider: CustomsSubPlaceFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           actions: Actions,
-                                           view: CustomsSubPlaceView
+class CustomsSubPlaceController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: CustomsSubPlaceFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  actions: Actions,
+  view: CustomsSubPlaceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

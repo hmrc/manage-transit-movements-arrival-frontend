@@ -17,34 +17,28 @@
 package navigation
 
 import base.SpecBase
-import controllers.events.seals.{routes => sealRoutes}
-import controllers.events.transhipments.{routes => transhipmentRoutes}
 import controllers.events.{routes => eventRoutes}
 import controllers.routes
 import generators.Generators
 import models.GoodsLocation.{AuthorisedConsigneesLocation, BorderForceOffice}
-import models.TranshipmentType.{DifferentContainer, DifferentContainerAndVehicle, DifferentVehicle}
 import models._
-import models.domain.{ContainerDomain, SealDomain}
-import models.messages.EnRouteEvent
-import models.reference.CountryCode
+import models.reference.{CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import pages._
-import pages.events._
-import pages.events.seals._
-import pages.events.transhipments._
+import pages.events.{EventCountryPage, EventPlacePage, EventReportedPage, IsTranshipmentPage}
 import queries.EventsQuery
 
 class NavigatorSpec extends SpecBase with Generators {
 
-  val navigator: Navigator = new Navigator()
+  private val navigator: Navigator = new Navigator()
 
-  val country: CountryCode = CountryCode("GB")
+  private val country: CountryCode = CountryCode("GB")
 
   "Navigator" - {
 
     "in Normal mode" - {
+
+      val mode = NormalMode
 
       "must go from a page that doesn't exist in the route map to Index" in {
 
@@ -53,7 +47,7 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(UnknownPage, NormalMode, answers)
+              .nextPage(UnknownPage, mode, answers)
               .mustBe(routes.MovementReferenceNumberController.onPageLoad())
         }
       }
@@ -62,8 +56,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(MovementReferenceNumberPage, NormalMode, answers)
-              .mustBe(routes.GoodsLocationController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(MovementReferenceNumberPage, mode, answers)
+              .mustBe(routes.GoodsLocationController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -73,8 +67,8 @@ class NavigatorSpec extends SpecBase with Generators {
             val updatedAnswers = answers.setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
 
             navigator
-              .nextPage(GoodsLocationPage, NormalMode, updatedAnswers)
-              .mustBe(routes.CustomsSubPlaceController.onPageLoad(updatedAnswers.movementReferenceNumber, NormalMode))
+              .nextPage(GoodsLocationPage, mode, updatedAnswers)
+              .mustBe(routes.CustomsSubPlaceController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
         }
       }
 
@@ -82,8 +76,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(AuthorisedLocationPage, NormalMode, answers)
-              .mustBe(routes.ConsigneeNameController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(AuthorisedLocationPage, mode, answers)
+              .mustBe(routes.ConsigneeNameController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -91,8 +85,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ConsigneeNamePage, NormalMode, answers)
-              .mustBe(routes.ConsigneeEoriNumberController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(ConsigneeNamePage, mode, answers)
+              .mustBe(routes.ConsigneeEoriNumberController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -100,8 +94,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ConsigneeEoriNumberPage, NormalMode, answers)
-              .mustBe(routes.ConsigneeAddressController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(ConsigneeEoriNumberPage, mode, answers)
+              .mustBe(routes.ConsigneeAddressController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -109,8 +103,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ConsigneeAddressPage, NormalMode, answers)
-              .mustBe(routes.CustomsOfficeSimplifiedController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(ConsigneeAddressPage, mode, answers)
+              .mustBe(routes.CustomsOfficeSimplifiedController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -122,8 +116,8 @@ class NavigatorSpec extends SpecBase with Generators {
                 .setValue(GoodsLocationPage, AuthorisedConsigneesLocation)
                 .removeValue(IncidentOnRoutePage)
               navigator
-                .nextPage(SimplifiedCustomsOfficePage, NormalMode, ua)
-                .mustBe(routes.IncidentOnRouteController.onPageLoad(ua.movementReferenceNumber, NormalMode))
+                .nextPage(SimplifiedCustomsOfficePage, mode, ua)
+                .mustBe(routes.IncidentOnRouteController.onPageLoad(ua.movementReferenceNumber, mode))
           }
         }
 
@@ -134,14 +128,14 @@ class NavigatorSpec extends SpecBase with Generators {
                 .setValue(GoodsLocationPage, BorderForceOffice)
                 .removeValue(TraderNamePage)
               navigator
-                .nextPage(CustomsOfficePage, NormalMode, ua)
-                .mustBe(routes.TraderNameController.onPageLoad(ua.movementReferenceNumber, NormalMode))
+                .nextPage(CustomsOfficePage, mode, ua)
+                .mustBe(routes.TraderNameController.onPageLoad(ua.movementReferenceNumber, mode))
           }
         }
 
         "to 'SessionExpired' when no answers are available" in {
           navigator
-            .nextPage(CustomsOfficePage, NormalMode, emptyUserAnswers)
+            .nextPage(CustomsOfficePage, mode, emptyUserAnswers)
             .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
@@ -150,8 +144,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(CustomsSubPlacePage, NormalMode, answers)
-              .mustBe(routes.CustomsOfficeController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(CustomsSubPlacePage, mode, answers)
+              .mustBe(routes.CustomsOfficeController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -159,8 +153,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(TraderNamePage, NormalMode, answers)
-              .mustBe(routes.TraderEoriController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(TraderNamePage, mode, answers)
+              .mustBe(routes.TraderEoriController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -168,8 +162,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(TraderAddressPage, NormalMode, answers)
-              .mustBe(routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(TraderAddressPage, mode, answers)
+              .mustBe(routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -177,8 +171,8 @@ class NavigatorSpec extends SpecBase with Generators {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(TraderEoriPage, NormalMode, answers)
-              .mustBe(routes.TraderAddressController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+              .nextPage(TraderEoriPage, mode, answers)
+              .mustBe(routes.TraderAddressController.onPageLoad(answers.movementReferenceNumber, mode))
         }
       }
 
@@ -189,8 +183,8 @@ class NavigatorSpec extends SpecBase with Generators {
               val updatedUserAnswers = answers.setValue(IsTraderAddressPlaceOfNotificationPage, true)
 
               navigator
-                .nextPage(IsTraderAddressPlaceOfNotificationPage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.IncidentOnRouteController.onPageLoad(updatedUserAnswers.movementReferenceNumber, NormalMode))
+                .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedUserAnswers)
+                .mustBe(routes.IncidentOnRouteController.onPageLoad(updatedUserAnswers.movementReferenceNumber, mode))
           }
         }
 
@@ -200,8 +194,8 @@ class NavigatorSpec extends SpecBase with Generators {
               val updatedUserAnswers = answers.setValue(IsTraderAddressPlaceOfNotificationPage, false)
 
               navigator
-                .nextPage(IsTraderAddressPlaceOfNotificationPage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.PlaceOfNotificationController.onPageLoad(updatedUserAnswers.movementReferenceNumber, NormalMode))
+                .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedUserAnswers)
+                .mustBe(routes.PlaceOfNotificationController.onPageLoad(updatedUserAnswers.movementReferenceNumber, mode))
           }
         }
       }
@@ -212,8 +206,8 @@ class NavigatorSpec extends SpecBase with Generators {
             val updatedUserAnswers = answers.setValue(PlaceOfNotificationPage, placeOfNotification)
 
             navigator
-              .nextPage(PlaceOfNotificationPage, NormalMode, updatedUserAnswers)
-              .mustBe(routes.IncidentOnRouteController.onPageLoad(updatedUserAnswers.movementReferenceNumber, NormalMode))
+              .nextPage(PlaceOfNotificationPage, mode, updatedUserAnswers)
+              .mustBe(routes.IncidentOnRouteController.onPageLoad(updatedUserAnswers.movementReferenceNumber, mode))
         }
       }
 
@@ -226,7 +220,7 @@ class NavigatorSpec extends SpecBase with Generators {
               val updatedAnswers = answers.setValue(IncidentOnRoutePage, false)
 
               navigator
-                .nextPage(IncidentOnRoutePage, NormalMode, updatedAnswers)
+                .nextPage(IncidentOnRoutePage, mode, updatedAnswers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
           }
         }
@@ -244,8 +238,8 @@ class NavigatorSpec extends SpecBase with Generators {
                   .setValue(IsTranshipmentPage(eventIndex), false)
 
               navigator
-                .nextPage(IncidentOnRoutePage, NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.AddEventController.onPageLoad(answers.movementReferenceNumber, NormalMode))
+                .nextPage(IncidentOnRoutePage, mode, updatedAnswers)
+                .mustBe(eventRoutes.AddEventController.onPageLoad(answers.movementReferenceNumber, mode))
           }
         }
 
@@ -259,8 +253,8 @@ class NavigatorSpec extends SpecBase with Generators {
                   .removeValue(EventsQuery)
 
               navigator
-                .nextPage(IncidentOnRoutePage, NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.EventCountryController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
+                .nextPage(IncidentOnRoutePage, mode, updatedAnswers)
+                .mustBe(eventRoutes.EventCountryController.onPageLoad(answers.movementReferenceNumber, eventIndex, mode))
           }
         }
 
@@ -271,522 +265,403 @@ class NavigatorSpec extends SpecBase with Generators {
               val updatedAnswers = answers.removeValue(IncidentOnRoutePage)
 
               navigator
-                .nextPage(IncidentOnRoutePage, NormalMode, updatedAnswers)
+                .nextPage(IncidentOnRoutePage, mode, updatedAnswers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
       }
 
-      "must go from Event Country to Event Place" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(EventCountryPage(eventIndex), NormalMode, answers)
-              .mustBe(eventRoutes.EventPlaceController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
+      "must go from UpdateRejectionMovementReferenceNumber page to CheckYourAnswers page" in {
+        navigator
+          .nextPage(UpdateRejectedMRNPage, mode, emptyUserAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad(mrn))
       }
+    }
 
-      "must go from Event Place to Event Reported" in {
+    "in Check mode" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(EventPlacePage(eventIndex), NormalMode, answers)
-              .mustBe(eventRoutes.EventReportedController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
+      val mode = CheckMode
 
-      "must go from Event Reported to Is Transhipment" in {
+      "must go from Goods Location" - {
+        "to Check Your Answers" - {
+          "when the user answers Border Force Office and they have already answered Customs Sub Place" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, subPlace) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+                    .setValue(CustomsSubPlacePage, subPlace)
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(EventReportedPage(eventIndex), NormalMode, answers)
-              .mustBe(eventRoutes.IsTranshipmentController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
-
-      "must go from Is Transhipment" - {
-
-        "to Incident Information when the event has not been reported and transhipment as 'No'" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(EventReportedPage(eventIndex), false)
-                .setValue(IsTranshipmentPage(eventIndex), false)
-
-              navigator
-                .nextPage(IsTranshipmentPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.IncidentInformationController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
+                navigator
+                  .nextPage(GoodsLocationPage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
           }
         }
 
-        "to have seals changed Page when the event has been reported and Transhipment as 'No'" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), false)
-
-              navigator
-                .nextPage(IsTranshipmentPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.HaveSealsChangedController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to transhipment type page when Transhipment is 'Yes'" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(IsTranshipmentPage(eventIndex), true)
-
-              navigator
-                .nextPage(IsTranshipmentPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.TranshipmentTypeController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to Session Expired when we cannot tell if the event has been reported or if Transhipment is selected" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventReportedPage(eventIndex))
-                .removeValue(IsTranshipmentPage(eventIndex))
-
-              navigator
-                .nextPage(IsTranshipmentPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
-        }
-      }
-
-      "must go from Confirm remove container page" - {
-
-        "to Add container page when containers exist" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
-                .setValue(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("1"))
-
-              navigator
-                .nextPage(ConfirmRemoveContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.AddContainerController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to isTranshipment page when no containers exist" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
-
-              navigator
-                .nextPage(ConfirmRemoveContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.IsTranshipmentController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-      }
-
-      "must go from Transhipment type" - {
-
-        "to Transport Identity when option is 'a different vehicle' " in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(TranshipmentTypePage(eventIndex), DifferentVehicle)
-
-              navigator
-                .nextPage(TranshipmentTypePage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.TransportIdentityController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to ContainerNumber when option is 'a different container' and there are no containers" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
-
-              navigator
-                .nextPage(TranshipmentTypePage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.ContainerNumberController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, containerIndex, NormalMode))
-          }
-        }
-
-        "to Add Container when option is 'a different container' and there is one container" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainer)
-                .setValue(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("1"))
-
-              navigator
-                .nextPage(TranshipmentTypePage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.AddContainerController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to ContainerNumber when option is 'both' and there is a no container " in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle)
-
-              navigator
-                .nextPage(TranshipmentTypePage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.ContainerNumberController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, containerIndex, NormalMode))
-          }
-        }
-
-        "to Add Container when option is 'both' and there is a single container " in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "place name")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), true)
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle)
-                .setValue(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("number1"))
-
-              navigator
-                .nextPage(TranshipmentTypePage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.AddContainerController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-      }
-
-      "must go from transport identity to Transport Nationality page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(TransportIdentityPage(eventIndex), NormalMode, answers)
-              .mustBe(transhipmentRoutes.TransportNationalityController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
-
-      "must go from transport nationality to have seals changed page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(TransportNationalityPage(eventIndex), NormalMode, answers)
-              .mustBe(sealRoutes.HaveSealsChangedController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
-
-      "must go from Incident Information to have seals changed page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(IncidentInformationPage(eventIndex), NormalMode, answers)
-              .mustBe(sealRoutes.HaveSealsChangedController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
-
-      "must go from container number page to 'Add another container'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ContainerNumberPage(eventIndex, containerIndex), NormalMode, answers)
-              .mustBe(transhipmentRoutes.AddContainerController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-        }
-      }
-
-      "must go from 'Add another container'" - {
-
-        "to 'transport identity' when the option is 'No' and transhipment type is both" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(TranshipmentTypePage(eventIndex), DifferentContainerAndVehicle)
-                .setValue(AddContainerPage(eventIndex), false)
-
-              navigator
-                .nextPage(AddContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.TransportIdentityController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to have seals changed page when the option is 'No' and transhipment type is not both" in {
-
-          val transhipmentType: Gen[WithName with TranshipmentType] = Gen.oneOf(Seq(DifferentContainer, DifferentVehicle))
-          forAll(arbitrary[UserAnswers], transhipmentType) {
-            (answers, transhipment) =>
-              val updatedAnswers = answers
-                .setValue(TranshipmentTypePage(eventIndex), transhipment)
-                .setValue(AddContainerPage(eventIndex), false)
-
-              navigator
-                .nextPage(AddContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.HaveSealsChangedController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "to 'Container number' with index 0 when the option is 'Yes' and there are no previous containers" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(AddContainerPage(eventIndex), true)
-
-              navigator
-                .nextPage(AddContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.ContainerNumberController.onPageLoad(answers.movementReferenceNumber, eventIndex, containerIndex, NormalMode))
-          }
-        }
-
-        "to 'Container number' with index 1 when the option is 'Yes' and there is 1 previous containers" in {
-          val nextIndex = Index(containerIndex.position + 1)
-
-          forAll(arbitrary[UserAnswers], arbitrary[ContainerDomain]) {
-            case (answers, container) =>
-              val updatedAnswers = answers
-                .removeValue(EventsQuery)
-                .setValue(ContainerNumberPage(eventIndex, containerIndex), container)
-                .setValue(AddContainerPage(eventIndex), true)
-
-              navigator
-                .nextPage(AddContainerPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(transhipmentRoutes.ContainerNumberController.onPageLoad(answers.movementReferenceNumber, eventIndex, nextIndex, NormalMode))
-          }
-        }
-      }
-
-      "must go from Confirm Remove Event Page" - {
-
-        "to Add Event Page when user selects 'No'" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(IncidentOnRoutePage, true)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "TestPlace")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), false)
-
-              navigator
-                .nextPage(ConfirmRemoveEventPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.AddEventController.onPageLoad(answers.movementReferenceNumber, NormalMode))
-          }
-        }
-
-        "to Add Event Page when user selects 'Yes' and events still exist" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(IncidentOnRoutePage, true)
-                .setValue(EventCountryPage(eventIndex), country)
-                .setValue(EventPlacePage(eventIndex), "TestPlace")
-                .setValue(EventReportedPage(eventIndex), true)
-                .setValue(IsTranshipmentPage(eventIndex), false)
-
-              navigator
-                .nextPage(ConfirmRemoveEventPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.AddEventController.onPageLoad(answers.movementReferenceNumber, NormalMode))
-          }
-        }
-
-        "to Incident on Route Page when user selects 'Yes' and no event exists" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val withoutEvents = answers.removeValue(EventsQuery)
-              navigator
-                .nextPage(ConfirmRemoveEventPage(eventIndex), NormalMode, withoutEvents)
-                .mustBe(routes.IncidentOnRouteController.onPageLoad(answers.movementReferenceNumber, NormalMode))
-          }
-        }
-      }
-
-      "must go from Add Event Page" - {
-        "when user selects 'Yes' to" - {
-
-          "Event Country Page with index 0 when there are no events" in {
+        "to Customs Sub Place" - {
+          "when the user answers Border Force Office and had not answered Customs Sub Place" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
-                val withoutEvents = answers.removeValue(EventsQuery)
-
-                val updatedAnswers = withoutEvents.setValue(AddEventPage, true)
-
-                navigator
-                  .nextPage(AddEventPage, NormalMode, updatedAnswers)
-                  .mustBe(eventRoutes.EventCountryController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-            }
-          }
-
-          "Event Country Page with index 1 when there is 1 event" in {
-            forAll(arbitrary[EnRouteEvent], stringsWithMaxLength(350)) {
-              case (EnRouteEvent(place, countryCode, _, _, _), information) =>
-                val updatedAnswers = emptyUserAnswers
-                  .setValue(IncidentOnRoutePage, true)
-                  .setValue(EventCountryPage(eventIndex), countryCode)
-                  .setValue(EventPlacePage(eventIndex), place)
-                  .setValue(EventReportedPage(eventIndex), false)
-                  .setValue(IsTranshipmentPage(eventIndex), false)
-                  .setValue(IncidentInformationPage(eventIndex), information)
-                  .setValue(AddEventPage, true)
+                val updatedAnswers =
+                  answers
+                    .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+                    .removeValue(CustomsSubPlacePage)
 
                 navigator
-                  .nextPage(AddEventPage, NormalMode, updatedAnswers)
-                  .mustBe(eventRoutes.EventCountryController.onPageLoad(emptyUserAnswers.movementReferenceNumber, Index(1), NormalMode))
+                  .nextPage(GoodsLocationPage, mode, updatedAnswers)
+                  .mustBe(routes.CustomsSubPlaceController.onPageLoad(answers.movementReferenceNumber, mode))
             }
           }
         }
+      }
 
-        "to check your answers page when user selects option 'No' on add event page" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers.setValue(AddEventPage, false)
+      "must go from 'CustomsSubPlaceController' to " - {
+        "'CustomsOfficeController' when no previous answer for 'CustomsOffice'" in {
+          forAll(arbitrary[UserAnswers], nonEmptyString) {
+            (answers, customsSubPlace) =>
+              val updatedAnswers =
+                answers
+                  .setValue(CustomsSubPlacePage, customsSubPlace)
 
               navigator
-                .nextPage(AddEventPage, NormalMode, updatedAnswers)
+                .nextPage(CustomsSubPlacePage, mode, updatedAnswers)
+                .mustBe(routes.CustomsOfficeController.onPageLoad(answers.movementReferenceNumber, mode))
+          }
+        }
+
+        "'CheckYourAnswersPage' when already answer for 'CustomsOffice'" in {
+          forAll(arbitrary[UserAnswers], arbitrary[String], arbitrary[CustomsOffice]) {
+            (answers, customsSubPlace, customsOffice) =>
+              val updatedAnswers =
+                answers
+                  .setValue(CustomsSubPlacePage, customsSubPlace)
+                  .setValue(CustomsOfficePage, customsOffice)
+
+              navigator
+                .nextPage(CustomsSubPlacePage, mode, updatedAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+          }
+        }
+
+        "CheckYourAnswersPage when trader at destination name has already been answered " in {
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOffice], arbitrary[String]) {
+            (answers, customsOffice, traderName) =>
+              val updatedAnswers =
+                answers
+                  .setValue(CustomsOfficePage, customsOffice)
+                  .setValue(TraderNamePage, traderName)
+
+              navigator
+                .nextPage(CustomsSubPlacePage, mode, updatedAnswers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
           }
         }
       }
 
-      "must go from Have seals changed page" - {
-
-        "to check event answers page when user selects No" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers.setValue(HaveSealsChangedPage(eventIndex), false)
+      "must go from OfficeOfPresentation to" - {
+        "trader name when trader name has not previously been answered on Normal Route" in {
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOffice]) {
+            (answers, customsOffice) =>
+              val updatedAnswers =
+                answers
+                  .setValue(GoodsLocationPage, BorderForceOffice)
+                  .setValue(CustomsOfficePage, customsOffice)
+                  .removeValue(TraderNamePage)
 
               navigator
-                .nextPage(HaveSealsChangedPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.CheckEventAnswersController.onPageLoad(answers.movementReferenceNumber, eventIndex))
+                .nextPage(CustomsOfficePage, mode, updatedAnswers)
+                .mustBe(routes.TraderNameController.onPageLoad(answers.movementReferenceNumber, mode))
           }
         }
 
-        "to seal identity page when user selects Yes" in {
+        "from trader name page to" - {
+          "CheckYourAnswersPage when trader eori has previously been answered " in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, traderEori) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(TraderNamePage, traderName)
+                    .setValue(TraderEoriPage, traderEori)
+
+                navigator
+                  .nextPage(TraderNamePage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+
+          "TraderEoriPage when trader eori has not previously been answered " in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers =
+                  answers.removeValue(TraderEoriPage)
+
+                navigator
+                  .nextPage(TraderNamePage, mode, updatedAnswers)
+                  .mustBe(routes.TraderEoriController.onPageLoad(answers.movementReferenceNumber, mode))
+            }
+          }
+        }
+
+        "from trader eori page to" - {
+          "CheckYourAnswersPage when trader address has previously been answered " in {
+            forAll(arbitrary[UserAnswers], arbitrary[String], arbitrary[Address]) {
+              (answers, traderEori, traderAddress) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(TraderEoriPage, traderEori)
+                    .setValue(TraderAddressPage, traderAddress)
+
+                navigator
+                  .nextPage(TraderEoriPage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+
+          "TraderAddressPage when trader address has not previously been answered " in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, traderEori) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(TraderEoriPage, traderEori)
+                    .removeValue(TraderAddressPage)
+
+                navigator
+                  .nextPage(TraderEoriPage, mode, updatedAnswers)
+                  .mustBe(routes.TraderAddressController.onPageLoad(answers.movementReferenceNumber, mode))
+            }
+          }
+        }
+
+        "must go from 'TraderAddressController' to " - {
+          "'IsTraderAddressPlaceOfNotifcationController' when this is not answered" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val userAnswers = answers
+                  .removeValue(IsTraderAddressPlaceOfNotificationPage)
+
+                navigator
+                  .nextPage(TraderAddressPage, mode, userAnswers)
+                  .mustBe(routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(userAnswers.movementReferenceNumber, mode))
+            }
+          }
+
+          "'CheckYourAnswersController' when 'IsTraderAddressPlaceOfNotification' has been answered" in {
+            forAll(arbitrary[UserAnswers], arbitrary[Boolean]) {
+              (answers, isTraderAddressPlaceOfNotification) =>
+                val userAnswers = answers
+                  .setValue(IsTraderAddressPlaceOfNotificationPage, isTraderAddressPlaceOfNotification)
+
+                navigator
+                  .nextPage(TraderAddressPage, mode, userAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "must go from 'IsTraderAddressPlaceOfNotificationController' to " - {
+          "'PlaceOfNotificationController' when the answer is false and it has not been answered" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val userAnswers = answers
+                  .setValue(IsTraderAddressPlaceOfNotificationPage, false)
+                  .removeValue(PlaceOfNotificationPage)
+
+                navigator
+                  .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, userAnswers)
+                  .mustBe(routes.PlaceOfNotificationController.onPageLoad(userAnswers.movementReferenceNumber, mode))
+            }
+          }
+
+          "'CheckYourAnswersController' when the answer is true" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val userAnswers = answers
+                  .setValue(IsTraderAddressPlaceOfNotificationPage, true)
+
+                navigator
+                  .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, userAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+
+          "'CheckYourAnswersController' when the answer is false when PlaceOfNotification has been answered" in {
+            forAll(arbitrary[UserAnswers], nonEmptyString) {
+              (answers, placeOfNotification) =>
+                val userAnswers = answers
+                  .setValue(IsTraderAddressPlaceOfNotificationPage, false)
+                  .setValue(PlaceOfNotificationPage, placeOfNotification)
+
+                navigator
+                  .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, userAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "must go from 'PlaceOfNotification' to " - {
+          "'CheckYourAnswersController'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                navigator
+                  .nextPage(PlaceOfNotificationPage, mode, answers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "must go from 'AuthorisedLocationController' to " - {
+          "'CheckYourAnswersController' when an answer for 'ConsigneeName'" in {
+            forAll(arbitrary[UserAnswers], nonEmptyString, nonEmptyString) {
+              (answers, authorisedLocation, consigneeName) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(AuthorisedLocationPage, authorisedLocation)
+                    .setValue(ConsigneeNamePage, consigneeName)
+
+                navigator
+                  .nextPage(AuthorisedLocationPage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "must go from 'ConsigneeNameController' to " - {
+          "'Consignee eori number page no address is present'" in {
+            forAll(arbitrary[UserAnswers], nonEmptyString) {
+              (answers, consigneeName) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(ConsigneeNamePage, consigneeName)
+                    .removeValue(ConsigneeAddressPage)
+
+                navigator
+                  .nextPage(ConsigneeNamePage, mode, updatedAnswers)
+                  .mustBe(routes.ConsigneeEoriNumberController.onPageLoad(answers.movementReferenceNumber, mode))
+            }
+          }
+
+          "'CYA page' when address is present" in {
+            forAll(arbitrary[UserAnswers], nonEmptyString) {
+              (answers, consigneeName) =>
+                val updatedAnswers =
+                  answers
+                    .setValue(ConsigneeNamePage, consigneeName)
+                    .setValue(ConsigneeAddressPage, traderAddress)
+
+                navigator
+                  .nextPage(ConsigneeNamePage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "must go from 'ConsigneeEoriNumberController' to " - {
+          "'Consignee Address page' when no address is present" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .removeValue(ConsigneeAddressPage)
+
+                navigator
+                  .nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers)
+                  .mustBe(routes.ConsigneeAddressController.onPageLoad(updatedAnswers.movementReferenceNumber, mode))
+            }
+          }
+
+          "'CYA page' when  address is present" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .setValue(ConsigneeAddressPage, traderAddress)
+
+                navigator
+                  .nextPage(ConsigneeEoriNumberPage, mode, updatedAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(updatedAnswers.movementReferenceNumber))
+            }
+          }
+        }
+
+        "to Use Different Service" - {
+          "when the user answers Authorised Consignee" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers.setValue(GoodsLocationPage, GoodsLocation.AuthorisedConsigneesLocation)
+
+                navigator
+                  .nextPage(GoodsLocationPage, mode, updatedAnswers)
+                  .mustBe(routes.UseDifferentServiceController.onPageLoad(answers.movementReferenceNumber))
+            }
+          }
+        }
+      }
+
+      "must go from 'IsTraderAddressPlaceOfNotificationPage'" - {
+        "to 'Check Your Answers' when answer is 'No' and there is a 'Place of notification'" in {
+          forAll(arbitrary[UserAnswers], arbitrary[String]) {
+            (answers, placeOfNotification) =>
+              val updatedUserAnswers = answers
+                .setValue(IsTraderAddressPlaceOfNotificationPage, false)
+                .setValue(PlaceOfNotificationPage, placeOfNotification)
+
+              navigator
+                .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedUserAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(updatedUserAnswers.movementReferenceNumber))
+          }
+        }
+
+        "to 'Place of notification' when answer is 'No' and there is no existing 'Place of notification'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers
+                .setValue(IsTraderAddressPlaceOfNotificationPage, false)
+                .removeValue(PlaceOfNotificationPage)
+
+              navigator
+                .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedUserAnswers)
+                .mustBe(routes.PlaceOfNotificationController.onPageLoad(updatedUserAnswers.movementReferenceNumber, mode))
+          }
+        }
+
+        "to 'Check Your Answers' when answer is 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.setValue(IsTraderAddressPlaceOfNotificationPage, true)
+
+              navigator
+                .nextPage(IsTraderAddressPlaceOfNotificationPage, mode, updatedUserAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(updatedUserAnswers.movementReferenceNumber))
+          }
+        }
+      }
+
+      "go from 'Place of Notification' to CheckYourAnswer" in {
+        import models.domain.NormalNotification.Constants.notificationPlaceLength
+
+        forAll(arbitrary[UserAnswers], stringsWithMaxLength(notificationPlaceLength)) {
+          case (answers, placeOfNotification) =>
+            val updatedUserAnswers = answers.setValue(PlaceOfNotificationPage, placeOfNotification)
+
+            navigator
+              .nextPage(PlaceOfNotificationPage, mode, updatedUserAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(updatedUserAnswers.movementReferenceNumber))
+        }
+      }
+
+      "must go from incident on route page" - {
+
+        "to event country page when user selects yes" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(HaveSealsChangedPage(eventIndex), true)
-                .removeValue(SealIdentityPage(eventIndex, sealIndex))
+                .removeValue(IncidentOnRoutePage)
+                .setValue(IncidentOnRoutePage, true)
 
               navigator
-                .nextPage(HaveSealsChangedPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.SealIdentityController.onPageLoad(answers.movementReferenceNumber, eventIndex, sealIndex, NormalMode))
+                .nextPage(IncidentOnRoutePage, mode, updatedAnswers)
+                .mustBe(eventRoutes.EventCountryController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
           }
         }
-
-        "to 'add seal page'" in {
-          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
-            (answers, seal) =>
-              val updatedAnswers = answers
-                .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
-                .setValue(HaveSealsChangedPage(eventIndex), true)
-
-              navigator
-                .nextPage(HaveSealsChangedPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.AddSealController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-      }
-
-      "must go from seals identity page" - {
-
-        "to check event answers page" in {
-          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
-            (answers, seal) =>
-              val updatedAnswers = answers.setValue(SealIdentityPage(eventIndex, sealIndex), seal)
-
-              navigator
-                .nextPage(SealIdentityPage(eventIndex, sealIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.AddSealController.onPageLoad(answers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-      }
-
-      "must go from add seal page" - {
-
-        "to check event details page when answer is no" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers.setValue(AddSealPage(eventIndex), false)
-
-              navigator
-                .nextPage(AddSealPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(eventRoutes.CheckEventAnswersController.onPageLoad(answers.movementReferenceNumber, eventIndex))
-          }
-        }
-
-        "to seal identity page when answer is Yes" in {
-          val nextIndex = Index(sealIndex.position + 1)
-          val updatedAnswers = emptyUserAnswers
-            .setValue(AddSealPage(eventIndex), true)
-            .setValue(SealIdentityPage(eventIndex, sealIndex), SealDomain("seal1"))
-
-          navigator
-            .nextPage(AddSealPage(eventIndex), NormalMode, updatedAnswers)
-            .mustBe(sealRoutes.SealIdentityController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, nextIndex, NormalMode))
-        }
-      }
-
-      "go from remove seals page" - {
-        "add seals page when 'Yes' is selected and there are still seals" in {
-          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
-            case (userAnswers, seal) =>
-              val updatedAnswers = userAnswers
-                .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
-
-              navigator
-                .nextPage(ConfirmRemoveSealPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.AddSealController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-
-        "have seals changed page when 'Yes' is selected and all seals are removed" in {
-          forAll(arbitrary[UserAnswers]) {
-            userAnswers =>
-              val updatedAnswers = userAnswers
-                .removeValue(EventsQuery)
-
-              navigator
-                .nextPage(ConfirmRemoveSealPage(eventIndex), NormalMode, updatedAnswers)
-                .mustBe(sealRoutes.HaveSealsChangedController.onPageLoad(updatedAnswers.movementReferenceNumber, eventIndex, NormalMode))
-          }
-        }
-      }
-    }
-
-    "nextRejectionPage" - {
-
-      "must go from UpdateRejectionMovementReferenceNumber page to CheckYourAnswers page" in {
-        navigator
-          .nextPage(UpdateRejectedMRNPage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.CheckYourAnswersController.onPageLoad(mrn))
       }
     }
   }

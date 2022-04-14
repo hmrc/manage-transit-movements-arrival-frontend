@@ -16,6 +16,7 @@
 
 package controllers.events.transhipments
 
+import config.annotations.Container
 import controllers.actions._
 import forms.events.transhipments.ContainerNumberFormProvider
 import models.domain.ContainerDomain
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContainerNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Container navigator: Navigator,
   formProvider: ContainerNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerNumberView,

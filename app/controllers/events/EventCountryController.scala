@@ -16,8 +16,10 @@
 
 package controllers.events
 
+import config.annotations.Event
 import controllers.actions._
 import forms.events.EventCountryFormProvider
+
 import javax.inject.Inject
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
@@ -34,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EventCountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Event navigator: Navigator,
   actions: Actions,
   formProvider: EventCountryFormProvider,
   countriesService: CountriesService,

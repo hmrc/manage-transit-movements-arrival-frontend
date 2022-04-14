@@ -16,6 +16,7 @@
 
 package controllers.events.transhipments
 
+import config.annotations.Container
 import controllers.actions.Actions
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.ConfirmRemoveContainerFormProvider
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveContainerController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Container navigator: Navigator,
   actions: Actions,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   formProvider: ConfirmRemoveContainerFormProvider,

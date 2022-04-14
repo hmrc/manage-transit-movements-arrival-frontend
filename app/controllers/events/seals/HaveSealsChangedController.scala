@@ -16,6 +16,7 @@
 
 package controllers.events.seals
 
+import config.annotations.Seal
 import controllers.actions._
 import forms.events.seals.HaveSealsChangedFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
@@ -33,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class HaveSealsChangedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Seal navigator: Navigator,
   actions: Actions,
   formProvider: HaveSealsChangedFormProvider,
   val controllerComponents: MessagesControllerComponents,

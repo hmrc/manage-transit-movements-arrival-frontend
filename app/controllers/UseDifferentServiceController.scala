@@ -24,10 +24,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UseDifferentServiceView
 
-class UseDifferentServiceController @Inject() (override val messagesApi: MessagesApi,
-                                               actions: Actions,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               view: UseDifferentServiceView
+class UseDifferentServiceController @Inject() (
+  override val messagesApi: MessagesApi,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  view: UseDifferentServiceView
 ) extends FrontendBaseController
     with I18nSupport {
 

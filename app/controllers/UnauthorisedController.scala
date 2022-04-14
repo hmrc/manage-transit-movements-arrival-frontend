@@ -23,8 +23,10 @@ import views.html.UnauthorisedView
 
 import javax.inject.Inject
 
-class UnauthorisedController @Inject() (view: UnauthorisedView, val controllerComponents: MessagesControllerComponents)
-    extends FrontendBaseController
+class UnauthorisedController @Inject() (
+  view: UnauthorisedView,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {

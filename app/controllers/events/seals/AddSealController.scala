@@ -17,6 +17,7 @@
 package controllers.events.seals
 
 import config.FrontendAppConfig
+import config.annotations.Seal
 import controllers.actions.Actions
 import derivable.DeriveNumberOfSeals
 import forms.events.seals.AddSealFormProvider
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddSealController @Inject() (
   override val messagesApi: MessagesApi,
-  navigator: Navigator,
+  @Seal navigator: Navigator,
   actions: Actions,
   formProvider: AddSealFormProvider,
   val controllerComponents: MessagesControllerComponents,

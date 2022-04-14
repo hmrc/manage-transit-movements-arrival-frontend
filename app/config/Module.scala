@@ -17,7 +17,9 @@
 package config
 
 import com.google.inject.AbstractModule
+import config.annotations._
 import controllers.actions._
+import navigation._
 import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
@@ -38,5 +40,9 @@ class Module extends AbstractModule {
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemUTC)
+
+    bind(classOf[Navigator]).annotatedWith(classOf[Event]).to(classOf[EventNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Container]).to(classOf[ContainerNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Seal]).to(classOf[SealNavigator]).asEagerSingleton()
   }
 }

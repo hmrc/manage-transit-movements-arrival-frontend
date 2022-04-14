@@ -16,6 +16,7 @@
 
 package controllers.events
 
+import config.annotations.Event
 import controllers.actions._
 import derivable.DeriveNumberOfEvents
 import forms.events.ConfirmRemoveEventFormProvider
@@ -37,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveEventController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Event navigator: Navigator,
   formProvider: ConfirmRemoveEventFormProvider,
   val controllerComponents: MessagesControllerComponents,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,

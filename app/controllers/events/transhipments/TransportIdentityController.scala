@@ -16,6 +16,7 @@
 
 package controllers.events.transhipments
 
+import config.annotations.Container
 import controllers.actions._
 import forms.events.transhipments.TransportIdentityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
@@ -33,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportIdentityController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Container navigator: Navigator,
   actions: Actions,
   formProvider: TransportIdentityFormProvider,
   val controllerComponents: MessagesControllerComponents,
