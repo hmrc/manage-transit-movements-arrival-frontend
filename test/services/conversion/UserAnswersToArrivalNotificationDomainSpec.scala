@@ -16,17 +16,16 @@
 
 package services.conversion
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models.domain._
 import models.messages.{ArrivalMovementRequest, InterchangeControlReference}
 import models.{EoriNumber, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import java.time.LocalTime
 
-class UserAnswersToArrivalNotificationDomainSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with MessagesModelGenerators {
+class UserAnswersToArrivalNotificationDomainSpec extends SpecBase with Generators {
 
   "UserAnswersToArrivalNotificationDomain" - {
 
@@ -58,9 +57,10 @@ class UserAnswersToArrivalNotificationDomainSpec extends SpecBase with AppWithDe
           val expectedResult = arrivalNotificationDomain match {
             case normalNotification: NormalNotification => normalNotification.copy(notificationDate = result.notificationDate)
             case simplifiedNotification: SimplifiedNotification =>
-              simplifiedNotification.copy(notificationDate = result.notificationDate,
-                                          notificationPlace = result.trader.postCode,
-                                          authedEori = userAnswers.eoriNumber
+              simplifiedNotification.copy(
+                notificationDate = result.notificationDate,
+                notificationPlace = result.trader.postCode,
+                authedEori = userAnswers.eoriNumber
               )
           }
 

@@ -18,11 +18,11 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ArrivalMovementConnector
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.ArrivalMovementRequest
 import models.{ArrivalId, MessagesLocation, MessagesSummary}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, _}
+import org.mockito.Mockito._
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ArrivalNotificationMessageServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class ArrivalNotificationMessageServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockConnector: ArrivalMovementConnector = mock[ArrivalMovementConnector]
 

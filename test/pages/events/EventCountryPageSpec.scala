@@ -16,13 +16,11 @@
 
 package pages.events
 
-import models.Index
 import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class EventCountryPageSpec extends PageBehaviours {
 
-  var eventIndex = Index(0)
   "EventCountryPage" - {
 
     beRetrievable[CountryCode](EventCountryPage(eventIndex))

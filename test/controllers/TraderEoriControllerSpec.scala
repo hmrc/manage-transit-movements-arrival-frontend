@@ -96,7 +96,7 @@ class TraderEoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.set(TraderNamePage, traderName).success.value
+      val userAnswers = emptyUserAnswers.setValue(TraderNamePage, traderName)
 
       setExistingUserAnswers(userAnswers)
 

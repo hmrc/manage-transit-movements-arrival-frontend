@@ -18,21 +18,15 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import generators.MessagesModelGenerators
+import generators.Generators
 import helper.WireMockServerHandler
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class EnrolmentStoreConnectorSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with WireMockServerHandler
-    with MessagesModelGenerators
-    with ScalaCheckPropertyChecks {
+class EnrolmentStoreConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

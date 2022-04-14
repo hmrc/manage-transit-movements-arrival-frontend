@@ -18,20 +18,18 @@ package models.messages
 
 import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.StreamlinedXmlEquality
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import utils.Format
 import utils.Format.timeFormatter
 
 import java.time.LocalTime
 import scala.xml.NodeSeq
 
-class MetaSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
+class MetaSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
-  //format off
   "Meta" - {
 
     val syntaxIdentifier     = "UNOC"
@@ -131,5 +129,4 @@ class MetaSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModel
       }
     }
   }
-  // format: on
 }

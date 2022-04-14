@@ -58,7 +58,7 @@ class HaveSealsChangedControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(HaveSealsChangedPage(eventIndex), true).success.value
+      val userAnswers = emptyUserAnswers.setValue(HaveSealsChangedPage(eventIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, haveSealsChangedRoute)

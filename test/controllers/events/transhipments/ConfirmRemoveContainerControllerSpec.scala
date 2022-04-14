@@ -60,7 +60,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return error page when user tries to remove a container that does not exists" in {
 
-      val updatedAnswer = presetUserAnswers.remove(ContainerNumberPage(eventIndex, containerIndex)).success.value
+      val updatedAnswer = presetUserAnswers.removeValue(ContainerNumberPage(eventIndex, containerIndex))
       setExistingUserAnswers(updatedAnswer)
 
       val request = FakeRequest(GET, confirmRemoveContainerRoute)
@@ -113,7 +113,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
       val updateAnswers = UserAnswers(
         id = presetUserAnswers.id,
         eoriNumber = presetUserAnswers.eoriNumber,
-        data = presetUserAnswers.remove(ContainerNumberPage(eventIndex, containerIndex)).success.value.data,
+        data = presetUserAnswers.removeValue(ContainerNumberPage(eventIndex, containerIndex)).data,
         lastUpdated = presetUserAnswers.lastUpdated,
         movementReferenceNumber = presetUserAnswers.movementReferenceNumber
       )
@@ -140,7 +140,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with AppWithDefaultM
       val updateAnswers = UserAnswers(
         id = presetUserAnswers.id,
         eoriNumber = eoriNumber,
-        data = presetUserAnswers.remove(ContainerNumberPage(eventIndex, containerIndex)).success.value.data,
+        data = presetUserAnswers.removeValue(ContainerNumberPage(eventIndex, containerIndex)).data,
         lastUpdated = presetUserAnswers.lastUpdated,
         movementReferenceNumber = presetUserAnswers.movementReferenceNumber
       )

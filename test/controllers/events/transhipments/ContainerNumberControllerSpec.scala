@@ -18,7 +18,7 @@ package controllers.events.transhipments
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.transhipments.ContainerNumberFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.domain.ContainerDomain
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +32,7 @@ import views.html.events.transhipments.ContainerNumberView
 
 import scala.concurrent.Future
 
-class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                                                                                      = new ContainerNumberFormProvider()
   private def form(index: Index = containerIndex, declaredContainers: Seq[ContainerDomain] = Nil): Form[String] = formProvider(index, declaredContainers)
@@ -60,7 +60,7 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("answer")).success.value
+      val userAnswers = emptyUserAnswers.setValue(ContainerNumberPage(eventIndex, containerIndex), ContainerDomain("answer"))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerNumberRoute())
@@ -96,7 +96,7 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val container   = arbitrary[ContainerDomain].sample.value
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), container).success.value
+      val userAnswers = emptyUserAnswers.setValue(ContainerNumberPage(eventIndex, containerIndex), container)
 
       setExistingUserAnswers(userAnswers)
 
@@ -110,7 +110,7 @@ class ContainerNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when an existing container number is submitted" in {
       val container   = arbitrary[ContainerDomain].sample.value
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(eventIndex, containerIndex), container).success.value
+      val userAnswers = emptyUserAnswers.setValue(ContainerNumberPage(eventIndex, containerIndex), container)
       val nextIndex   = Index(1)
 
       setExistingUserAnswers(userAnswers)

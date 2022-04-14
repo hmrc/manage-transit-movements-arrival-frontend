@@ -16,27 +16,14 @@
 
 package services.conversion
 
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models.EoriNumber
 import models.messages.ArrivalMovementRequest
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import play.api.inject.Injector
 
-class ArrivalNotificationDomainToArrivalMovementRequestServiceSpec
-    extends AnyFreeSpec
-    with Matchers
-    with GuiceOneAppPerSuite
-    with MessagesModelGenerators
-    with ScalaCheckDrivenPropertyChecks
-    with OptionValues {
-
-  def injector: Injector = app.injector
+class ArrivalNotificationDomainToArrivalMovementRequestServiceSpec extends SpecBase with Generators {
 
   "SubmissionModelService" - {
 

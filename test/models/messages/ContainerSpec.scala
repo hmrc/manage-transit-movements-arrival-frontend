@@ -16,27 +16,17 @@
 
 package models.messages
 
+import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.ModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import models.domain.ContainerDomain
-import models.messages.behaviours.JsonBehaviours
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.StreamlinedXmlEquality
 
 import scala.xml.Node
 
-class ContainerSpec
-    extends AnyFreeSpec
-    with Matchers
-    with ScalaCheckPropertyChecks
-    with ModelGenerators
-    with JsonBehaviours
-    with StreamlinedXmlEquality
-    with OptionValues {
+class ContainerSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "Container" - {
     "must create valid xml" in {

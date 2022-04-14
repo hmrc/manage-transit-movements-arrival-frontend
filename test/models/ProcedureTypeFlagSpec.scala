@@ -18,14 +18,12 @@ package models
 
 import base.SpecBase
 import com.lucidchart.open.xtract.{ParseFailure, XmlReader}
-import generators.MessagesModelGenerators
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.StreamlinedXmlEquality
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class ProcedureTypeFlagSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
+class ProcedureTypeFlagSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
-  //format off
   "ProcedureTypeFlag" - {
 
     "must deserialize from xml" in {
@@ -46,5 +44,4 @@ class ProcedureTypeFlagSpec extends SpecBase with ScalaCheckPropertyChecks with 
       result mustBe an[ParseFailure]
     }
   }
-  // format: on
 }

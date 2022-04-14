@@ -19,14 +19,13 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import generators.MessagesModelGenerators
+import generators.Generators
 import helper.WireMockServerHandler
 import models.XMLWrites._
 import models.messages._
 import models.{ArrivalId, MessagesLocation, MessagesSummary, NormalProcedureFlag}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -36,12 +35,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class ArrivalMovementConnectorSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with WireMockServerHandler
-    with MessagesModelGenerators
-    with ScalaCheckPropertyChecks {
+class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

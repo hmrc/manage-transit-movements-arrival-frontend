@@ -18,8 +18,7 @@ package controllers.events.seals
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.seals.SealIdentityFormProvider
-import generators.MessagesModelGenerators
-import matchers.JsonMatchers
+import generators.Generators
 import models.domain.SealDomain
 import models.messages.Seal
 import models.{Index, NormalMode}
@@ -30,12 +29,11 @@ import pages.events.seals.SealIdentityPage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.events.seals.SealIdentityView
 
 import scala.concurrent.Future
 
-class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers with MessagesModelGenerators {
+class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                                        = new SealIdentityFormProvider()
   private val form: Form[String]                                  = formProvider(sealIndex)
@@ -60,7 +58,7 @@ class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), sealDomain).success.value
+      val userAnswers = emptyUserAnswers.setValue(SealIdentityPage(eventIndex, sealIndex), sealDomain)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, sealIdentityRoute())
@@ -98,7 +96,7 @@ class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixture
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val seal        = arbitrary[Seal].sample.value
-      val userAnswers = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), sealDomain).success.value
+      val userAnswers = emptyUserAnswers.setValue(SealIdentityPage(eventIndex, sealIndex), sealDomain)
 
       setExistingUserAnswers(userAnswers)
 
@@ -131,7 +129,7 @@ class SealIdentityControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must return a Bad Request and errors when an existing seal is submitted and index is different to current index" in {
       val seal        = arbitrary[SealDomain].sample.value
-      val userAnswers = emptyUserAnswers.set(SealIdentityPage(eventIndex, sealIndex), seal).success.value
+      val userAnswers = emptyUserAnswers.setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
       val nextIndex = Index(1)
       setExistingUserAnswers(userAnswers)

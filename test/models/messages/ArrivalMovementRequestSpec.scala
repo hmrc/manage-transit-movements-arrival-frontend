@@ -16,30 +16,20 @@
 
 package models.messages
 
+import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.NormalProcedureFlag
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import org.scalatest.StreamlinedXmlEquality
 import utils.Format
 import utils.Format.timeFormatter
 
 import java.time.LocalTime
 import scala.xml.{Node, NodeSeq}
 
-class ArrivalMovementRequestSpec
-    extends AnyFreeSpec
-    with Matchers
-    with GuiceOneAppPerSuite
-    with MessagesModelGenerators
-    with ScalaCheckDrivenPropertyChecks
-    with OptionValues
-    with StreamlinedXmlEquality {
+class ArrivalMovementRequestSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "ArrivalMovementRequest" - {
     "must create valid xml" in {

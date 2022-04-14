@@ -37,7 +37,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
   private val form                         = formProvider(eventTitle)
   private val mode                         = NormalMode
   private lazy val confirmRemoveEventRoute = routes.ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode).url
-  private val userAnswersWithEventPlace    = emptyUserAnswers.set(EventPlacePage(eventIndex), eventTitle).success.value
+  private val userAnswersWithEventPlace    = emptyUserAnswers.setValue(EventPlacePage(eventIndex), eventTitle)
 
   "ConfirmRemoveEvent Controller" - {
 
@@ -58,7 +58,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return error page when user tries to remove an event that does not exists" in {
 
-      val updatedAnswer = userAnswersWithEventPlace.remove(EventQuery(eventIndex)).success.value
+      val updatedAnswer = userAnswersWithEventPlace.removeValue(EventQuery(eventIndex))
       setExistingUserAnswers(updatedAnswer)
 
       val request = FakeRequest(GET, confirmRemoveEventRoute)
@@ -78,7 +78,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
     "must return error page when there are multiple events and user tries to remove the last event that is already removed" in {
 
       val routeWithLastIndex = routes.ConfirmRemoveEventController.onPageLoad(mrn, Index(2), NormalMode).url
-      val updatedAnswer      = userAnswersWithEventPlace.set(EventPlacePage(Index(1)), "place").success.value
+      val updatedAnswer      = userAnswersWithEventPlace.setValue(EventPlacePage(Index(1)), "place")
 
       setExistingUserAnswers(updatedAnswer)
 
@@ -113,7 +113,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val uaRemoveEvent = UserAnswers(
         userAnswersWithEventPlace.movementReferenceNumber,
         userAnswersWithEventPlace.eoriNumber,
-        userAnswersWithEventPlace.remove(EventQuery(eventIndex)).success.value.data,
+        userAnswersWithEventPlace.removeValue(EventQuery(eventIndex)).data,
         userAnswersWithEventPlace.lastUpdated,
         id = userAnswersWithEventPlace.id
       )
@@ -140,7 +140,7 @@ class ConfirmRemoveEventControllerSpec extends SpecBase with AppWithDefaultMockF
       val uaRemoveEvent = UserAnswers(
         userAnswersWithEventPlace.movementReferenceNumber,
         userAnswersWithEventPlace.eoriNumber,
-        userAnswersWithEventPlace.remove(EventQuery(eventIndex)).success.value.data,
+        userAnswersWithEventPlace.removeValue(EventQuery(eventIndex)).data,
         userAnswersWithEventPlace.lastUpdated
       )
 

@@ -17,19 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
-import matchers.JsonMatchers
 import models.GoodsLocation
 import models.reference.CustomsOffice
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import pages.{CustomsOfficePage, GoodsLocationPage}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Text}
 import views.html.ArrivalCompleteView
 
 import scala.concurrent.Future
@@ -44,12 +38,8 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", Some("name"), None)
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.AuthorisedConsigneesLocation)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.AuthorisedConsigneesLocation)
+        .setValue(CustomsOfficePage, customsOffice)
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))
@@ -74,12 +64,8 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", Some("name"), Some("phoneNumber"))
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.BorderForceOffice)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+        .setValue(CustomsOfficePage, customsOffice)
 
       setExistingUserAnswers(userAnswers)
 
@@ -105,12 +91,9 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val customsOffice = CustomsOffice("id", None, None)
       val userAnswers = emptyUserAnswers
-        .set(GoodsLocationPage, GoodsLocation.BorderForceOffice)
-        .success
-        .value
-        .set(CustomsOfficePage, customsOffice)
-        .success
-        .value
+        .setValue(GoodsLocationPage, GoodsLocation.BorderForceOffice)
+        .setValue(CustomsOfficePage, customsOffice)
+
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.remove(any(), any())).thenReturn(Future.successful(true))

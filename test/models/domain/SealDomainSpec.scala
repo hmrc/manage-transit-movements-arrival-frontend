@@ -16,14 +16,12 @@
 
 package models.domain
 
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models.messages.Seal
-import models.messages.behaviours.JsonBehaviours
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class SealDomainSpec extends AnyFreeSpec with Matchers with MessagesModelGenerators with JsonBehaviours {
+class SealDomainSpec extends SpecBase with Generators {
 
   "must convert to Seal model" in {
 

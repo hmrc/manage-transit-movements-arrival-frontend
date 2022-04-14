@@ -16,7 +16,7 @@
 
 package views
 
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.ArrivalId
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.behaviours.SummaryListViewBehaviours
 import views.html.MovementReferenceNumberRejectionView
 
-class MovementReferenceNumberRejectionViewSpec extends SummaryListViewBehaviours with MessagesModelGenerators {
+class MovementReferenceNumberRejectionViewSpec extends SummaryListViewBehaviours with Generators {
 
   private val arrivalId: ArrivalId = ArrivalId(1)
 

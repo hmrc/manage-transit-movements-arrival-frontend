@@ -56,7 +56,7 @@ class ConsigneeNameControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsigneeNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(ConsigneeNamePage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, consigneeNameRoute)

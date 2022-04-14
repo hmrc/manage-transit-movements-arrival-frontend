@@ -92,7 +92,7 @@ class Navigator @Inject() () {
       ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.movementReferenceNumber))
   }
 
-  private val checkRouteMap: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  private val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GoodsLocationPage       => goodsLocationCheckRoute
     case AuthorisedLocationPage  => authorisedLocationRoute(CheckMode)
     case CustomsSubPlacePage     => customsSubPlaceRoute(CheckMode)
@@ -142,7 +142,7 @@ class Navigator @Inject() () {
           }
       }
     case CheckMode =>
-      checkRouteMap.lift(page) match {
+      checkRoutes.lift(page) match {
         case None => routes.CheckYourAnswersController.onPageLoad(userAnswers.movementReferenceNumber)
         case Some(call) =>
           call(userAnswers) match {
@@ -212,8 +212,8 @@ class Navigator @Inject() () {
 
   private def transportIdentity(eventIndex: Index)(ua: UserAnswers): Option[Call] =
     ua.get(TransportNationalityPage(eventIndex)) match {
-      case (Some(_)) => Some(eventRoutes.CheckEventAnswersController.onPageLoad(ua.movementReferenceNumber, eventIndex))
-      case _         => Some(transhipmentRoutes.TransportNationalityController.onPageLoad(ua.movementReferenceNumber, eventIndex, CheckMode))
+      case Some(_) => Some(eventRoutes.CheckEventAnswersController.onPageLoad(ua.movementReferenceNumber, eventIndex))
+      case _       => Some(transhipmentRoutes.TransportNationalityController.onPageLoad(ua.movementReferenceNumber, eventIndex, CheckMode))
     }
 
   private def removeSeal(eventIndex: Index, mode: Mode)(ua: UserAnswers) =

@@ -16,19 +16,16 @@
 
 package models.messages
 
+import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.OptionValues._
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.StreamlinedXmlEquality
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
-class CustomsOfficeOfPresentationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
+class CustomsOfficeOfPresentationSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "CustomsOfficeOfPresentation" - {
 

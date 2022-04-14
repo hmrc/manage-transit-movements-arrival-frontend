@@ -16,15 +16,12 @@
 
 package models.domain
 
-import generators.MessagesModelGenerators
+import base.SpecBase
+import generators.Generators
 import models.messages.Container
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class ContainerDomainSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators with OptionValues {
+class ContainerDomainSpec extends SpecBase with Generators {
 
   "must convert to Container model" in {
 

@@ -17,7 +17,7 @@
 package controllers.events
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.{MessagesModelGenerators, ViewModelGenerators}
+import generators.Generators
 import models.reference.Country
 import models.{CountryList, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +27,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CountriesService
 import viewModels.CheckEventAnswersViewModel
 import viewModels.sections.Section
@@ -35,7 +34,7 @@ import views.html.events.CheckEventAnswersView
 
 import scala.concurrent.Future
 
-class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
+class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val mockCountriesService = mock[CountriesService]
   private lazy val mockViewModel        = mock[CheckEventAnswersViewModel]
@@ -89,8 +88,6 @@ class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must redirect to Add event page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val request = FakeRequest(POST, controllers.events.routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url)
 

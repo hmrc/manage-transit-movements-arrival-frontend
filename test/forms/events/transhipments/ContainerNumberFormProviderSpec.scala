@@ -18,13 +18,13 @@ package forms.events.transhipments
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.Index
 import models.domain.ContainerDomain
 import models.messages.Transhipment
 import play.api.data.FormError
 
-class ContainerNumberFormProviderSpec extends StringFieldBehaviours with MessagesModelGenerators with SpecBase {
+class ContainerNumberFormProviderSpec extends SpecBase with StringFieldBehaviours with Generators {
 
   val requiredKey  = "containerNumber.error.required"
   val lengthKey    = "containerNumber.error.length"

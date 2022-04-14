@@ -30,7 +30,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 import scala.concurrent.Future
 
@@ -39,7 +38,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   override def beforeEach(): Unit = {
     Mockito.reset(
-      mockRenderer,
       mockSessionRepository,
       mockDataRetrievalActionProvider
     )
@@ -47,7 +45,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
   }
 
-  final val mockRenderer: NunjucksRenderer           = mock[NunjucksRenderer]
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]
   final val mockDataRetrievalActionProvider          = mock[DataRetrievalActionProvider]
 
@@ -70,7 +67,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[NunjucksRenderer].toInstance(mockRenderer),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator)

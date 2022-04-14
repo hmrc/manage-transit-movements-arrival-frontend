@@ -16,13 +16,12 @@
 
 package services
 
-import java.time.{Clock, Duration, ZoneId}
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class DateTimeServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
+import java.time.{Clock, Duration, ZoneId}
+
+class DateTimeServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "currentDateTime" - {
 

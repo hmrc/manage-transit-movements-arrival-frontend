@@ -34,7 +34,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.MovementReferenceNumberFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.ArrivalMovementRequest
 import models.{ArrivalId, MovementReferenceNumber}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -49,7 +49,7 @@ import views.html.UpdateMovementReferenceNumberView
 
 import scala.concurrent.Future
 
-class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class UpdateRejectedMRNControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                            = new MovementReferenceNumberFormProvider()
   private val form                                    = formProvider()

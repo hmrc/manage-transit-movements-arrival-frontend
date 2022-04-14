@@ -54,7 +54,7 @@ class IncidentInformationControllerSpec extends SpecBase with AppWithDefaultMock
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(IncidentInformationPage(eventIndex), "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(IncidentInformationPage(eventIndex), "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentInformationRoute)

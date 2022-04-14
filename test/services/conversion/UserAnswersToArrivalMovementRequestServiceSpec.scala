@@ -17,25 +17,20 @@
 package services.conversion
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.{ArrivalMovementRequest, InterchangeControlReference}
 import models.reference.CustomsOffice
 import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.Future
 
-class UserAnswersToArrivalMovementRequestServiceSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with MessagesModelGenerators
-    with ScalaCheckDrivenPropertyChecks {
+class UserAnswersToArrivalMovementRequestServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockIcrRepo: InterchangeControlReferenceIdRepository = mock[InterchangeControlReferenceIdRepository]
 

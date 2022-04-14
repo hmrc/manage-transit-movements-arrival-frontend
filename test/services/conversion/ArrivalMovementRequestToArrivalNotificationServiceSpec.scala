@@ -17,17 +17,16 @@
 package services.conversion
 
 import base.SpecBase
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.EoriNumber
 import models.domain.{ArrivalNotificationDomain, SimplifiedNotification}
 import models.messages.{ArrivalMovementRequest, Header, InterchangeControlReference}
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import java.time.LocalTime
 
-class ArrivalMovementRequestToArrivalNotificationServiceSpec extends SpecBase with MessagesModelGenerators with ScalaCheckPropertyChecks {
+class ArrivalMovementRequestToArrivalNotificationServiceSpec extends SpecBase with Generators {
 
   private val arrivalMovementRequestConversionService = ArrivalMovementRequestToArrivalNotificationService
 

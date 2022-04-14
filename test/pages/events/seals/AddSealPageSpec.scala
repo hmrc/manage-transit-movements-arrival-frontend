@@ -16,12 +16,9 @@
 
 package pages.events.seals
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class AddSealPageSpec extends PageBehaviours {
-
-  val eventIndex = Index(0)
 
   "AddSealPage" - {
 

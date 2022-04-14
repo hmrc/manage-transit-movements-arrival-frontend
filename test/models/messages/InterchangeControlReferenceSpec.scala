@@ -18,15 +18,14 @@ package models.messages
 
 import base.SpecBase
 import com.lucidchart.open.xtract.{ParseFailure, XmlReader}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.StreamlinedXmlEquality
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
-class InterchangeControlReferenceSpec extends SpecBase with ScalaCheckPropertyChecks with StreamlinedXmlEquality with MessagesModelGenerators {
+class InterchangeControlReferenceSpec extends SpecBase with Generators with StreamlinedXmlEquality {
 
   "InterchangeControlReference" - {
     "must convert to xml and convert to correct format" in {

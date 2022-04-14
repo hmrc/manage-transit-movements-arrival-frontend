@@ -18,15 +18,13 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TraderAddressFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
 import pages.{TraderAddressPage, TraderNamePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.TraderAddressView
 
-class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new TraderAddressFormProvider()
   private val form         = formProvider(traderName)
@@ -39,7 +37,7 @@ class TraderAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
 
-      val answers = emptyUserAnswers.set(TraderNamePage, traderName).success.value
+      val answers = emptyUserAnswers.setValue(TraderNamePage, traderName)
 
       setExistingUserAnswers(answers)
 

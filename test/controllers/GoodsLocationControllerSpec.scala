@@ -58,7 +58,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(GoodsLocationPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.setValue(GoodsLocationPage, validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, goodsLocationRoute)
@@ -79,7 +79,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(GoodsLocationPage, GoodsLocation.values.head).success.value
+      val userAnswers = emptyUserAnswers.setValue(GoodsLocationPage, GoodsLocation.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, goodsLocationRoute)
@@ -96,7 +96,7 @@ class GoodsLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(GoodsLocationPage, GoodsLocation.values.head).success.value
+      val userAnswers = emptyUserAnswers.setValue(GoodsLocationPage, GoodsLocation.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, goodsLocationRoute)

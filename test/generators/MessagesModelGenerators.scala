@@ -27,9 +27,8 @@ import utils.Format._
 
 import java.time.{LocalDate, LocalTime}
 
-trait MessagesModelGenerators extends Generators {
-
-  implicit val arbValidString: Arbitrary[String] = Arbitrary(Gen.alphaNumStr)
+trait MessagesModelGenerators {
+  self: Generators =>
 
   private val gbCountryCode = "GB"
 
@@ -44,7 +43,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryDomainTrader: Arbitrary[domain.TraderDomain] =
     Arbitrary {
-
       for {
         eori            <- stringsWithMaxLength(domain.TraderDomain.Constants.eoriLength)
         name            <- stringsWithMaxLength(domain.TraderDomain.Constants.nameLength)
@@ -56,7 +54,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryMessagesTrader: Arbitrary[messages.Trader] =
     Arbitrary {
-
       for {
         eori            <- stringsWithMaxLength(domain.TraderDomain.Constants.eoriLength)
         name            <- stringsWithMaxLength(domain.TraderDomain.Constants.nameLength)
@@ -83,9 +80,7 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryVehicularTranshipmentDomain: Arbitrary[VehicularTranshipmentDomain] =
     Arbitrary {
-
       for {
-
         transportIdentity <- stringsWithMaxLength(VehicularTranshipment.Constants.transportIdentityLength)
         transportCountry  <- arbitrary[CountryCode]
         containers        <- Gen.option(listWithMaxLength[ContainerDomain](2))
@@ -94,9 +89,7 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryVehicularTranshipment: Arbitrary[VehicularTranshipment] =
     Arbitrary {
-
       for {
-
         transportIdentity <- stringsWithMaxLength(VehicularTranshipment.Constants.transportIdentityLength)
         transportCountry  <- arbitrary[CountryCode]
         containers        <- Gen.option(listWithMaxLength[Container](2))
@@ -212,7 +205,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryDomainEnRouteEvent: Arbitrary[EnRouteEventDomain] =
     Arbitrary {
-
       for {
         place         <- stringsWithMaxLength(EnRouteEvent.Constants.placeLength)
         country       <- arbitrary[CountryCode]
@@ -224,7 +216,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryNormalNotification: Arbitrary[NormalNotification] =
     Arbitrary {
-
       for {
         mrn           <- arbitrary[MovementReferenceNumber]
         place         <- stringsWithMaxLength(NormalNotification.Constants.notificationPlaceLength)
@@ -238,7 +229,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitrarySimplifiedNotification: Arbitrary[SimplifiedNotification] =
     Arbitrary {
-
       for {
         mrn              <- arbitrary[MovementReferenceNumber]
         date             <- localDateGen
@@ -257,7 +247,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryArrivalNotificationRejection: Arbitrary[ArrivalNotificationRejectionMessage] =
     Arbitrary {
-
       for {
         mrn    <- arbitrary[MovementReferenceNumber].map(_.toString())
         date   <- datesBetween(pastDate, dateNow)
@@ -375,7 +364,6 @@ trait MessagesModelGenerators extends Generators {
 
   implicit lazy val arbitraryRejectionError: Arbitrary[FunctionalError] =
     Arbitrary {
-
       for {
         errorType     <- arbitrary[ErrorType]
         pointer       <- arbitrary[String]

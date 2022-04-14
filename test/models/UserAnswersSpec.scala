@@ -48,8 +48,8 @@ class UserAnswersSpec extends SpecBase {
 
     s"must run cleanup when the new answer is not equal to the existing answer" in {
 
-      val userAnswers = emptyUserAnswers.set(TestCleanupPage, testCleanupPageAnswer).success.value
-      val result      = userAnswers.set(TestPage, testPageAnswer).success.value
+      val userAnswers = emptyUserAnswers.setValue(TestCleanupPage, testCleanupPageAnswer)
+      val result      = userAnswers.setValue(TestPage, testPageAnswer)
       val data =
         Json.obj(
           testPagePath -> testPageAnswer
@@ -61,14 +61,10 @@ class UserAnswersSpec extends SpecBase {
     s"must not run cleanup when the new answer is equal to the existing answer" in {
 
       val userAnswers = emptyUserAnswers
-        .set(TestPage, testPageAnswer)
-        .success
-        .value
-        .set(TestCleanupPage, testCleanupPageAnswer)
-        .success
-        .value
+        .setValue(TestPage, testPageAnswer)
+        .setValue(TestCleanupPage, testCleanupPageAnswer)
 
-      val result = userAnswers.set(TestPage, testPageAnswer).success.value
+      val result = userAnswers.setValue(TestPage, testPageAnswer)
       val data =
         Json.obj(
           testPagePath        -> testPageAnswer,

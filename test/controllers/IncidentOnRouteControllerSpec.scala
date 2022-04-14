@@ -19,15 +19,10 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IncidentOnRouteFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import pages.IncidentOnRoutePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import views.html.IncidentOnRouteView
-
-import scala.concurrent.Future
 
 class IncidentOnRouteControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
@@ -40,9 +35,6 @@ class IncidentOnRouteControllerSpec extends SpecBase with AppWithDefaultMockFixt
   "IncidentOnRoute Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -60,7 +52,7 @@ class IncidentOnRouteControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IncidentOnRoutePage, true).success.value
+      val userAnswers = emptyUserAnswers.setValue(IncidentOnRoutePage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentOnRouteRoute)

@@ -17,13 +17,12 @@
 package models
 
 import base.SpecBase
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class CountryListSpec extends SpecBase with ScalaCheckPropertyChecks with MessagesModelGenerators {
+class CountryListSpec extends SpecBase with Generators {
 
   "CountryList" - {
 
