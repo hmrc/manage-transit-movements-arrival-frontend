@@ -77,35 +77,38 @@ class Navigator {
     case IncidentOnRoutePage                    => incidentOnRoute
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes.lift(page) match {
-        case None => routes.MovementReferenceNumberController.onPageLoad()
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = {
+
+    def lift(routes: PartialFunction[Page, UserAnswers => Option[Call]])(default: Call): Call =
+      routes.lift(page) match {
+        case None => default
         case Some(call) =>
           call(userAnswers) match {
             case Some(onwardRoute) => onwardRoute
-            case None              => routes.SessionExpiredController.onPageLoad()
+            case None              => controllers.routes.SessionExpiredController.onPageLoad()
           }
       }
-    case CheckMode =>
-      checkRoutes.lift(page) match {
-        case None => routes.CheckYourAnswersController.onPageLoad(userAnswers.movementReferenceNumber)
-        case Some(call) =>
-          call(userAnswers) match {
-            case Some(onwardRoute) => onwardRoute
-            case None              => routes.SessionExpiredController.onPageLoad()
-          }
-      }
+
+    mode match {
+      case NormalMode =>
+        lift(normalRoutes) {
+          routes.MovementReferenceNumberController.onPageLoad()
+        }
+      case CheckMode =>
+        lift(checkRoutes) {
+          routes.CheckYourAnswersController.onPageLoad(userAnswers.movementReferenceNumber)
+        }
+    }
   }
 
-  private def traderAddressRoute(mode: Mode)(ua: UserAnswers) =
+  private def traderAddressRoute(mode: Mode)(ua: UserAnswers): Option[Call] =
     (ua.get(IsTraderAddressPlaceOfNotificationPage), mode) match {
       case (Some(_), CheckMode) => Some(routes.CheckYourAnswersController.onPageLoad(ua.movementReferenceNumber))
       case (None, _)            => Some(routes.IsTraderAddressPlaceOfNotificationController.onPageLoad(ua.movementReferenceNumber, mode))
       case _                    => None
     }
 
-  private def consigneeEoriNumberRoute(mode: Mode)(ua: UserAnswers) =
+  private def consigneeEoriNumberRoute(mode: Mode)(ua: UserAnswers): Option[Call] =
     (mode, ua.get(ConsigneeAddressPage)) match {
       case (CheckMode, Some(_)) => Some(routes.CheckYourAnswersController.onPageLoad(ua.movementReferenceNumber))
       case _                    => Some(routes.ConsigneeAddressController.onPageLoad(ua.movementReferenceNumber, mode))
@@ -186,5 +189,4 @@ class Navigator {
       case (Some(_), _)        => Some(routes.CheckYourAnswersController.onPageLoad(ua.movementReferenceNumber))
       case _                   => None
     }
-
 }
