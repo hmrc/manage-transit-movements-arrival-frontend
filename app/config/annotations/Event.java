@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package config.annotations;
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedWithGroupAccessView
+import com.google.inject.BindingAnnotation;
 
-import javax.inject.Inject
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-class UnauthorisedWithGroupAccessController @Inject() (
-  val controllerComponents: MessagesControllerComponents,
-  view: UnauthorisedWithGroupAccessView
-) extends FrontendBaseController
-    with I18nSupport {
-
-  def onPageLoad(): Action[AnyContent] = Action {
-    implicit request =>
-      Unauthorized(view())
-  }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Event {}

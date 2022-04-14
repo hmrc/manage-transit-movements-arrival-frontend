@@ -16,8 +16,10 @@
 
 package controllers.events.transhipments
 
+import config.annotations.Container
 import controllers.actions.Actions
 import forms.events.transhipments.TransportNationalityFormProvider
+
 import javax.inject.Inject
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
@@ -34,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportNationalityController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Container navigator: Navigator,
   actions: Actions,
   formProvider: TransportNationalityFormProvider,
   countriesService: CountriesService,

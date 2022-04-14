@@ -17,6 +17,7 @@
 package controllers.events.transhipments
 
 import config.FrontendAppConfig
+import config.annotations.Container
 import controllers.actions._
 import derivable.DeriveNumberOfContainers
 import forms.events.transhipments.AddContainerFormProvider
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddContainerController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Container navigator: Navigator,
   actions: Actions,
   formProvider: AddContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,

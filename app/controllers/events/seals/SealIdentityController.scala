@@ -16,8 +16,10 @@
 
 package controllers.events.seals
 
+import config.annotations.Seal
 import controllers.actions._
 import forms.events.seals.SealIdentityFormProvider
+
 import javax.inject.Inject
 import models.domain.SealDomain
 import models.{Index, Mode, MovementReferenceNumber}
@@ -35,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealIdentityController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @Seal navigator: Navigator,
   actions: Actions,
   formProvider: SealIdentityFormProvider,
   val controllerComponents: MessagesControllerComponents,

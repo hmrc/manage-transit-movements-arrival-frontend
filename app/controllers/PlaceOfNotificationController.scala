@@ -30,13 +30,14 @@ import views.html.PlaceOfNotificationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PlaceOfNotificationController @Inject() (override val messagesApi: MessagesApi,
-                                               sessionRepository: SessionRepository,
-                                               navigator: Navigator,
-                                               actions: Actions,
-                                               formProvider: PlaceOfNotificationFormProvider,
-                                               view: PlaceOfNotificationView,
-                                               val controllerComponents: MessagesControllerComponents
+class PlaceOfNotificationController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  actions: Actions,
+  formProvider: PlaceOfNotificationFormProvider,
+  view: PlaceOfNotificationView,
+  val controllerComponents: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

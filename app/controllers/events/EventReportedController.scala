@@ -16,6 +16,7 @@
 
 package controllers.events
 
+import config.annotations.Event
 import controllers.actions._
 import forms.events.EventReportedFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
@@ -30,13 +31,14 @@ import views.html.events.EventReportedView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EventReportedController @Inject() (override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         actions: Actions,
-                                         formProvider: EventReportedFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: EventReportedView
+class EventReportedController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @Event navigator: Navigator,
+  actions: Actions,
+  formProvider: EventReportedFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: EventReportedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
