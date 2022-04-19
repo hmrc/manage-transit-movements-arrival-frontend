@@ -16,7 +16,7 @@
 
 package views
 
-import forms.ConsigneeAddressFormProvider
+import forms.TraderAddressFormProvider
 import models.{Address, NormalMode}
 import org.scalacheck.Gen
 import play.api.data.Form
@@ -28,7 +28,7 @@ class TraderAddressViewSpec extends AddressViewBehaviours {
 
   private val name = Gen.alphaNumStr.sample.value
 
-  override def form: Form[Address] = new ConsigneeAddressFormProvider()(name)
+  override def form: Form[Address] = new TraderAddressFormProvider()(name)
 
   override def applyView(form: Form[Address]): HtmlFormat.Appendable =
     injector.instanceOf[TraderAddressView].apply(form, mrn, NormalMode, name)(fakeRequest, messages)
