@@ -16,7 +16,7 @@
 
 package views
 
-import forms.EoriNumberFormProvider
+import forms.TraderEoriFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -26,7 +26,7 @@ import views.html.TraderEoriView
 
 class TraderEoriViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new EoriNumberFormProvider()(traderEoriNumber)
+  override def form: Form[String] = new TraderEoriFormProvider()(traderEoriNumber)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[TraderEoriView].apply(form, mrn, NormalMode, traderEoriNumber)(fakeRequest, messages)
