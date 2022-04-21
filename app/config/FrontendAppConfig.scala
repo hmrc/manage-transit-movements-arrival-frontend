@@ -46,17 +46,22 @@ class FrontendAppConfig @Inject() (configuration: Configuration, service: Servic
   lazy val serviceUrl: String                            = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
   lazy val manageTransitMovementsViewArrivalsUrl: String = s"$manageTransitMovementsUrl/view-arrivals"
 
-  lazy val authUrl: String            = service.baseUrl("auth")
-  lazy val loginUrl: String           = configuration.get[String]("urls.login")
-  lazy val loginContinueUrl: String   = configuration.get[String]("urls.loginContinue")
-  lazy val baseDestinationUrl: String = service.baseUrl("destination")
-  lazy val destinationUrl: String     = baseDestinationUrl + "/transit-movements-trader-at-destination"
-  lazy val referenceDataUrl: String   = service.baseUrl("referenceData") + "/transit-movements-trader-reference-data"
-  lazy val timeoutSeconds: Int        = configuration.get[Int]("session.timeoutSeconds")
-  lazy val countdownSeconds: Int      = configuration.get[Int]("session.countdownSeconds")
-  lazy val enrolmentProxyUrl: String  = service.baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy"
-  lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
-  lazy val nctsEnquiriesUrl: String   = configuration.get[String]("urls.nctsEnquiries")
+  lazy val authUrl: String          = service.baseUrl("auth")
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
+  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+
+  lazy val baseDestinationUrl: String          = service.baseUrl("destination")
+  private lazy val destinationStartUrl: String = service.getString("microservice.services.destination.startUrl")
+  lazy val destinationUrl: String              = s"$baseDestinationUrl/$destinationStartUrl"
+
+  // Does this have the same bug?
+  lazy val referenceDataUrl: String = service.baseUrl("referenceData") + "/transit-movements-trader-reference-data"
+
+  lazy val timeoutSeconds: Int       = configuration.get[Int]("session.timeoutSeconds")
+  lazy val countdownSeconds: Int     = configuration.get[Int]("session.countdownSeconds")
+  lazy val enrolmentProxyUrl: String = service.baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy"
+  lazy val nctsHelpdeskUrl: String   = configuration.get[String]("urls.nctsHelpdesk")
+  lazy val nctsEnquiriesUrl: String  = configuration.get[String]("urls.nctsEnquiries")
 
   lazy val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")
