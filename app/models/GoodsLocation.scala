@@ -27,7 +27,7 @@ object GoodsLocation extends RadioModel[GoodsLocation] {
   override val messageKeyPrefix: String = "goodsLocation"
 
   override val values: Seq[GoodsLocation] = Seq(
-    BorderForceOffice,
-    AuthorisedConsigneesLocation
+    AuthorisedConsigneesLocation,
+    BorderForceOffice
   )
 }
