@@ -57,6 +57,12 @@ class ArrivalMovementConnector @Inject() (val config: FrontendAppConfig, val htt
     }
   }
 
+  /** Author: Adam
+    * Comment: http://localhost:9481 does not support the following endpoint:
+    * http://localhost:9481/common-transit-convention-trader-at-destinatio/:rejectionLocation
+    *
+    * This must not be tested by a journey test when running with a stub.
+    */
   def getRejectionMessage(rejectionLocation: String)(implicit hc: HeaderCarrier): Future[Option[ArrivalNotificationRejectionMessage]] = {
     val serviceUrl = s"${config.baseDestinationUrl}$rejectionLocation"
     val header     = hc.withExtraHeaders(ChannelHeader(channel))
@@ -78,6 +84,12 @@ class ArrivalMovementConnector @Inject() (val config: FrontendAppConfig, val htt
     }
   }
 
+  /** Author: Adam
+    * Comment: http://localhost:9481 does not support the following endpoint:
+    * http://localhost:9481/common-transit-convention-trader-at-destinatio/:location
+    *
+    * This must not be tested by a journey test when running with a stub.
+    */
   def getArrivalNotificationMessage(location: String)(implicit hc: HeaderCarrier): Future[Option[ArrivalMovementRequest]] = {
     val serviceUrl = s"${config.baseDestinationUrl}$location"
     val header     = hc.withExtraHeaders(ChannelHeader(channel))
