@@ -72,7 +72,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   "must render service name link in header" in {
     val link = getElementByClass(doc, "hmrc-header__service-name--linked")
     assertElementContainsText(link, "Manage your transit movements")
-    assertElementContainsHref(link, "http://localhost:10121/manage-transit-movements/arrival/movement-reference-number")
+    assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
 
   "must append service to feedback link" in {
