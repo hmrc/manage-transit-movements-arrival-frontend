@@ -50,12 +50,8 @@ class AddSealController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val form = formProvider(allowMoreSeals(eventIndex))
-      val preparedForm = request.userAnswers.get(AddSealPage(eventIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
 
-      Ok(view(preparedForm, mrn, eventIndex, mode, seals, allowMoreSeals))
+      Ok(view(form, mrn, eventIndex, mode, seals, allowMoreSeals))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {

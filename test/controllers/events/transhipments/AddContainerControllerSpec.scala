@@ -111,7 +111,7 @@ class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
         status(result) mustEqual OK
 
-        val filledForm = form(allowMoreContainers).bind(Map("value" -> "true"))
+        val filledForm = form(allowMoreContainers)
 
         contentAsString(result) mustEqual
           view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreContainers)(request, messages).toString

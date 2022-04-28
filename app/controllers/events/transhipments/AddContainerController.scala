@@ -52,12 +52,8 @@ class AddContainerController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val form = formProvider(allowMoreContainers(eventIndex))
-      val preparedForm = request.userAnswers.get(AddContainerPage(eventIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
 
-      Ok(view(preparedForm, mrn, eventIndex, mode, containers, allowMoreContainers))
+      Ok(view(form, mrn, eventIndex, mode, containers, allowMoreContainers))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
