@@ -111,7 +111,7 @@ class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual OK
 
-        val filledForm = form(allowMoreSeals).bind(Map("value" -> "true"))
+        val filledForm = form(allowMoreSeals)
 
         contentAsString(result) mustEqual
           view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreSeals)(request, messages).toString
