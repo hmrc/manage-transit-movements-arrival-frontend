@@ -21,8 +21,8 @@ import forms.events.transhipments.AddContainerFormProvider
 import models.domain.ContainerDomain
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.events.transhipments.{AddContainerPage, ContainerNumberPage}
+import org.mockito.Mockito.{never, verify, when}
+import pages.events.transhipments.ContainerNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -95,48 +95,6 @@ class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" - {
-      "when max limit not reached" in {
-
-        val allowMoreContainers = true
-
-        val userAnswers = emptyUserAnswers.setValue(AddContainerPage(eventIndex), true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addContainerRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddContainerView]
-
-        status(result) mustEqual OK
-
-        val filledForm = form(allowMoreContainers)
-
-        contentAsString(result) mustEqual
-          view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreContainers)(request, messages).toString
-      }
-
-      "when max limit reached" in {
-
-        val allowMoreContainers = false
-
-        val userAnswers = maxedUserAnswers.setValue(AddContainerPage(eventIndex), true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addContainerRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddContainerView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(allowMoreContainers), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreContainers)(request, messages).toString
-      }
-    }
-
     "must redirect to the next page" - {
       "when valid data is submitted and max limit not reached" in {
 
@@ -150,6 +108,8 @@ class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixture
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
 
       "when max limit reached" in {
@@ -166,6 +126,8 @@ class AddContainerControllerSpec extends SpecBase with AppWithDefaultMockFixture
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

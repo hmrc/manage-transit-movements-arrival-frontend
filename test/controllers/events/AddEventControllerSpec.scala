@@ -20,8 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.events.AddEventFormProvider
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.events.{AddEventPage, EventPlacePage}
+import org.mockito.Mockito.{never, verify, when}
+import pages.events.EventPlacePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -94,48 +94,6 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" - {
-      "when max limit not reached" in {
-
-        val allowMoreEvents = true
-
-        val userAnswers = emptyUserAnswers.setValue(AddEventPage, true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addEventRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddEventView]
-
-        status(result) mustEqual OK
-
-        val filledForm = form(allowMoreEvents).bind(Map("value" -> "true"))
-
-        contentAsString(result) mustEqual
-          view(filledForm, mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
-      }
-
-      "when max limit reached" in {
-
-        val allowMoreEvents = false
-
-        val userAnswers = maxedUserAnswers.setValue(AddEventPage, true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addEventRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddEventView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(allowMoreEvents), mrn, mode, _ => maxedListItems, allowMoreEvents)(request, messages).toString
-      }
-    }
-
     "must redirect to the next page" - {
       "when valid data is submitted and max limit not reached" in {
 
@@ -149,6 +107,8 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
 
       "when max limit reached" in {
@@ -165,6 +125,8 @@ class AddEventControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

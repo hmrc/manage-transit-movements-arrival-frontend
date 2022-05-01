@@ -50,12 +50,7 @@ class AddEventController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val form = formProvider(allowMoreEvents)
-      val preparedForm = request.userAnswers.get(AddEventPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mrn, mode, events, allowMoreEvents))
+      Ok(view(form, mrn, mode, events, allowMoreEvents))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
