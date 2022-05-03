@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-28"       % "5.19.0",
     "uk.gov.hmrc"          %% "play-allowlist-filter"            % "1.0.0-play-28",
     "com.lucidchart"       %% "xtract"                           % "2.2.1",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"               % "3.8.0-play-28",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"               % "3.15.0-play-28",
     "com.chuusai"          %% "shapeless"                        % "2.3.9"
   )
 
