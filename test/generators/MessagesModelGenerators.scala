@@ -366,9 +366,9 @@ trait MessagesModelGenerators {
     Arbitrary {
       for {
         errorType     <- arbitrary[ErrorType]
-        pointer       <- arbitrary[String]
-        reason        <- arbitrary[Option[String]]
-        originalValue <- arbitrary[Option[String]]
+        pointer       <- Gen.alphaNumStr
+        reason        <- Gen.option(Gen.alphaNumStr)
+        originalValue <- Gen.option(Gen.alphaNumStr)
       } yield FunctionalError(errorType, ErrorPointer(pointer), reason, originalValue)
     }
 
