@@ -21,8 +21,8 @@ import forms.events.seals.AddSealFormProvider
 import models.domain.SealDomain
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.events.seals.{AddSealPage, SealIdentityPage}
+import org.mockito.Mockito.{never, verify, when}
+import pages.events.seals.SealIdentityPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -95,48 +95,6 @@ class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" - {
-      "when max limit not reached" in {
-
-        val allowMoreSeals = true
-
-        val userAnswers = emptyUserAnswers.setValue(AddSealPage(eventIndex), true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addSealRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddSealView]
-
-        status(result) mustEqual OK
-
-        val filledForm = form(allowMoreSeals)
-
-        contentAsString(result) mustEqual
-          view(filledForm, mrn, eventIndex, mode, (_, _) => Nil, _ => allowMoreSeals)(request, messages).toString
-      }
-
-      "when max limit reached" in {
-
-        val allowMoreSeals = false
-
-        val userAnswers = maxedUserAnswers.setValue(AddSealPage(eventIndex), true)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addSealRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddSealView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(allowMoreSeals), mrn, eventIndex, mode, (_, _) => maxedListItems, _ => allowMoreSeals)(request, messages).toString
-      }
-    }
-
     "must redirect to the next page" - {
       "when valid data is submitted and max limit not reached" in {
 
@@ -150,6 +108,8 @@ class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
 
       "when max limit reached" in {
@@ -166,6 +126,8 @@ class AddSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

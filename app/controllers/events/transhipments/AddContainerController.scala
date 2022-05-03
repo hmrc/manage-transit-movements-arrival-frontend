@@ -52,7 +52,6 @@ class AddContainerController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val form = formProvider(allowMoreContainers(eventIndex))
-
       Ok(view(form, mrn, eventIndex, mode, containers, allowMoreContainers))
   }
 
@@ -65,7 +64,6 @@ class AddContainerController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddContainerPage(eventIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddContainerPage(eventIndex), mode, updatedAnswers))
         )
   }

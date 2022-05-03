@@ -50,7 +50,6 @@ class AddSealController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val form = formProvider(allowMoreSeals(eventIndex))
-
       Ok(view(form, mrn, eventIndex, mode, seals, allowMoreSeals))
   }
 
