@@ -15,14 +15,14 @@
  *@
 
 @import controllers.events.routes
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Heading, SummaryList}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
-    govukSummaryList: GovukSummaryList,
+    summaryList: SummaryList,
     button: Button,
     formHelper: FormWithCSRF
 )
@@ -36,13 +36,7 @@
 
     @heading("checkEventAnswers.heading")
 
-    @for(section <- sections) {
-        @section.sectionTitle.map { title =>
-            <h2 class="govuk-heading-m">@title</h2>
-        }
-
-        @govukSummaryList(SummaryList(section.rows))
-    }
+    @summaryList(sections)
 
     @formHelper(action = routes.CheckEventAnswersController.onSubmit(mrn, eventIndex), 'autoComplete -> "off") {
         @button(

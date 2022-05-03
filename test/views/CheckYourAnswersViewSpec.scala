@@ -16,40 +16,34 @@
 
 package views
 
-import generators.{Generators, ViewModelGenerators}
+import controllers.routes
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
+class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   override val prefix: String = "checkYourAnswers"
 
-  private val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => new SummaryList(section.rows)
-  )
-
-  override def view: HtmlFormat.Appendable =
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckYourAnswersView].apply(mrn, sections)(fakeRequest, messages)
+
+  behave like pageWithTitle()
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
-  sections.foreach(_.sectionTitle.map {
-    sectionTitle =>
-      behave like pageWithContent("h2", sectionTitle)
-  })
-
-  behave like pageWithSummaryLists()
+  behave like pageWithCheckYourAnswers()
 
   behave like pageWithContent("h2", "Now send your arrival notification")
 
   behave like pageWithContent("p", "By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.")
+
+  behave like pageWithFormAction(routes.CheckYourAnswersController.onSubmit(mrn).url)
 
   behave like pageWithSubmitButton("Confirm and send")
 
