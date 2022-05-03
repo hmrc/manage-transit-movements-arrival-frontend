@@ -73,7 +73,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
         descriptionLists.size mustBe 1
       }
 
-      val renderedItems = doc.getElementsByClass("hmrc-list-with-actions__item").asScala
+      val renderedItems = doc.getElementsByClass("govuk-summary-list__row").asScala
 
       listItems.zipWithIndex.foreach {
         case (listItem, index) =>
@@ -81,19 +81,19 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours {
 
           s"item ${index + 1}" - {
             "must contain a name" in {
-              val name = renderedItem.getElementsByClass("hmrc-list-with-actions__name").text()
+              val name = renderedItem.getElementsByClass("govuk-summary-list__key").text()
               name mustBe listItem.name
             }
 
             "must contain 2 actions" in {
-              val actions = renderedItem.getElementsByClass("hmrc-list-with-actions__action")
+              val actions = renderedItem.getElementsByClass("govuk-summary-list__actions-list-item")
               actions.size() mustBe 2
             }
 
             def withActionLink(linkType: String, index: Int, url: String): Unit =
               s"must contain a $linkType link" in {
                 val link = renderedItem
-                  .getElementsByClass("hmrc-list-with-actions__action")
+                  .getElementsByClass("govuk-summary-list__actions-list-item")
                   .asScala(index)
                   .getElementsByClass("govuk-link")
                   .first()
