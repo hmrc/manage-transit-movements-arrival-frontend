@@ -37,21 +37,21 @@ trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Gene
 
     "page with check your answers" - {
 
-      "must render section titles" - {
+      "must render section titles when rows are non-empty" - {
         sections.foreach(_.sectionTitle.map {
           sectionTitle =>
             behave like pageWithContent("h2", sectionTitle)
         })
       }
 
-      "must not render section title if rows are empty" in {
+      "must not render section titles when rows are empty" - {
         val emptySections = sections.map(_.copy(rows = Nil))
         val view          = viewWithSections(emptySections)
         val doc           = parseView(view)
-        assertElementDoesNotExist(
-          doc.getElementsByTag("h2"),
-          element => emptySections.map(_.sectionTitle).exists(_.contains(element.text()))
-        )
+        emptySections.foreach(_.sectionTitle.map {
+          sectionTitle =>
+            behave like pageWithoutContent(doc, "h2", sectionTitle)
+        })
       }
     }
   }
