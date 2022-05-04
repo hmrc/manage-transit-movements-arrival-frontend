@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading, SummaryList}
+@import views.html.components.{AnswerSections, Button, Heading}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
-    summaryList: SummaryList,
+    answerSections: AnswerSections,
     button: Button,
     formHelper: FormWithCSRF
 )
@@ -35,7 +35,7 @@
 
     @heading("checkYourAnswers.heading")
 
-    @summaryList(sections)
+    @answerSections(sections)
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
     <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>

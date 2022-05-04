@@ -15,14 +15,14 @@
  *@
 
 @import controllers.events.routes
-@import views.html.components.{Button, Heading, SummaryList}
+@import views.html.components.{AnswerSections, Button, Heading}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
-    summaryList: SummaryList,
+    answerSections: AnswerSections,
     button: Button,
     formHelper: FormWithCSRF
 )
@@ -36,7 +36,7 @@
 
     @heading("checkEventAnswers.heading")
 
-    @summaryList(sections)
+    @answerSections(sections)
 
     @formHelper(action = routes.CheckEventAnswersController.onSubmit(mrn, eventIndex), 'autoComplete -> "off") {
         @button(
