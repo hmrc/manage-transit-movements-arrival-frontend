@@ -16,8 +16,9 @@
 
 @import config.FrontendAppConfig
 @import controllers.routes._
-@import models.messages.FunctionalError
+@import models.messages.ErrorType._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import utils.ArrivalRejectionHelper._
 @import views.html.components.Heading
 
 @this(
@@ -27,7 +28,7 @@
     config: FrontendAppConfig
 )
 
-@(arrivalId: ArrivalId, errorKey: String, mrn: String)(implicit request: Request[_], messages: Messages)
+@(arrivalId: ArrivalId, mrnError: MRNError, mrn: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("arrivalRejection.title"),
@@ -36,27 +37,9 @@
 
     @heading("arrivalRejection.heading")
 
-    <p class="govuk-body">@messages(errorKey)</p>
+    <p class="govuk-body">@mrnError.errorMessage</p>
 
-    @govukSummaryList(
-        SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = messages("site.movement.reference.number").toKey,
-                    value = Value(mrn.toText),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = UpdateRejectedMRNController.onPageLoad(arrivalId).url,
-                                content = messages("site.edit").toText,
-                                visuallyHiddenText = Some(messages("movementReferenceNumberRejection.change.hidden"))
-                            )
-                        )
-                    ))
-                )
-            )
-        )
-    )
+    @govukSummaryList(mrnError.toSummaryList(arrivalId, mrn))
 
     <p class="govuk-body">@messages("movementReferenceNumberRejection.contact.message")
         <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id="contact">@messages("technicalDifficulties.contact.link")</a>.

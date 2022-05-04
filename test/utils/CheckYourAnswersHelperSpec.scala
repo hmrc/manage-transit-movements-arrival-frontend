@@ -37,14 +37,14 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     val customsOfficeName = "CUSTOMS OFFICE NAME"
     val address           = Address("STREET", "CITY", "POSTCODE")
 
-    ".eoriNumber" - {
+    ".consigneeEoriNumber" - {
 
       "must return None" - {
 
         "when ConsigneeNamePage undefined" in {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(emptyUserAnswers, mode)
-          checkYourAnswersHelper.eoriNumber mustBe None
+          checkYourAnswersHelper.consigneeEoriNumber mustBe None
         }
 
         "when ConsigneeEoriNumberPage undefined" in {
@@ -55,7 +55,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             .value
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
-          checkYourAnswersHelper.eoriNumber mustBe None
+          checkYourAnswersHelper.consigneeEoriNumber mustBe None
         }
       }
 
@@ -72,7 +72,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
 
-          checkYourAnswersHelper.eoriNumber mustBe Some(
+          checkYourAnswersHelper.consigneeEoriNumber mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"What is the EORI number for $name?".toText,

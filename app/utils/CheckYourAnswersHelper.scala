@@ -25,9 +25,9 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def eoriNumber: Option[SummaryListRow] = getAnswerAndBuildNamedRow[String](
+  def consigneeEoriNumber: Option[SummaryListRow] = getAnswerAndBuildNamedRow[String](
     namePage = ConsigneeNamePage,
     answerPage = ConsigneeEoriNumberPage,
     formatAnswer = formatAsLiteral,

@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import handlers.ErrorHandler
 import models.ArrivalId
-import models.messages.ErrorType.{DuplicateMrn, InvalidMrn, MRNError, UnknownMrn}
+import models.messages.ErrorType.MRNError
 import models.messages.FunctionalError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,18 +49,12 @@ class ArrivalRejectionController @Inject() (
           Future.successful {
             rejectionMessage.errors match {
               case FunctionalError(mrnError: MRNError, _, _, _) :: Nil =>
-                Ok(mrnRejectionView(arrivalId, errorKey(mrnError), rejectionMessage.movementReferenceNumber))
+                Ok(mrnRejectionView(arrivalId, mrnError, rejectionMessage.movementReferenceNumber))
               case errors =>
                 Ok(arrivalRejectionView(errors))
             }
           }
         case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
-  }
-
-  private def errorKey(error: MRNError): String = error match {
-    case UnknownMrn   => "movementReferenceNumberRejection.error.unknown"
-    case DuplicateMrn => "movementReferenceNumberRejection.error.duplicate"
-    case InvalidMrn   => "movementReferenceNumberRejection.error.invalid"
   }
 }

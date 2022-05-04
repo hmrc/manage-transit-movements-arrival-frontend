@@ -30,7 +30,7 @@ class ConsigneeDetailsSection {
       sectionTitle = messages("checkYourAnswers.section.consigneeDetails"),
       rows = Seq(
         helper.consigneeName,
-        helper.eoriNumber,
+        helper.consigneeEoriNumber,
         helper.consigneeAddress,
         helper.pickCustomsOffice
       ).flatten

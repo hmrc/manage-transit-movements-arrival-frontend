@@ -23,7 +23,7 @@ import pages.events.seals._
 import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-class AddSealHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
+class AddSealHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def sealListItem(eventIndex: Index, sealIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),

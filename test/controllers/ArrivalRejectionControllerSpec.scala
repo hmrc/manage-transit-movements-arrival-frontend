@@ -17,11 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
 import models.ArrivalId
-import models.messages.ErrorType.{DuplicateMrn, IncorrectValue, InvalidMrn, UnknownMrn}
+import models.messages.ErrorType.{IncorrectValue, MRNError}
 import models.messages.{ArrivalNotificationRejectionMessage, ErrorPointer, FunctionalError}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -32,7 +34,7 @@ import views.html.{ArrivalGeneralRejectionView, MovementReferenceNumberRejection
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockArrivalRejectionService = mock[ArrivalRejectionService]
 
@@ -54,17 +56,14 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   "ArrivalRejection Controller" - {
 
-    Seq(
-      (UnknownMrn, "Unknown MRN", "movementReferenceNumberRejection.error.unknown"),
-      (DuplicateMrn, "duplicate MRN", "movementReferenceNumberRejection.error.duplicate"),
-      (InvalidMrn, "Invalid MRN", "movementReferenceNumberRejection.error.invalid")
-    ) foreach {
-      case (errorType, errorPointer, errorKey) =>
-        s"must return OK and the correct $errorPointer Rejection view for a GET" in {
+    "must return OK and the correct view for a GET" in {
+      forAll(arbitrary[FunctionalError], arbitrary[MRNError]) {
+        (functionalError, mrnError) =>
+          beforeEach()
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          val errors = Seq(FunctionalError(errorType, ErrorPointer(errorPointer), None, None))
+          val errors = Seq(functionalError.copy(errorType = mrnError))
 
           when(mockArrivalRejectionService.arrivalRejectionMessage(any())(any(), any()))
             .thenReturn(Future.successful(Some(ArrivalNotificationRejectionMessage(mrn.toString, LocalDate.now, None, None, errors))))
@@ -80,8 +79,8 @@ class ArrivalRejectionControllerSpec extends SpecBase with AppWithDefaultMockFix
           verify(mockArrivalRejectionService, times(1)).arrivalRejectionMessage(eqTo(arrivalId))(any(), any())
 
           contentAsString(result) mustEqual
-            view(arrivalId, errorKey, mrn.toString)(request, messages).toString
-        }
+            view(arrivalId, mrnError, mrn.toString)(request, messages).toString
+      }
     }
 
     "must return OK and the correct arrivalGeneralRejection view for a GET" in {

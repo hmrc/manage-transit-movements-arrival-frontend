@@ -16,11 +16,12 @@
 
 package views
 
+import _root_.utils.ArrivalRejectionHelper._
 import generators.Generators
 import models.ArrivalId
+import models.messages.ErrorType.MRNError
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.behaviours.SummaryListViewBehaviours
 import views.html.MovementReferenceNumberRejectionView
@@ -29,32 +30,12 @@ class MovementReferenceNumberRejectionViewSpec extends SummaryListViewBehaviours
 
   private val arrivalId: ArrivalId = ArrivalId(1)
 
-  private val errorKey = arbitrary[String].sample.value
+  private val mrnError = arbitrary[MRNError].sample.value
 
-  override def summaryLists: Seq[SummaryList] = Seq(
-    SummaryList(
-      rows = Seq(
-        SummaryListRow(
-          key = Key(content = Text("Movement reference number")),
-          value = Value(content = Text(mrn.toString)),
-          actions = Some(
-            Actions(
-              items = Seq(
-                ActionItem(
-                  href = controllers.routes.UpdateRejectedMRNController.onPageLoad(arrivalId).url,
-                  content = Text("Change"),
-                  visuallyHiddenText = Some("movement reference number")
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  )
+  override def summaryLists: Seq[SummaryList] = Seq(mrnError.toSummaryList(arrivalId, mrn.toString))
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[MovementReferenceNumberRejectionView].apply(arrivalId, errorKey, mrn.toString)(fakeRequest, messages)
+    injector.instanceOf[MovementReferenceNumberRejectionView].apply(arrivalId, mrnError, mrn.toString)(fakeRequest, messages)
 
   override val prefix: String = "arrivalRejection"
 
@@ -64,7 +45,7 @@ class MovementReferenceNumberRejectionViewSpec extends SummaryListViewBehaviours
 
   behave like pageWithHeading()
 
-  pageWithContent("p", messages(errorKey))
+  pageWithContent("p", mrnError.errorMessage)
 
   behave like pageWithSummaryLists()
 
