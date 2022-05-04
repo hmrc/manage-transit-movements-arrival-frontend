@@ -17,24 +17,18 @@
 package views.events
 
 import controllers.events.routes
-import generators.{Generators, ViewModelGenerators}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.events.CheckEventAnswersView
 
-class CheckEventAnswersViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
+class CheckEventAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   override val prefix: String = "checkEventAnswers"
 
-  private val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => SummaryList(section.rows)
-  )
-
-  override def view: HtmlFormat.Appendable =
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckEventAnswersView].apply(mrn, eventIndex, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
@@ -43,12 +37,7 @@ class CheckEventAnswersViewSpec extends SummaryListViewBehaviours with Generator
 
   behave like pageWithHeading()
 
-  sections.foreach(_.sectionTitle.map {
-    sectionTitle =>
-      behave like pageWithContent("h2", sectionTitle)
-  })
-
-  behave like pageWithSummaryLists()
+  behave like pageWithCheckYourAnswers()
 
   behave like pageWithFormAction(routes.CheckEventAnswersController.onSubmit(mrn, eventIndex).url)
 

@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
+class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def isTranshipment(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IsTranshipmentPage(eventIndex),

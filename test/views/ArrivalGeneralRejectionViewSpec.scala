@@ -16,6 +16,7 @@
 
 package views
 
+import _root_.utils.ArrivalRejectionHelper._
 import generators.Generators
 import models.messages.FunctionalError
 import play.twirl.api.HtmlFormat

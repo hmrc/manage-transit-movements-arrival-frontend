@@ -23,7 +23,7 @@ import pages.events.transhipments.ContainerNumberPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-class AddContainerHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper(userAnswers) {
+class AddContainerHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def containerListItem(eventIndex: Index, containerIndex: Index): Option[ListItem] = getAnswerAndBuildListItem[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),

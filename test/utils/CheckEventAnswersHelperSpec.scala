@@ -49,9 +49,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when IsTranshipmentPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(IsTranshipmentPage(eventIndex), true)
-            .success
-            .value
+            .setValue(IsTranshipmentPage(eventIndex), true)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.isTranshipment(eventIndex) mustBe Some(
@@ -95,9 +93,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when TranshipmentTypePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(TranshipmentTypePage(eventIndex), transhipmentType)
-            .success
-            .value
+            .setValue(TranshipmentTypePage(eventIndex), transhipmentType)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.transhipmentType(eventIndex) mustBe Some(
@@ -141,9 +137,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when ContainerNumberPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(ContainerNumberPage(eventIndex, containerIndex), containerDomain)
-            .success
-            .value
+            .setValue(ContainerNumberPage(eventIndex, containerIndex), containerDomain)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.containerNumber(eventIndex, containerIndex) mustBe Some(
@@ -189,9 +183,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           "country not found" in {
 
             val answers = emptyUserAnswers
-              .set(EventCountryPage(eventIndex), countryCode)
-              .success
-              .value
+              .setValue(EventCountryPage(eventIndex), countryCode)
 
             val helper = new CheckEventAnswersHelper(answers, mode)
             helper.eventCountry(eventIndex)(CountryList(Nil)) mustBe Some(
@@ -222,9 +214,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             val country = Country(countryCode, "DESCRIPTION")
 
             val answers = emptyUserAnswers
-              .set(EventCountryPage(eventIndex), countryCode)
-              .success
-              .value
+              .setValue(EventCountryPage(eventIndex), countryCode)
 
             val helper = new CheckEventAnswersHelper(answers, mode)
             helper.eventCountry(eventIndex)(CountryList(Seq(country))) mustBe Some(
@@ -269,9 +259,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when EventPlacePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(EventPlacePage(eventIndex), place)
-            .success
-            .value
+            .setValue(EventPlacePage(eventIndex), place)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.eventPlace(eventIndex) mustBe Some(
@@ -313,9 +301,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when EventReportedPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(EventReportedPage(eventIndex), false)
-            .success
-            .value
+            .setValue(EventReportedPage(eventIndex), false)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.eventReported(eventIndex) mustBe Some(
@@ -359,9 +345,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when IncidentInformationPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(IncidentInformationPage(eventIndex), incident)
-            .success
-            .value
+            .setValue(IncidentInformationPage(eventIndex), incident)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.incidentInformation(eventIndex) mustBe Some(
@@ -405,9 +389,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when TransportIdentityPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(TransportIdentityPage(eventIndex), vehicle)
-            .success
-            .value
+            .setValue(TransportIdentityPage(eventIndex), vehicle)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.transportIdentity(eventIndex) mustBe Some(
@@ -453,9 +435,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
           "country not found" in {
 
             val answers = emptyUserAnswers
-              .set(TransportNationalityPage(eventIndex), countryCode)
-              .success
-              .value
+              .setValue(TransportNationalityPage(eventIndex), countryCode)
 
             val helper = new CheckEventAnswersHelper(answers, mode)
             helper.transportNationality(eventIndex)(CountryList(Nil)) mustBe Some(
@@ -486,9 +466,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             val country = Country(countryCode, "DESCRIPTION")
 
             val answers = emptyUserAnswers
-              .set(TransportNationalityPage(eventIndex), countryCode)
-              .success
-              .value
+              .setValue(TransportNationalityPage(eventIndex), countryCode)
 
             val helper = new CheckEventAnswersHelper(answers, mode)
             helper.transportNationality(eventIndex)(CountryList(Seq(country))) mustBe Some(
@@ -531,9 +509,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when HaveSealsChangedPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(HaveSealsChangedPage(eventIndex), true)
-            .success
-            .value
+            .setValue(HaveSealsChangedPage(eventIndex), true)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.haveSealsChanged(eventIndex) mustBe Some(
@@ -577,9 +553,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when SealIdentityPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(SealIdentityPage(eventIndex, sealIndex), seal)
-            .success
-            .value
+            .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
           helper.sealIdentity(eventIndex, sealIndex) mustBe Some(

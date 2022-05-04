@@ -17,18 +17,13 @@
 package utils
 
 import models.reference.CountryCode
-import models.{Address, CountryList, MovementReferenceNumber, UserAnswers}
-import pages.QuestionPage
+import models.{Address, CountryList}
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-private[utils] class SummaryListRowHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
-
-  def mrn: MovementReferenceNumber = userAnswers.movementReferenceNumber
+private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsYesOrNo(answer: Boolean): Content =
     if (answer) {
@@ -44,80 +39,6 @@ private[utils] class SummaryListRowHelper(userAnswers: UserAnswers)(implicit mes
 
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
     s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
-
-  def getAnswerAndBuildRow[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Call,
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
-
-  def getAnswerAndBuildNamedRow[T](
-    namePage: QuestionPage[String],
-    answerPage: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Call
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(namePage) flatMap {
-      name =>
-        getAnswerAndBuildRow[T](
-          page = answerPage,
-          formatAnswer = formatAnswer,
-          prefix = prefix,
-          id = id,
-          call = call,
-          args = name
-        )
-    }
-
-  def getAnswerAndBuildSectionRow[T](
-    page: QuestionPage[T],
-    formatAnswer: T => String,
-    prefix: String,
-    label: Content,
-    id: Option[String],
-    call: Call
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildSimpleRow(
-          prefix = prefix,
-          label = label,
-          answer = s"${formatAnswer(answer)}".toText,
-          id = id,
-          call = call,
-          args = formatAnswer(answer)
-        )
-    }
-
-  def getAnswerAndBuildListItem[T](
-    page: QuestionPage[T],
-    formatAnswer: T => String,
-    changeCall: Call,
-    removeCall: Call
-  )(implicit rds: Reads[T]): Option[ListItem] =
-    userAnswers.get(page) map {
-      answer =>
-        ListItem(
-          name = formatAnswer(answer),
-          changeUrl = changeCall.url,
-          removeUrl = removeCall.url
-        )
-    }
 
   def buildRow(
     prefix: String,
