@@ -50,9 +50,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when ConsigneeEoriNumberPage undefined" in {
 
           val answers = emptyUserAnswers
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
+            .setValue(ConsigneeNamePage, name)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeEoriNumber mustBe None
@@ -63,12 +61,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when ConsigneeEoriNumberPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
-            .set(ConsigneeEoriNumberPage, eori)
-            .success
-            .value
+            .setValue(ConsigneeNamePage, name)
+            .setValue(ConsigneeEoriNumberPage, eori)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
 
@@ -111,9 +105,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when ConsigneeNamePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
+            .setValue(ConsigneeNamePage, name)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeName mustBe Some(
@@ -155,9 +147,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when PlaceOfNotificationPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(PlaceOfNotificationPage, location)
-            .success
-            .value
+            .setValue(PlaceOfNotificationPage, location)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.placeOfNotification mustBe Some(
@@ -199,9 +189,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when IsTraderAddressPlaceOfNotificationPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(IsTraderAddressPlaceOfNotificationPage, true)
-            .success
-            .value
+            .setValue(IsTraderAddressPlaceOfNotificationPage, true)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.isTraderAddressPlaceOfNotification mustBe Some(
@@ -243,9 +231,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when IncidentOnRoutePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(IncidentOnRoutePage, true)
-            .success
-            .value
+            .setValue(IncidentOnRoutePage, true)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.incidentOnRoute mustBe Some(
@@ -287,9 +273,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when TraderNamePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(TraderNamePage, name)
-            .success
-            .value
+            .setValue(TraderNamePage, name)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderName mustBe Some(
@@ -331,9 +315,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when TraderEoriPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(TraderEoriPage, eori)
-            .success
-            .value
+            .setValue(TraderEoriPage, eori)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderEori mustBe Some(
@@ -375,9 +357,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when TraderAddressPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(TraderAddressPage, address)
-            .success
-            .value
+            .setValue(TraderAddressPage, address)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.traderAddress mustBe Some(
@@ -418,9 +398,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when ConsigneeAddressPage undefined" in {
 
           val answers = emptyUserAnswers
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
+            .setValue(ConsigneeNamePage, name)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeAddress mustBe None
@@ -431,12 +409,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when ConsigneeAddressPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
-            .set(ConsigneeAddressPage, address)
-            .success
-            .value
+            .setValue(ConsigneeNamePage, name)
+            .setValue(ConsigneeAddressPage, address)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.consigneeAddress mustBe Some(
@@ -478,9 +452,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when AuthorisedLocationPage defined" in {
 
           val answers = emptyUserAnswers
-            .set(AuthorisedLocationPage, location)
-            .success
-            .value
+            .setValue(AuthorisedLocationPage, location)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.authorisedLocation mustBe Some(
@@ -522,9 +494,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when CustomsSubPlacePage defined" in {
 
           val answers = emptyUserAnswers
-            .set(CustomsSubPlacePage, location)
-            .success
-            .value
+            .setValue(CustomsSubPlacePage, location)
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.customsSubPlace mustBe Some(
@@ -565,9 +535,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when SimplifiedCustomsOfficePage defined but CustomsSubPlacePage and ConsigneeNamePage empty" in {
 
           val answers = emptyUserAnswers
-            .set(SimplifiedCustomsOfficePage, CustomsOffice("id", None, None))
-            .success
-            .value
+            .setValue(SimplifiedCustomsOfficePage, CustomsOffice("id", None, None))
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.simplifiedCustomsOffice mustBe None
@@ -581,12 +549,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when SimplifiedCustomsOfficePage and CustomsSubPlacePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
-              .success
-              .value
-              .set(CustomsSubPlacePage, location)
-              .success
-              .value
+              .setValue(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
+              .setValue(CustomsSubPlacePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
@@ -615,12 +579,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when SimplifiedCustomsOfficePage and ConsigneeNamePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
-              .success
-              .value
-              .set(ConsigneeNamePage, location)
-              .success
-              .value
+              .setValue(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
+              .setValue(ConsigneeNamePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
@@ -652,12 +612,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when SimplifiedCustomsOfficePage and CustomsSubPlacePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
-              .success
-              .value
-              .set(CustomsSubPlacePage, location)
-              .success
-              .value
+              .setValue(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
+              .setValue(CustomsSubPlacePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
@@ -686,12 +642,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when SimplifiedCustomsOfficePage and ConsigneeNamePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
-              .success
-              .value
-              .set(ConsigneeNamePage, location)
-              .success
-              .value
+              .setValue(SimplifiedCustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
+              .setValue(ConsigneeNamePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.simplifiedCustomsOffice mustBe Some(
@@ -733,9 +685,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         "when CustomsOfficePage defined but CustomsSubPlacePage and ConsigneeNamePage empty" in {
 
           val answers = emptyUserAnswers
-            .set(CustomsOfficePage, CustomsOffice("id", None, None))
-            .success
-            .value
+            .setValue(CustomsOfficePage, CustomsOffice("id", None, None))
 
           val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
           checkYourAnswersHelper.customsOffice mustBe None
@@ -749,12 +699,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when CustomsOfficePage and CustomsSubPlacePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(CustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
-              .success
-              .value
-              .set(CustomsSubPlacePage, location)
-              .success
-              .value
+              .setValue(CustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
+              .setValue(CustomsSubPlacePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
@@ -783,12 +729,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when CustomsOfficePage and ConsigneeNamePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(CustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
-              .success
-              .value
-              .set(ConsigneeNamePage, location)
-              .success
-              .value
+              .setValue(CustomsOfficePage, CustomsOffice(customsOfficeId, None, None))
+              .setValue(ConsigneeNamePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
@@ -820,12 +762,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when CustomsOfficePage and CustomsSubPlacePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(CustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
-              .success
-              .value
-              .set(CustomsSubPlacePage, location)
-              .success
-              .value
+              .setValue(CustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
+              .setValue(CustomsSubPlacePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(
@@ -854,12 +792,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           "when CustomsOfficePage and ConsigneeNamePage defined" in {
 
             val answers = emptyUserAnswers
-              .set(CustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
-              .success
-              .value
-              .set(ConsigneeNamePage, location)
-              .success
-              .value
+              .setValue(CustomsOfficePage, CustomsOffice(customsOfficeId, Some(customsOfficeName), None))
+              .setValue(ConsigneeNamePage, location)
 
             val checkYourAnswersHelper = new CheckYourAnswersHelper(answers, mode)
             checkYourAnswersHelper.customsOffice mustBe Some(

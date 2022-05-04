@@ -64,9 +64,7 @@ class AddEventsHelperSpec extends SpecBase {
           val countryCode = CountryCode("CODE")
 
           val answers = emptyUserAnswers
-            .set(EventCountryPage(eventIndex), countryCode)
-            .success
-            .value
+            .setValue(EventCountryPage(eventIndex), countryCode)
 
           val helper = new AddEventsHelper(answers, mode)
           helper.eventListItem(eventIndex) mustBe Some(
@@ -96,9 +94,7 @@ class AddEventsHelperSpec extends SpecBase {
           val place = "PLACE"
 
           val answers = emptyUserAnswers
-            .set(EventPlacePage(eventIndex), place)
-            .success
-            .value
+            .setValue(EventPlacePage(eventIndex), place)
 
           val helper = new AddEventsHelper(answers, mode)
           helper.eventSummaryListRow(eventIndex) mustBe Some(
@@ -128,9 +124,7 @@ class AddEventsHelperSpec extends SpecBase {
           val countryCode = CountryCode("CODE")
 
           val answers = emptyUserAnswers
-            .set(EventCountryPage(eventIndex), countryCode)
-            .success
-            .value
+            .setValue(EventCountryPage(eventIndex), countryCode)
 
           val helper = new AddEventsHelper(answers, mode)
           helper.eventSummaryListRow(eventIndex) mustBe Some(
