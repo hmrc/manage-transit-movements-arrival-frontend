@@ -63,8 +63,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")
-  lazy val newEnrolmentKey: String              = configuration.get[String]("keys.enrolmentKey")
-  lazy val newEnrolmentIdentifierKey: String    = configuration.get[String]("keys.enrolmentIdentifierKey")
+
+  lazy val newEnrolmentKey: String           = configuration.get[String]("keys.enrolmentKey")
+  lazy val newEnrolmentIdentifierKey: String = configuration.get[String]("keys.enrolmentIdentifierKey")
 
   lazy val eccEnrolmentSplashPage: String = configuration.get[String]("urls.eccEnrolmentSplashPage")
 
