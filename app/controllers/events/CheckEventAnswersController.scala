@@ -42,7 +42,7 @@ class CheckEventAnswersController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, eventIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       countriesService
-        .getTransitCountries()
+        .getCountries()
         .map {
           countryList =>
             val sections = viewModel(request.userAnswers, eventIndex, CheckMode, countryList)
