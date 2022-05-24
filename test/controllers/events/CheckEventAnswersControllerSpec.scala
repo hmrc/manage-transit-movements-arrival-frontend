@@ -52,7 +52,7 @@ class CheckEventAnswersControllerSpec extends SpecBase with AppWithDefaultMockFi
       val sampleCountryList = arbitrary[Seq[Country]].sample.value
       val sampleSections    = arbitrary[Seq[Section]].sample.value
 
-      when(mockCountriesService.getTransitCountries()(any()))
+      when(mockCountriesService.getCountries()(any()))
         .thenReturn(Future.successful(CountryList(sampleCountryList)))
 
       when(mockViewModel.apply(any(), any(), any(), any())(any()))
