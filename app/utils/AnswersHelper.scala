@@ -72,19 +72,20 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     page: QuestionPage[T],
     formatAnswer: T => String,
     prefix: String,
-    label: Content,
+    labelKey: String,
     id: Option[String],
-    call: Call
+    call: Call,
+    args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
-        buildSimpleRow(
+        buildSectionRow(
           prefix = prefix,
-          label = label,
+          labelKey = labelKey,
           answer = s"${formatAnswer(answer)}".toText,
           id = id,
           call = call,
-          args = formatAnswer(answer)
+          args = args: _*
         )
     }
 

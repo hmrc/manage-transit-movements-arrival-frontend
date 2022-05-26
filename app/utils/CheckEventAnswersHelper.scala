@@ -47,13 +47,14 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     call = transhipmentRoutes.TranshipmentTypeController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def containerNumber(eventIndex: Index, containerIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ContainerDomain](
+  def container(eventIndex: Index, containerIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),
     formatAnswer = _.containerNumber,
     prefix = "containerNumber",
-    label = messages("addContainer.containerList.label", containerIndex.display).toText,
+    labelKey = "addContainer.containerList",
     id = Some(s"change-container-${containerIndex.display}"),
-    call = transhipmentRoutes.ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode)
+    call = transhipmentRoutes.ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode),
+    args = containerIndex.display
   )
 
   def eventCountry(eventIndex: Index)(codeList: CountryList): Option[SummaryListRow] = getAnswerAndBuildRow[CountryCode](
@@ -112,13 +113,14 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     call = sealRoutes.HaveSealsChangedController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def sealIdentity(eventIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
+  def seal(eventIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
     formatAnswer = _.numberOrMark,
     prefix = "sealIdentity",
-    label = messages("addSeal.sealList.label", sealIndex.display).toText,
+    labelKey = "addSeal.sealList",
     id = Some(s"change-seal-${sealIndex.display}"),
-    call = sealRoutes.SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode)
+    call = sealRoutes.SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode),
+    args = sealIndex.display
   )
 
 }

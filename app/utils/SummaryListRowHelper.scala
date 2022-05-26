@@ -56,6 +56,23 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
       args = args: _*
     )
 
+  def buildSectionRow[T](
+    prefix: String,
+    labelKey: String,
+    answer: Content,
+    id: Option[String],
+    call: Call,
+    args: Any*
+  ): SummaryListRow =
+    buildSimpleRow(
+      prefix = prefix,
+      label = messages(s"$labelKey.label", args: _*).toText,
+      answer = answer,
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
   def buildSimpleRow(
     prefix: String,
     label: Content,

@@ -26,7 +26,7 @@ import models.{CheckMode, CountryList, Mode, TranshipmentType}
 import pages.events._
 import pages.events.seals._
 import pages.events.transhipments._
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class CheckEventAnswersHelperSpec extends SpecBase {
@@ -121,7 +121,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
       }
     }
 
-    ".containerNumber" - {
+    ".container" - {
 
       val containerDomain = ContainerDomain("NUMBER")
 
@@ -129,7 +129,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when ContainerNumberPage undefined" in {
 
           val helper = new CheckEventAnswersHelper(emptyUserAnswers, mode)
-          helper.containerNumber(eventIndex, containerIndex) mustBe None
+          helper.container(eventIndex, containerIndex) mustBe None
         }
       }
 
@@ -140,7 +140,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             .setValue(ContainerNumberPage(eventIndex, containerIndex), containerDomain)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
-          helper.containerNumber(eventIndex, containerIndex) mustBe Some(
+          helper.container(eventIndex, containerIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Container ${containerIndex.display}".toText,
@@ -153,7 +153,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                     ActionItem(
                       content = "Change".toText,
                       href = ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode).url,
-                      visuallyHiddenText = Some(s"container ${containerDomain.containerNumber}"),
+                      visuallyHiddenText = Some(s"container ${containerIndex.display}"),
                       attributes = Map("id" -> s"change-container-${containerIndex.display}")
                     )
                   )
@@ -537,7 +537,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
       }
     }
 
-    ".sealIdentity" - {
+    ".seal" - {
 
       val seal = SealDomain("NUMBER")
 
@@ -545,7 +545,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when SealIdentityPage undefined" in {
 
           val helper = new CheckEventAnswersHelper(emptyUserAnswers, mode)
-          helper.sealIdentity(eventIndex, sealIndex) mustBe None
+          helper.seal(eventIndex, sealIndex) mustBe None
         }
       }
 
@@ -556,7 +556,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
-          helper.sealIdentity(eventIndex, sealIndex) mustBe Some(
+          helper.seal(eventIndex, sealIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Official customs seal ${sealIndex.display}".toText,
@@ -569,7 +569,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
                     ActionItem(
                       content = "Change".toText,
                       href = SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode).url,
-                      visuallyHiddenText = Some(s"official customs seal ${seal.numberOrMark}"),
+                      visuallyHiddenText = Some(s"official customs seal ${sealIndex.display}"),
                       attributes = Map("id" -> s"change-seal-${sealIndex.display}")
                     )
                   )

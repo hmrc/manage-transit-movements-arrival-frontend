@@ -36,20 +36,18 @@ class AddEventsHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: M
         )
     }
 
-  //format: off
-  def eventSummaryListRow(eventIndex: Index): Option[SummaryListRow] =
+  def event(eventIndex: Index): Option[SummaryListRow] =
     placeOfEvent(eventIndex) map {
       answer =>
-        buildSimpleRow(
+        buildSectionRow(
           prefix = "addEvent",
-          label = messages("addEvent.event.label", eventIndex.display).toText,
+          labelKey = "addEvent.event",
           answer = answer.toText,
           id = None,
           call = eventRoutes.CheckEventAnswersController.onPageLoad(mrn, eventIndex),
-          args = eventIndex.display, answer
+          args = eventIndex.display
         )
     }
-  //format: on
 
   private def placeOfEvent(eventIndex: Index): Option[String] =
     userAnswers.get(EventPlacePage(eventIndex)) orElse
