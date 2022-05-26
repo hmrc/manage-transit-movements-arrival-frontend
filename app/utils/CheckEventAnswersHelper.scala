@@ -51,9 +51,10 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     page = ContainerNumberPage(eventIndex, containerIndex),
     formatAnswer = _.containerNumber,
     prefix = "containerNumber",
-    label = messages("addContainer.containerList.label", containerIndex.display).toText,
+    labelKey = "addContainer.containerList",
     id = Some(s"change-container-${containerIndex.display}"),
-    call = transhipmentRoutes.ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode)
+    call = transhipmentRoutes.ContainerNumberController.onPageLoad(mrn, eventIndex, containerIndex, mode),
+    args = containerIndex.display
   )
 
   def eventCountry(eventIndex: Index)(codeList: CountryList): Option[SummaryListRow] = getAnswerAndBuildRow[CountryCode](
@@ -116,9 +117,10 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     page = SealIdentityPage(eventIndex, sealIndex),
     formatAnswer = _.numberOrMark,
     prefix = "sealIdentity",
-    label = messages("addSeal.sealList.label", sealIndex.display).toText,
+    labelKey = "addSeal.sealList",
     id = Some(s"change-seal-${sealIndex.display}"),
-    call = sealRoutes.SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode)
+    call = sealRoutes.SealIdentityController.onPageLoad(mrn, eventIndex, sealIndex, mode),
+    args = sealIndex.display
   )
 
 }
