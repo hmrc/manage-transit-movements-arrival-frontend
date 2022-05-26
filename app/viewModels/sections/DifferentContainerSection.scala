@@ -48,7 +48,7 @@ class DifferentContainerSection {
           containerCount =>
             val rows = (0 to containerCount).flatMap {
               x =>
-                helper.containerNumber(eventIndex, Index(x))
+                helper.container(eventIndex, Index(x))
             }
             Section(
               sectionTitle = messages("checkEventAnswers.section.title.containerNumbers"),

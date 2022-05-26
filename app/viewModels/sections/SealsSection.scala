@@ -34,7 +34,7 @@ class SealsSection {
     val numberOfSeals = userAnswers.get(DeriveNumberOfSeals(eventIndex)).getOrElse(0)
     val seals = (0 to numberOfSeals).flatMap {
       x =>
-        helper.sealIdentity(eventIndex, Index(x))
+        helper.seal(eventIndex, Index(x))
     }
 
     Section(

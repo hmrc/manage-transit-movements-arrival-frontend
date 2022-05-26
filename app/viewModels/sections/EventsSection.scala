@@ -39,7 +39,7 @@ class EventsSection {
     val helper         = new AddEventsHelper(userAnswers, CheckMode)
     (0 to numberOfEvents).flatMap {
       x =>
-        helper.eventSummaryListRow(Index(x))
+        helper.event(Index(x))
     }
   }
 }

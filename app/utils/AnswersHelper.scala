@@ -79,9 +79,9 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
-        buildSimpleRow(
+        buildSectionRow(
           prefix = prefix,
-          label = messages(s"$labelKey.label", args: _*).toText,
+          labelKey = labelKey,
           answer = s"${formatAnswer(answer)}".toText,
           id = id,
           call = call,

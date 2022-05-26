@@ -121,7 +121,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
       }
     }
 
-    ".containerNumber" - {
+    ".container" - {
 
       val containerDomain = ContainerDomain("NUMBER")
 
@@ -129,7 +129,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when ContainerNumberPage undefined" in {
 
           val helper = new CheckEventAnswersHelper(emptyUserAnswers, mode)
-          helper.containerNumber(eventIndex, containerIndex) mustBe None
+          helper.container(eventIndex, containerIndex) mustBe None
         }
       }
 
@@ -140,7 +140,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             .setValue(ContainerNumberPage(eventIndex, containerIndex), containerDomain)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
-          helper.containerNumber(eventIndex, containerIndex) mustBe Some(
+          helper.container(eventIndex, containerIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Container ${containerIndex.display}".toText,
@@ -537,7 +537,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
       }
     }
 
-    ".sealIdentity" - {
+    ".seal" - {
 
       val seal = SealDomain("NUMBER")
 
@@ -545,7 +545,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
         "when SealIdentityPage undefined" in {
 
           val helper = new CheckEventAnswersHelper(emptyUserAnswers, mode)
-          helper.sealIdentity(eventIndex, sealIndex) mustBe None
+          helper.seal(eventIndex, sealIndex) mustBe None
         }
       }
 
@@ -556,7 +556,7 @@ class CheckEventAnswersHelperSpec extends SpecBase {
             .setValue(SealIdentityPage(eventIndex, sealIndex), seal)
 
           val helper = new CheckEventAnswersHelper(answers, mode)
-          helper.sealIdentity(eventIndex, sealIndex) mustBe Some(
+          helper.seal(eventIndex, sealIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Official customs seal ${sealIndex.display}".toText,

@@ -78,13 +78,13 @@ class AddEventsHelperSpec extends SpecBase {
       }
     }
 
-    ".eventSummaryListRow" - {
+    ".event" - {
 
       "must return None" - {
         "when EventPlacePage and EventCountryPage undefined" in {
 
           val helper = new AddEventsHelper(emptyUserAnswers, mode)
-          helper.eventSummaryListRow(eventIndex) mustBe None
+          helper.event(eventIndex) mustBe None
         }
       }
 
@@ -97,7 +97,7 @@ class AddEventsHelperSpec extends SpecBase {
             .setValue(EventPlacePage(eventIndex), place)
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.eventSummaryListRow(eventIndex) mustBe Some(
+          helper.event(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Event ${eventIndex.display}".toText,
@@ -110,7 +110,7 @@ class AddEventsHelperSpec extends SpecBase {
                     ActionItem(
                       content = "Change".toText,
                       href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                      visuallyHiddenText = Some(s"event ${eventIndex.display} at $place")
+                      visuallyHiddenText = Some(s"event ${eventIndex.display}")
                     )
                   )
                 )
@@ -127,7 +127,7 @@ class AddEventsHelperSpec extends SpecBase {
             .setValue(EventCountryPage(eventIndex), countryCode)
 
           val helper = new AddEventsHelper(answers, mode)
-          helper.eventSummaryListRow(eventIndex) mustBe Some(
+          helper.event(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(
                 content = s"Event ${eventIndex.display}".toText,
@@ -140,7 +140,7 @@ class AddEventsHelperSpec extends SpecBase {
                     ActionItem(
                       content = "Change".toText,
                       href = CheckEventAnswersController.onPageLoad(mrn, eventIndex).url,
-                      visuallyHiddenText = Some(s"event ${eventIndex.display} at ${countryCode.code}")
+                      visuallyHiddenText = Some(s"event ${eventIndex.display}")
                     )
                   )
                 )

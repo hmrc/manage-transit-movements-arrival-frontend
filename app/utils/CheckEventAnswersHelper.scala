@@ -47,7 +47,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     call = transhipmentRoutes.TranshipmentTypeController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def containerNumber(eventIndex: Index, containerIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ContainerDomain](
+  def container(eventIndex: Index, containerIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ContainerDomain](
     page = ContainerNumberPage(eventIndex, containerIndex),
     formatAnswer = _.containerNumber,
     prefix = "containerNumber",
@@ -113,7 +113,7 @@ class CheckEventAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mes
     call = sealRoutes.HaveSealsChangedController.onPageLoad(mrn, eventIndex, mode)
   )
 
-  def sealIdentity(eventIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
+  def seal(eventIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
     page = SealIdentityPage(eventIndex, sealIndex),
     formatAnswer = _.numberOrMark,
     prefix = "sealIdentity",
