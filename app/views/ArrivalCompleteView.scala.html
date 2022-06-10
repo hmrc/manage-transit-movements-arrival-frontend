@@ -34,8 +34,8 @@
 ) {
 
     @govukPanel(Panel(
-    title = Text(messages("arrivalComplete.heading")),
-    content = HtmlContent(s"""${messages("arrivalComplete.yourReferenceNumber")} <strong>${mrn}</strong>""")
+        title = Text(messages("arrivalComplete.heading")),
+        content = HtmlContent(s"""${messages("arrivalComplete.yourReferenceNumber")} <strong>${mrn}</strong>""")
     ))
 
     <h2 class="govuk-heading-m">@messages("arrivalComplete.subHeading")</h2>
