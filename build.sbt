@@ -6,7 +6,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "manage-transit-movements-arrival-frontend"
 
-val silencerVersion = "1.7.1"
+val silencerVersion = "1.7.9"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
@@ -46,7 +46,7 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq("-feature", "-language:implicitConversions"),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
-    scalaVersion    := "2.12.12",
+    scalaVersion    := "2.12.15",
     resolvers ++= Seq(
       Resolver.bintrayRepo("hmrc", "releases"),
       Resolver.jcenterRepo
