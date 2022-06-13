@@ -10,7 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-conditional-form-mapping"    % "1.11.0-play-28",
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-28"       % "5.24.0",
     "uk.gov.hmrc"          %% "play-allowlist-filter"            % "1.1.0",
-    "com.lucidchart"       %% "xtract"                           % "2.3.0-alpha3",
+    "com.lucidchart"       %% "xtract"                           % "2.0.1",
     "uk.gov.hmrc"          %% "play-frontend-hmrc"               % "3.21.0-play-28",
     "com.chuusai"          %% "shapeless"                        % "2.3.9"
   )
