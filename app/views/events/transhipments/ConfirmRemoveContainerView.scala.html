@@ -17,6 +17,7 @@
 @import controllers.events.transhipments.routes
 @import models.MovementReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -39,8 +40,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "confirmRemoveContainer",
-            legendParams = Seq(containerNumber)
+            yesNoType = OrdinaryYesNo(heading = messages("confirmRemoveContainer.heading", containerNumber))
         )
 
         @button(attributes = Map("id" -> "submit"))

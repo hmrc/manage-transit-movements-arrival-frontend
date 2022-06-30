@@ -16,6 +16,7 @@
 
 @import models.{MovementReferenceNumber, GoodsLocation}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -48,10 +49,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "isTraderAddressPlaceOfNotification",
-            legendIsHeading = false,
-            legendIsVisible = false,
-            legendParams = Seq(traderName)
+            yesNoType = YesNoWithoutHeading(label = messages("isTraderAddressPlaceOfNotification.heading", traderName), legendIsVisible = false)
         )
 
         @button(attributes = Map("id" -> "submit"))

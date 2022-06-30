@@ -17,6 +17,7 @@
 @import controllers.events.routes._
 @import models.{MovementReferenceNumber, Index}
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -39,7 +40,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "isTranshipment",
+            yesNoType = OrdinaryYesNo(heading = messages("isTranshipment.heading"))
         )
 
         @button(attributes = Map("id" -> "submit"))

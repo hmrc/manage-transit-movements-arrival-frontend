@@ -18,6 +18,7 @@
 @import models.{Index, MovementReferenceNumber}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ItemType, ListItem}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -56,8 +57,7 @@
         @if(allowMoreSeals(eventIndex)) {
             @inputYesNo(
                 field = form("value"),
-                messageKeyPrefix = "addSeal",
-                legendIsHeading = false
+                yesNoType = YesNoWithoutHeading(label = messages("addSeal.label"))
             )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@messages("addSeal.maxLimit.label")</p>

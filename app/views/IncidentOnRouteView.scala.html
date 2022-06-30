@@ -16,6 +16,7 @@
 
 @import models.{MovementReferenceNumber, GoodsLocation}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -53,8 +54,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "incidentOnRoute",
-            legendIsHeading = false
+            yesNoType = YesNoWithoutHeading(label = messages("incidentOnRoute.label"))
         )
 
         @button(attributes = Map("id" -> "submit"))

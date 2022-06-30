@@ -20,6 +20,8 @@
 @import models.reference.Country
 @import models.reference.Selectable
 @import models.reference.Selectable._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputSelectViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -43,9 +45,9 @@
 
         @select(
             field = form("value"),
-            label = messages("transportNationality.heading"),
+            selectType = OrdinarySelect(heading = messages("transportNationality.heading")),
             selectItems = countries.toSelectItems(form.value),
-            placeholder = Some(messages("transportNationality.placeholder"))
+            placeholder = messages("transportNationality.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

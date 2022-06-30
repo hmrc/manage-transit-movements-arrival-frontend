@@ -18,6 +18,7 @@
 @import models.MovementReferenceNumber
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ItemType, ListItem}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -73,9 +74,8 @@
         @if(allowMoreEvents) {
             @inputYesNo(
                 field = form("value"),
-                messageKeyPrefix = "addEvent",
                 hint = Some(hint),
-                legendIsHeading = false
+                yesNoType = YesNoWithoutHeading(label = messages("addEvent.label"))
             )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@messages("addEvent.maxLimit.label")</p>

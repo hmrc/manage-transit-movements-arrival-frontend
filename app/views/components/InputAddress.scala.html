@@ -14,16 +14,21 @@
  * limitations under the License.
  *@
 
-@import views.html.components.InputText
+@import models.Address
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.{InputSelect, InputText}
+@import views.utils.ViewUtils._
 
 @this(
     inputText: InputText,
+    inputSelect: InputSelect,
     govukFieldset: GovukFieldset
 )
 
 @(
-    form: Form[_],
+    form: Form[Address],
     messageKeyPrefix: String,
+    caption: Option[String],
     headingArgs: Any*
 )(implicit messages: Messages)
 
@@ -53,11 +58,28 @@
     )
 }
 
-@govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
-        classes = LegendSize.XL,
-        isPageHeading = true
-    )),
-    html = html
-))
+@fieldset = @{
+    Fieldset(
+        html = html
+    )
+}
+
+@govukFieldset(
+    caption match {
+        case Some(x) => {
+            fieldset.withHeadingAndCaption(
+                heading = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
+                caption = Text(x)
+            )
+        }
+        case None => {
+            fieldset.copy(
+                legend = Some(Legend(
+                    content = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
+                    classes = LegendSize.XL,
+                    isPageHeading = true
+                ))
+            )
+        }
+    }
+)

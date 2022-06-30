@@ -25,7 +25,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Address], mrn: MovementReferenceNumber, mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("consigneeAddress.title"),
@@ -40,6 +40,7 @@
         @inputAddress(
             form = form,
             messageKeyPrefix = "consigneeAddress",
+            caption = None,
             headingArgs = name
         )
 

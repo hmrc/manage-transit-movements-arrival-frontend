@@ -16,14 +16,16 @@
 
 package views.utils
 
+import java.time.LocalDate
+
+import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.implicits.{RichCharacterCountSupport, RichRadiosSupport, RichTextareaSupport}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
-import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
+import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
+import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport
 
 object ViewUtils {
 
@@ -31,8 +33,17 @@ object ViewUtils {
     (if (mainContent.body.contains("govuk-error-summary")) s"${messages("error.title.prefix")} " else "") +
       s"$title - ${messages("site.service_name")} - GOV.UK"
 
-  // TODO refactor this maybe? Going to need this for every ViewModel type going forward
+  def errorClass(error: Option[FormError], dateArg: String): String =
+    error.fold("") {
+      e =>
+        if (e.args.contains(dateArg) || e.args.isEmpty) {
+          "govuk-input--error"
+        } else {
+          ""
+        }
+    }
 
+  // TODO refactor this maybe? Going to need this for every ViewModel type going forward
   implicit class RadiosImplicits(radios: Radios)(implicit messages: Messages) extends RichRadiosSupport {
 
     def withHeadingAndCaption(heading: String, caption: Option[String]): Radios =
@@ -41,10 +52,10 @@ object ViewUtils {
         case None        => radios.withHeading(Text(heading))
       }
 
-    def withLabel(label: String, labelIsVisible: Boolean = true): Radios = {
-      val labelClass = if (labelIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
+    def withLegend(label: String, legendIsVisible: Boolean = true): Radios = {
+      val legendClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
       radios.copy(
-        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = labelClass, isPageHeading = false))))
+        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = legendClass, isPageHeading = false))))
       )
     }
   }
@@ -64,6 +75,46 @@ object ViewUtils {
       caption match {
         case Some(value) => characterCount.withHeadingAndSectionCaption(Text(heading), Text(value))
         case None        => characterCount.withHeading(Text(heading))
+      }
+  }
+
+  implicit class InputImplicits(input: Input)(implicit messages: Messages) extends RichInputSupport {
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): Input =
+      caption match {
+        case Some(value) => input.withHeadingAndSectionCaption(Text(heading), Text(value))
+        case None        => input.withHeading(Text(heading))
+      }
+  }
+
+  implicit class ErrorSummaryImplicits(errorSummary: ErrorSummary)(implicit messages: Messages) extends RichErrorSummarySupport {
+
+    def withDateErrorMapping(form: Form[LocalDate], fieldName: String): ErrorSummary = {
+      val args = Seq("day", "month", "year")
+      val arg = form.errors.flatMap(_.args).filter(args.contains) match {
+        case Nil       => args.head
+        case head :: _ => head.toString
+      }
+      errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s"${fieldName}_$arg"))
+    }
+  }
+
+  implicit class FieldsetImplicits(fieldset: Fieldset)(implicit val messages: Messages) extends ImplicitsSupport[Fieldset] {
+    override def withFormField(field: Field): Fieldset                = fieldset
+    override def withFormFieldWithErrorAsHtml(field: Field): Fieldset = fieldset
+
+    def withHeadingAndCaption(heading: Content, caption: Content): Fieldset =
+      withHeadingLegend(fieldset, heading, Some(caption))(
+        (ip, ul) => ip.copy(legend = Some(ul))
+      )
+  }
+
+  implicit class SelectImplicits(select: Select)(implicit messages: Messages) extends RichSelectSupport {
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): Select =
+      caption match {
+        case Some(value) => select.withHeadingAndSectionCaption(Text(heading), Text(value))
+        case None        => select.withHeading(Text(heading))
       }
   }
 

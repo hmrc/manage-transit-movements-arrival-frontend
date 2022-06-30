@@ -16,6 +16,7 @@
 
 @import models.MovementReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -38,8 +39,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "confirmRemoveEvent",
-            legendParams = Seq(eventTitle)
+            yesNoType = OrdinaryYesNo(heading = messages("confirmRemoveEvent.heading", eventTitle))
         )
 
         @button(attributes = Map("id" -> "submit"))

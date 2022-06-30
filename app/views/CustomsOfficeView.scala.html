@@ -18,6 +18,8 @@
 @import models.MovementReferenceNumber
 @import models.reference.{CustomsOffice, Selectable}
 @import models.reference.Selectable._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputSelectViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -41,10 +43,10 @@
 
         @select(
             field = form("value"),
-            label = messages("customsOffice.heading", customsOffice),
+            selectType = OrdinarySelect(heading = messages("customsOffice.heading", customsOffice)),
             hint = Some(messages("customsOffice.hintText")),
             selectItems = customsOffices.toSelectItems(form.value),
-            placeholder = Some(messages("customsOffice.placeholder"))
+            placeholder = messages("customsOffice.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

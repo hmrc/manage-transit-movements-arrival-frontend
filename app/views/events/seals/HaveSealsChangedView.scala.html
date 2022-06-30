@@ -17,6 +17,7 @@
 @import controllers.events.seals.routes
 @import models.{MovementReferenceNumber, GoodsLocation}
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -39,7 +40,7 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "haveSealsChanged"
+            yesNoType = OrdinaryYesNo(heading = messages("haveSealsChanged.heading"))
         )
 
         @button(attributes = Map("id" -> "submit"))
