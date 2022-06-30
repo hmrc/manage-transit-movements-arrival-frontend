@@ -3,67 +3,47 @@
 echo ""
 echo "Applying migration $className;format="snake"$"
 
-echo "Adding routes to conf/app.routes"
+echo "Adding routes to conf/app.$package$.routes"
 
-echo "" >> ../conf/app.routes
-echo "GET        /:mrn/$className;format="decap"$                        controllers.$className$Controller.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /:mrn/$className;format="decap"$                        controllers.$className$Controller.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
+if [ ! -f ../conf/app.$package$.routes ]; then
+  echo "Write into prod.routes file"
+  awk '/health.Routes/ {\
+    print;\
+    print "";\
+    print "->         /manage-transit-movements/arrival                   app.$package$.Routes"
+    next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
+fi
 
-echo "GET        /:mrn/change$className$                  controllers.$className$Controller.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /:mrn/change$className$                  controllers.$className$Controller.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "" >> ../conf/app.$package$.routes
+echo "GET        /:lrn/$package;format="packaged"$/$title;format="normalize"$                        controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
+echo "POST       /:lrn/$package;format="packaged"$/$title;format="normalize"$                        controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
+
+echo "GET        /:lrn/$package;format="packaged"$/change-$title;format="normalize"$                 controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
+echo "POST       /:lrn/$package;format="packaged"$/change-$title;format="normalize"$                 controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "$className;format="decap"$.title = $className;format="decap"$" >> ../conf/messages.en
-echo "$className;format="decap"$.heading = $className;format="decap"$" >> ../conf/messages.en
-echo "$className;format="decap"$.checkYourAnswersLabel = $className;format="decap"$" >> ../conf/messages.en
-echo "$className;format="decap"$.error.required = Select yes if $className;format="decap"$" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.title = $title$" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.heading = $title$" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.error.required = Select yes if $title$" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[($className$Page.type, JsValue)] =";\
+    print "  implicit lazy val arbitrary$package;format="space,upper-camel"$$className$UserAnswersEntry: Arbitrary[(pages.$package$.$className$Page.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[$className$Page.type]";\
-    print "        value <- arbitrary[Boolean].map(Json.toJson(_))";\
-    print "      } yield (page, value)";\
+    print "        value <- arbitrary[pages.$package$.$className$Page.type#Data].map(Json.toJson(_))";\
+    print "      } yield (pages.$package$.$className$Page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
-
-echo "Adding to PageGenerators"
-awk '/trait PageGenerators/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitrary$className$Page: Arbitrary[$className$Page.type] =";\
-    print "    Arbitrary($className$Page)";\
-    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[($className$Page.type, JsValue)] ::";\
+    print "    arbitrary$package;format="space,upper-camel"$$className$UserAnswersEntry.arbitrary ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
-
-echo "Adding helper method to CheckYourAnswersHelper"
-awk '/class CheckYourAnswersHelper/ {\
-     print;\
-     print "";\
-     print "  def $className;format="decap"$: Option[Row] = userAnswers.get($className$Page) map {";\
-     print "    answer =>";\
-     print "      Row(";\
-     print "        key     = Key(msg\"$className;format="decap"$.checkYourAnswersLabel\", classes = Seq(\"govuk-!-width-one-half\")),";\
-     print "        value   = Value(yesOrNo(answer)),";\
-     print "        actions = List(";\
-     print "          Action(";\
-     print "            content            = msg\"site.edit\",";\
-     print "            href               = routes.$className$Controller.onPageLoad(mrn, CheckMode).url,";\
-     print "            visuallyHiddenText = Some(msg\"site.edit.hidden\".withArgs(msg\"$className;format="decap"$.checkYourAnswersLabel\"))";\
-     print "          )";\
-     print "        )";\
-     print "      )";\
-     print "  }";\
-     next }1' ../app/utils/CheckYourAnswersHelper.scala > tmp && mv tmp ../app/utils/CheckYourAnswersHelper.scala
 
 echo "Migration $className;format="snake"$ completed"
