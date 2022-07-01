@@ -21,45 +21,13 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.events._
-import pages.events.seals._
-import pages.events.transhipments._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(ConsigneeAddressPage.type, JsValue)] ::
-      arbitrary[(ConsigneeEoriNumberPage.type, JsValue)] ::
-      arbitrary[(ConsigneeNamePage.type, JsValue)] ::
-      arbitrary[(HaveSealsChangedPage, JsValue)] ::
-      arbitrary[(AddSealPage, JsValue)] ::
-      arbitrary[(SealIdentityPage, JsValue)] ::
-      arbitrary[(AddContainerPage, JsValue)] ::
-      arbitrary[(AddContainerPage, JsValue)] ::
-      arbitrary[(ContainerNumberPage, JsValue)] ::
-      arbitrary[(TransportNationalityPage, JsValue)] ::
-      arbitrary[(TransportIdentityPage, JsValue)] ::
-      arbitrary[(TranshipmentTypePage, JsValue)] ::
-      arbitrary[(IsTranshipmentPage, JsValue)] ::
-      arbitrary[(PlaceOfNotificationPage.type, JsValue)] ::
-      arbitrary[(IsTraderAddressPlaceOfNotificationPage.type, JsValue)] ::
-      arbitrary[(IncidentInformationPage, JsValue)] ::
-      arbitrary[(EventReportedPage, JsValue)] ::
-      arbitrary[(EventPlacePage, JsValue)] ::
-      arbitrary[(EventCountryPage, JsValue)] ::
-      arbitrary[(AddEventPage.type, JsValue)] ::
-      arbitrary[(IncidentOnRoutePage.type, JsValue)] ::
-      arbitrary[(TraderNamePage.type, JsValue)] ::
-      arbitrary[(TraderEoriPage.type, JsValue)] ::
-      arbitrary[(TraderAddressPage.type, JsValue)] ::
-      arbitrary[(AuthorisedLocationPage.type, JsValue)] ::
-      arbitrary[(CustomsSubPlacePage.type, JsValue)] ::
-      arbitrary[(CustomsOfficePage.type, JsValue)] ::
-      arbitrary[(SimplifiedCustomsOfficePage.type, JsValue)] ::
-      arbitrary[(GoodsLocationPage.type, JsValue)] ::
-      Nil
+    Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 

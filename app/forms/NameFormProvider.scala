@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import forms.Constants.maxNameLength
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+import models.domain.StringFieldRegex._
 
-trait PageGenerators {
+class NameFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryMovementReferenceNumberPage: Arbitrary[MovementReferenceNumberPage.type] =
-    Arbitrary(MovementReferenceNumberPage)
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxNameLength, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
+    )
 }

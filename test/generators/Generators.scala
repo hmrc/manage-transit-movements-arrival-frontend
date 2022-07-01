@@ -22,13 +22,7 @@ import org.scalacheck.{Arbitrary, Gen, Shrink}
 
 import java.time._
 
-trait Generators
-    extends UserAnswersGenerator
-    with PageGenerators
-    with ModelGenerators
-    with UserAnswersEntryGenerators
-    with ViewModelGenerators
-    with MessagesModelGenerators {
+trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 
@@ -80,8 +74,13 @@ trait Generators
     arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (
+    arbitrary[Int] retryUntil (
       x => x < min || x > max
+    )
+
+  def intsInsideRange(min: Int, max: Int): Gen[Int] =
+    arbitrary[Int] retryUntil (
+      x => x > min && x < max
     )
 
   def nonBooleans: Gen[String] =
@@ -93,10 +92,21 @@ trait Generators
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
 
-  def stringsWithMaxLength(maxLength: Int): Gen[String] =
+  def stringsWithMaxLength(maxLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars  <- listOfN(length, alphaNumChar)
+      chars  <- listOfN(length, charGen)
+    } yield chars.mkString
+
+  def stringsLongerThan(minLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] = for {
+    maxLength <- (minLength * 2).max(100)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, charGen)
+  } yield chars.mkString
+
+  def stringsWithLength(length: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
+    for {
+      chars <- listOfN(length, charGen)
     } yield chars.mkString
 
   def alphaStringsWithMaxLength(maxLength: Int): Gen[String] =
@@ -111,21 +121,6 @@ trait Generators
     for {
       length <- choose(1, maxLength)
       chars  <- listOfN(length, extendedAsciiChar)
-    } yield chars.mkString
-
-  def stringsLongerThan(minLength: Int, withOnlyPrintableAscii: Boolean = false): Gen[String] =
-    for {
-      maxLength     <- (minLength * 2).max(100)
-      length        <- Gen.chooseNum(minLength + 1, maxLength)
-      extendedAscii <- extendedAsciiChar
-      chars <- {
-        if (withOnlyPrintableAscii) {
-          listOfN(length, Gen.alphaChar)
-        } else {
-          val listOfChar = listOfN(length, arbitrary[Char])
-          listOfChar.map(_ ++ List(extendedAscii))
-        }
-      }
     } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =

@@ -16,59 +16,101 @@
 
 package forms
 
-import base.SpecBase
-import forms.behaviours.StringFieldBehaviours
-import models.domain.TraderDomain.Constants.eoriLength
+import forms.Constants._
+import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
+import models.domain.StringFieldRegex.{alphaNumericRegex, eoriNumberRegex}
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
-class EoriNumberFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
-  private val requiredKey = "eoriNumber.error.required"
-  private val invalidKey  = "eoriNumber.error.invalid"
-  private val formatKey   = "eoriNumber.error.format"
+  private val prefix = Gen.alphaNumStr.sample.value
 
-  val form = new EoriNumberFormProvider()(consigneeName)
+  private val requiredKey          = s"$prefix.error.required"
+  private val maxLengthKey         = s"$prefix.error.maxLength"
+  private val minLengthKey         = s"$prefix.error.minLength"
+  private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
+  private val invalidFormatKey     = s"$prefix.error.invalidFormat"
+
+  private val form = new EoriNumberFormProvider()(prefix)
+
+  private val validPrefixes = Seq("GB", "gb", "Gb", "gB", "XI", "xi", "Xi", "xI")
+  private val prefixGen     = Gen.oneOf(validPrefixes)
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(eoriLength)
+      form = form,
+      fieldName = fieldName,
+      validDataGenerator = stringsWithMaxLength(maxEoriNumberLength)
     )
 
     behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(consigneeName))
+      form = form,
+      fieldName = fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match validation regex" in {
+    behave like fieldThatDoesNotBindInvalidData(
+      form = form,
+      fieldName = fieldName,
+      regex = alphaNumericRegex.regex,
+      gen = stringsWithLength(maxEoriNumberLength),
+      invalidKey = invalidCharactersKey
+    )
 
-      val expectedError          = FormError(fieldName, invalidKey, Seq(consigneeName))
-      val generator: Gen[String] = RegexpGen.from(s"[A-Za-z0-9 ]{14}")
+    "must not bind strings with correct prefix and suffix but over max length" in {
+      val expectedError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
 
-      forAll(generator) {
+      val gen = for {
+        prefix <- prefixGen
+        suffix <- stringsLongerThan(maxEoriNumberLength - prefix.length, Gen.numChar)
+      } yield prefix + suffix
+
+      forAll(gen) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors must contain(expectedError)
       }
     }
 
-    "must not bind strings that do not match format regex" in {
+    "must not bind strings with correct prefix and suffix but under min length" in {
+      val expectedError = FormError(fieldName, minLengthKey, Seq(minEoriNumberLength))
 
-      val expectedError          = FormError(fieldName, formatKey, Seq(consigneeName))
-      val generator: Gen[String] = RegexpGen.from(s"[AB]{2}([0-9]){12}")
+      val gen = for {
+        prefix <- prefixGen
+        suffix <- stringsWithMaxLength(minEoriNumberLength - prefix.length - 1, Gen.numChar)
+      } yield prefix + suffix
 
-      forAll(generator) {
+      forAll(gen) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors must contain(expectedError)
       }
     }
+
+    "must not bind strings with correct prefix but invalid suffix" in {
+      val expectedError = FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex.regex))
+
+      val gen = for {
+        prefix <- prefixGen
+        suffix <- stringsLongerThan(maxEoriNumberLength - prefix.length, Gen.alphaNumChar)
+      } yield prefix + suffix
+
+      forAll(gen) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
+
+    "must remove spaces on bound strings" in {
+      val result = form.bind(Map(fieldName -> " GB 123 456 789 123 "))
+      result.errors mustEqual Nil
+      result.get mustEqual "GB123456789123"
+    }
+
   }
 }

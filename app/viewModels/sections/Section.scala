@@ -16,21 +16,11 @@
 
 package viewModels.sections
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow])
 
 object Section {
   def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
-
-  def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows)
-
-  implicit val sectionWrites: OWrites[Section] =
-    (
-      (__ \ "sectionTitle").write[Option[String]] and
-        (__ \ "rows").write[Seq[SummaryListRow]]
-    )(unlift(Section.unapply))
-
+  def apply(rows: Seq[SummaryListRow]): Section                       = new Section(None, rows)
 }

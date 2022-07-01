@@ -16,24 +16,25 @@
 
 package forms
 
-import forms.Constants._
+import java.time.format.DateTimeFormatter
+import java.time.{Clock, LocalDate}
+
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
-import models.domain.StringFieldRegex._
 
-class EoriNumberFormProvider @Inject() extends Mappings {
+class DateFormProvider @Inject() (clock: Clock) extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, minimumDate: LocalDate): Form[LocalDate] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            regexp(eoriNumberRegex, s"$prefix.error.invalidFormat"),
-            minLength(minEoriNumberLength, s"$prefix.error.minLength"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
-          )
-        )
+      "value" -> localDate(
+        invalidKey = s"$prefix.error.invalid",
+        allRequiredKey = s"$prefix.error.required.all",
+        twoRequiredKey = s"$prefix.error.required.two",
+        requiredKey = s"$prefix.error.required"
+      ).verifying(
+        minDate(minimumDate, s"$prefix.error.min.date", minimumDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
+        maxDate(LocalDate.now(clock), s"$prefix.error.max.date")
+      )
     )
 }

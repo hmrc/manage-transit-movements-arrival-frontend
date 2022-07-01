@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
-
-trait PageGenerators {
-
-  implicit lazy val arbitraryMovementReferenceNumberPage: Arbitrary[MovementReferenceNumberPage.type] =
-    Arbitrary(MovementReferenceNumberPage)
+object Constants {
+  lazy val tirCarnetReferenceMaxLength = 12
+  lazy val maxEoriNumberLength: Int    = 17
+  lazy val minEoriNumberLength: Int    = 14
+  lazy val maxNameLength: Int          = 70
+  lazy val maxTelephoneNumberLength    = 35
+  lazy val minTelephoneNumberLength    = 6
 }

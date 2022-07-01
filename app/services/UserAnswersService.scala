@@ -16,40 +16,15 @@
 
 package services
 
-import connectors.ReferenceDataConnector
-import models.{ArrivalId, EoriNumber, MovementReferenceNumber, UserAnswers}
-import repositories.SessionRepository
-import services.conversion.ArrivalMovementRequestToUserAnswersService
-import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
+import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
+import repositories.SessionRepository
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersService @Inject() (
-  arrivalNotificationMessageService: ArrivalNotificationMessageService,
-  sessionRepository: SessionRepository,
-  referenceDataConnector: ReferenceDataConnector
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext) {
-
-  def getUserAnswers(arrivalId: ArrivalId, eoriNumber: EoriNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
-    for {
-      customsOffices         <- referenceDataConnector.getCustomsOffices()
-      arrivalMovementRequest <- arrivalNotificationMessageService.getArrivalNotificationMessage(arrivalId)
-    } yield arrivalMovementRequest.flatMap {
-      arrivalMovementRequest =>
-        MovementReferenceNumber(arrivalMovementRequest.header.movementReferenceNumber).flatMap {
-          movementReferenceNumber =>
-            customsOffices.find(_.id == arrivalMovementRequest.customsOfficeOfPresentation.office).flatMap {
-              customsOffice =>
-                ArrivalMovementRequestToUserAnswersService.convertToUserAnswers(
-                  arrivalMovementRequest,
-                  eoriNumber,
-                  movementReferenceNumber,
-                  customsOffice
-                )
-            }
-        }
-    }
 
   def getOrCreateUserAnswers(eoriNumber: EoriNumber, movementReferenceNumber: MovementReferenceNumber): Future[UserAnswers] =
     sessionRepository.get(movementReferenceNumber.toString, eoriNumber) map {

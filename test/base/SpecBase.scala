@@ -17,8 +17,6 @@
 package base
 
 import config.FrontendAppConfig
-import models.domain.{ContainerDomain, SealDomain}
-import models.messages.{Container, Seal}
 import models.{Address, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -53,11 +51,6 @@ trait SpecBase
   val eventIndex: Index     = Index(0)
   val containerIndex: Index = Index(0)
   val sealIndex: Index      = Index(0)
-
-  val seal: Seal                       = Seal("sealNumber")
-  val sealDomain: SealDomain           = SealDomain("sealNumber")
-  val container: Container             = Container("containerNumber")
-  val domainContainer: ContainerDomain = ContainerDomain("containerNumber")
 
   val traderName: String       = "traderName"
   val consigneeName: String    = "consigneeName"

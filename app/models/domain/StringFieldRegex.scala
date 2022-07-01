@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package models.domain
 
-import org.scalacheck.Arbitrary
-import pages._
+import scala.util.matching.Regex
 
-trait PageGenerators {
+object StringFieldRegex {
 
-  implicit lazy val arbitraryMovementReferenceNumberPage: Arbitrary[MovementReferenceNumberPage.type] =
-    Arbitrary(MovementReferenceNumberPage)
+  val stringFieldRegex: Regex         = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
+  val stringFieldRegexAsterisk: Regex = "[\\sa-zA-Z0-9&'*/.\\-? ]*".r
+  val alphaNumericRegex: Regex        = "^[a-zA-Z0-9]*$".r
+
+  val eoriNumberRegex: Regex = "^(?i)(gb|xi)[0-9]*$".r
+
+  val telephoneNumberCharacterRegex: Regex = "^[0-9+ ]+$".r
+  val telephoneNumberFormatRegex: Regex    = "^\\+[0-9 ]+$".r
+
+  val postalCodeRegex: Regex = "^[a-zA-Z\\s*0-9]*$".r
+
 }

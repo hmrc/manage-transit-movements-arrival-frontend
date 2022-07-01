@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-import org.scalacheck.Arbitrary
-import pages._
+case class Field(name: String, errorKeys: Map[ErrorFieldType, String])
 
-trait PageGenerators {
+object Field {
 
-  implicit lazy val arbitraryMovementReferenceNumberPage: Arbitrary[MovementReferenceNumberPage.type] =
-    Arbitrary(MovementReferenceNumberPage)
+  def apply(name: String, errors: (ErrorFieldType, String)*): Field =
+    Field(name, errors.toMap)
 }
+
+sealed trait ErrorFieldType
+case object Required extends ErrorFieldType
+case object Invalid extends ErrorFieldType
