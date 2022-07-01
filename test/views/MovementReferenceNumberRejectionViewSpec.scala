@@ -32,6 +32,8 @@ class MovementReferenceNumberRejectionViewSpec extends SummaryListViewBehaviours
 
   private val mrnError = arbitrary[MRNError].sample.value
 
+  override val urlContainsMrn: Boolean = false
+
   override def summaryLists: Seq[SummaryList] = Seq(mrnError.toSummaryList(arrivalId, mrn.toString))
 
   override def view: HtmlFormat.Appendable =

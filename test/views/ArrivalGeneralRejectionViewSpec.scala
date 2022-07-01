@@ -29,6 +29,7 @@ class ArrivalGeneralRejectionViewSpec extends SummaryListViewBehaviours with Gen
   private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError]().sample.value
 
   override def summaryLists: Seq[SummaryList] = functionalErrors.map(_.toSummaryList)
+  override val urlContainsMrn: Boolean        = false
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[ArrivalGeneralRejectionView].apply(functionalErrors)(fakeRequest, messages)
