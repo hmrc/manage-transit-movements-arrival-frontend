@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms
 
-@()(implicit request: Request[_])
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-<script src='https://code.jquery.com/jquery-3.6.0.min.js' integrity='sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=' crossorigin='anonymous' @{CSPNonce.attr}></script>
-<script src='@routes.Assets.versioned("javascripts/application.min.js")' @{CSPNonce.attr}></script>
+class YesNoFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"$prefix.error.required")
+    )
+}

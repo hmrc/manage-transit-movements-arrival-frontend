@@ -108,8 +108,10 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit =
     "must render title" in {
-      val title = doc.title()
-      title mustBe s"${messages(s"$prefix.title", args: _*)} - Manage your transit movements - GOV.UK"
+      val title      = doc.title()
+      val messageKey = s"$prefix.title"
+      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
+      assert(messages.isDefinedAt(messageKey))
     }
 
   def pageWithHeading(args: Any*): Unit =
@@ -117,14 +119,23 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit =
     "must render heading" in {
-      val heading = getElementByTag(doc, "h1")
-      assertElementIncludesText(heading, messages(s"$prefix.heading", args: _*))
+      val heading    = getElementByTag(doc, "h1")
+      val messageKey = s"$prefix.heading"
+      assertElementIncludesText(heading, messages(messageKey, args: _*))
+      assert(messages.isDefinedAt(messageKey))
     }
 
   def pageWithCaption(expectedText: String): Unit =
     "must render caption" in {
       val caption = getElementByClass(doc, "govuk-caption-xl")
       assertElementContainsText(caption, expectedText)
+    }
+
+  def pageWithSectionCaption(expectedText: String): Unit =
+    "must render section caption" in {
+      val caption = getElementByClass(doc, "govuk-caption-xl")
+      assertElementIncludesText(caption, "This section is")
+      assertElementIncludesText(caption, expectedText)
     }
 
   def pageWithHint(expectedText: String): Unit =
@@ -139,11 +150,14 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithSubmitButton(expectedText: String): Unit =
-    pageWithButton(expectedText) {
+    pageWithSubmitButton(doc, expectedText)
+
+  def pageWithSubmitButton(doc: Document, expectedText: String): Unit =
+    pageWithButton(doc, expectedText) {
       button => assertElementContainsId(button, "submit")
     }
 
-  private def pageWithButton(expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
+  private def pageWithButton(doc: Document, expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
     s"must render $expectedText button" in {
       val button = getElementByClass(doc, "govuk-button")
       assertElementContainsText(button, expectedText)
