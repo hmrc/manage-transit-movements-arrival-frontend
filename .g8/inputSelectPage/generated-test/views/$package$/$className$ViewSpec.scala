@@ -26,7 +26,7 @@ class $className$ViewSpec extends InputSelectViewBehaviours[$referenceClass$] wi
   override def form: Form[$referenceClass$] = new $formProvider$()(prefix, $referenceListClass$(values))
 
   override def applyView(form: Form[$referenceClass$]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 

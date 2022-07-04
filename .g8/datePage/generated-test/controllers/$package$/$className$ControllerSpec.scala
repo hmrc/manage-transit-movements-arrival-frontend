@@ -22,7 +22,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val formProvider = new $formProvider$()
   private val form         = formProvider("$package$.$className;format="decap"$")
   private val mode         = NormalMode
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, mode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
   private val date                        = LocalDate.now
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -45,13 +45,13 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, mrn, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set($className$Page, date).success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).set($className$Page, date).success.value
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -69,7 +69,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
 
     }
 
@@ -110,7 +110,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[$className$View]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
 
     }
 

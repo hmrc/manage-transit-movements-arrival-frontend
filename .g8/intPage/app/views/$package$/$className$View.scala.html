@@ -16,7 +16,7 @@
 
 @import controllers.$package$.routes
 @import views.html.components.{Button, ErrorSummary, InputText}
-@import models.LocalReferenceNumber
+@import models.MovementReferenceNumber
 
 @this(
     mainTemplate: MainTemplate,
@@ -26,15 +26,15 @@
     button: Button
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Int], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(lrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

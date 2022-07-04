@@ -33,7 +33,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val form              = formProvider("$package$.$className;format="decap"$", addressHolderName, countryList)
 
   private val mode                                 = NormalMode
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, mode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -65,7 +65,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, countryList.countries, addressHolderName)(request, messages).toString
+        view(form, mrn, mode, countryList.countries, addressHolderName)(request, messages).toString
 
     }
 
@@ -73,7 +73,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber)
+      val userAnswers = UserAnswers(mrn, eoriNumber)
         .setValue($addressHolderNamePage$, addressHolderName)
         .setValue($className$Page, testAddress)
 
@@ -97,7 +97,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, countryList.countries, addressHolderName)(request, messages).toString
+        view(filledForm, mrn, mode, countryList.countries, addressHolderName)(request, messages).toString
 
     }
 
@@ -142,7 +142,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[$className$View]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, countryList.countries, addressHolderName)(request, messages).toString
+        view(boundForm, mrn, mode, countryList.countries, addressHolderName)(request, messages).toString
 
     }
 

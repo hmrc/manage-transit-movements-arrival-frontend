@@ -3,7 +3,7 @@ package controllers.$package$
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$package$.$formProvider$
-import models.{Mode, LocalReferenceNumber}
+import models.{Mode, MovementReferenceNumber}
 import models.$package$.$className$
 import navigation.Navigator
 import navigation.annotations.$navRoute$
@@ -29,7 +29,7 @@ class $className$Controller @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
@@ -37,14 +37,14 @@ class $className$Controller @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, $className$.radioItems, mode))
+      Ok(view(preparedForm, mrn, $className$.radioItems, mode))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $className$.radioItems, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $className$.radioItems, mode))),
         value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
       )
   }

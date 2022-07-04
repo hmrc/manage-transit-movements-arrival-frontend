@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.LocalReferenceNumber
+@import models.MovementReferenceNumber
 @import views.html.components.Heading
 
 @this(
@@ -22,12 +22,12 @@
     heading: Heading
 )
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    mrn = Some(mrn)
 ) {
 
     @heading("$package$.$className;format="decap"$.heading")

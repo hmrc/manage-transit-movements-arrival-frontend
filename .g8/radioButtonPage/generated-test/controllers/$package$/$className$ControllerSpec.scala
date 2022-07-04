@@ -22,7 +22,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val formProvider = new $formProvider$()
   private val form         = formProvider()
   private val mode         = NormalMode
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, mode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -44,12 +44,12 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, $className$.radioItems, mode)(request, messages).toString
+        view(form, mrn, $className$.radioItems, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set($className$Page, $className$.values.head).success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).set($className$Page, $className$.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -63,7 +63,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, $className$.radioItems, mode)(request, messages).toString
+        view(filledForm, mrn, $className$.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -97,7 +97,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, $className$.radioItems, mode)(request, messages).toString
+        view(boundForm, mrn, $className$.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

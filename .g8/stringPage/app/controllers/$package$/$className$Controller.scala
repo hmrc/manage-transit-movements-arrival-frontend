@@ -3,7 +3,7 @@ package controllers.$package$
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
-import models.{Mode, LocalReferenceNumber}
+import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
@@ -28,22 +28,22 @@ class $className;format="cap"$Controller @Inject()(
 
   private val form = formProvider("$package$.$className;format="decap"$")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, mrn, mode))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
        .bindFromRequest()
        .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
         value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
     )
   }

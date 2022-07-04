@@ -19,7 +19,7 @@ class $className$ViewSpec extends AddressViewBehaviours with Generators {
   override def form: Form[Address] = new $formProvider$()(prefix, addressHolderName, countryList)
 
   override def applyView(form: Form[Address]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, NormalMode, countryList.countries, addressHolderName)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, mrn, NormalMode, countryList.countries, addressHolderName)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 

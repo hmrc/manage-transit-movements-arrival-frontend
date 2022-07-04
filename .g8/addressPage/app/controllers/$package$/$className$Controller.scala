@@ -4,7 +4,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.requests.SpecificDataRequestProvider1
-import models.{Address, CountryList, LocalReferenceNumber, Mode}
+import models.{Address, CountryList, MovementReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import $addressHolderNameImport$
@@ -41,8 +41,8 @@ class $className;format="cap"$Controller @Inject()(
   private def form(countryList: CountryList)(implicit request: Request): Form[Address] =
     formProvider("$package$.$className;format="decap"$", name, countryList)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
     .andThen(getMandatoryPage($addressHolderNamePage$))
     .async {
       implicit request =>
@@ -53,12 +53,12 @@ class $className;format="cap"$Controller @Inject()(
               case Some(value) => form(countryList).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, mode, countryList.countries, name))
+            Ok(view(preparedForm, mrn, mode, countryList.countries, name))
           }
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
     .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
@@ -67,7 +67,7 @@ class $className;format="cap"$Controller @Inject()(
             form(countryList)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, countryList.countries, name))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries, name))),
                 value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
               )
             }

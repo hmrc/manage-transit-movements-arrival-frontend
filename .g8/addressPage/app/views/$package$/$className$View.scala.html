@@ -15,7 +15,7 @@
  *@
 
 @import controllers.$package$.routes
-@import models.LocalReferenceNumber
+@import models.MovementReferenceNumber
 @import models.reference.Country
 @import views.html.components.{Button, ErrorSummary, InputAddress}
 
@@ -29,7 +29,7 @@
 
 @(
     form: Form[Address],
-    lrn: LocalReferenceNumber,
+    mrn: MovementReferenceNumber,
     mode: Mode,
     countries: Seq[Country],
     name: String
@@ -38,10 +38,10 @@
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(lrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

@@ -3,7 +3,7 @@ package controllers.$package$
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
-import models.{Mode, LocalReferenceNumber}
+import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
@@ -28,7 +28,7 @@ class $className$Controller @Inject()(
    view: $className$View
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.map {
         $referenceListClass;format="decap"$ =>
@@ -38,17 +38,17 @@ class $className$Controller @Inject()(
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))
+          Ok(view(preparedForm, mrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.flatMap {
         $referenceListClass;format="decap"$ =>
           val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
             value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
       }
