@@ -5,7 +5,6 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -19,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class $className;format="cap"$Controller @Inject()(
     override val messagesApi: MessagesApi,
     implicit val sessionRepository: SessionRepository,
-    @$navRoute$ implicit val navigator: Navigator,
+    navigator: Navigator,
     actions: Actions,
     formProvider: YesNoFormProvider,
     val controllerComponents: MessagesControllerComponents,

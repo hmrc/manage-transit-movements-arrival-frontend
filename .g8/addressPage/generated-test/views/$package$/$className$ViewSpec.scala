@@ -31,5 +31,5 @@ class $className$ViewSpec extends AddressViewBehaviours with Generators {
 
   behave like pageWithAddressInput()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
