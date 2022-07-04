@@ -39,23 +39,6 @@
     if (listItems.length == 1) "singular" else "plural"
 }
 
-@hint = @{
-    HtmlContent(
-        Html(s"""
-            |<p class="govuk-body govuk-hint">${messages("addEvent.hintText.tad")}</p>
-            |<p class="govuk-body govuk-hint">${messages("addEvent.hintText.tell_us")}</p>
-            |<ul class="govuk-list govuk-list--bullet govuk-hint">
-                |<li>${messages("addEvent.hintText.accident")}</li>
-                |<li>${messages("addEvent.hintText.goods.unloaded")}</li>
-                |<li>${messages("addEvent.hintText.different.vehicle")}</li>
-                |<li>${messages("addEvent.hintText.type.of.transport")}</li>
-                |<li>${messages("addEvent.hintText.planned.route")}</li>
-            |</ul>
-            |""".stripMargin
-        )
-    )
-}
-
 @mainTemplate(
     title = messages(s"addEvent.$singularOrPlural.title", listItems.length),
     showBackLink = true,
@@ -71,10 +54,20 @@
     @formHelper(action = routes.AddEventController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @if(allowMoreEvents) {
+
+            <p class="govuk-body">@messages("addEvent.hintText.tad")</p>
+            <p class="govuk-body">@messages("addEvent.hintText.tell_us")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("addEvent.hintText.accident")</li>
+                <li>@messages("addEvent.hintText.goods.unloaded")</li>
+                <li>@messages("addEvent.hintText.different.vehicle")</li>
+                <li>@messages("addEvent.hintText.type.of.transport")</li>
+                <li>@messages("addEvent.hintText.planned.route")</li>
+            </ul>
+
             @inputYesNo(
                 field = form("value"),
                 messageKeyPrefix = "addEvent",
-                hint = Some(hint),
                 legendIsHeading = false
             )
         } else {
