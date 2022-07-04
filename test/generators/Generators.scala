@@ -27,7 +27,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 
-  val maxListLength = 10
+  lazy val maxListLength   = 10
+  lazy val stringMaxLength = 36
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
@@ -87,13 +88,15 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
 
   def nonBooleans: Gen[String] =
-    arbitrary[String]
-      .suchThat(_.trim.nonEmpty)
-      .suchThat(_ != "true")
-      .suchThat(_ != "false")
+    nonEmptyString
+      .retryUntil(_ != "true")
+      .retryUntil(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    for {
+      length <- choose(1, stringMaxLength)
+      chars  <- listOfN(length, Gen.alphaNumChar)
+    } yield chars.mkString
 
   def stringsWithMaxLength(maxLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
     for {
