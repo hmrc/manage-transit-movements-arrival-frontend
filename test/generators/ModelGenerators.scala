@@ -24,11 +24,6 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryMyNewRadio: Arbitrary[models.identification.MyNewRadio] =
-    Arbitrary {
-      Gen.oneOf(models.identification.MyNewRadio.values.toSeq)
-    }
-
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       for {

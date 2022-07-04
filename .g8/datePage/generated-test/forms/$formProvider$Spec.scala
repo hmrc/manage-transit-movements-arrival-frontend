@@ -26,11 +26,11 @@ class $formProvider$Spec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, fieldName, s"$prefix.error.required.all")
+    behave like mandatoryDateField(form, fieldName, s"\$prefix.error.required.all")
 
-    behave like dateFieldWithMin(form, fieldName, min = minDate, FormError("value", s"$prefix.error.min.date", Seq(minDateAsString)))
+    behave like dateFieldWithMin(form, fieldName, min = minDate, FormError("value", s"\$prefix.error.min.date", Seq(minDateAsString)))
 
-    behave like dateFieldWithMax(form, fieldName, max = maxDate, FormError("value", s"$prefix.error.max.date"))
+    behave like dateFieldWithMax(form, fieldName, max = maxDate, FormError("value", s"\$prefix.error.max.date"))
 
   }
 }

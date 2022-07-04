@@ -40,7 +40,5 @@ class $className$ViewSpec extends InputSelectViewBehaviours[$referenceClass$] wi
 
   behave like pageWithHint("$title$ hint")
 
-  behave like pageWithContent("label", "$title$ label")
-
   behave like pageWithSubmitButton("Continue")
 }

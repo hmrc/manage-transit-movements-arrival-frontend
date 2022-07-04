@@ -10,7 +10,7 @@ import java.time.{Clock, LocalDate, ZoneOffset}
 
 class $className$ViewSpec extends DateInputViewBehaviours {
 
-  private val minDate = (LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
+  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
   private val zone                       = ZoneOffset.UTC
   private val clock                      = Clock.systemDefaultZone.withZone(zone)
 

@@ -1,11 +1,10 @@
 package controllers.$package$
 
 import models.{NormalMode, UserAnswers}
-import base.{SpecBase, AppWithDefaultMockFixtures}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -13,14 +12,18 @@ import play.api.test.Helpers._
 import forms.$formProvider$
 import views.html.$package$.$className$View
 import pages.$package$.$className$Page
+import java.time.{Clock, LocalDate, ZoneOffset}
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new $formProvider$()
-  private val form         = formProvider("$package$.$className;format="decap"$")
+  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
+  private val zone    = ZoneOffset.UTC
+  private val clock   = Clock.systemDefaultZone.withZone(zone)
+
+  private val formProvider = new $formProvider$(clock)
+  private val form         = formProvider("$package$.$className;format="decap"$", minDate)
   private val mode         = NormalMode
   private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
   private val date                        = LocalDate.now
