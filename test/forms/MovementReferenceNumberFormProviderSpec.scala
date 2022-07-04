@@ -58,18 +58,12 @@ class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     }
 
     "must not bind when value contains an invalid character" in {
-
-      forAll(nonEmptyString) {
+      forAll(stringsWithMaxLength(MovementReferenceNumber.Constants.length - 1)) {
         value =>
-          whenever(
-            MovementReferenceNumber(value).isEmpty &&
-              !value.matches(MovementReferenceNumber.Constants.validCharactersRegex)
-          ) {
-            val result = form.bind(Map("value" -> value))
-            result.errors must contain(FormError("value", invalidCharacterKey))
-          }
+          val valueStartingWithUnderscore = s"_$value"
+          val result                      = form.bind(Map(fieldName -> valueStartingWithUnderscore))
+          result.errors must contain(FormError(fieldName, invalidCharacterKey))
       }
     }
-
   }
 }
