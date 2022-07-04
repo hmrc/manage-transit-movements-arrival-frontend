@@ -6,7 +6,7 @@ import views.html.$package$.$className$View
 
 class $className$ViewSpec extends ViewBehaviours {
 
-  override val urlContainsmrn: Boolean = true
+  override val urlContainsMrn: Boolean = true
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[$className$View].apply(mrn)(fakeRequest, messages)

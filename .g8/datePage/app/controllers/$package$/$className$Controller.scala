@@ -15,6 +15,7 @@ import views.html.$package$.$className$View
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import java.time.LocalDate
 
 class $className;format="cap"$Controller @Inject()(
     override val messagesApi: MessagesApi,
@@ -26,7 +27,8 @@ class $className;format="cap"$Controller @Inject()(
     view: $className$View
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider("$package$.$className;format="decap"$")
+  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
+  private val form = formProvider("$package$.$className;format="decap"$", minDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
