@@ -1,5 +1,6 @@
 package controllers.$package$
 
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
