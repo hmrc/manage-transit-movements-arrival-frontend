@@ -37,19 +37,21 @@ trait ModelGenerators {
       } yield MovementReferenceNumber(year, country.mkString, serial.mkString)
     }
 
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] = {
-
-    val genRoles = Gen.someOf(Seq("TRA", "DEP", "DES"))
-
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       for {
         id          <- arbitrary[String]
         name        <- arbitrary[Option[String]]
-        roles       <- genRoles
         phoneNumber <- Gen.option(arbitrary[String])
       } yield CustomsOffice(id, name, phoneNumber)
     }
-  }
+
+  implicit lazy val arbitraryCustomsOfficeList: Arbitrary[CustomsOfficeList] =
+    Arbitrary {
+      for {
+        customsOffices <- listWithMaxLength[CustomsOffice]()
+      } yield CustomsOfficeList(customsOffices)
+    }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {

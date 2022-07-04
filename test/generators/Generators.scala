@@ -19,8 +19,9 @@ package generators
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-
 import java.time._
+
+import cats.data.NonEmptyList
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
 
@@ -83,6 +84,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       x => x > min && x < max
     )
 
+  def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
+
   def nonBooleans: Gen[String] =
     arbitrary[String]
       .suchThat(_.trim.nonEmpty)
@@ -140,11 +143,27 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
 
+  def nonEmptyListOf[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
+    listWithMaxLength[A](maxLength).map(NonEmptyList.fromListUnsafe _)
+
   def listWithMaxLength[A](maxLength: Int = maxListLength)(implicit a: Arbitrary[A]): Gen[List[A]] =
     for {
       length <- choose(1, maxLength)
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
+
+  def listWithMaxLength[T](maxSize: Int, gen: Gen[T]): Gen[Seq[T]] =
+    for {
+      size  <- Gen.choose(0, maxSize)
+      items <- Gen.listOfN(size, gen)
+    } yield items
+
+  def nonEmptyListWithMaxSize[T](maxSize: Int, gen: Gen[T]): Gen[NonEmptyList[T]] =
+    for {
+      head     <- gen
+      tailSize <- Gen.choose(1, maxSize - 1)
+      tail     <- Gen.listOfN(tailSize, gen)
+    } yield NonEmptyList(head, tail)
 
   def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
 
@@ -177,5 +196,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       LocalDateTime.of(1900, 1, 1, 0, 0, 0),
       LocalDateTime.of(2100, 1, 1, 0, 0, 0)
     ).map(_.toLocalTime)
+  }
+
+  implicit lazy val arbitraryAny: Arbitrary[Any] = Arbitrary {
+    Gen.oneOf[Any](Gen.alphaNumStr, arbitrary[Int])
   }
 }
