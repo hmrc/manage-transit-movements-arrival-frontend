@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package pages
+package pages.identification
+
+import pages.Page
 
 case object MovementReferenceNumberPage extends Page

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.identification
 
 import forms.behaviours.StringFieldBehaviours
 import models.MovementReferenceNumber

@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package navigation
+package forms.identification
 
-import models.{Mode, NormalMode}
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.MovementReferenceNumber
+import play.api.data.Form
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class MovementReferenceNumberFormProvider @Inject() extends Mappings {
 
-  override protected def normalRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
-
-  override protected def checkRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
-
-  override def routes(mode: Mode): RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
+  def apply(): Form[MovementReferenceNumber] =
+    Form(
+      "value" -> mrn(
+        "movementReferenceNumber.error.required",
+        "movementReferenceNumber.error.invalid",
+        "movementReferenceNumber.error.invalidCharacter"
+      )
+    )
 }

@@ -76,4 +76,14 @@ trait ModelGenerators {
         name <- arbitrary[String]
       } yield Country(code, name)
     }
+
+  implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
+    Gen.oneOf(NormalMode, CheckMode)
+  }
+
+  implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
+    for {
+      countries <- listWithMaxLength[Country]()
+    } yield CountryList(countries)
+  }
 }

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.MovementReferenceNumberFormProvider
+import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, UserAnswers}
+import navigation.Navigator
+import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -28,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
-import views.html.MovementReferenceNumberView
+import views.html.identification.MovementReferenceNumberView
 
 import scala.concurrent.Future
 
@@ -44,6 +46,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
       .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
 
   override def beforeEach(): Unit = {

@@ -1,0 +1,5 @@
+
+GET        /movement-reference-number                        controllers.identification.MovementReferenceNumberController.onPageLoad()
+POST       /movement-reference-number                        controllers.identification.MovementReferenceNumberController.onSubmit()
+GET        /change-movement-reference-number                 controllers.identification.MovementReferenceNumberController.onPageLoad()
+POST       /change-movement-reference-number                 controllers.identification.MovementReferenceNumberController.onSubmit()

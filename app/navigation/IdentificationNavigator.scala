@@ -16,23 +16,20 @@
 
 package navigation
 
-import models.{Mode, NormalMode}
-import play.api.mvc.Call
+import controllers.identification.routes._
+import javax.inject.{Inject, Singleton}
+import models._
+import pages.identification.MovementReferenceNumberPage
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+@Singleton
+class IdentificationNavigator @Inject() () extends Navigator {
 
-  override protected def normalRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
+  override val normalRoutes: RouteMapping = routes(NormalMode)
 
-  override protected def checkRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
+  override val checkRoutes: RouteMapping = routes(CheckMode)
 
   override def routes(mode: Mode): RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
+    case MovementReferenceNumberPage => ua => Some(MovementReferenceNumberController.onPageLoad())
   }
+
 }

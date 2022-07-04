@@ -16,45 +16,55 @@
 
 package navigation
 
-import controllers.routes
+import models.journeyDomain.UserAnswersReader
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages._
+import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-class Navigator {
+trait Navigator {
+  private type Route          = UserAnswers => Option[Call]
+  protected type RouteMapping = PartialFunction[Page, Route]
 
-  val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case MovementReferenceNumberPage =>
-      ua => Some(routes.MovementReferenceNumberController.onPageLoad())
-  }
+  protected def normalRoutes: RouteMapping
 
-  val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case MovementReferenceNumberPage =>
-      ua => Some(routes.MovementReferenceNumberController.onPageLoad())
-  }
+  protected def checkRoutes: RouteMapping
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = {
+  def routes(mode: Mode): RouteMapping
 
-    def lift(routes: PartialFunction[Page, UserAnswers => Option[Call]])(default: Call): Call =
-      routes.lift(page) match {
-        case None => default
-        case Some(call) =>
-          call(userAnswers) match {
-            case Some(onwardRoute) => onwardRoute
-            case None              => controllers.routes.SessionExpiredController.onPageLoad()
-          }
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+    case NormalMode =>
+      normalRoutes.lift(page) match {
+        case None       => controllers.identification.routes.MovementReferenceNumberController.onPageLoad()
+        case Some(call) => handleCall(userAnswers, call)
       }
-
-    mode match {
-      case NormalMode =>
-        lift(normalRoutes) {
-          routes.MovementReferenceNumberController.onPageLoad()
-        }
-      case CheckMode =>
-        lift(checkRoutes) {
-          ???
-        }
-    }
+    case CheckMode =>
+      checkRoutes.lift(page) match {
+        case None       => controllers.routes.SessionExpiredController.onPageLoad()
+        case Some(call) => handleCall(userAnswers, call)
+      }
   }
 
+  protected def yesNoRoute(userAnswers: UserAnswers, page: QuestionPage[Boolean])(yesCall: Call)(noCall: Call): Option[Call] =
+    Some {
+      userAnswers.get(page) match {
+        case Some(true)  => yesCall
+        case Some(false) => noCall
+        case None        => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+
+  protected def readUserAnswers[T](mode: Mode)(checkYourAnswersRoute: UserAnswers => Call)(implicit userAnswersReader: UserAnswersReader[T]): RouteMapping = {
+    case page =>
+      ua =>
+        UserAnswersReader[T].run(ua) match {
+          case Left(_)  => routes(mode).applyOrElse[Page, Route](page, _ => _ => None)(ua)
+          case Right(_) => Some(checkYourAnswersRoute(ua))
+        }
+  }
+
+  private def handleCall(userAnswers: UserAnswers, call: Route): Call =
+    call(userAnswers) match {
+      case Some(onwardRoute) => onwardRoute
+      case None              => controllers.routes.SessionExpiredController.onPageLoad()
+    }
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package views
+package views.identification
 
-import forms.MovementReferenceNumberFormProvider
+import forms.identification.MovementReferenceNumberFormProvider
 import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.MovementReferenceNumberView
+import views.html.identification.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
 

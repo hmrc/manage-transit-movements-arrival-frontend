@@ -20,12 +20,15 @@ import java.time.Clock
 
 import com.google.inject.AbstractModule
 import controllers.actions._
+import navigation.{IdentificationNavigator, Navigator}
+import navigation.annotations.IdentificationDetails
 import services.{DateTimeService, DateTimeServiceImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
+    bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction

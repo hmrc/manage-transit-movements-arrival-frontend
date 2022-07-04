@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.sections
 
-import models.{Mode, NormalMode}
-import play.api.mvc.Call
+import play.api.libs.json.JsPath
+import pages.QuestionPage
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+case object IdentificationSection extends QuestionPage[Nothing] {
 
-  override protected def normalRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
+  override def path: JsPath = JsPath \ toString
 
-  override protected def checkRoutes: RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
-
-  override def routes(mode: Mode): RouteMapping = {
-    case _ =>
-      _ => Some(desiredRoute)
-  }
+  override def toString: String = "identification"
 }

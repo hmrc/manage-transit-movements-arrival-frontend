@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package navigation.annotations;
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.MovementReferenceNumber
-import play.api.data.Form
+import com.google.inject.BindingAnnotation;
 
-class MovementReferenceNumberFormProvider @Inject() extends Mappings {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  def apply(): Form[MovementReferenceNumber] =
-    Form(
-      "value" -> mrn(
-        "movementReferenceNumber.error.required",
-        "movementReferenceNumber.error.invalid",
-        "movementReferenceNumber.error.invalidCharacter"
-      )
-    )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface IdentificationDetails {
 }

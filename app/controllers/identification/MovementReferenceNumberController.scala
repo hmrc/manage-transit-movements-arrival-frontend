@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.identification
 
 import controllers.actions._
-import forms.MovementReferenceNumberFormProvider
+import forms.identification.MovementReferenceNumberFormProvider
+import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
-import pages.MovementReferenceNumberPage
+import navigation.annotations.IdentificationDetails
+import pages.identification.MovementReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MovementReferenceNumberView
+import views.html.identification.MovementReferenceNumberView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MovementReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @IdentificationDetails navigator: Navigator,
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
   userAnswersService: UserAnswersService,

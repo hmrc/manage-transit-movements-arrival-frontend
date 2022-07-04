@@ -17,8 +17,3 @@ GET        /internal-server-error                            controllers.ErrorCo
 
 GET        /unauthorised-group-access                        controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 GET        /cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
-
-GET        /movement-reference-number                        controllers.MovementReferenceNumberController.onPageLoad()
-POST       /movement-reference-number                        controllers.MovementReferenceNumberController.onSubmit()
-GET        /change-movement-reference-number                 controllers.MovementReferenceNumberController.onPageLoad()
-POST       /change-movement-reference-number                 controllers.MovementReferenceNumberController.onSubmit()
