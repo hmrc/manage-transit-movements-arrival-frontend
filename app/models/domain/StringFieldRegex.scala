@@ -30,5 +30,6 @@ object StringFieldRegex {
   val telephoneNumberFormatRegex: Regex    = "^\\+[0-9 ]+$".r
 
   val postalCodeRegex: Regex = "^[a-zA-Z\\s*0-9]*$".r
+  val ukPostCodeRegex: Regex = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$".r
 
 }

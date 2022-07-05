@@ -16,9 +16,9 @@
 
 package views.behaviours
 
-import models.Address
+import models.UkAddress
 
-trait AddressViewBehaviours extends QuestionViewBehaviours[Address] {
+trait AddressViewBehaviours extends QuestionViewBehaviours[UkAddress] {
 
   val fields = Seq("buildingAndStreet", "city", "postcode")
 
