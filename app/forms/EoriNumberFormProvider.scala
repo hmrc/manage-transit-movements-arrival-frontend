@@ -16,21 +16,23 @@
 
 package forms
 
+import forms.Constants._
 import forms.mappings.Mappings
-import models.domain.TraderDomain.{eoriLengthRegex, eoriRegex, eoriUkXiRegex}
-import play.api.data.Form
 import javax.inject.Inject
+import play.api.data.Form
+import models.domain.StringFieldRegex._
 
 class EoriNumberFormProvider @Inject() extends Mappings {
 
-  def apply(consigneeName: String): Form[String] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> text("eoriNumber.error.required", args = Seq(consigneeName))
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
         .verifying(
-          StopOnFirstFail[String](
-            regexp(eoriLengthRegex.r, "eoriNumber.error.length", Seq(consigneeName)),
-            regexp(eoriRegex.r, "eoriNumber.error.invalid", Seq(consigneeName)),
-            regexp(eoriUkXiRegex.r, "eoriNumber.error.format", Seq(consigneeName))
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            regexp(eoriNumberRegex, s"$prefix.error.invalidFormat"),
+            minLength(minEoriNumberLength, s"$prefix.error.minLength"),
+            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
           )
         )
     )

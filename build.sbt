@@ -14,6 +14,8 @@ lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(inConfig(IntegrationTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
+  .configs(A11yTest)
+  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
@@ -21,6 +23,8 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(headerSettings(IntegrationTest): _*)
   .settings(automateHeaderSettings(IntegrationTest))
+  .settings(headerSettings(A11yTest): _*)
+  .settings(automateHeaderSettings(A11yTest))
   .settings(
     name := appName,
     RoutesKeys.routesImport ++= Seq("models._", "models.OptionBinder._"),
@@ -39,8 +43,9 @@ lazy val root = (project in file("."))
     PlayKeys.playDefaultPort := 10121,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration",
-    ScoverageKeys.coverageMinimumStmtTotal := 90,
+      ".*ControllerConfiguration;.*TestOnlyController;.*LabelSize;.*LegendSize",
+    ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*;",
+    ScoverageKeys.coverageMinimumStmtTotal := 70,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq("-feature", "-language:implicitConversions"),

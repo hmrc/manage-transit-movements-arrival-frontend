@@ -17,20 +17,15 @@
 package forms.behaviours
 
 import org.scalacheck.Gen
-import play.api.data.{Form, FormError}
+import play.api.data.{Field, Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-  def fieldWithMaxLength(
-    form: Form[_],
-    fieldName: String,
-    maxLength: Int,
-    lengthError: FormError,
-    withoutExtendedAscii: Boolean = false
-  ): Unit =
+  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
+      forAll(stringsLongerThan(maxLength) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors mustEqual Seq(lengthError)
@@ -52,4 +47,63 @@ trait StringFieldBehaviours extends FieldBehaviours {
           result.errors mustEqual Seq(lengthError)
       }
     }
+
+  def fieldWithMinLength(form: Form[_], fieldName: String, minLength: Int, lengthError: FormError): Unit =
+    s"must not bind strings shorter than $minLength characters" in {
+
+      forAll(stringsWithLength(minLength - 1) -> "shortString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
+    "must not bind strings with invalid characters" in {
+
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(error)
+      }
+    }
+
+  def postcodeWithInvalidFormat(form: Form[_], fieldName: String, invalidKey: String, length: Int, args: Any*): Unit =
+    "must not bind postcode with invalid format" in {
+
+      val expectedError          = Seq(FormError(fieldName, invalidKey, args.toList))
+      val generator: Gen[String] = RegexpGen.from("^[a-zA-Z]{1,2}([10-12]{1,2}|[10-12][a-zA-Z])\\s*[10-12][a-zA-Z]{4}$")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must equal(expectedError)
+      }
+    }
+
+  def mandatoryTrimmedField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+
+    mandatoryField(form, fieldName, requiredError)
+
+    "must not bind values that trim to empty" in {
+
+      val result = form.bind(Map(fieldName -> "   ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
+  }
+
+  def fieldThatDoesNotBindInvalidData(form: Form[_], fieldName: String, regex: String, gen: Gen[String], invalidKey: String): Unit =
+    s"must not bind strings which don't match $regex" in {
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(regex))
+
+      forAll(gen.retryUntil(!_.matches(regex))) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
+
 }

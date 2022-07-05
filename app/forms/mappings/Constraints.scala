@@ -16,11 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
-import models.Index
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
+import java.time.LocalDate
 import scala.util.matching.Regex
 
 trait Constraints {
@@ -58,7 +56,7 @@ trait Constraints {
         }
     }
 
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def inRange[A](itemIndex: A, minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
         import ev._
@@ -66,9 +64,12 @@ trait Constraints {
         if (input >= minimum && input <= maximum) {
           Valid
         } else {
-          Invalid(errorKey, minimum, maximum)
+          Invalid(errorKey, itemIndex, minimum, maximum)
         }
     }
+
+  protected def regexp(regex: Regex, errorKey: String): Constraint[String] =
+    regexp(regex, errorKey, Seq(regex.regex))
 
   protected def regexp(regex: Regex, errorKey: String, args: Seq[Any]): Constraint[String] =
     Constraint {
@@ -78,55 +79,27 @@ trait Constraints {
         Invalid(errorKey, args: _*)
     }
 
-  protected def regexp(regex: String, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.matches(regex) =>
-        Valid
-      case _ =>
-        Invalid(errorKey, regex)
-    }
-
-  protected def maxLength(maximum: Int, errorKey: String, args: Seq[Any]): Constraint[String] =
-    Constraint {
-      case str if str.length <= maximum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, args: _*)
-    }
-
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length <= maximum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, maximum)
-    }
+    maxLength(maximum, errorKey, Seq(maximum))
 
-  protected def minLength(minimum: Int, errorKey: String, args: Seq[Any]): Constraint[String] =
-    Constraint {
-      case str if str.length >= minimum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, args: _*)
-    }
+  protected def maxLength(maximum: Int, errorKey: String, args: Seq[Any], trim: Boolean = false): Constraint[String] =
+    lengthConstraint(errorKey, x => (if (trim) x.replaceAll("\\s", "").length else x.length) <= maximum, args)
 
   protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length >= minimum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, minimum)
-    }
+    lengthConstraint(errorKey, _.length >= minimum, Seq(minimum))
 
-  protected def printableAscii(errorKey: String): Constraint[String] =
+  protected def minLength(minimum: Int, errorKey: String, args: Seq[Any], trim: Boolean = false): Constraint[String] =
+    lengthConstraint(errorKey, x => (if (trim) x.replaceAll("\\s", "").length else x.length) >= minimum, args)
+
+  protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
+    lengthConstraint(errorKey, _.length == exact, Seq(exact))
+
+  private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =
     Constraint {
-      case str
-          if !str.toCharArray.exists(
-            c => 32 > c || c > 126
-          ) =>
+      case str if predicate(str) =>
         Valid
       case _ =>
-        Invalid(errorKey)
+        Invalid(errorKey, args: _*)
     }
 
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
@@ -153,19 +126,4 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def doesNotExistIn[A](values: Seq[A], index: Index, errorKey: String, args: Any*)(implicit ev: StringEquivalence[A]): Constraint[String] = {
-    import StringEquivalence._
-
-    val valuesFilterWithoutCurrentIndex: Seq[A] =
-      values.zipWithIndex.filterNot(_._2 == index.position).map(_._1)
-
-    Constraint {
-      x =>
-        if (valuesFilterWithoutCurrentIndex.exists(_.equalsString(x))) {
-          Invalid(errorKey, args: _*)
-        } else {
-          Valid
-        }
-    }
-  }
 }

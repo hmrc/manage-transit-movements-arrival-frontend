@@ -16,28 +16,32 @@
 
 package models
 
-import play.api.libs.json._
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-import scala.util.matching.Regex
+trait Address {
+  val line1: String
+  val line2: String
+  val postalCode: String
+}
 
-case class Address(buildingAndStreet: String, city: String, postcode: String)
+case class UkAddress(
+  line1: String,
+  line2: String,
+  postalCode: String
+) extends Address
 
-object Address {
+object UkAddress {
+  implicit val format: OFormat[UkAddress] = Json.format[UkAddress]
+}
 
-  object Constants {
-    val buildingAndStreetLength = 35
-    val cityLength              = 35
-    val postcodeLength          = 9
+case class InternationalAddress(
+  line1: String,
+  line2: String,
+  postalCode: String,
+  country: Country
+) extends Address
 
-    lazy val postCodeRegex: Regex       = "^[a-zA-Z\\s*0-9]*$".r
-    lazy val postCodeFormatRegex: Regex = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$".r
-
-    object Fields {
-      val buildingAndStreetName = "building and street name"
-      val city                  = "town or city"
-      val postcode              = "postcode"
-    }
-  }
-
-  implicit val format = Json.format[Address]
+object InternationalAddress {
+  implicit val format: OFormat[InternationalAddress] = Json.format[InternationalAddress]
 }

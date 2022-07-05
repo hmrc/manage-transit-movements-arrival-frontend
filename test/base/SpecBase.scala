@@ -17,9 +17,7 @@
 package base
 
 import config.FrontendAppConfig
-import models.domain.{ContainerDomain, SealDomain}
-import models.messages.{Container, Seal}
-import models.{Address, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
+import models.{EoriNumber, Index, MovementReferenceNumber, UkAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -54,19 +52,14 @@ trait SpecBase
   val containerIndex: Index = Index(0)
   val sealIndex: Index      = Index(0)
 
-  val seal: Seal                       = Seal("sealNumber")
-  val sealDomain: SealDomain           = SealDomain("sealNumber")
-  val container: Container             = Container("containerNumber")
-  val domainContainer: ContainerDomain = ContainerDomain("containerNumber")
-
   val traderName: String       = "traderName"
   val consigneeName: String    = "consigneeName"
   val traderEoriNumber: String = "AB123456A"
   val customsOffice: String    = "customsOffice"
 
-  val traderAddress: Address    = Address("buildingAndStreet", "city", "NE99 1XN")
-  val consigneeAddress: Address = Address("buildingAndStreet", "city", "NE99 1XN")
-  val configKey                 = "config"
+  val traderAddress: UkAddress    = UkAddress("buildingAndStreet", "city", "NE99 1XN")
+  val consigneeAddress: UkAddress = UkAddress("buildingAndStreet", "city", "NE99 1XN")
+  val configKey                   = "config"
 
   def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

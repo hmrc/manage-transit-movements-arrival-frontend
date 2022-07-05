@@ -18,9 +18,9 @@ package views.behaviours
 
 import models.Address
 
-trait AddressViewBehaviours extends QuestionViewBehaviours[Address] {
+trait AddressViewBehaviours[T <: Address] extends QuestionViewBehaviours[T] {
 
-  val fields = Seq("buildingAndStreet", "city", "postcode")
+  val fields: Seq[String]
 
   def pageWithAddressInput(): Unit =
     "page with an address input" - {

@@ -17,36 +17,36 @@
 package forms.mappings
 
 import generators.Generators
-import models.Index
 import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.validation.{Invalid, Valid}
 
 import java.time.LocalDate
 
+// scalastyle:off magic.number
 class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" - {
 
     "must return Valid when all constraints pass" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("foo")
+      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""".r, "error.regexp"))("foo")
       result mustEqual Valid
     }
 
     "must return Invalid when the first constraint fails" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("a" * 11)
+      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""".r, "error.regexp"))("a" * 11)
       result mustEqual Invalid("error.length", 10)
     }
 
     "must return Invalid when the second constraint fails" in {
-      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
+      val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""".r, "error.regexp"))("")
       result mustEqual Invalid("error.regexp", """^\w+$""")
     }
 
     "must return Invalid for the first error when both constraints fail" in {
-      val result = firstError(maxLength(-1, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
+      val result = firstError(maxLength(-1, "error.length"), regexp("""^\w+$""".r, "error.regexp"))("")
       result mustEqual Invalid("error.length", -1)
     }
   }
@@ -90,12 +90,12 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
   "regexp" - {
 
     "must return Valid for an input that matches the expression" in {
-      val result = regexp("""^\w+$""", "error.invalid")("foo")
+      val result = regexp("""^\w+$""".r, "error.invalid")("foo")
       result mustEqual Valid
     }
 
     "must return Invalid for an input that does not match the expression" in {
-      val result = regexp("""^\d+$""", "error.invalid")("foo")
+      val result = regexp("""^\d+$""".r, "error.invalid")("foo")
       result mustEqual Invalid("error.invalid", """^\d+$""")
     }
   }
@@ -120,6 +120,29 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Invalid for a string longer than the allowed length" in {
       val result = maxLength(10, "error.length")("a" * 11)
       result mustEqual Invalid("error.length", 10)
+    }
+
+    "must trim values when boolean is true" in {
+      val result = maxLength(10, "error.length", Seq.empty, trim = true)("a " * 10)
+      result mustEqual Valid
+    }
+  }
+
+  "minLength" - {
+
+    "must return InValid for a string shorter than the allowed length" in {
+      val result = minLength(10, "error.length")("a" * 9)
+      result mustBe Invalid("error.length", 10)
+    }
+
+    "must return Valid for a string equal to the allowed length" in {
+      val result = minLength(10, "error.length")("a" * 10)
+      result mustEqual Valid
+    }
+
+    "must trim values when boolean is true" in {
+      val result = minLength(10, "error.length", Seq.empty, trim = true)("a " * 10)
+      result mustEqual Valid
     }
   }
 
@@ -185,64 +208,5 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
-  "doesNotExistIn" - {
-    case class TestObject(value: String)
-
-    val testObjectsToValidateAgainst = Seq(TestObject("a"))
-
-    implicit val testObjectFormEqCheck: StringEquivalence[TestObject] =
-      new StringEquivalence[TestObject] {
-        override def equivalentToString(lhs: TestObject, formValue: String): Boolean = lhs.value == formValue
-      }
-
-    val nextIndex    = Index(1)
-    val currentIndex = Index(0)
-
-    def constraint(index: Index): Constraint[String] = doesNotExistIn(testObjectsToValidateAgainst, index, "error.duplicate")
-
-    "returns Valid if it is not contained in the values to be tested against and index is the next sequential index" in {
-      val result = constraint(nextIndex)("b")
-
-      result mustEqual Valid
-    }
-
-    "returns Invalid if it is contained in the values to be tested against and index is the next sequential index" in {
-      val result = constraint(nextIndex)("a")
-
-      result mustEqual Invalid("error.duplicate")
-    }
-
-    "returns Valid if new answer is the same as the previous in current index" in {
-      val result = constraint(currentIndex)("a")
-
-      result mustEqual Valid
-    }
-  }
-
-  "validAscii" - {
-
-    "returns valid if there are only printable ascii characters within the string" in {
-
-      val stringsWithOnlyPrintableAscii: Gen[String] = stringsLongerThan(1, withOnlyPrintableAscii = true)
-
-      forAll(stringsWithOnlyPrintableAscii) {
-        value =>
-          val result = printableAscii("error.invalid")(value)
-          result mustBe Valid
-      }
-
-    }
-
-    "returns invalid if there are any non-printable ascii characters within the string" in {
-
-      val stringsWithoutPrintableAscii: Gen[String] = stringsLongerThan(1, withOnlyPrintableAscii = false)
-
-      forAll(stringsWithoutPrintableAscii) {
-        value =>
-          val result = printableAscii("error.invalid")(value)
-          result mustBe Invalid("error.invalid")
-      }
-    }
-  }
-
 }
+// scalastyle:on magic.number

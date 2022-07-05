@@ -18,34 +18,15 @@ package forms
 
 import forms.mappings.Mappings
 import models.CustomsOfficeList
+import models.reference.CustomsOffice
+import play.api.data.Form
 
 import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.Messages
-import models.reference.CustomsOffice
 
 class CustomsOfficeFormProvider @Inject() extends Mappings {
 
-  def apply(
-    subPlace: String,
-    customsOffices: CustomsOfficeList
-  )(implicit messages: Messages): Form[CustomsOffice] =
+  def apply(prefix: String, customsOfficeList: CustomsOfficeList): Form[CustomsOffice] =
     Form(
-      "value" -> text("customsOffice.error.required", Seq(subPlace))
-        .verifying(messages("customsOffice.error.required", subPlace), value => customsOffices.getAll.exists(_.id == value))
-        .transform[CustomsOffice](value => customsOffices.getAll.find(_.id == value).get, _.id)
-    )
-}
-
-class CustomsOfficeSimplifiedFormProvider @Inject() extends Mappings {
-
-  def apply(
-    consigneeName: String,
-    customsOffices: CustomsOfficeList
-  )(implicit messages: Messages): Form[CustomsOffice] =
-    Form(
-      "value" -> text("customsOffice.simplified.error.required", Seq(consigneeName))
-        .verifying(messages("customsOffice.simplified.error.required", consigneeName), value => customsOffices.getAll.exists(_.id == value))
-        .transform[CustomsOffice](value => customsOffices.getAll.find(_.id == value).get, _.id)
+      "value" -> customsOffice(customsOfficeList, s"$prefix.error.required")
     )
 }

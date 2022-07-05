@@ -16,21 +16,23 @@
 
 package forms
 
-import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.CustomsOfficeList
-import models.reference.CustomsOffice
 import play.api.data.FormError
+import generators.Generators
+import org.scalacheck.Gen
 
-class CustomsOfficeFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class CustomsOfficeFormProviderSpec extends StringFieldBehaviours with Generators {
 
-  var subPlace            = "subPlace"
-  val requiredKey: String = "customsOffice.error.required"
-  val lengthKey           = "customsOffice.error.length"
-  val maxLength           = 8
+  private val prefix      = Gen.alphaNumStr.sample.value
+  private val requiredKey = s"$prefix.error.required"
+  private val maxLength   = 8
 
-  val customsOffices = CustomsOfficeList(Seq(CustomsOffice("id", Some("name"), None), CustomsOffice("GB000003", Some("someName"), None)))
-  val form           = new CustomsOfficeFormProvider()(subPlace, customsOffices)
+  private val customsOffice1    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+
+  private val form = new CustomsOfficeFormProvider()(prefix, customsOfficeList)
 
   ".value" - {
 
@@ -45,19 +47,17 @@ class CustomsOfficeFormProviderSpec extends StringFieldBehaviours with SpecBase 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(subPlace))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if customs office id does not exist in the customs office list" in {
-
+    "not bind if customs office id does not exist in the customsOfficeList" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a customs office id which is in the list" in {
-
-      val boundForm = form.bind(Map("value" -> "GB000003"))
+    "bind a customsOffice id which is in the list" in {
+      val boundForm = form.bind(Map("value" -> customsOffice1.id))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

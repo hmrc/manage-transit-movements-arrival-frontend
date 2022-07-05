@@ -19,20 +19,16 @@ package generators
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-
 import java.time._
 
-trait Generators
-    extends UserAnswersGenerator
-    with PageGenerators
-    with ModelGenerators
-    with UserAnswersEntryGenerators
-    with ViewModelGenerators
-    with MessagesModelGenerators {
+import cats.data.NonEmptyList
+
+trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 
-  val maxListLength = 10
+  lazy val maxListLength   = 10
+  lazy val stringMaxLength = 36
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
@@ -80,23 +76,43 @@ trait Generators
     arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (
+    arbitrary[Int] retryUntil (
       x => x < min || x > max
     )
 
+  def intsInsideRange(min: Int, max: Int): Gen[Int] =
+    arbitrary[Int] retryUntil (
+      x => x > min && x < max
+    )
+
+  def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
+
   def nonBooleans: Gen[String] =
-    arbitrary[String]
-      .suchThat(_.trim.nonEmpty)
-      .suchThat(_ != "true")
-      .suchThat(_ != "false")
+    nonEmptyString
+      .retryUntil(_ != "true")
+      .retryUntil(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    for {
+      length <- choose(1, stringMaxLength)
+      chars  <- listOfN(length, Gen.alphaNumChar)
+    } yield chars.mkString
 
-  def stringsWithMaxLength(maxLength: Int): Gen[String] =
+  def stringsWithMaxLength(maxLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars  <- listOfN(length, alphaNumChar)
+      chars  <- listOfN(length, charGen)
+    } yield chars.mkString
+
+  def stringsLongerThan(minLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] = for {
+    maxLength <- (minLength * 2).max(100)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, charGen)
+  } yield chars.mkString
+
+  def stringsWithLength(length: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
+    for {
+      chars <- listOfN(length, charGen)
     } yield chars.mkString
 
   def alphaStringsWithMaxLength(maxLength: Int): Gen[String] =
@@ -111,21 +127,6 @@ trait Generators
     for {
       length <- choose(1, maxLength)
       chars  <- listOfN(length, extendedAsciiChar)
-    } yield chars.mkString
-
-  def stringsLongerThan(minLength: Int, withOnlyPrintableAscii: Boolean = false): Gen[String] =
-    for {
-      maxLength     <- (minLength * 2).max(100)
-      length        <- Gen.chooseNum(minLength + 1, maxLength)
-      extendedAscii <- extendedAsciiChar
-      chars <- {
-        if (withOnlyPrintableAscii) {
-          listOfN(length, Gen.alphaChar)
-        } else {
-          val listOfChar = listOfN(length, arbitrary[Char])
-          listOfChar.map(_ ++ List(extendedAscii))
-        }
-      }
     } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
@@ -145,11 +146,27 @@ trait Generators
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
 
+  def nonEmptyListOf[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
+    listWithMaxLength[A](maxLength).map(NonEmptyList.fromListUnsafe _)
+
   def listWithMaxLength[A](maxLength: Int = maxListLength)(implicit a: Arbitrary[A]): Gen[List[A]] =
     for {
       length <- choose(1, maxLength)
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
+
+  def listWithMaxLength[T](maxSize: Int, gen: Gen[T]): Gen[Seq[T]] =
+    for {
+      size  <- Gen.choose(0, maxSize)
+      items <- Gen.listOfN(size, gen)
+    } yield items
+
+  def nonEmptyListWithMaxSize[T](maxSize: Int, gen: Gen[T]): Gen[NonEmptyList[T]] =
+    for {
+      head     <- gen
+      tailSize <- Gen.choose(1, maxSize - 1)
+      tail     <- Gen.listOfN(tailSize, gen)
+    } yield NonEmptyList(head, tail)
 
   def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
 
@@ -182,5 +199,9 @@ trait Generators
       LocalDateTime.of(1900, 1, 1, 0, 0, 0),
       LocalDateTime.of(2100, 1, 1, 0, 0, 0)
     ).map(_.toLocalTime)
+  }
+
+  implicit lazy val arbitraryAny: Arbitrary[Any] = Arbitrary {
+    Gen.oneOf[Any](Gen.alphaNumStr, arbitrary[Int])
   }
 }
