@@ -3,7 +3,6 @@ package views.$package$
 import forms.$formProvider$
 import generators.Generators
 import models.{UkAddress, NormalMode}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

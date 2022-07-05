@@ -18,7 +18,7 @@ package views.behaviours
 
 import models.Address
 
-trait AddressViewBehaviours extends QuestionViewBehaviours[Address] {
+trait AddressViewBehaviours[T <: Address] extends QuestionViewBehaviours[T] {
 
   val fields: Seq[String]
 

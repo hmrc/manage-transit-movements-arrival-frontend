@@ -4,7 +4,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.requests.SpecificDataRequestProvider1
-import models.{Address, CountryList, MovementReferenceNumber, Mode}
+import models.{InternationalAddress, CountryList, MovementReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import $addressHolderNameImport$
@@ -38,7 +38,7 @@ class $className;format="cap"$Controller @Inject()(
 
   private def name(implicit request: Request): String = request.arg
 
-  private def form(countryList: CountryList)(implicit request: Request): Form[Address] =
+  private def form(countryList: CountryList)(implicit request: Request): Form[InternationalAddress] =
     formProvider("$package$.$className;format="decap"$", name, countryList)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
@@ -59,7 +59,7 @@ class $className;format="cap"$Controller @Inject()(
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(NamePage))
+    .andThen(getMandatoryPage($addressHolderNamePage$))
     .async {
       implicit request =>
         countriesService.getCountries().flatMap {

@@ -36,7 +36,7 @@ class $className;format="cap"$Controller @Inject()(
 
   private def name(implicit request: Request): String = request.arg
 
-  private def form()(implicit request: Request): Form[Address] =
+  private def form()(implicit request: Request): Form[UkAddress] =
     formProvider("$package$.$className;format="decap"$", name)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
@@ -53,7 +53,7 @@ class $className;format="cap"$Controller @Inject()(
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(NamePage))
+    .andThen(getMandatoryPage($addressHolderNamePage$))
     .async {
       implicit request =>
         form()

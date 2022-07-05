@@ -2,7 +2,7 @@ package views.$package$
 
 import forms.$formProvider$
 import generators.Generators
-import models.{Address, CountryList, NormalMode}
+import models.{InternationalAddress, CountryList, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
@@ -16,9 +16,9 @@ class $className$ViewSpec extends InternationalAddressViewBehaviours with Genera
 
   private val countryList = arbitrary[CountryList].sample.value
 
-  override def form: Form[Address] = new $formProvider$()(prefix, addressHolderName, countryList)
+  override def form: Form[InternationalAddress] = new $formProvider$()(prefix, addressHolderName, countryList)
 
-  override def applyView(form: Form[Address]): HtmlFormat.Appendable =
+  override def applyView(form: Form[InternationalAddress]): HtmlFormat.Appendable =
     injector.instanceOf[$className$View].apply(form, mrn, NormalMode, countryList.countries, addressHolderName)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"

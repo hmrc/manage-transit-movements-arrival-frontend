@@ -47,7 +47,7 @@ object AddressLine {
   }
 
   case object UkPostCode extends AddressLine {
-    override val field: String = "postcode"
+    override val field: String = "postalCode"
     val length: Int            = 9
     val regex: Regex           = ukPostCodeRegex
   }

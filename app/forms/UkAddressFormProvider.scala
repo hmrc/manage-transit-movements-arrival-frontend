@@ -54,7 +54,7 @@ class UkAddressFormProvider @Inject() extends Mappings {
           trimmedText(s"$prefix.error.postalCode.required", args)
             .verifying(
               StopOnFirstFail[String](
-                maxLength(UkPostCode.length, s"$prefix.error.postalCode.length", args :+ PostalCode.length),
+                maxLength(UkPostCode.length, s"$prefix.error.postalCode.length", args :+ UkPostCode.length),
                 regexp(UkPostCode.regex, s"$prefix.error.postalCode.invalid", args)
               )
             )

@@ -40,10 +40,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       for {
-        id          <- arbitrary[String]
-        name        <- arbitrary[Option[String]]
-        phoneNumber <- Gen.option(arbitrary[String])
-      } yield CustomsOffice(id, name, phoneNumber)
+        id          <- nonEmptyString
+        name        <- nonEmptyString
+        phoneNumber <- Gen.option(Gen.alphaNumStr)
+      } yield CustomsOffice(id, Some(name), phoneNumber)
     }
 
   implicit lazy val arbitraryCustomsOfficeList: Arbitrary[CustomsOfficeList] =
@@ -87,7 +87,7 @@ trait ModelGenerators {
     } yield CountryList(countries)
   }
 
-  implicit lazy val arbitraryInternationalAddress: Arbitrary[Address] =
+  implicit lazy val arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
     Arbitrary {
       for {
         addressLine1 <- stringsWithMaxLength(AddressLine.AddressLine1.length, Gen.alphaNumChar)
@@ -100,9 +100,12 @@ trait ModelGenerators {
   implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
     Arbitrary {
       for {
-        addressLine1 <- stringsWithMaxLength(AddressLine.AddressLine1.length, Gen.alphaNumChar)
-        addressLine2 <- stringsWithMaxLength(AddressLine.AddressLine2.length, Gen.alphaNumChar)
-        postCode     <- stringsWithMaxLength(AddressLine.UkPostCode.length, Gen.alphaNumChar)
-      } yield UkAddress(addressLine1, addressLine2, postCode)
+        addressLine1    <- stringsWithMaxLength(AddressLine.AddressLine1.length, Gen.alphaNumChar)
+        addressLine2    <- stringsWithMaxLength(AddressLine.AddressLine2.length, Gen.alphaNumChar)
+        postCodeStart   <- stringsWithLength(2, Gen.alphaChar)
+        postCodeMiddle  <- stringsWithMaxLength(2, Gen.numChar)
+        postCodeLastNum <- stringsWithLength(1, Gen.numChar)
+        postCodeEnd     <- stringsWithLength(2, Gen.alphaChar)
+      } yield UkAddress(addressLine1, addressLine2, postCodeStart + postCodeMiddle + " " + postCodeLastNum + postCodeEnd)
     }
 }

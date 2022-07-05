@@ -16,6 +16,8 @@
 
 package views.behaviours
 
-trait UkAddressViewBehaviours extends AddressViewBehaviours {
+import models.UkAddress
+
+trait UkAddressViewBehaviours extends AddressViewBehaviours[UkAddress] {
   override val fields = Seq("addressLine1", "addressLine2", "postalCode")
 }
