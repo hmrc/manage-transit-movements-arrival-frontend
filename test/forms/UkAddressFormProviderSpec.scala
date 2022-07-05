@@ -18,7 +18,7 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import models.UkAddressLine._
+import models.AddressLine._
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -33,92 +33,92 @@ class UkAddressFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   private val form = new UkAddressFormProvider()(prefix, name)
 
-  ".buildingAndStreet" - {
+  ".addressLine1" - {
 
-    val fieldName = BuildingAndStreet.field
+    val fieldName = AddressLine1.field
 
     behave like fieldThatBindsValidData(
       form = form,
       fieldName = fieldName,
-      validDataGenerator = stringsWithMaxLength(BuildingAndStreet.length)
+      validDataGenerator = stringsWithMaxLength(AddressLine1.length)
     )
 
     behave like fieldWithMaxLength(
       form = form,
       fieldName = fieldName,
-      maxLength = BuildingAndStreet.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(BuildingAndStreet.arg.capitalize, name, BuildingAndStreet.length))
+      maxLength = AddressLine1.length,
+      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine1.arg.capitalize, name, AddressLine1.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(BuildingAndStreet.arg, name))
+      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine1.arg, name))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(BuildingAndStreet.arg.capitalize, name)),
-      length = BuildingAndStreet.length
+      error = FormError(fieldName, invalidKey, Seq(AddressLine1.arg.capitalize, name)),
+      length = AddressLine1.length
     )
   }
 
-  ".city" - {
+  ".addressLine2" - {
 
-    val fieldName = City.field
+    val fieldName = AddressLine2.field
 
     behave like fieldThatBindsValidData(
       form = form,
       fieldName = fieldName,
-      validDataGenerator = stringsWithMaxLength(City.length)
+      validDataGenerator = stringsWithMaxLength(AddressLine2.length)
     )
 
     behave like fieldWithMaxLength(
       form = form,
       fieldName = fieldName,
-      maxLength = City.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(City.arg.capitalize, name, City.length))
+      maxLength = AddressLine2.length,
+      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine2.arg.capitalize, name, AddressLine2.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(City.arg, name))
+      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine2.arg, name))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(City.arg.capitalize, name)),
-      length = City.length
+      error = FormError(fieldName, invalidKey, Seq(AddressLine2.arg.capitalize, name)),
+      length = AddressLine2.length
     )
   }
 
-  ".postCode" - {
+  ".postalCode" - {
 
     val postcodeInvalidKey    = s"$prefix.error.postalCode.invalid"
     val postalCodeRequiredKey = s"$prefix.error.postalCode.required"
     val lengthKey             = s"$prefix.error.postalCode.length"
 
-    val fieldName = PostCode.field
+    val fieldName = UkPostCode.field
 
     val validPostalOverLength: Gen[String] = for {
-      num  <- Gen.chooseNum[Int](PostCode.length + 1, PostCode.length + 5)
+      num  <- Gen.chooseNum[Int](UkPostCode.length + 1, UkPostCode.length + 5)
       list <- Gen.listOfN(num, Gen.alphaNumChar)
     } yield list.mkString("")
 
     behave like fieldThatBindsValidData(
       form = form,
       fieldName = fieldName,
-      validDataGenerator = stringsWithMaxLength(PostCode.length)
+      validDataGenerator = stringsWithMaxLength(UkPostCode.length)
     )
 
     behave like fieldWithMaxLength(
       form = form,
       fieldName = fieldName,
-      maxLength = PostCode.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(name, PostCode.length)),
+      maxLength = UkPostCode.length,
+      lengthError = FormError(fieldName, lengthKey, Seq(name, UkPostCode.length)),
       gen = validPostalOverLength
     )
 
@@ -132,7 +132,7 @@ class UkAddressFormProviderSpec extends StringFieldBehaviours with SpecBase {
       form = form,
       fieldName = fieldName,
       error = FormError(fieldName, postcodeInvalidKey, Seq(name)),
-      length = PostCode.length
+      length = UkPostCode.length
     )
   }
 }

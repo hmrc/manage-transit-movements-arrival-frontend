@@ -16,33 +16,43 @@
 
 package models
 
-import models.domain.StringFieldRegex.{stringFieldRegex, ukPostCodeRegex}
+import models.domain.StringFieldRegex.{postalCodeRegex, stringFieldRegex, ukPostCodeRegex}
 import play.api.i18n.Messages
 
 import scala.util.matching.Regex
 
-sealed trait UkAddressLine {
+sealed trait AddressLine {
   val field: String
   def arg(implicit messages: Messages): String = messages(s"address.$field")
 }
 
-object UkAddressLine {
+object AddressLine {
 
-  case object BuildingAndStreet extends UkAddressLine {
-    override val field: String = "buildingAndStreet"
+  case object AddressLine1 extends AddressLine {
+    override val field: String = "addressLine1"
     val length: Int            = 35
     val regex: Regex           = stringFieldRegex
   }
 
-  case object City extends UkAddressLine {
-    override val field: String = "city"
+  case object AddressLine2 extends AddressLine {
+    override val field: String = "addressLine2"
     val length: Int            = 35
     val regex: Regex           = stringFieldRegex
   }
 
-  case object PostCode extends UkAddressLine {
+  case object PostalCode extends AddressLine {
+    override val field: String = "postalCode"
+    val length: Int            = 9
+    val regex: Regex           = postalCodeRegex
+  }
+
+  case object UkPostCode extends AddressLine {
     override val field: String = "postcode"
     val length: Int            = 9
     val regex: Regex           = ukPostCodeRegex
+  }
+
+  case object Country extends AddressLine {
+    override val field: String = "country"
   }
 }

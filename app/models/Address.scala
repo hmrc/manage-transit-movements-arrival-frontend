@@ -16,10 +16,32 @@
 
 package models
 
-import play.api.libs.json._
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-case class UkAddress(buildingAndStreet: String, city: String, postcode: String)
+trait Address {
+  val line1: String
+  val line2: String
+  val postalCode: String
+}
+
+case class UkAddress(
+  line1: String,
+  line2: String,
+  postalCode: String
+) extends Address
 
 object UkAddress {
-  implicit val format = Json.format[UkAddress]
+  implicit val format: OFormat[UkAddress] = Json.format[UkAddress]
+}
+
+case class InternationalAddress(
+  line1: String,
+  line2: String,
+  postalCode: String,
+  country: Country
+) extends Address
+
+object InternationalAddress {
+  implicit val format: OFormat[InternationalAddress] = Json.format[InternationalAddress]
 }

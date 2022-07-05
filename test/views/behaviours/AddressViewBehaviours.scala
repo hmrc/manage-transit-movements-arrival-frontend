@@ -16,11 +16,11 @@
 
 package views.behaviours
 
-import models.UkAddress
+import models.Address
 
-trait AddressViewBehaviours extends QuestionViewBehaviours[UkAddress] {
+trait AddressViewBehaviours extends QuestionViewBehaviours[Address] {
 
-  val fields = Seq("buildingAndStreet", "city", "postcode")
+  val fields: Seq[String]
 
   def pageWithAddressInput(): Unit =
     "page with an address input" - {

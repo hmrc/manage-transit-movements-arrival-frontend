@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package views.behaviours
 
-import models.reference.Country
-import play.api.libs.json.{Json, OFormat}
-
-case class InternationalAddress(
-  line1: String,
-  line2: String,
-  postalCode: String,
-  country: Country
-)
-
-object InternationalAddress {
-  implicit val format: OFormat[InternationalAddress] = Json.format[InternationalAddress]
+trait UkAddressViewBehaviours extends AddressViewBehaviours {
+  override val fields = Seq("addressLine1", "addressLine2", "postalCode")
 }

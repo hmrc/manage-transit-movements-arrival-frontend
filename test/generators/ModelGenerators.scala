@@ -86,4 +86,23 @@ trait ModelGenerators {
       countries <- listWithMaxLength[Country]()
     } yield CountryList(countries)
   }
+
+  implicit lazy val arbitraryInternationalAddress: Arbitrary[Address] =
+    Arbitrary {
+      for {
+        addressLine1 <- stringsWithMaxLength(AddressLine.AddressLine1.length, Gen.alphaNumChar)
+        addressLine2 <- stringsWithMaxLength(AddressLine.AddressLine2.length, Gen.alphaNumChar)
+        postalCode   <- stringsWithMaxLength(AddressLine.PostalCode.length, Gen.alphaNumChar)
+        country      <- arbitrary[Country]
+      } yield InternationalAddress(addressLine1, addressLine2, postalCode, country)
+    }
+
+  implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
+    Arbitrary {
+      for {
+        addressLine1 <- stringsWithMaxLength(AddressLine.AddressLine1.length, Gen.alphaNumChar)
+        addressLine2 <- stringsWithMaxLength(AddressLine.AddressLine2.length, Gen.alphaNumChar)
+        postCode     <- stringsWithMaxLength(AddressLine.UkPostCode.length, Gen.alphaNumChar)
+      } yield UkAddress(addressLine1, addressLine2, postCode)
+    }
 }

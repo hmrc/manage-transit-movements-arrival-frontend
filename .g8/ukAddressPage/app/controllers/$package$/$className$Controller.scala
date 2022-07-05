@@ -36,13 +36,12 @@ class $className;format="cap"$Controller @Inject()(
 
   private def name(implicit request: Request): String = request.arg
 
-  private def form()(implicit request: Request): Form[UkAddress] =
+  private def form()(implicit request: Request): Form[Address] =
     formProvider("$package$.$className;format="decap"$", name)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage($addressHolderNamePage$))
-    .async {
+    .andThen(getMandatoryPage($addressHolderNamePage$)) {
       implicit request =>
         val preparedForm = request.userAnswers.get($className$Page) match {
           case None        => form()

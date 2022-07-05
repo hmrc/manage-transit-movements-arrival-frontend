@@ -18,8 +18,8 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import models.{CountryList, InternationalAddressLine}
-import models.InternationalAddressLine._
+import models.{AddressLine, CountryList}
+import models.AddressLine._
 import models.reference.{Country, CountryCode}
 import org.scalacheck.Gen
 import play.api.data.FormError
@@ -143,7 +143,7 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
   ".country" - {
 
-    val fieldName = InternationalAddressLine.Country.field
+    val fieldName = AddressLine.Country.field
 
     val countryRequiredKey = s"$prefix.error.country.required"
 

@@ -7,10 +7,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.AddressViewBehaviours
+import views.behaviours.UkAddressViewBehaviours
 import views.html.$package$.$className$View
 
-class $className$ViewSpec extends AddressViewBehaviours with Generators {
+class $className$ViewSpec extends UkAddressViewBehaviours with Generators {
 
   private val addressHolderName = Gen.alphaNumStr.sample.value
 

@@ -25,9 +25,9 @@ echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.title = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.heading = $title$" >> ../conf/messages.en
-echo "$package$.$className;format="decap"$.buildingAndStreet = Address line 1" >> ../conf/messages.en
-echo "$package$.$className;format="decap"$.city = Address line 2" >> ../conf/messages.en
-echo "$package$.$className;format="decap"$.postcode = Post code" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.addressLine1 = Building and Street" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.addressLine2 = City" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.postalCode = Post code" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en
 
 echo "$package$.$className;format="decap"$.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z, numbers 0 to 9 and spaces" >> ../conf/messages.en

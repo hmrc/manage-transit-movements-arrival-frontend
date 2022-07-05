@@ -26,7 +26,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val addressHolderName = Gen.alphaNumStr.sample.value
 
-  private val testAddress = arbitrary[UkAddress].sample.value
+  private val testAddress = arbitrary[InternationalAddress].sample.value
   private val countryList = CountryList(Seq(testAddress.country))
 
   private val formProvider      = new $formProvider$()

@@ -3,19 +3,17 @@ package controllers.$package$
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.$formProvider$
 import generators.Generators
-import models.{UkAddress, CountryList, NormalMode, UserAnswers}
+import models.{UkAddress, NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.$package$.$className$Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CountriesService
 import views.html.$package$.$className$View
 import $addressHolderNameImport$
 import pages.$package$.$className$Page
@@ -29,7 +27,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val testAddress = arbitrary[UkAddress].sample.value
 
   private val formProvider      = new $formProvider$()
-  private val form              = formProvider("$package$.$className;format="decap"$", addressHolderName, countryList)
+  private val form              = formProvider("$package$.$className;format="decap"$", addressHolderName)
 
   private val mode                                 = NormalMode
   private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
@@ -78,9 +76,9 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val filledForm = form.bind(
         Map(
-          "businessAndStreet" -> testAddress.businessAndStreet,
+          "buildingAndStreet" -> testAddress.buildingAndStreet,
           "city"              -> testAddress.city,
-          "postCode"          -> testAddress.postCode
+          "postcode"          -> testAddress.postcode
         )
       )
 
@@ -89,7 +87,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, countryList.countries, addressHolderName)(request, messages).toString
+        view(filledForm, mrn, mode, addressHolderName)(request, messages).toString
 
     }
 
@@ -102,9 +100,9 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val request = FakeRequest(POST, $className;format="decap"$Route)
         .withFormUrlEncodedBody(
-          ("businessAndStreet", testAddress.businessAndStreet),
+          ("buildingAndStreet", testAddress.buildingAndStreet),
           ("city", testAddress.city),
-          ("postCode", testAddress.postCode)
+          ("postCode", testAddress.postcode)
         )
 
       val result = route(app, request).value

@@ -2,7 +2,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.AddressLine._
-import models.{UkAddress, CountryList}
+import models.{InternationalAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class $formProvider$ @Inject() extends Mappings {
 
-  def apply(prefix: String, name: String, countryList: CountryList)(implicit messages: Messages): Form[UkAddress] =
+  def apply(prefix: String, name: String, countryList: CountryList)(implicit messages: Messages): Form[InternationalAddress] =
     Form(
       mapping(
         AddressLine1.field -> {
@@ -47,6 +47,6 @@ class $formProvider$ @Inject() extends Mappings {
         Country.field -> {
           country(countryList, s"\$prefix.error.required", Seq(Country.arg, name))
         }
-      )(UkAddress.apply)(UkAddress.unapply)
+      )(InternationalAddress.apply)(InternationalAddress.unapply)
     )
 }
