@@ -26,7 +26,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, index: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.authorisation.authorisationReferenceNumber.title"),
@@ -34,7 +34,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.AuthorisationReferenceNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AuthorisationReferenceNumberController.onSubmit(mrn, index, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

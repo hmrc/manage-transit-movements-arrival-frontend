@@ -18,6 +18,7 @@ package navigation
 
 import controllers.identification.{routes => idRoutes}
 import controllers.identification.authorisation.{routes => idAuthRoutes}
+import derivable.DeriveNumberOfIdentificationAuthorisations
 import javax.inject.{Inject, Singleton}
 import models._
 import pages.QuestionPage
@@ -33,17 +34,20 @@ class IdentificationNavigator @Inject() () extends Navigator {
   override val checkRoutes: RouteMapping = routes(CheckMode)
 
   override def routes(mode: Mode): RouteMapping = {
-    case MovementReferenceNumberPage      => ua => Some(idRoutes.ArrivalDateController.onPageLoad(ua.mrn, mode))
-    case ArrivalDatePage                  => ua => Some(idRoutes.IsSimplifiedProcedureController.onPageLoad(ua.mrn, mode))
-    case IsSimplifiedProcedurePage        => ua => addAuthorisationRoute(IsSimplifiedProcedurePage, ua, mode)
-    case AuthorisationTypePage            => ua => Some(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(ua.mrn, mode))
-    case AuthorisationReferenceNumberPage => ua => Some(idAuthRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
-    case AddAnotherAuthorisationPage      => ua => addAuthorisationRoute(AddAnotherAuthorisationPage, ua, mode)
+    case MovementReferenceNumberPage         => ua => Some(idRoutes.ArrivalDateController.onPageLoad(ua.mrn, mode))
+    case ArrivalDatePage                     => ua => Some(idRoutes.IsSimplifiedProcedureController.onPageLoad(ua.mrn, mode))
+    case IsSimplifiedProcedurePage           => ua => addAuthorisationRoute(IsSimplifiedProcedurePage, ua, mode)
+    case AuthorisationTypePage(index)        => ua => Some(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(ua.mrn, index, mode))
+    case AuthorisationReferenceNumberPage(_) => ua => Some(idAuthRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
+    case AddAnotherAuthorisationPage         => ua => addAuthorisationRoute(AddAnotherAuthorisationPage, ua, mode)
   }
 
   private def addAuthorisationRoute(page: QuestionPage[Boolean], ua: UserAnswers, mode: Mode): Option[Call] =
     yesNoRoute(ua, page)(
-      yesCall = idAuthRoutes.AuthorisationTypeController.onPageLoad(ua.mrn, mode)
+      yesCall = {
+        val count = ua.get(DeriveNumberOfIdentificationAuthorisations).getOrElse(0)
+        idAuthRoutes.AuthorisationTypeController.onPageLoad(ua.mrn, Index(count), mode)
+      }
     )(
       noCall = idRoutes.IdentificationNumberController.onPageLoad(ua.mrn, mode)
     )

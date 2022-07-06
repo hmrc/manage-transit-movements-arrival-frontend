@@ -16,7 +16,7 @@
 
 package controllers.identification.authorisation
 
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
@@ -36,8 +36,9 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
   private val formProvider                           = new AuthorisationRefNoFormProvider()
   private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber")
+  private val index                                  = Index(0)
   private val mode                                   = NormalMode
-  private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, mode).url
+  private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, index, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -59,13 +60,13 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+        view(form, mrn, index, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationReferenceNumberPage, "test string").success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationReferenceNumberPage(index), "test string").success.value
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationReferenceNumberRoute)
@@ -79,7 +80,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
 
     }
 
@@ -116,7 +117,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
 
     }
 

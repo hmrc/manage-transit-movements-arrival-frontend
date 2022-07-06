@@ -18,11 +18,11 @@ package pages.identification.authorisation
 
 import play.api.libs.json.JsPath
 import pages.QuestionPage
-import pages.sections.IdentificationAuthorisationSection
+import pages.sections.IdentificationSection
 
 case object AddAnotherAuthorisationPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = IdentificationAuthorisationSection.path \ toString
+  override def path: JsPath = IdentificationSection.path \ toString
 
   override def toString: String = "addAnotherAuthorisation"
 }

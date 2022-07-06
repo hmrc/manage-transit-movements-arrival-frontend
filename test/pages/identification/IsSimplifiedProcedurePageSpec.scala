@@ -16,6 +16,7 @@
 
 package pages.identification
 
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
@@ -35,10 +36,10 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
         "must clean up IdentificationAuthorisationSection" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
+              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
               val postChange = preChange.set(IsSimplifiedProcedurePage, false).success.value
 
-              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
+              postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
           }
         }
       }
@@ -47,10 +48,10 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
         "must do nothing" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
+              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
               val postChange = preChange.set(IsSimplifiedProcedurePage, true).success.value
 
-              postChange.get(IsSimplifiedProcedurePage) must be(defined)
+              postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
           }
         }
       }

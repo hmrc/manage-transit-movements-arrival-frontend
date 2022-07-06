@@ -16,14 +16,15 @@
 
 package pages.identification.authorisation
 
+import models.Index
 import models.identification.authorisation.AuthorisationType
 import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.IdentificationAuthorisationSection
 
-case object AuthorisationTypePage extends QuestionPage[AuthorisationType] {
+case class AuthorisationTypePage(index: Index) extends QuestionPage[AuthorisationType] {
 
-  override def path: JsPath = IdentificationAuthorisationSection.path \ toString
+  override def path: JsPath = IdentificationAuthorisationSection.path \ index.position \ toString
 
   override def toString: String = "authorisationType"
 }

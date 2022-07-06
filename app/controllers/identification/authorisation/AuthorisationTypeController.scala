@@ -19,7 +19,7 @@ package controllers.identification.authorisation
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber}
 import models.identification.authorisation.AuthorisationType
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
@@ -29,8 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.AuthorisationTypeView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationTypeController @Inject() (
@@ -47,23 +47,23 @@ class AuthorisationTypeController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AuthorisationTypePage) match {
+      val preparedForm = request.userAnswers.get(AuthorisationTypePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, AuthorisationType.radioItems, mode))
+      Ok(view(preparedForm, mrn, index, AuthorisationType.radioItems, mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, AuthorisationType.radioItems, mode))),
-          value => AuthorisationTypePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
+          value => AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }
 }

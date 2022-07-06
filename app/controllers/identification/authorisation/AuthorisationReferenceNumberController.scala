@@ -19,7 +19,7 @@ package controllers.identification.authorisation
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.AuthorisationRefNoFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
@@ -46,22 +46,22 @@ class AuthorisationReferenceNumberController @Inject() (
 
   private val form = formProvider("identification.authorisation.authorisationReferenceNumber")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage) match {
+      val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mrn, mode))
+      Ok(view(preparedForm, mrn, index, mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => AuthorisationReferenceNumberPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index: Index, mode))),
+          value => AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }
 }

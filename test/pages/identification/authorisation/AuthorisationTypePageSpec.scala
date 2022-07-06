@@ -16,6 +16,7 @@
 
 package pages.identification.authorisation
 
+import models.Index
 import models.identification.authorisation.AuthorisationType
 import pages.behaviours.PageBehaviours
 
@@ -23,10 +24,10 @@ class AuthorisationTypeSpec extends PageBehaviours {
 
   "AuthorisationTypePage" - {
 
-    beRetrievable[AuthorisationType](AuthorisationTypePage)
+    beRetrievable[AuthorisationType](AuthorisationTypePage(Index(0)))
 
-    beSettable[AuthorisationType](AuthorisationTypePage)
+    beSettable[AuthorisationType](AuthorisationTypePage(Index(0)))
 
-    beRemovable[AuthorisationType](AuthorisationTypePage)
+    beRemovable[AuthorisationType](AuthorisationTypePage(Index(0)))
   }
 }

@@ -19,7 +19,7 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
 import views.html.identification.authorisation.AuthorisationTypeView
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import models.identification.authorisation.AuthorisationType
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
@@ -37,8 +37,9 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val formProvider                = new AuthorisationTypeFormProvider()
   private val form                        = formProvider()
+  private val index                       = Index(0)
   private val mode                        = NormalMode
-  private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(mrn, mode).url
+  private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(mrn, index, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -60,12 +61,12 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
+        view(form, mrn, index, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationTypePage, AuthorisationType.values.head).success.value
+      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationTypePage(index), AuthorisationType.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationTypeRoute)
@@ -79,7 +80,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
+        view(filledForm, mrn, index, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -113,7 +114,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
+        view(boundForm, mrn, index, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

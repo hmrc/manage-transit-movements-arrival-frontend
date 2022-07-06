@@ -26,7 +26,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryAuthorisationType: Arbitrary[models.identification.authorisation.AuthorisationType] =
     Arbitrary {
-      Gen.oneOf(models.identification.authorisation.AuthorisationType.values.toSeq)
+      Gen.oneOf(models.identification.authorisation.AuthorisationType.values)
     }
 
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =

@@ -17,7 +17,7 @@
 package views.identification.authorisation
 
 import forms.identification.authorisation.AuthorisationTypeFormProvider
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -30,7 +30,7 @@ class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
   override def form: Form[AuthorisationType] = new AuthorisationTypeFormProvider()()
 
   override def applyView(form: Form[AuthorisationType]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationTypeView].apply(form, mrn, AuthorisationType.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AuthorisationTypeView].apply(form, mrn, Index(0), AuthorisationType.radioItems, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.authorisationType"
 

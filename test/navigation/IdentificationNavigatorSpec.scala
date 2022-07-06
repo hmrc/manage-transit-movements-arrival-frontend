@@ -30,7 +30,7 @@ import pages.identification.authorisation._
 class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersGenerator {
 
   private val navigator = new IdentificationNavigator
-
+  private val index     = Index(0)
   "Navigator" - {
     "must go from a page that doesn't exist in the route map" - {
 
@@ -83,7 +83,7 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, true)
               navigator
                 .nextPage(IsSimplifiedProcedurePage, mode, userAnswers)
-                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, mode))
+                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, index, mode))
             }
           }
 
@@ -107,8 +107,8 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         "must go from Authorisation Type Page to Authorisation Reference Number Page" in {
           navigator
-            .nextPage(AuthorisationTypePage, mode, emptyUserAnswers)
-            .mustBe(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(emptyUserAnswers.mrn, mode))
+            .nextPage(AuthorisationTypePage(index), mode, emptyUserAnswers)
+            .mustBe(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(emptyUserAnswers.mrn, index, mode))
         }
 
         "must go from is Add Another Page" - {
@@ -117,7 +117,7 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               val userAnswers = emptyUserAnswers.setValue(AddAnotherAuthorisationPage, true)
               navigator
                 .nextPage(AddAnotherAuthorisationPage, mode, userAnswers)
-                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, mode))
+                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, index, mode))
             }
           }
 

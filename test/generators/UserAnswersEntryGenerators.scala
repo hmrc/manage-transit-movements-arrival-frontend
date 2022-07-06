@@ -16,9 +16,11 @@
 
 package generators
 
+import models.Index
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages.identification.MovementReferenceNumberPage
+import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
@@ -31,20 +33,18 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (pages.identification.IdentificationNumberPage, value)
     }
 
-  implicit lazy val arbitraryIdentificationAuthorisationAuthorisationTypeUserAnswersEntry
-    : Arbitrary[(pages.identification.authorisation.AuthorisationTypePage.type, JsValue)] =
+  implicit lazy val arbitraryIdentificationAuthorisationTypeUserAnswersEntry: Arbitrary[(AuthorisationTypePage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[pages.identification.authorisation.AuthorisationTypePage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.authorisation.AuthorisationTypePage, value)
+        value <- arbitrary[AuthorisationTypePage#Data].map(Json.toJson(_))
+      } yield (AuthorisationTypePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryIdentificationAuthorisationAuthorisationReferenceNumberUserAnswersEntry
-    : Arbitrary[(pages.identification.authorisation.AuthorisationReferenceNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryIdentificationAuthorisationReferenceNumberUserAnswersEntry: Arbitrary[(AuthorisationReferenceNumberPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[pages.identification.authorisation.AuthorisationReferenceNumberPage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.authorisation.AuthorisationReferenceNumberPage, value)
+        value <- arbitrary[AuthorisationReferenceNumberPage#Data].map(Json.toJson(_))
+      } yield (AuthorisationReferenceNumberPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry

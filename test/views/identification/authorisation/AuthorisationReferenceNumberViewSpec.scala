@@ -17,7 +17,7 @@
 package views.identification.authorisation
 
 import forms.identification.AuthorisationRefNoFormProvider
-import models.NormalMode
+import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -32,7 +32,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   override def form: Form[String] = new AuthorisationRefNoFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, mrn, Index(0), NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

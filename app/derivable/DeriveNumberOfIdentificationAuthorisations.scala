@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package derivable
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import pages.sections.IdentificationAuthorisationSection
+import play.api.libs.json.{JsObject, JsPath}
 
-class AuthorisationReferenceNumberPageSpec extends PageBehaviours {
+final case object DeriveNumberOfIdentificationAuthorisations extends Derivable[List[JsObject], Int] {
 
-  "AuthorisationReferenceNumberPage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[String](AuthorisationReferenceNumberPage(Index(0)))
-
-    beSettable[String](AuthorisationReferenceNumberPage(Index(0)))
-
-    beRemovable[String](AuthorisationReferenceNumberPage(Index(0)))
-  }
+  override def path: JsPath = IdentificationAuthorisationSection.path
 }
