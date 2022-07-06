@@ -24,6 +24,51 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryIdentificationIdentificationNumberUserAnswersEntry: Arbitrary[(pages.identification.IdentificationNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.IdentificationNumberPage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.IdentificationNumberPage, value)
+    }
+
+  implicit lazy val arbitraryIdentificationAuthorisationAuthorisationTypeUserAnswersEntry
+    : Arbitrary[(pages.identification.authorisation.AuthorisationTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.authorisation.AuthorisationTypePage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.authorisation.AuthorisationTypePage, value)
+    }
+
+  implicit lazy val arbitraryIdentificationAuthorisationAuthorisationReferenceNumberUserAnswersEntry
+    : Arbitrary[(pages.identification.authorisation.AuthorisationReferenceNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.authorisation.AuthorisationReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.authorisation.AuthorisationReferenceNumberPage, value)
+    }
+
+  implicit lazy val arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry
+    : Arbitrary[(pages.identification.authorisation.AddAnotherAuthorisationPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.authorisation.AddAnotherAuthorisationPage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.authorisation.AddAnotherAuthorisationPage, value)
+    }
+
+  implicit lazy val arbitraryIdentificationIsSimplifiedProcedureUserAnswersEntry: Arbitrary[(pages.identification.IsSimplifiedProcedurePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.IsSimplifiedProcedurePage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.IsSimplifiedProcedurePage, value)
+    }
+
+  implicit lazy val arbitraryIdentificationArrivalDateUserAnswersEntry: Arbitrary[(pages.identification.ArrivalDatePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[pages.identification.ArrivalDatePage.type#Data].map(Json.toJson(_))
+      } yield (pages.identification.ArrivalDatePage, value)
+    }
+
   implicit lazy val arbitraryMovementReferenceNumberUserAnswersEntry: Arbitrary[(MovementReferenceNumberPage.type, JsValue)] =
     Arbitrary {
       for {

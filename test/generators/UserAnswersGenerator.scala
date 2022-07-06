@@ -26,7 +26,14 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = Nil
+  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitraryIdentificationIdentificationNumberUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationAuthorisationAuthorisationTypeUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationAuthorisationAuthorisationReferenceNumberUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationIsSimplifiedProcedureUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationArrivalDateUserAnswersEntry.arbitrary ::
+      Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
@@ -41,7 +48,7 @@ trait UserAnswersGenerator extends TryValues {
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
-        movementReferenceNumber = movementReferenceNumber,
+        mrn = movementReferenceNumber,
         eoriNumber = eoriNumber,
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>

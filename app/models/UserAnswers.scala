@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-  movementReferenceNumber: MovementReferenceNumber,
+  mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
   lastUpdated: LocalDateTime = LocalDateTime.now,

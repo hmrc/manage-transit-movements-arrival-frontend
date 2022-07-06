@@ -78,3 +78,43 @@ pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpd
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
+
+identification.arrivalDate.title = Arrival Date
+identification.arrivalDate.heading = Arrival Date
+identification.arrivalDate.checkYourAnswersLabel = Arrival Date
+identification.arrivalDate.hint = For example, 14 1 2020
+identification.arrivalDate.error.required.all = Enter the date for Arrival Date
+identification.arrivalDate.error.required.two = The date for Arrival Date must include {0} and {1}
+identification.arrivalDate.error.required = The date for Arrival Date must include {0}
+identification.arrivalDate.error.invalid = Enter a real date for Arrival Date
+
+identification.isSimplifiedProcedure.title = Is Simplified Procedure
+identification.isSimplifiedProcedure.heading = Is Simplified Procedure
+identification.isSimplifiedProcedure.checkYourAnswersLabel = Is Simplified Procedure
+identification.isSimplifiedProcedure.error.required = Select yes if Is Simplified Procedure
+
+identification.authorisation.addAnotherAuthorisation.title = Add Another Authorisation
+identification.authorisation.addAnotherAuthorisation.heading = Add Another Authorisation
+identification.authorisation.addAnotherAuthorisation.checkYourAnswersLabel = Add Another Authorisation
+identification.authorisation.addAnotherAuthorisation.error.required = Select yes if Add Another Authorisation
+
+identification.authorisation.authorisationReferenceNumber.title = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.heading = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.error.required = Enter Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.error.length = Authorisation Reference Number must be 100 characters or less
+
+identification.authorisation.authorisationType.title = Authorisation Type
+identification.authorisation.authorisationType.heading = Authorisation Type
+identification.authorisation.authorisationType.hintText = Authorisation Type hint
+identification.authorisation.authorisationType.label = Authorisation Type label
+identification.authorisation.authorisationType.placeholder = Select a customsOffice
+identification.authorisation.authorisationType.change.hidden = Authorisation Type
+identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
+identification.authorisation.authorisationType.error.required = Select the customsOffice
+
+identification.identificationNumber.title = Identification Number
+identification.identificationNumber.heading = Identification Number
+identification.identificationNumber.checkYourAnswersLabel = Identification Number
+identification.identificationNumber.error.required = Enter Identification Number
+identification.identificationNumber.error.length = Identification Number must be 100 characters or less

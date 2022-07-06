@@ -16,10 +16,14 @@
 
 package navigation
 
-import controllers.identification.routes._
+import controllers.identification.{routes => idRoutes}
+import controllers.identification.authorisation.{routes => idAuthRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
-import pages.identification.MovementReferenceNumberPage
+import pages.QuestionPage
+import pages.identification._
+import pages.identification.authorisation._
+import play.api.mvc.Call
 
 @Singleton
 class IdentificationNavigator @Inject() () extends Navigator {
@@ -29,7 +33,19 @@ class IdentificationNavigator @Inject() () extends Navigator {
   override val checkRoutes: RouteMapping = routes(CheckMode)
 
   override def routes(mode: Mode): RouteMapping = {
-    case MovementReferenceNumberPage => ua => Some(MovementReferenceNumberController.onPageLoad())
+    case MovementReferenceNumberPage      => ua => Some(idRoutes.ArrivalDateController.onPageLoad(ua.mrn, mode))
+    case ArrivalDatePage                  => ua => Some(idRoutes.IsSimplifiedProcedureController.onPageLoad(ua.mrn, mode))
+    case IsSimplifiedProcedurePage        => ua => addAuthorisationRoute(IsSimplifiedProcedurePage, ua, mode)
+    case AuthorisationTypePage            => ua => Some(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(ua.mrn, mode))
+    case AuthorisationReferenceNumberPage => ua => Some(idAuthRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
+    case AddAnotherAuthorisationPage      => ua => addAuthorisationRoute(AddAnotherAuthorisationPage, ua, mode)
   }
+
+  private def addAuthorisationRoute(page: QuestionPage[Boolean], ua: UserAnswers, mode: Mode): Option[Call] =
+    yesNoRoute(ua, page)(
+      yesCall = idAuthRoutes.AuthorisationTypeController.onPageLoad(ua.mrn, mode)
+    )(
+      noCall = idRoutes.IdentificationNumberController.onPageLoad(ua.mrn, mode)
+    )
 
 }
