@@ -31,7 +31,8 @@ echo "$package$.$className;format="decap"$.error.required.all = Enter the date f
 echo "$package$.$className;format="decap"$.error.required.two = The date for $title$" must include {0} and {1} >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.required = The date for $title$ must include {0}" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.invalid = Enter a real date for $title$" >> ../conf/messages.en
-
+echo "$package$.$className;format="decap"$.error.min.date = The date must be after {0}" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.error.max.date = The date must be before the current date" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/self: Generators =>/ {\

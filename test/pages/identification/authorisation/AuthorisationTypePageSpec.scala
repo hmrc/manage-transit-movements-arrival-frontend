@@ -16,17 +16,17 @@
 
 package pages.identification.authorisation
 
-import models.reference.CustomsOffice
+import models.identification.authorisation.AuthorisationType
 import pages.behaviours.PageBehaviours
 
 class AuthorisationTypeSpec extends PageBehaviours {
 
   "AuthorisationTypePage" - {
 
-    beRetrievable[CustomsOffice](AuthorisationTypePage)
+    beRetrievable[AuthorisationType](AuthorisationTypePage)
 
-    beSettable[CustomsOffice](AuthorisationTypePage)
+    beSettable[AuthorisationType](AuthorisationTypePage)
 
-    beRemovable[CustomsOffice](AuthorisationTypePage)
+    beRemovable[AuthorisationType](AuthorisationTypePage)
   }
 }

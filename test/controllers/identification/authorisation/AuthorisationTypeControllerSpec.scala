@@ -17,10 +17,10 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CustomsOfficeFormProvider
+import forms.identification.authorisation.AuthorisationTypeFormProvider
 import views.html.identification.authorisation.AuthorisationTypeView
-import models.{CustomsOfficeList, NormalMode, UserAnswers}
-import generators.Generators
+import models.{NormalMode, UserAnswers}
+import models.identification.authorisation.AuthorisationType
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
@@ -30,33 +30,25 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CustomsOfficesService
 
 import scala.concurrent.Future
 
-class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val customsOffice1    = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-
-  private val formProvider = new CustomsOfficeFormProvider()
-  private val form         = formProvider("identification.authorisation.authorisationType", customsOfficeList)
-  private val mode         = NormalMode
-
-  private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
-  private lazy val authorisationTypeRoute                      = routes.AuthorisationTypeController.onPageLoad(mrn, mode).url
+  private val formProvider                = new AuthorisationTypeFormProvider()
+  private val form                        = formProvider()
+  private val mode                        = NormalMode
+  private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
-      .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
   "AuthorisationType Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, authorisationTypeRoute)
@@ -68,37 +60,37 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(form, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationTypePage, customsOffice1).success.value
+
+      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationTypePage, AuthorisationType.values.head).success.value
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> customsOffice1.id))
+      val filledForm = form.bind(Map("value" -> AuthorisationType.values.head.toString))
 
       val view = injector.instanceOf[AuthorisationTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(filledForm, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
         FakeRequest(POST, authorisationTypeRoute)
-          .withFormUrlEncodedBody(("value", customsOffice1.id))
+          .withFormUrlEncodedBody(("value", AuthorisationType.values.head.toString))
 
       val result = route(app, request).value
 
@@ -108,7 +100,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, authorisationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -121,10 +113,11 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(boundForm, mrn, AuthorisationType.radioItems, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, authorisationTypeRoute)
@@ -136,11 +129,12 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
+
       setNoExistingUserAnswers()
 
       val request =
         FakeRequest(POST, authorisationTypeRoute)
-          .withFormUrlEncodedBody(("value", customsOffice1.id))
+          .withFormUrlEncodedBody(("value", AuthorisationType.values.head.toString))
 
       val result = route(app, request).value
 

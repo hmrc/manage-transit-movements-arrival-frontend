@@ -27,7 +27,8 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitraryIdentificationIdentificationNumberUserAnswersEntry.arbitrary ::
+    arbitraryIdentificationAuthorisationAuthorisationTypeUserAnswersEntry.arbitrary ::
+      arbitraryIdentificationIdentificationNumberUserAnswersEntry.arbitrary ::
       arbitraryIdentificationAuthorisationAuthorisationTypeUserAnswersEntry.arbitrary ::
       arbitraryIdentificationAuthorisationAuthorisationReferenceNumberUserAnswersEntry.arbitrary ::
       arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry.arbitrary ::

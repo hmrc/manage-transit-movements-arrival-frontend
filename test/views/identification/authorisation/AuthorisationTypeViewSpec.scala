@@ -16,35 +16,28 @@
 
 package views.identification.authorisation
 
-import forms.CustomsOfficeFormProvider
-import generators.Generators
-import views.behaviours.InputSelectViewBehaviours
+import forms.identification.authorisation.AuthorisationTypeFormProvider
 import models.NormalMode
-import models.reference.CustomsOffice
-import models.CustomsOfficeList
+import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import views.behaviours.RadioViewBehaviours
 import views.html.identification.authorisation.AuthorisationTypeView
 
-class AuthorisationTypeViewSpec extends InputSelectViewBehaviours[CustomsOffice] with Generators {
+class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
 
-  private lazy val customsOffice1 = arbitraryCustomsOffice.arbitrary.sample.get
-  private lazy val customsOffice2 = arbitraryCustomsOffice.arbitrary.sample.get
-  private lazy val customsOffice3 = arbitraryCustomsOffice.arbitrary.sample.get
+  override def form: Form[AuthorisationType] = new AuthorisationTypeFormProvider()()
 
-  override def values: Seq[CustomsOffice] =
-    Seq(
-      customsOffice1,
-      customsOffice2,
-      customsOffice3
-    )
-
-  override def form: Form[CustomsOffice] = new CustomsOfficeFormProvider()(prefix, CustomsOfficeList(values))
-
-  override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationTypeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[AuthorisationType]): HtmlFormat.Appendable =
+    injector.instanceOf[AuthorisationTypeView].apply(form, mrn, AuthorisationType.radioItems, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.authorisationType"
+
+  override def radioItems(fieldId: String, checkedValue: Option[AuthorisationType] = None): Seq[RadioItem] =
+    AuthorisationType.radioItems(fieldId, checkedValue)
+
+  override def values: Seq[AuthorisationType] = AuthorisationType.values
 
   behave like pageWithTitle()
 
@@ -52,9 +45,7 @@ class AuthorisationTypeViewSpec extends InputSelectViewBehaviours[CustomsOffice]
 
   behave like pageWithHeading()
 
-  behave like pageWithSelect
-
-  behave like pageWithHint("Authorisation Type hint")
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
 }

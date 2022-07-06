@@ -17,6 +17,10 @@ site.title.suffix = - Manage your transit movements - GOV.UK
 site.movement.reference.number = Movement reference number
 site.youMust = You must
 
+date.day.capitalized = Day
+date.month.capitalized = Month
+date.year.capitalized = Year
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -87,6 +91,8 @@ identification.arrivalDate.error.required.all = Enter the date for Arrival Date
 identification.arrivalDate.error.required.two = The date for Arrival Date must include {0} and {1}
 identification.arrivalDate.error.required = The date for Arrival Date must include {0}
 identification.arrivalDate.error.invalid = Enter a real date for Arrival Date
+identification.arrivalDate.error.min.date = The date must be after {0}
+identification.arrivalDate.error.max.date = The date must be before the current date
 
 identification.isSimplifiedProcedure.title = Is Simplified Procedure
 identification.isSimplifiedProcedure.heading = Is Simplified Procedure
@@ -97,6 +103,13 @@ identification.authorisation.addAnotherAuthorisation.title = Add Another Authori
 identification.authorisation.addAnotherAuthorisation.heading = Add Another Authorisation
 identification.authorisation.addAnotherAuthorisation.checkYourAnswersLabel = Add Another Authorisation
 identification.authorisation.addAnotherAuthorisation.error.required = Select yes if Add Another Authorisation
+
+identification.authorisation.authorisationType.title = Authorisation Type
+identification.authorisation.authorisationType.heading = Authorisation Type
+identification.authorisation.authorisationType.option1 = Option 1
+identification.authorisation.authorisationType.option2 = Option 2
+identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
+identification.authorisation.authorisationType.error.required = Select Authorisation Type
 
 identification.authorisation.authorisationReferenceNumber.title = Authorisation Reference Number
 identification.authorisation.authorisationReferenceNumber.heading = Authorisation Reference Number

@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package models.identification.authorisation
 
-import models.identification.authorisation.AuthorisationType
-import play.api.libs.json.JsPath
-import pages.QuestionPage
-import pages.sections.IdentificationAuthorisationSection
+import models.{RadioModel, WithName}
 
-case object AuthorisationTypePage extends QuestionPage[AuthorisationType] {
+sealed trait AuthorisationType
 
-  override def path: JsPath = IdentificationAuthorisationSection.path \ toString
+object AuthorisationType extends RadioModel[AuthorisationType] {
 
-  override def toString: String = "authorisationType"
+  case object Option1 extends WithName("option1") with AuthorisationType
+  case object Option2 extends WithName("option2") with AuthorisationType
+
+  override val messageKeyPrefix: String = "identification.authorisation.authorisationType"
+
+  val values: Seq[AuthorisationType] = Seq(
+    Option1,
+    Option2
+  )
 }

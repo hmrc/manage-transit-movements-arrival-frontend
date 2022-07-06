@@ -18,15 +18,15 @@ package controllers.identification.authorisation
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CustomsOfficeFormProvider
+import forms.identification.authorisation.AuthorisationTypeFormProvider
 import models.{Mode, MovementReferenceNumber}
+import models.identification.authorisation.AuthorisationType
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.AuthorisationTypeView
 
@@ -38,39 +38,32 @@ class AuthorisationTypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   @IdentificationDetails implicit val navigator: Navigator,
   actions: Actions,
-  formProvider: CustomsOfficeFormProvider,
-  service: CustomsOfficesService,
+  formProvider: AuthorisationTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AuthorisationTypeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      service.getCustomsOfficesOfArrival.map {
-        customsOfficeList =>
-          val form = formProvider("identification.authorisation.authorisationType", customsOfficeList)
-          val preparedForm = request.userAnswers.get(AuthorisationTypePage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  private val form = formProvider()
 
-          Ok(view(preparedForm, mrn, customsOfficeList.customsOffices, mode))
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(AuthorisationTypePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm, mrn, AuthorisationType.radioItems, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getCustomsOfficesOfArrival.flatMap {
-        customsOfficeList =>
-          val form = formProvider("identification.authorisation.authorisationType", customsOfficeList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.customsOffices, mode))),
-              value => AuthorisationTypePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
-            )
-      }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, AuthorisationType.radioItems, mode))),
+          value => AuthorisationTypePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+        )
   }
 }

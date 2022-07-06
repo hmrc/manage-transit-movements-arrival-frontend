@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package forms.identification.authorisation
 
+import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
 import models.identification.authorisation.AuthorisationType
-import play.api.libs.json.JsPath
-import pages.QuestionPage
-import pages.sections.IdentificationAuthorisationSection
 
-case object AuthorisationTypePage extends QuestionPage[AuthorisationType] {
+class AuthorisationTypeFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = IdentificationAuthorisationSection.path \ toString
-
-  override def toString: String = "authorisationType"
+  def apply(): Form[AuthorisationType] =
+    Form(
+      "value" -> enumerable[AuthorisationType]("identification.authorisation.authorisationType.error.required")
+    )
 }
