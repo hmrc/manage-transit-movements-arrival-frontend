@@ -40,6 +40,7 @@ class IdentificationNavigator @Inject() () extends Navigator {
     case AuthorisationTypePage(index)        => ua => Some(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(ua.mrn, index, mode))
     case AuthorisationReferenceNumberPage(_) => ua => Some(idRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
     case AddAnotherAuthorisationPage         => ua => addAuthorisationRoute(AddAnotherAuthorisationPage, ua, mode)
+    case IdentificationNumberPage            => ua => Some(idRoutes.CheckIdentificationAnswersController.onPageLoad(ua.mrn))
   }
 
   private def addAuthorisationRoute(page: QuestionPage[Boolean], ua: UserAnswers, mode: Mode): Option[Call] =
@@ -51,5 +52,4 @@ class IdentificationNavigator @Inject() () extends Navigator {
     )(
       noCall = idRoutes.IdentificationNumberController.onPageLoad(ua.mrn, mode)
     )
-
 }

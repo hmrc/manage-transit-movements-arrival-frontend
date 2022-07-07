@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.events
+package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.identification.authorisation.{routes => authorisationRoutes}
+import controllers.identification.{routes => identificationRoutes}
 import generators.Generators
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,18 +26,18 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.identification.CheckAuthorisationAnswersViewModel
+import viewModels.identification.CheckIdentificationAnswersViewModel
 import viewModels.sections.Section
-import views.html.identification.authorisation.CheckAuthorisationAnswersView
+import views.html.identification.CheckIdentificationAnswersView
 
-class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModel = mock[CheckAuthorisationAnswersViewModel]
+  private lazy val mockViewModel = mock[CheckIdentificationAnswersViewModel]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckAuthorisationAnswersViewModel].toInstance(mockViewModel))
+      .overrides(bind[CheckIdentificationAnswersViewModel].toInstance(mockViewModel))
 
   "Check Event Answers Controller" - {
 
@@ -46,28 +45,28 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       val sampleSections = arbitrary[Seq[Section]].sample.value
 
-      when(mockViewModel.apply(any(), any(), any())(any()))
+      when(mockViewModel.apply(any(), any())(any()))
         .thenReturn(sampleSections)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url)
+      val request = FakeRequest(GET, identificationRoutes.CheckIdentificationAnswersController.onPageLoad(mrn).url)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CheckAuthorisationAnswersView]
+      val view = injector.instanceOf[CheckIdentificationAnswersView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mrn, eventIndex, sampleSections)(request, messages).toString
+        view(mrn, sampleSections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url)
+      val request = FakeRequest(GET, identificationRoutes.CheckIdentificationAnswersController.onPageLoad(mrn).url)
 
       val result = route(app, request).value
 
@@ -76,17 +75,17 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Add event page" in {
+    "must redirect to MRN Page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, authorisationRoutes.CheckAuthorisationAnswersController.onSubmit(mrn, eventIndex).url)
+      val request = FakeRequest(POST, identificationRoutes.CheckIdentificationAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode).url
+      redirectLocation(result).value mustEqual controllers.identification.routes.MovementReferenceNumberController.onPageLoad().url
     }
   }
 }

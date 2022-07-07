@@ -19,9 +19,12 @@ POST       /:mrn/identification/identification-number                        con
 GET        /:mrn/identification/change-identification-number                 controllers.identification.IdentificationNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/identification/change-identification-number                 controllers.identification.IdentificationNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/identification/authorisation/add-another-authorisation                        controllers.identification.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/identification/authorisation/add-another-authorisation                        controllers.identification.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/identification/authorisation/change-add-another-authorisation                 controllers.identification.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/identification/authorisation/change-add-another-authorisation                 controllers.identification.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/identification/add-another-authorisation                        controllers.identification.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/identification/add-another-authorisation                        controllers.identification.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/identification/change-add-another-authorisation                 controllers.identification.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/identification/change-add-another-authorisation                 controllers.identification.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/identification/check-identification-answers               controllers.identification.CheckIdentificationAnswersController.onPageLoad(mrn: MovementReferenceNumber)
+POST       /:mrn/identification/check-identification-answers               controllers.identification.CheckIdentificationAnswersController.onSubmit(mrn: MovementReferenceNumber)
 
 

@@ -37,6 +37,8 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsLiteral[T](answer: T): Content = s"$answer".toText
 
+  def formatAsDate[T](answer: T): Content = s"$answer".toText
+
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
     s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
 

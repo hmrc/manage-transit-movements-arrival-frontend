@@ -30,7 +30,7 @@ class CheckAuthorisationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(impl
     page = AuthorisationReferenceNumberPage(eventIndex),
     formatAnswer = formatAsLiteral,
     prefix = "identification.authorisation.authorisationReferenceNumber",
-    id = Some(s"change-event-place-${eventIndex.display}"),
+    id = Some(s"change-authorisation-ref-no-${eventIndex.display}"),
     call = authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(mrn, eventIndex, mode)
   )
 
@@ -38,7 +38,7 @@ class CheckAuthorisationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(impl
     page = AuthorisationTypePage(eventIndex),
     formatAnswer = formatAsLiteral,
     prefix = "identification.authorisation.authorisationType",
-    id = Some(s"change-event-reported-${eventIndex.display}"),
+    id = Some(s"change-authorisation-type-${eventIndex.display}"),
     call = authorisationRoutes.AuthorisationTypeController.onPageLoad(mrn, eventIndex, mode)
   )
 

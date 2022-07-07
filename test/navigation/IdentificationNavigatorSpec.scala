@@ -144,6 +144,12 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             }
           }
         }
+
+        "must go from Identification Number page to CYA Page" in {
+          navigator
+            .nextPage(IdentificationNumberPage, mode, emptyUserAnswers)
+            .mustBe(idRoutes.CheckIdentificationAnswersController.onPageLoad(emptyUserAnswers.mrn))
+        }
       }
     }
   }
