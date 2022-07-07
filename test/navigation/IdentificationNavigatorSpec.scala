@@ -111,6 +111,12 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             .mustBe(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(emptyUserAnswers.mrn, index, mode))
         }
 
+        "must go from Authorisation Reference Number Page to Add Another Page" in {
+          navigator
+            .nextPage(AuthorisationReferenceNumberPage(index), mode, emptyUserAnswers)
+            .mustBe(idRoutes.AddAnotherAuthorisationController.onPageLoad(emptyUserAnswers.mrn, mode))
+        }
+
         "must go from is Add Another Page" - {
           "when Yes selected" - {
             "to Authorisation Type Page" in {

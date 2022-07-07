@@ -99,10 +99,10 @@ identification.isSimplifiedProcedure.heading = Is Simplified Procedure
 identification.isSimplifiedProcedure.checkYourAnswersLabel = Is Simplified Procedure
 identification.isSimplifiedProcedure.error.required = Select yes if Is Simplified Procedure
 
-identification.authorisation.addAnotherAuthorisation.title = Add Another Authorisation
-identification.authorisation.addAnotherAuthorisation.heading = Add Another Authorisation
-identification.authorisation.addAnotherAuthorisation.checkYourAnswersLabel = Add Another Authorisation
-identification.authorisation.addAnotherAuthorisation.error.required = Select yes if Add Another Authorisation
+identification.addAnotherAuthorisation.title = Add Another Authorisation
+identification.addAnotherAuthorisation.heading = Add Another Authorisation
+identification.addAnotherAuthorisation.checkYourAnswersLabel = Add Another Authorisation
+identification.addAnotherAuthorisation.error.required = Select yes if Add Another Authorisation
 
 identification.authorisation.authorisationType.title = Authorisation Type
 identification.authorisation.authorisationType.heading = Authorisation Type

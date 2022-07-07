@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.identification.authorisation
+package views.identification
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.identification.authorisation.AddAnotherAuthorisationView
+import views.html.identification.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddAnotherAuthorisationView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.authorisation.addAnotherAuthorisation"
+  override val prefix: String = "identification.addAnotherAuthorisation"
 
   behave like pageWithTitle()
 

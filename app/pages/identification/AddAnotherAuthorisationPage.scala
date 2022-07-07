@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package pages.identification
 
-import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.IdentificationSection
+import play.api.libs.json.JsPath
 
 case object AddAnotherAuthorisationPage extends QuestionPage[Boolean] {
 

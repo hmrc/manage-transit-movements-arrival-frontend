@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.identification.AddAnotherAuthorisationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import forms.YesNoFormProvider
-import views.html.identification.authorisation.AddAnotherAuthorisationView
-import pages.identification.authorisation.AddAnotherAuthorisationPage
+import views.html.identification.AddAnotherAuthorisationView
 
 import scala.concurrent.Future
 
 class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                      = new YesNoFormProvider()
-  private val form                              = formProvider("identification.authorisation.addAnotherAuthorisation")
+  private val form                              = formProvider("identification.addAnotherAuthorisation")
   private val mode                              = NormalMode
   private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode).url
 

@@ -19,7 +19,8 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages.identification.MovementReferenceNumberPage
+import pages.identification
+import pages.identification.{AddAnotherAuthorisationPage, MovementReferenceNumberPage}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.libs.json.{JsValue, Json}
 
@@ -47,12 +48,11 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (AuthorisationReferenceNumberPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry
-    : Arbitrary[(pages.identification.authorisation.AddAnotherAuthorisationPage.type, JsValue)] =
+  implicit lazy val arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry: Arbitrary[(AddAnotherAuthorisationPage.type, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[pages.identification.authorisation.AddAnotherAuthorisationPage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.authorisation.AddAnotherAuthorisationPage, value)
+        value <- arbitrary[AddAnotherAuthorisationPage.type#Data].map(Json.toJson(_))
+      } yield (identification.AddAnotherAuthorisationPage, value)
     }
 
   implicit lazy val arbitraryIdentificationIsSimplifiedProcedureUserAnswersEntry: Arbitrary[(pages.identification.IsSimplifiedProcedurePage.type, JsValue)] =

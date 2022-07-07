@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.identification
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import javax.inject.Inject
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import pages.identification.authorisation.AddAnotherAuthorisationPage
+import pages.identification.AddAnotherAuthorisationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.identification.authorisation.AddAnotherAuthorisationView
+import views.html.identification.AddAnotherAuthorisationView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAuthorisationController @Inject() (
@@ -44,7 +44,7 @@ class AddAnotherAuthorisationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("identification.authorisation.addAnotherAuthorisation")
+  private val form = formProvider("identification.addAnotherAuthorisation")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

@@ -38,7 +38,7 @@ class IdentificationNavigator @Inject() () extends Navigator {
     case ArrivalDatePage                     => ua => Some(idRoutes.IsSimplifiedProcedureController.onPageLoad(ua.mrn, mode))
     case IsSimplifiedProcedurePage           => ua => addAuthorisationRoute(IsSimplifiedProcedurePage, ua, mode)
     case AuthorisationTypePage(index)        => ua => Some(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(ua.mrn, index, mode))
-    case AuthorisationReferenceNumberPage(_) => ua => Some(idAuthRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
+    case AuthorisationReferenceNumberPage(_) => ua => Some(idRoutes.AddAnotherAuthorisationController.onPageLoad(ua.mrn, mode))
     case AddAnotherAuthorisationPage         => ua => addAuthorisationRoute(AddAnotherAuthorisationPage, ua, mode)
   }
 

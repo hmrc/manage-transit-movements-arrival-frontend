@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package pages.identification
 
 import pages.behaviours.PageBehaviours
 

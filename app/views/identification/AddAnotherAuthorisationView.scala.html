@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.identification.authorisation.routes
+@import controllers.identification.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
@@ -30,7 +30,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.authorisation.addAnotherAuthorisation.title"),
+    title = messages("identification.addAnotherAuthorisation.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("identification.authorisation.addAnotherAuthorisation.heading")
+                heading = messages("identification.addAnotherAuthorisation.heading")
             )
         )
 
