@@ -16,16 +16,28 @@
 
 package views.identification
 
+import forms.AddItemFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.ListWithActionsViewBehaviours
 import views.html.identification.AddAnotherAuthorisationView
 
-class AddAnotherAuthorisationViewSpec extends YesNoViewBehaviours {
+class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
+
+  private def formProvider = new AddItemFormProvider()
+
+  override def form: Form[Boolean] = formProvider(prefix, true)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddAnotherAuthorisationView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[AddAnotherAuthorisationView]
+      .apply(form, mrn, NormalMode, _ => listItem, allowMoreItems = true)(fakeRequest, messages)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherAuthorisationView]
+      .apply(formProvider(prefix, false), mrn, NormalMode, _ => maxedOutListItems, allowMoreItems = false)(fakeRequest, messages)
 
   override val prefix: String = "identification.addAnotherAuthorisation"
 
