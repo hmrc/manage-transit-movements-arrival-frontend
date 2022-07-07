@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.identification
 
 import controllers.identification.authorisation.{routes => authorisationRoutes}
 import models.{CheckMode, Index, Mode, UserAnswers}
@@ -23,15 +23,16 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import utils.AnswersHelper
 
-class AddAuthorisationsHelper(prefix: String, userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class AddAuthorisationHelper(prefix: String, userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def authorisationListItem(eventIndex: Index): Option[ListItem] =
     authorisationReference(eventIndex).map {
       answer =>
         ListItem(
           name = answer,
-          changeUrl = "changeUrl",
+          changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
           removeUrl = "removeUrl"
         )
     }

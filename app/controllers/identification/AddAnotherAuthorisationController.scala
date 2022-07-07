@@ -32,8 +32,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.identification.AddAuthorisationHelper
 import views.html.identification.AddAnotherAuthorisationView
-import utils.AddAuthorisationsHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,7 +69,7 @@ class AddAnotherAuthorisationController @Inject() (
   }
 
   private def authorisations(mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
-    val addAuthorisationsHelper = new AddAuthorisationsHelper(prefix, request.userAnswers, mode)
+    val addAuthorisationsHelper = new AddAuthorisationHelper(prefix, request.userAnswers, mode)
     (0 to numberOfAuthorisations) flatMap {
       x => addAuthorisationsHelper.authorisationListItem(Index(x))
     }

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package utils
+package utils.identification
 
 import base.SpecBase
 import controllers.identification.authorisation.routes._
 import models.{CheckMode, Mode}
 import pages.identification.authorisation._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddAuthorisationsHelperSpec extends SpecBase {
 
@@ -36,7 +36,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
       "must return None" - {
         "when AuthorisationReferenceNumberPage and AuthorisationTypePage undefined" in {
 
-          val helper = new AddAuthorisationsHelper(prefix, emptyUserAnswers, mode)
+          val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
           helper.authorisationListItem(eventIndex) mustBe None
         }
       }
@@ -49,11 +49,11 @@ class AddAuthorisationsHelperSpec extends SpecBase {
           val answers = emptyUserAnswers
             .setValue(AuthorisationReferenceNumberPage(eventIndex), authorisationRef)
 
-          val helper = new AddAuthorisationsHelper(prefix, answers, mode)
+          val helper = new AddAuthorisationHelper(prefix, answers, mode)
           helper.authorisationListItem(eventIndex) mustBe Some(
             ListItem(
               name = authorisationRef,
-              changeUrl = "changeUrl", //TODO CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url
+              changeUrl = CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
               removeUrl = "removeUrl" //TODO ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode).url
             )
           )
@@ -66,7 +66,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
       "must return None" - {
         "when AuthorisationReferenceNumberPage undefined" in {
 
-          val helper = new AddAuthorisationsHelper(prefix, emptyUserAnswers, mode)
+          val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
           helper.authorisation(eventIndex) mustBe None
         }
       }
@@ -79,7 +79,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
           val answers = emptyUserAnswers
             .setValue(AuthorisationReferenceNumberPage(eventIndex), place)
 
-          val helper = new AddAuthorisationsHelper(prefix, answers, mode)
+          val helper = new AddAuthorisationHelper(prefix, answers, mode)
           helper.authorisation(eventIndex) mustBe Some(
             SummaryListRow(
               key = Key(

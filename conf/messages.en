@@ -129,8 +129,13 @@ identification.authorisation.authorisationType.change.hidden = Authorisation Typ
 identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
 identification.authorisation.authorisationType.error.required = Select the customsOffice
 
+identification.authorisation.checkAuthorisationAnswers.title = Check your answers for this authorisation
+identification.authorisation.checkAuthorisationAnswers.heading = Check your answers for this authorisation
+
 identification.identificationNumber.title = Identification Number
 identification.identificationNumber.heading = Identification Number
 identification.identificationNumber.checkYourAnswersLabel = Identification Number
 identification.identificationNumber.error.required = Enter Identification Number
 identification.identificationNumber.error.length = Identification Number must be 100 characters or less
+
+

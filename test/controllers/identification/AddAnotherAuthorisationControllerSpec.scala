@@ -17,6 +17,7 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.identification.authorisation.{routes => authorisationRoutes}
 import forms.AddItemFormProvider
 import models.identification.authorisation.AuthorisationType
 import models.{Index, NormalMode}
@@ -52,7 +53,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     i =>
       ListItem(
         name = s"$i",
-        changeUrl = "changeUrl",
+        changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, Index(i)).url,
         removeUrl = "removeUrl"
       )
   }
