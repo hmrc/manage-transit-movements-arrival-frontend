@@ -39,7 +39,7 @@ class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefa
       .guiceApplicationBuilder()
       .overrides(bind[CheckIdentificationAnswersViewModel].toInstance(mockViewModel))
 
-  "Check Event Answers Controller" - {
+  "Check Identification Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 

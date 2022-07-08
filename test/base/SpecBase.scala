@@ -48,9 +48,10 @@ trait SpecBase
 
   val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj())
 
-  val eventIndex: Index     = Index(0)
-  val containerIndex: Index = Index(0)
-  val sealIndex: Index      = Index(0)
+  val authorisationIndex: Index = Index(0)
+  val eventIndex: Index         = Index(0)
+  val containerIndex: Index     = Index(0)
+  val sealIndex: Index          = Index(0)
 
   val traderName: String       = "traderName"
   val consigneeName: String    = "consigneeName"

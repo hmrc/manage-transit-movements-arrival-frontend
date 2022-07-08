@@ -54,7 +54,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       ListItem(
         name = s"$i",
         changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, Index(i)).url,
-        removeUrl = "removeUrl"
+        removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, Index(i), mode).url
       )
   }
 
@@ -71,7 +71,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        val allowMoreEvents = true
+        val allowMoreItems = true
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -84,12 +84,12 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMoreEvents), mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
+          view(form(allowMoreItems), mrn, mode, _ => Nil, allowMoreItems)(request, messages).toString
       }
 
       "when max limit reached" in {
 
-        val allowMoreEvents = false
+        val allowMoreItems = false
 
         setExistingUserAnswers(maxedUserAnswers)
 
@@ -102,7 +102,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMoreEvents), mrn, mode, _ => maxedListItems, allowMoreEvents)(request, messages).toString
+          view(form(allowMoreItems), mrn, mode, _ => maxedListItems, allowMoreItems)(request, messages).toString
       }
     }
 
@@ -141,12 +141,12 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
 
-        val allowMoreEvents = true
+        val allowMoreItems = true
 
         setExistingUserAnswers(emptyUserAnswers)
 
         val request   = FakeRequest(POST, addAnotherAuthorisationRoute).withFormUrlEncodedBody(("value", ""))
-        val boundForm = form(allowMoreEvents).bind(Map("value" -> ""))
+        val boundForm = form(allowMoreItems).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
@@ -155,7 +155,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, mode, _ => Nil, allowMoreEvents)(request, messages).toString
+          view(boundForm, mrn, mode, _ => Nil, allowMoreItems)(request, messages).toString
       }
     }
 

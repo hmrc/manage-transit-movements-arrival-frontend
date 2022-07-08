@@ -17,7 +17,7 @@
 package utils.identification
 
 import controllers.identification.authorisation.{routes => authorisationRoutes}
-import models.{CheckMode, Index, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -33,7 +33,7 @@ class AddAuthorisationHelper(prefix: String, userAnswers: UserAnswers, mode: Mod
         ListItem(
           name = answer,
           changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
-          removeUrl = "removeUrl"
+          removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, eventIndex, mode).url
         )
     }
 
@@ -45,7 +45,7 @@ class AddAuthorisationHelper(prefix: String, userAnswers: UserAnswers, mode: Mod
           labelKey = s"$prefix.authorisation",
           answer = answer.toText,
           id = None,
-          call = authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(mrn, authorisationIndex, CheckMode), //TO CYA?
+          call = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex),
           args = authorisationIndex.display
         )
     }

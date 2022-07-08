@@ -37,7 +37,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
         "when AuthorisationReferenceNumberPage and AuthorisationTypePage undefined" in {
 
           val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
-          helper.authorisationListItem(eventIndex) mustBe None
+          helper.authorisationListItem(authorisationIndex) mustBe None
         }
       }
 
@@ -47,14 +47,14 @@ class AddAuthorisationsHelperSpec extends SpecBase {
           val authorisationRef = "authRefNo"
 
           val answers = emptyUserAnswers
-            .setValue(AuthorisationReferenceNumberPage(eventIndex), authorisationRef)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authorisationRef)
 
           val helper = new AddAuthorisationHelper(prefix, answers, mode)
-          helper.authorisationListItem(eventIndex) mustBe Some(
+          helper.authorisationListItem(authorisationIndex) mustBe Some(
             ListItem(
               name = authorisationRef,
-              changeUrl = CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
-              removeUrl = "removeUrl" //TODO ConfirmRemoveEventController.onPageLoad(mrn, eventIndex, mode).url
+              changeUrl = CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url,
+              removeUrl = ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url
             )
           )
         }
@@ -67,7 +67,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
         "when AuthorisationReferenceNumberPage undefined" in {
 
           val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
-          helper.authorisation(eventIndex) mustBe None
+          helper.authorisation(authorisationIndex) mustBe None
         }
       }
 
@@ -77,13 +77,13 @@ class AddAuthorisationsHelperSpec extends SpecBase {
           val place = "authRefNo"
 
           val answers = emptyUserAnswers
-            .setValue(AuthorisationReferenceNumberPage(eventIndex), place)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), place)
 
           val helper = new AddAuthorisationHelper(prefix, answers, mode)
-          helper.authorisation(eventIndex) mustBe Some(
+          helper.authorisation(authorisationIndex) mustBe Some(
             SummaryListRow(
               key = Key(
-                content = s"Authorisation ${eventIndex.display}".toText,
+                content = s"Authorisation ${authorisationIndex.display}".toText,
                 classes = "govuk-!-width-one-half"
               ),
               value = Value(place.toText),
@@ -92,8 +92,8 @@ class AddAuthorisationsHelperSpec extends SpecBase {
                   Seq(
                     ActionItem(
                       content = "Change".toText,
-                      href = AuthorisationReferenceNumberController.onPageLoad(mrn, eventIndex, mode).url, //ToDo CYA Page
-                      visuallyHiddenText = Some(s"authorisation ${eventIndex.display}")
+                      href = CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url,
+                      visuallyHiddenText = Some(s"authorisation ${authorisationIndex.display}")
                     )
                   )
                 )

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.events
+package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.authorisation.{routes => authorisationRoutes}
@@ -40,7 +40,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       .guiceApplicationBuilder()
       .overrides(bind[CheckAuthorisationAnswersViewModel].toInstance(mockViewModel))
 
-  "Check Event Answers Controller" - {
+  "Check Authorisation Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -51,7 +51,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url)
+      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url)
 
       val result = route(app, request).value
 
@@ -60,14 +60,14 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mrn, eventIndex, sampleSections)(request, messages).toString
+        view(mrn, authorisationIndex, sampleSections)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url)
+      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url)
 
       val result = route(app, request).value
 
@@ -76,11 +76,11 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Add event page" in {
+    "must redirect to Add authorisation page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, authorisationRoutes.CheckAuthorisationAnswersController.onSubmit(mrn, eventIndex).url)
+      val request = FakeRequest(POST, authorisationRoutes.CheckAuthorisationAnswersController.onSubmit(mrn, authorisationIndex).url)
 
       val result = route(app, request).value
 
