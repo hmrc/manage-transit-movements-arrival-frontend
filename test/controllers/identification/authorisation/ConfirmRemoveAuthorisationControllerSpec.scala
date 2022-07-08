@@ -19,9 +19,13 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveItemFormProvider
 import models.{Index, NormalMode, UserAnswers}
+import navigation.Navigator
+import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import pages.identification.authorisation._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.AuthorisationQuery
@@ -39,6 +43,11 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
   private val mode                    = NormalMode
   private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url
   private val userAnswersWithAuthRef  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), authTitle)
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "ConfirmRemoveAuthorisation Controller" - {
 

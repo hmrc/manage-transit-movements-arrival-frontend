@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @IdentificationDetails navigator: Navigator,
+  @IdentificationDetails implicit val navigator: Navigator,
   formProvider: ConfirmRemoveItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   concurrentRemoveErrorView: ConcurrentRemoveErrorView,

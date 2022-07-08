@@ -71,6 +71,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Event]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Container]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator)
