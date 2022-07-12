@@ -16,13 +16,19 @@
 
 package pages.identification
 
+import controllers.identification.routes
+import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.IdentificationSection
+import play.api.mvc.Call
 
 case object IdentificationNumberPage extends QuestionPage[String] {
 
   override def path: JsPath = IdentificationSection.path \ toString
 
   override def toString: String = "identificationNumber"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
 }

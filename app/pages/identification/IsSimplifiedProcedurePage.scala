@@ -16,10 +16,12 @@
 
 package pages.identification
 
-import models.UserAnswers
+import controllers.identification.routes
+import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.{IdentificationAuthorisationSection, IdentificationSection}
+import play.api.mvc.Call
 
 import scala.util.Try
 
@@ -34,4 +36,7 @@ case object IsSimplifiedProcedurePage extends QuestionPage[Boolean] {
       case Some(false) => userAnswers.remove(IdentificationAuthorisationSection)
       case _           => super.cleanup(value, userAnswers)
     }
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IsSimplifiedProcedureController.onPageLoad(userAnswers.mrn, mode))
 }

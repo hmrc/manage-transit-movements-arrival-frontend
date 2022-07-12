@@ -16,64 +16,33 @@
 
 package generators
 
-import models.Index
-import org.scalacheck.Arbitrary
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
-import pages.identification
-import pages.identification.{AddAnotherAuthorisationPage, MovementReferenceNumberPage}
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import play.api.libs.json.{JsValue, Json}
+import org.scalacheck.Gen
+import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
+import queries.Gettable
+
+import java.time.LocalDate
 
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryIdentificationIdentificationNumberUserAnswersEntry: Arbitrary[(pages.identification.IdentificationNumberPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[pages.identification.IdentificationNumberPage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.IdentificationNumberPage, value)
-    }
+  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+    generateIdentificationAnswer
 
-  implicit lazy val arbitraryIdentificationAuthorisationTypeUserAnswersEntry: Arbitrary[(AuthorisationTypePage, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[AuthorisationTypePage#Data].map(Json.toJson(_))
-      } yield (AuthorisationTypePage(Index(0)), value)
+  private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.identification._
+    generateAuthorisationAnswer orElse {
+      case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
+      case IsSimplifiedProcedurePage => arbitrary[Boolean].map(JsBoolean)
     }
+  }
 
-  implicit lazy val arbitraryIdentificationAuthorisationReferenceNumberUserAnswersEntry: Arbitrary[(AuthorisationReferenceNumberPage, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[AuthorisationReferenceNumberPage#Data].map(Json.toJson(_))
-      } yield (AuthorisationReferenceNumberPage(Index(0)), value)
+  private def generateAuthorisationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.identification.authorisation._
+    {
+      case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
+      case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
     }
-
-  implicit lazy val arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry: Arbitrary[(AddAnotherAuthorisationPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[AddAnotherAuthorisationPage.type#Data].map(Json.toJson(_))
-      } yield (identification.AddAnotherAuthorisationPage, value)
-    }
-
-  implicit lazy val arbitraryIdentificationIsSimplifiedProcedureUserAnswersEntry: Arbitrary[(pages.identification.IsSimplifiedProcedurePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[pages.identification.IsSimplifiedProcedurePage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.IsSimplifiedProcedurePage, value)
-    }
-
-  implicit lazy val arbitraryIdentificationArrivalDateUserAnswersEntry: Arbitrary[(pages.identification.ArrivalDatePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[pages.identification.ArrivalDatePage.type#Data].map(Json.toJson(_))
-      } yield (pages.identification.ArrivalDatePage, value)
-    }
-
-  implicit lazy val arbitraryMovementReferenceNumberUserAnswersEntry: Arbitrary[(MovementReferenceNumberPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[MovementReferenceNumberPage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
+  }
 }

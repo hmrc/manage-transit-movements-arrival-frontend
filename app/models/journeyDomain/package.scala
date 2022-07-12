@@ -23,7 +23,7 @@ import queries.Gettable
 
 package object journeyDomain {
 
-  type EitherType[A]        = Either[OpsError, A]
+  type EitherType[A]        = Either[ReaderError, A]
   type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]
 
   object UserAnswersReader {

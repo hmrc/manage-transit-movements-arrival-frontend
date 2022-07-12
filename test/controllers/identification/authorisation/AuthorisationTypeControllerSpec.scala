@@ -18,11 +18,9 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
-import views.html.identification.authorisation.AuthorisationTypeView
-import models.{Index, NormalMode, UserAnswers}
 import models.identification.authorisation.AuthorisationType
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import models.{Index, NormalMode, UserAnswers}
+import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.authorisation.AuthorisationTypePage
@@ -30,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.identification.authorisation.AuthorisationTypeView
 
 import scala.concurrent.Future
 
@@ -44,7 +43,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+      .overrides(bind(classOf[AuthorisationNavigatorProvider]).toInstance(fakeAuthorisationNavigatorProvider))
 
   "AuthorisationType Controller" - {
 

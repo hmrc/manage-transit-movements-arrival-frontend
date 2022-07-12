@@ -16,9 +16,26 @@
 
 package navigation
 
-import models.journeyDomain.identification.IdentificationDomain
+import models._
+import models.journeyDomain.identification.{AuthorisationDomain, IdentificationDomain}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IdentificationNavigator @Inject() () extends UserAnswersSectionNavigator[IdentificationDomain]
+class AuthorisationNavigatorProviderImpl @Inject() () extends AuthorisationNavigatorProvider {
+
+  def apply(index: Index): AuthorisationNavigator =
+    new AuthorisationNavigator(index)
+}
+
+trait AuthorisationNavigatorProvider {
+
+  def apply(index: Index): AuthorisationNavigator
+}
+
+class AuthorisationNavigator(
+  index: Index
+) extends UserAnswersNavigator[AuthorisationDomain, IdentificationDomain]()(
+      AuthorisationDomain.userAnswersReader(index),
+      IdentificationDomain.userAnswersReader
+    )

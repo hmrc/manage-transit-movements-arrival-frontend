@@ -20,22 +20,21 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider}
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.AuthorisationReferenceNumberView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: AuthorisationNavigatorProvider,
   formProvider: AuthorisationRefNoFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -61,7 +60,10 @@ class AuthorisationReferenceNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index: Index, mode))),
-          value => AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
+            AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          }
         )
   }
 }

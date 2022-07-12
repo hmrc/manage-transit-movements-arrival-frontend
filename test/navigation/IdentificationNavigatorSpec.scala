@@ -17,144 +17,32 @@
 package navigation
 
 import base.SpecBase
-import controllers.identification.{routes => idRoutes}
-import controllers.identification.authorisation.{routes => idAuthRoutes}
-import generators.{Generators, UserAnswersGenerator}
+import controllers.identification.routes
+import generators.{Generators, IdentificationUserAnswersGenerator}
 import models._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
 import pages.identification._
-import pages.identification.authorisation._
 
-class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersGenerator {
+class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
   private val navigator = new IdentificationNavigator
 
-  "Navigator" - {
-    "must go from a page that doesn't exist in the route map" - {
+  "Identification Navigator" - {
 
-      case object UnknownPage extends Page
+    val pageGen = Gen.oneOf(
+      ArrivalDatePage,
+      IsSimplifiedProcedurePage
+    )
 
-      "when in normal mode" - {
-        "to start of the departure journey" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(UnknownPage, NormalMode, answers)
-                .mustBe(idRoutes.MovementReferenceNumberController.onPageLoad())
-          }
-        }
-      }
-
-      "when in check mode" - {
-        "to session expired" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(UnknownPage, CheckMode, answers)
-                .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
-          }
-        }
-      }
-    }
-
-    "when in NormalMode" - {
-
-      val mode = NormalMode
-
-      "when answers incomplete" - {
-
-        "must go from Movement Reference Number page to Arrival Date page" in {
-          navigator
-            .nextPage(MovementReferenceNumberPage, mode, emptyUserAnswers)
-            .mustBe(idRoutes.ArrivalDateController.onPageLoad(emptyUserAnswers.mrn, mode))
-        }
-
-        "must go from Arrival Date page to Is Simplified Page" in {
-          navigator
-            .nextPage(ArrivalDatePage, mode, emptyUserAnswers)
-            .mustBe(idRoutes.IsSimplifiedProcedureController.onPageLoad(emptyUserAnswers.mrn, mode))
-        }
-
-        "must go from is Is Simplified Page" - {
-          "when Yes selected" - {
-            "to Authorisation Type Page" in {
-              val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, true)
-              navigator
-                .nextPage(IsSimplifiedProcedurePage, mode, userAnswers)
-                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, authorisationIndex, mode))
-            }
-          }
-
-          "when No selected" - {
-            "to Identification Number page" in {
-              val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, false)
-              navigator
-                .nextPage(IsSimplifiedProcedurePage, mode, userAnswers)
-                .mustBe(idRoutes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
-            }
-          }
-
-          "when nothing selected" - {
-            "to session expired" in {
-              navigator
-                .nextPage(IsSimplifiedProcedurePage, mode, emptyUserAnswers)
-                .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
-            }
-          }
-        }
-
-        "must go from Authorisation Type Page to Authorisation Reference Number Page" in {
-          navigator
-            .nextPage(AuthorisationTypePage(authorisationIndex), mode, emptyUserAnswers)
-            .mustBe(idAuthRoutes.AuthorisationReferenceNumberController.onPageLoad(emptyUserAnswers.mrn, authorisationIndex, mode))
-        }
-
-        "must go from Authorisation Reference Number Page to Add Another Page" in {
-          navigator
-            .nextPage(AuthorisationReferenceNumberPage(authorisationIndex), mode, emptyUserAnswers)
-            .mustBe(idRoutes.AddAnotherAuthorisationController.onPageLoad(emptyUserAnswers.mrn, mode))
-        }
-
-        "must go from is Add Another Page" - {
-          "when Yes selected" - {
-            "to Authorisation Type Page" in {
-              val userAnswers = emptyUserAnswers.setValue(AddAnotherAuthorisationPage, true)
-              navigator
-                .nextPage(AddAnotherAuthorisationPage, mode, userAnswers)
-                .mustBe(idAuthRoutes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, authorisationIndex, mode))
-            }
-          }
-
-          "when No selected" - {
-            "to Identification Number page" in {
-              val userAnswers = emptyUserAnswers.setValue(AddAnotherAuthorisationPage, false)
-              navigator
-                .nextPage(AddAnotherAuthorisationPage, mode, userAnswers)
-                .mustBe(idRoutes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
-            }
-          }
-
-          "when nothing selected" - {
-            "to session expired" in {
-              navigator
-                .nextPage(AddAnotherAuthorisationPage, mode, emptyUserAnswers)
-                .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
-            }
-          }
-        }
-
-        "must go from Remove Authorisation page to Add Another Authorisation Page" in {
-          navigator
-            .nextPage(ConfirmRemoveAuthorisationPage(authorisationIndex), mode, emptyUserAnswers)
-            .mustBe(idRoutes.AddAnotherAuthorisationController.onPageLoad(emptyUserAnswers.mrn, mode))
-        }
-
-        "must go from Identification Number page to CYA Page" in {
-          navigator
-            .nextPage(IdentificationNumberPage, mode, emptyUserAnswers)
-            .mustBe(idRoutes.CheckIdentificationAnswersController.onPageLoad(emptyUserAnswers.mrn))
+    "when answers complete" - {
+      "must redirect to check your answers" in {
+        forAll(arbitraryIdentificationAnswers(emptyUserAnswers), pageGen, arbitrary[Mode]) {
+          (answers, page, mode) =>
+            navigator
+              .nextPage(page, mode, answers)
+              .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
         }
       }
     }

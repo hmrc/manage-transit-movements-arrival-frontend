@@ -19,24 +19,23 @@ package controllers.identification.authorisation
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
-import models.{Index, Mode, MovementReferenceNumber}
 import models.identification.authorisation.AuthorisationType
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import models.{Index, Mode, MovementReferenceNumber}
+import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider}
 import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.AuthorisationTypeView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: AuthorisationNavigatorProvider,
   actions: Actions,
   formProvider: AuthorisationTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,7 +62,10 @@ class AuthorisationTypeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
-          value => AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
+            AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          }
         )
   }
 }

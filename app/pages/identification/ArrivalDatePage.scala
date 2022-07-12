@@ -16,9 +16,13 @@
 
 package pages.identification
 
-import play.api.libs.json.JsPath
+import controllers.identification.routes
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.IdentificationSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
 import java.time.LocalDate
 
 case object ArrivalDatePage extends QuestionPage[LocalDate] {
@@ -26,4 +30,7 @@ case object ArrivalDatePage extends QuestionPage[LocalDate] {
   override def path: JsPath = IdentificationSection.path \ toString
 
   override def toString: String = "arrivalDate"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.ArrivalDateController.onPageLoad(userAnswers.mrn, mode))
 }

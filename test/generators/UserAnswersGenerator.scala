@@ -16,45 +16,44 @@
 
 package generators
 
-import models.UserAnswers
+import models.journeyDomain.identification.IdentificationDomain
+import models.journeyDomain.{ReaderError, UserAnswersReader}
+import models.{EoriNumber, MovementReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.TryValues
-import pages._
-import play.api.libs.json.{JsValue, Json}
 
-trait UserAnswersGenerator extends TryValues {
+trait UserAnswersGenerator {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitraryIdentificationIdentificationNumberUserAnswersEntry.arbitrary ::
-      arbitraryIdentificationAuthorisationTypeUserAnswersEntry.arbitrary ::
-      arbitraryIdentificationAuthorisationReferenceNumberUserAnswersEntry.arbitrary ::
-      arbitraryIdentificationAuthorisationAddAnotherAuthorisationUserAnswersEntry.arbitrary ::
-      arbitraryIdentificationIsSimplifiedProcedureUserAnswersEntry.arbitrary ::
-      arbitraryIdentificationArrivalDateUserAnswersEntry.arbitrary ::
-      Nil
-
-  implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
-
-    import models._
-
+  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
-        movementReferenceNumber <- arbitrary[MovementReferenceNumber]
-        eoriNumber              <- arbitrary[EoriNumber]
-        data <- generators match {
-          case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
-        }
-      } yield UserAnswers(
-        mrn = movementReferenceNumber,
-        eoriNumber = eoriNumber,
-        data = data.foldLeft(Json.obj()) {
-          case (obj, (path, value)) =>
-            obj.setObject(path.path, value).get
-        }
-      )
+        mrn        <- arbitrary[MovementReferenceNumber]
+        eoriNumber <- arbitrary[EoriNumber]
+        initialAnswers = UserAnswers(mrn, eoriNumber)
+        answers <- buildUserAnswers[IdentificationDomain](initialAnswers) // TODO - eventually change to ArrivalDomain
+      } yield answers
     }
+
+  protected def buildUserAnswers[T](
+    initialUserAnswers: UserAnswers
+  )(implicit userAnswersReader: UserAnswersReader[T]): Gen[UserAnswers] = {
+
+    def rec(userAnswers: UserAnswers): Gen[UserAnswers] =
+      UserAnswersReader[T].run(userAnswers) match {
+        case Left(ReaderError(page, _)) =>
+          generateAnswer
+            .apply(page)
+            .map {
+              value =>
+                userAnswers.copy(
+                  data = userAnswers.data.setObject(page.path, value).getOrElse(userAnswers.data)
+                )
+            }
+            .flatMap(rec)
+        case Right(_) => Gen.const(userAnswers)
+      }
+
+    rec(initialUserAnswers)
   }
 }
