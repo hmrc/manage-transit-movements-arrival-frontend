@@ -19,13 +19,13 @@ package pages.identification.authorisation
 import controllers.identification.authorisation.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.IdentificationAuthorisationSection
+import pages.sections.AuthorisationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class AuthorisationReferenceNumberPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = IdentificationAuthorisationSection.path \ index.position \ toString
+  override def path: JsPath = AuthorisationSection(index).path \ toString
 
   override def toString: String = "authorisationReferenceNumber"
 

@@ -20,7 +20,7 @@ import controllers.identification.routes
 import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import pages.QuestionPage
-import pages.sections.{IdentificationAuthorisationSection, IdentificationSection}
+import pages.sections.{AuthorisationsSection, IdentificationSection}
 import play.api.mvc.Call
 
 import scala.util.Try
@@ -33,7 +33,7 @@ case object IsSimplifiedProcedurePage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(IdentificationAuthorisationSection)
+      case Some(false) => userAnswers.remove(AuthorisationsSection)
       case _           => super.cleanup(value, userAnswers)
     }
 

@@ -32,7 +32,9 @@ import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase {
 
-  private class Harness1[T1](page: Gettable[T1])(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](page) {
+  private val defaultRoute = controllers.routes.SessionExpiredController.onPageLoad()
+
+  private class Harness1[T1](page: Gettable[T1])(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](page)(defaultRoute) {
 
     def callRefine[A](
       request: DataRequest[A]
@@ -40,7 +42,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends SpecificDataRequiredAction2[T1, T2](page) {
+  private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends SpecificDataRequiredAction2[T1, T2](page)(defaultRoute) {
 
     def callRefine[A](
       request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
@@ -48,7 +50,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private class Harness3[T1, T2, T3](page: Gettable[T3])(implicit rds: Reads[T3]) extends SpecificDataRequiredAction3[T1, T2, T3](page) {
+  private class Harness3[T1, T2, T3](page: Gettable[T3])(implicit rds: Reads[T3]) extends SpecificDataRequiredAction3[T1, T2, T3](page)(defaultRoute) {
 
     def callRefine[A](
       request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
@@ -78,7 +80,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
             r =>
               val result = Future.successful(r.left.get)
               status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+              redirectLocation(result).value mustEqual defaultRoute.url
           }
         }
       }
@@ -120,7 +122,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
                 r =>
                   val result = Future.successful(r.left.get)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                  redirectLocation(result).value mustEqual defaultRoute.url
               }
           }
         }
@@ -169,7 +171,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
                 r =>
                   val result = Future.successful(r.left.get)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                  redirectLocation(result).value mustEqual defaultRoute.url
               }
           }
         }

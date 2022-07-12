@@ -54,7 +54,7 @@ class AddAuthorisationsHelperSpec extends SpecBase {
             ListItem(
               name = authorisationRef,
               changeUrl = CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url,
-              removeUrl = ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url
+              removeUrl = ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex).url
             )
           )
         }

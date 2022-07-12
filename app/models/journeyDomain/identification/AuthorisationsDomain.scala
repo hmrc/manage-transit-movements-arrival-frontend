@@ -21,7 +21,7 @@ import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGet
 import models.{Index, NormalMode, UserAnswers}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.AuthorisationTypePage
-import pages.sections.IdentificationAuthorisationSection
+import pages.sections.AuthorisationsSection
 import play.api.mvc.Call
 
 case class AuthorisationsDomain(
@@ -37,7 +37,7 @@ object AuthorisationsDomain {
   implicit val userAnswersReader: UserAnswersReader[AuthorisationsDomain] =
     IsSimplifiedProcedurePage.reader.flatMap {
       case true =>
-        IdentificationAuthorisationSection.reader
+        AuthorisationsSection.reader
           .map(_.value.toList)
           .flatMap {
             case Nil =>

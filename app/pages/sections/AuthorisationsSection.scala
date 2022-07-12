@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package pages.sections
 
-import models.Index
-import pages.Page
+import play.api.libs.json.{JsArray, JsPath}
 
-final case class ConfirmRemoveAuthorisationPage(index: Index) extends Page
+case object AuthorisationsSection extends Section[JsArray] {
+
+  override def path: JsPath = IdentificationSection.path \ toString
+
+  override def toString: String = "authorisation"
+}

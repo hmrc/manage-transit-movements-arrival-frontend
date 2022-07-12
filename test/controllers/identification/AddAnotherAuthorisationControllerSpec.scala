@@ -54,7 +54,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       ListItem(
         name = s"$i",
         changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, Index(i)).url,
-        removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, Index(i), mode).url
+        removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, Index(i)).url
       )
   }
 

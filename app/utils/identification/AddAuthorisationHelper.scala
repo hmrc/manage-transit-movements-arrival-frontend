@@ -33,7 +33,7 @@ class AddAuthorisationHelper(prefix: String, userAnswers: UserAnswers, mode: Mod
         ListItem(
           name = answer,
           changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
-          removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, eventIndex, mode).url
+          removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, eventIndex).url
         )
     }
 

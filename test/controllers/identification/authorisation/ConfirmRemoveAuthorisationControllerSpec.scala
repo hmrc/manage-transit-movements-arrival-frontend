@@ -18,18 +18,15 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveItemFormProvider
-import models.{Index, NormalMode, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, verify, when}
+import org.scalacheck.Gen
 import pages.identification.authorisation._
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import pages.sections.AuthorisationSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.AuthorisationQuery
-import views.html.ConcurrentRemoveErrorView
 import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
 
 import scala.concurrent.Future
@@ -37,23 +34,16 @@ import scala.concurrent.Future
 class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix                  = "identification.authorisation.confirmRemoveAuthorisation"
-  private val authTitle               = "AuthRefNo"
+  private val authTitle               = Gen.alphaNumStr.sample.value
   private val formProvider            = new ConfirmRemoveItemFormProvider()
   private val form                    = formProvider(prefix, authTitle)
-  private val mode                    = NormalMode
-  private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url
-  private val userAnswersWithAuthRef  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), authTitle)
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+  private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex).url
+  private val baseAnswers             = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), authTitle)
 
   "ConfirmRemoveAuthorisation Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      setExistingUserAnswers(userAnswersWithAuthRef)
+      setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(GET, confirmRemoveRoute)
       val result  = route(app, request).value
@@ -63,103 +53,59 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, authorisationIndex, mode, authTitle)(request, messages).toString
+        view(form, mrn, authorisationIndex, authTitle)(request, messages).toString
     }
 
-    "must return error page when user tries to remove an authorisation that does not exists" in {
-
-      val updatedAnswer = userAnswersWithAuthRef.removeValue(AuthorisationQuery(authorisationIndex))
-      setExistingUserAnswers(updatedAnswer)
+    "must return error page when user tries to remove an authorisation that does not exist" in {
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual NOT_FOUND
+      status(result) mustEqual SEE_OTHER
 
-      val view = injector.instanceOf[ConcurrentRemoveErrorView]
-
-      contentAsString(result) mustEqual
-        view(mrn, "noAuthorisation", onwardRoute.url, "authorisation")(request, messages).toString
-
-      status(result) mustEqual NOT_FOUND
-    }
-
-    "must return error page when there are multiple authorisations and user tries to remove the last authorisation that is already removed" in {
-
-      val routeWithLastIndex = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, Index(2), NormalMode).url
-      val updatedAnswer      = userAnswersWithAuthRef.setValue(AuthorisationReferenceNumberPage(Index(1)), "AuthRefNo-1")
-
-      setExistingUserAnswers(updatedAnswer)
-
-      val request = FakeRequest(GET, routeWithLastIndex)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual NOT_FOUND
-
-      val view = injector.instanceOf[ConcurrentRemoveErrorView]
-
-      contentAsString(result) mustEqual
-        view(mrn, "multipleAuthorisation", onwardRoute.url, "authorisation")(request, messages).toString
+      redirectLocation(result).value mustEqual controllers.routes.ErrorController.notFound().url
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation" in {
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(userAnswersWithAuthRef)
+      setExistingUserAnswers(baseAnswers)
 
-      val request =
-        FakeRequest(POST, confirmRemoveRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, confirmRemoveRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn, NormalMode).url
 
-      val uaRemoveAuthorisation = UserAnswers(
-        userAnswersWithAuthRef.mrn,
-        userAnswersWithAuthRef.eoriNumber,
-        userAnswersWithAuthRef.removeValue(AuthorisationQuery(authorisationIndex)).data,
-        userAnswersWithAuthRef.lastUpdated,
-        id = userAnswersWithAuthRef.id
-      )
-
-      verify(mockSessionRepository, times(1)).set(uaRemoveAuthorisation)
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(AuthorisationSection(authorisationIndex)) mustNot be(defined)
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation is false" in {
+      setExistingUserAnswers(baseAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      setExistingUserAnswers(userAnswersWithAuthRef)
-
-      val request =
-        FakeRequest(POST, confirmRemoveRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+      val request = FakeRequest(POST, confirmRemoveRoute)
+        .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn, NormalMode).url
 
-      val uaRemoveAuthorisation = UserAnswers(
-        userAnswersWithAuthRef.mrn,
-        userAnswersWithAuthRef.eoriNumber,
-        userAnswersWithAuthRef.removeValue(AuthorisationQuery(authorisationIndex)).data,
-        userAnswersWithAuthRef.lastUpdated
-      )
-
-      verify(mockSessionRepository, times(0)).set(uaRemoveAuthorisation)
+      verify(mockSessionRepository, never()).set(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      setExistingUserAnswers(userAnswersWithAuthRef)
+      setExistingUserAnswers(baseAnswers)
 
       val request   = FakeRequest(POST, confirmRemoveRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -170,11 +116,10 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, authorisationIndex, mode, authTitle)(request, messages).toString
+        view(boundForm, mrn, authorisationIndex, authTitle)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, confirmRemoveRoute)
@@ -187,12 +132,10 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, confirmRemoveRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, confirmRemoveRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

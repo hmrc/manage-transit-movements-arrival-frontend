@@ -22,7 +22,7 @@ import viewModels.sections.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
-class CheckEventAnswersViewSpec extends CheckYourAnswersViewBehaviours {
+class CheckAuthorisationAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   override val prefix: String = "identification.authorisation.checkAuthorisationAnswers"
 

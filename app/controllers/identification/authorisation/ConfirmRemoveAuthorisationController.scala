@@ -17,76 +17,64 @@
 package controllers.identification.authorisation
 
 import controllers.actions._
-import derivable.DeriveNumberOfIdentificationAuthorisations
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ConfirmRemoveItemFormProvider
-import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber}
-import navigation.Navigator
+import models.requests.SpecificDataRequestProvider1
+import models.{Index, MovementReferenceNumber, NormalMode}
 import pages.identification.authorisation._
+import pages.sections.AuthorisationSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.AuthorisationQuery
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
-import views.html.ConcurrentRemoveErrorView
-import javax.inject.Inject
-import navigation.annotations.IdentificationDetails
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  implicit val sessionRepository: SessionRepository,
   formProvider: ConfirmRemoveItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  concurrentRemoveErrorView: ConcurrentRemoveErrorView,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: ConfirmRemoveAuthorisationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "identification.authorisation.confirmRemoveAuthorisation"
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      authorisationName(index) match {
-        case Some(name) => Ok(view(formProvider(prefix, name), mrn, index, mode, name))
-        case _          => renderErrorPage(mrn, index, mode)
-      }
-  }
+  private def form(implicit request: Request): Form[Boolean] =
+    formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg)
 
-  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      authorisationName(index) match {
-        case Some(name) =>
-          formProvider(prefix, name)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode, name))),
-              value =>
-                if (value) {
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(AuthorisationQuery(index)))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(ConfirmRemoveAuthorisationPage(index), mode, updatedAnswers))
-                } else {
-                  Future.successful(Redirect(navigator.nextPage(ConfirmRemoveAuthorisationPage(index), mode, request.userAnswers)))
-                }
-            )
-        case _ => Future.successful(renderErrorPage(mrn, index, mode))
-      }
-  }
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index))(controllers.routes.ErrorController.notFound())) {
+      implicit request =>
+        Ok(view(form, mrn, index, request.arg))
+    }
 
-  private def authorisationName(index: Index)(implicit request: DataRequest[AnyContent]): Option[String] =
-    request.userAnswers.get(AuthorisationReferenceNumberPage(index))
-
-  private def renderErrorPage(mrn: MovementReferenceNumber, index: Index, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
-    val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfIdentificationAuthorisations).contains(0)) "noAuthorisation" else "multipleAuthorisation"
-    val redirectLink     = navigator.nextPage(ConfirmRemoveAuthorisationPage(index), mode, request.userAnswers).url
-
-    NotFound(concurrentRemoveErrorView(mrn, redirectLinkText, redirectLink, "concurrent.authorisation"))
-  }
+  def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index))(controllers.routes.ErrorController.notFound()))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, request.arg))),
+            {
+              case true =>
+                AuthorisationSection(index)
+                  .removeFromUserAnswers()
+                  .writeToSession()
+                  .navigateTo(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode))
+              case false =>
+                Future.successful(Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode)))
+            }
+          )
+    }
 }

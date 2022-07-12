@@ -16,11 +16,11 @@
 
 package pages.sections
 
-import play.api.libs.json.{JsArray, JsPath}
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
 
-case object IdentificationAuthorisationSection extends Section[JsArray] {
+final case class AuthorisationSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = IdentificationSection.path \ toString
+  override def path: JsPath = AuthorisationsSection.path \ index.position
 
-  override def toString: String = "authorisation"
 }

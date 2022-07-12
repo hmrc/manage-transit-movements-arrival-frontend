@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.events
+package views.identification.authorisation
 
 import forms.ConfirmRemoveItemFormProvider
-import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -25,12 +25,12 @@ import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
 
 class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
 
-  private val authorisationTitle: String = "authorisationTitle"
+  private val authorisationTitle: String = Gen.alphaNumStr.sample.value
 
   override def form: Form[Boolean] = new ConfirmRemoveItemFormProvider()(prefix, authorisationTitle)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveAuthorisationView].apply(form, mrn, authorisationIndex, NormalMode, authorisationTitle)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveAuthorisationView].apply(form, mrn, authorisationIndex, authorisationTitle)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.confirmRemoveAuthorisation"
 

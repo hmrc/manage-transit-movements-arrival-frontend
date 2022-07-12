@@ -16,12 +16,12 @@
 
 package derivable
 
-import pages.sections.IdentificationAuthorisationSection
+import pages.sections.AuthorisationsSection
 import play.api.libs.json.{JsObject, JsPath}
 
 final case object DeriveNumberOfIdentificationAuthorisations extends Derivable[List[JsObject], Int] {
 
   override val derive: List[JsObject] => Int = _.size
 
-  override def path: JsPath = IdentificationAuthorisationSection.path
+  override def path: JsPath = AuthorisationsSection.path
 }

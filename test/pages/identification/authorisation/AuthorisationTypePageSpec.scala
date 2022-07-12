@@ -20,7 +20,7 @@ import models.Index
 import models.identification.authorisation.AuthorisationType
 import pages.behaviours.PageBehaviours
 
-class AuthorisationTypeSpec extends PageBehaviours {
+class AuthorisationTypePageSpec extends PageBehaviours {
 
   "AuthorisationTypePage" - {
 
