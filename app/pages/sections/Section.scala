@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.sections
 
-import queries.{Gettable, Query, Settable}
+import pages.QuestionPage
+import play.api.libs.json.JsValue
 
-trait OpsError {
-  val page: Query
-  val message: Option[String]
-}
-
-case class ReaderError(page: Gettable[_], message: Option[String] = None) extends OpsError
-case class WriterError(page: Settable[_], message: Option[String] = None) extends OpsError
+trait Section[T <: JsValue] extends QuestionPage[T]

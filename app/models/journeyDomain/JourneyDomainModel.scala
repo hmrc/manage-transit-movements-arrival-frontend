@@ -16,12 +16,11 @@
 
 package models.journeyDomain
 
-import queries.{Gettable, Query, Settable}
+import models.UserAnswers
+import play.api.mvc.Call
 
-trait OpsError {
-  val page: Query
-  val message: Option[String]
+trait JourneyDomainModel {
+
+  def routeIfCompleted(userAnswers: UserAnswers): Option[Call] = None
+
 }
-
-case class ReaderError(page: Gettable[_], message: Option[String] = None) extends OpsError
-case class WriterError(page: Settable[_], message: Option[String] = None) extends OpsError
