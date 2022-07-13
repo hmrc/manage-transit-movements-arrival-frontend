@@ -16,15 +16,26 @@
 
 package utils.identification
 
-import models.{Mode, UserAnswers}
+import models.identification.authorisation.AuthorisationType
+import models.journeyDomain.identification.AuthorisationDomain
+import models.{Index, Mode, UserAnswers}
 import pages.identification._
+import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.Messages
+import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
 import java.time.LocalDate
 
 class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
+
+  def movementReferenceNumber: SummaryListRow = buildRow(
+    prefix = "movementReferenceNumber",
+    answer = formatAsText(mrn),
+    id = None,
+    call = controllers.identification.routes.MovementReferenceNumberController.onPageLoad()
+  )
 
   def arrivalDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = ArrivalDatePage,
@@ -46,4 +57,13 @@ class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
     prefix = "identification.identificationNumber",
     id = Some("change-identification-number")
   )
+
+  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain, AuthorisationType](
+    page = AuthorisationTypePage(index),
+    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+    prefix = "identification.authorisation",
+    id = Some(s"change-authorisation-${index.display}"),
+    args = index.display
+  )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
+
 }

@@ -22,7 +22,7 @@ POST       /:mrn/identification/change-identification-number            controll
 GET        /:mrn/identification/add-another-authorisation               controllers.identification.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber)
 POST       /:mrn/identification/add-another-authorisation               controllers.identification.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber)
 
-GET        /:mrn/identification/check-identification-answers            controllers.identification.CheckIdentificationAnswersController.onPageLoad(mrn: MovementReferenceNumber)
-POST       /:mrn/identification/check-identification-answers            controllers.identification.CheckIdentificationAnswersController.onSubmit(mrn: MovementReferenceNumber)
+GET        /:mrn/identification/check-answers                           controllers.identification.CheckIdentificationAnswersController.onPageLoad(mrn: MovementReferenceNumber)
+POST       /:mrn/identification/check-answers                           controllers.identification.CheckIdentificationAnswersController.onSubmit(mrn: MovementReferenceNumber)
 
 

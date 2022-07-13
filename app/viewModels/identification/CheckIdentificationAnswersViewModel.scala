@@ -16,9 +16,11 @@
 
 package viewModels.identification
 
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
+import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
 import utils.identification.CheckIdentificationAnswersHelper
+import viewModels.Link
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -36,16 +38,30 @@ object CheckIdentificationAnswersViewModel {
 
       val helper = new CheckIdentificationAnswersHelper(userAnswers, mode)
 
-      // TODO - add rows for each authorisation
-      val section = Section(
+      val identificationSection = Section(
         rows = Seq(
+          Some(helper.movementReferenceNumber),
           helper.arrivalDate,
           helper.isSimplified,
           helper.identificationNumber
         ).flatten
       )
 
-      new CheckIdentificationAnswersViewModel(Seq(section))
+      val authorisationsSection = Section(
+        sectionTitle = messages("identification.checkIdentificationAnswers.authorisations.subheading"),
+        rows = userAnswers
+          .get(AuthorisationsSection)
+          .map(_.value.zipWithIndex.flatMap {
+            case (_, position) => helper.authorisation(Index(position))
+          })
+          .getOrElse(Nil),
+        addAnotherLink = Link(
+          text = messages("identification.checkIdentificationAnswers.addOrRemoveAuthorisations"),
+          href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn)
+        )
+      )
+
+      new CheckIdentificationAnswersViewModel(Seq(identificationSection, authorisationsSection))
     }
   }
 }

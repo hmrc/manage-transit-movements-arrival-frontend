@@ -17,13 +17,16 @@
 package utils.identification
 
 import base.SpecBase
+import controllers.identification.authorisation.{routes => authRoutes}
 import controllers.identification.routes
 import generators.Generators
-import models.Mode
+import models.identification.authorisation.AuthorisationType.Option1
+import models.{Mode, MovementReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification._
+import pages.identification.authorisation._
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
@@ -32,6 +35,35 @@ import java.time.LocalDate
 class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "CheckIdentificationAnswersHelper" - {
+
+    "movementReferenceNumber" - {
+      "must return row" in {
+        forAll(arbitrary[Mode], arbitrary[MovementReferenceNumber]) {
+          (mode, mrn) =>
+            val answers = emptyUserAnswers.copy(mrn = mrn)
+
+            val helper = new CheckIdentificationAnswersHelper(answers, mode)
+            val result = helper.movementReferenceNumber
+
+            result mustBe SummaryListRow(
+              key = Key("Movement reference number".toText),
+              value = Value(s"$mrn".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.MovementReferenceNumberController.onPageLoad().url,
+                      visuallyHiddenText = Some("movement reference number"),
+                      attributes = Map()
+                    )
+                  )
+                )
+              )
+            )
+        }
+      }
+    }
 
     "arrivalDate" - {
       "must return None" - {
@@ -155,6 +187,52 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
                           href = routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url,
                           visuallyHiddenText = Some("identification number"),
                           attributes = Map("id" -> "change-identification-number")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
+    "authorisation" - {
+      "must return None" - {
+        "when AuthorisationTypePage undefined at index" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new CheckIdentificationAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.authorisation(authorisationIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AuthorisationTypePage defined at index" in {
+          forAll(arbitrary[Mode], Gen.alphaNumStr) {
+            (mode, ref) =>
+              val answers = emptyUserAnswers
+                .setValue(AuthorisationTypePage(authorisationIndex), Option1)
+                .setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
+
+              val helper = new CheckIdentificationAnswersHelper(answers, mode)
+              val result = helper.authorisation(authorisationIndex)
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Authorisation 1".toText),
+                  value = Value("Option 1".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = authRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex).url,
+                          visuallyHiddenText = Some("authorisation 1"),
+                          attributes = Map("id" -> "change-authorisation-1")
                         )
                       )
                     )
