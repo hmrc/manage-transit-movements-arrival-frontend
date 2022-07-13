@@ -20,10 +20,11 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.identification.authorisation.{routes => authRoutes}
 import forms.AddItemFormProvider
+import models.journeyDomain.identification.IdentificationDomain
 import models.requests.DataRequest
 import models.{Index, MovementReferenceNumber, NormalMode}
-import navigation.Navigator
 import navigation.annotations.IdentificationDetails
+import navigation.{Navigator, UserAnswersNavigator}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -69,7 +70,7 @@ class AddAnotherAuthorisationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, authorisations, allowMoreAuthorisations)),
           {
             case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), NormalMode))
-            case false => Redirect(routes.IdentificationNumberController.onPageLoad(mrn, NormalMode))
+            case false => Redirect(UserAnswersNavigator.nextPage[IdentificationDomain](request.userAnswers, NormalMode))
           }
         )
   }

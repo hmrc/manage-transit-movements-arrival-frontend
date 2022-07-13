@@ -135,8 +135,8 @@ identification.authorisation.authorisationReferenceNumber.change.hidden = author
 identification.authorisation.authorisationReferenceNumber.error.required = Enter Authorisation Reference Number
 identification.authorisation.authorisationReferenceNumber.error.length = Authorisation Reference Number must be 100 characters or less
 
-identification.authorisation.checkAuthorisationAnswers.title = Check your answers for this authorisation
-identification.authorisation.checkAuthorisationAnswers.heading = Check your answers for this authorisation
+identification.authorisation.checkAuthorisationAnswers.title = Check your answers
+identification.authorisation.checkAuthorisationAnswers.heading = Check your answers
 
 identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you want to remove the authorisation {0}?
 identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the authorisation {0}?
@@ -149,7 +149,7 @@ identification.identificationNumber.change.hidden = identification number
 identification.identificationNumber.error.required = Enter Identification Number
 identification.identificationNumber.error.length = Identification Number must be 100 characters or less
 
-identification.checkIdentificationAnswers.title = Check your answers for this identification
-identification.checkIdentificationAnswers.heading = Check your answers for this identification
+identification.checkIdentificationAnswers.title = Check your answers
+identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations

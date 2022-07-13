@@ -18,12 +18,13 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddItemFormProvider
-import generators.Generators
+import generators.{Generators, IdentificationUserAnswersGenerator}
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.identification.IdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -33,7 +34,7 @@ import viewModels.identification.AddAnotherAuthorisationViewModel
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.identification.AddAnotherAuthorisationView
 
-class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with IdentificationUserAnswersGenerator {
 
   private val formProvider                  = new AddItemFormProvider()
   private def form(allowMoreItems: Boolean) = formProvider("identification.addAnotherAuthorisation", allowMoreItems)
@@ -142,14 +143,62 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       }
 
       "when no submitted" - {
+
+        val answers = arbitraryIdentificationAnswers(emptyUserAnswers).sample.value
+
+        "and identification number not answered" - {
+          "must redirect to identification number" in {
+            when(mockViewModelProvider.apply(any())(any()))
+              .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+            setExistingUserAnswers(answers.removeValue(IdentificationNumberPage))
+
+            val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              routes.IdentificationNumberController.onPageLoad(mrn, NormalMode).url
+          }
+        }
+
+        "and answers in completed state" - {
+          "must redirect to check your answers" in {
+            when(mockViewModelProvider.apply(any())(any()))
+              .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+            setExistingUserAnswers(answers)
+
+            val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              routes.CheckIdentificationAnswersController.onPageLoad(mrn).url
+          }
+        }
+      }
+    }
+
+    "when max limit reached" - {
+
+      val answers = arbitraryIdentificationAnswers(emptyUserAnswers).sample.value
+
+      "and identification number not answered" - {
         "must redirect to identification number" in {
           when(mockViewModelProvider.apply(any())(any()))
-            .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+            .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
 
-          setExistingUserAnswers(emptyUserAnswers)
+          setExistingUserAnswers(answers.removeValue(IdentificationNumberPage))
 
           val request = FakeRequest(POST, addAnotherAuthorisationRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            .withFormUrlEncodedBody(("value", ""))
 
           val result = route(app, request).value
 
@@ -159,24 +208,24 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
             routes.IdentificationNumberController.onPageLoad(mrn, NormalMode).url
         }
       }
-    }
 
-    "when max limit reached" - {
-      "must redirect to identification number" in {
-        when(mockViewModelProvider.apply(any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
+      "and answers in completed state" - {
+        "must redirect to check your answers" in {
+          when(mockViewModelProvider.apply(any())(any()))
+            .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
 
-        setExistingUserAnswers(emptyUserAnswers)
+          setExistingUserAnswers(answers)
 
-        val request = FakeRequest(POST, addAnotherAuthorisationRoute)
-          .withFormUrlEncodedBody(("value", ""))
+          val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+            .withFormUrlEncodedBody(("value", ""))
 
-        val result = route(app, request).value
+          val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          routes.IdentificationNumberController.onPageLoad(mrn, NormalMode).url
+          redirectLocation(result).value mustEqual
+            routes.CheckIdentificationAnswersController.onPageLoad(mrn).url
+        }
       }
     }
 
