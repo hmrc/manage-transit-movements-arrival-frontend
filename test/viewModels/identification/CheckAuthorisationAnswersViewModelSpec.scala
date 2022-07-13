@@ -17,42 +17,23 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.{Generators, ViewModelGenerators}
-import models.CheckMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import generators.Generators
+import models.NormalMode
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.BeforeAndAfterEach
-import viewModels.sections.{AuthorisationSection, Section}
+import org.scalacheck.Gen
+import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 
-class CheckAuthorisationAnswersViewModelSpec extends SpecBase with Generators with ViewModelGenerators with BeforeAndAfterEach {
+class CheckAuthorisationAnswersViewModelSpec extends SpecBase with Generators {
 
-  private val mockAuthorisations: AuthorisationSection = mock[AuthorisationSection]
-
-  private val sampleAuthorisations = arbitrary[Section].sample.value
-
-  private val mode = CheckMode
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    reset(mockAuthorisations)
-
-    when(mockAuthorisations.apply(any(), any(), any())(any()))
-      .thenReturn(sampleAuthorisations)
-  }
-
-  "must return sections" in {
+  "must return section" in {
     val userAnswers = emptyUserAnswers
+      .setValue(AuthorisationTypePage(eventIndex), arbitrary[AuthorisationType].sample.value)
+      .setValue(AuthorisationReferenceNumberPage(eventIndex), Gen.alphaNumStr.sample.value)
 
-    val viewModel = new CheckAuthorisationAnswersViewModel(mockAuthorisations)
+    val section = CheckAuthorisationAnswersViewModel.apply(userAnswers, authorisationIndex, NormalMode).section
 
-    val sections = viewModel.apply(userAnswers, eventIndex, mode)
-
-    sections.size mustBe 1
-
-    sections.head mustBe sampleAuthorisations
-
-    verify(mockAuthorisations).apply(eqTo(userAnswers), eqTo(mode), eqTo(eventIndex))(any())
+    section.sectionTitle mustNot be(defined)
+    section.rows.size mustBe 2
   }
 }

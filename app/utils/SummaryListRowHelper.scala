@@ -23,6 +23,9 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsYesOrNo(answer: Boolean): Content =
@@ -37,7 +40,10 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsText[T](answer: T): Content = s"$answer".toText
 
-  def formatAsDate[T](answer: T): Content = s"$answer".toText
+  def formatAsDate(answer: LocalDate): Content = {
+    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+    answer.format(formatter).toText
+  }
 
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
     s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
@@ -64,23 +70,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
       args = args: _*
     )
 
-  def buildSectionRow[T](
-    prefix: String,
-    labelKey: String,
-    answer: Content,
-    id: Option[String],
-    call: Call,
-    args: Any*
-  ): SummaryListRow =
-    buildSimpleRow(
-      prefix = prefix,
-      label = messages(s"$labelKey.label", args: _*).toText,
-      answer = answer,
-      id = id,
-      call = call,
-      args = args: _*
-    )
-
   def buildSimpleRow(
     prefix: String,
     label: Content,
@@ -90,7 +79,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     args: Any*
   ): SummaryListRow =
     SummaryListRow(
-      key = Key(label, classes = "govuk-!-width-one-half"),
+      key = Key(label),
       value = Value(answer),
       actions = Some(
         Actions(items =

@@ -16,14 +16,36 @@
 
 package viewModels.identification
 
-import javax.inject.Inject
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import viewModels.sections.identification.IdentificationSection
+import utils.identification.CheckIdentificationAnswersHelper
 import viewModels.sections.Section
 
-class CheckIdentificationAnswersViewModel @Inject() (identificationSection: IdentificationSection) {
+import javax.inject.Inject
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Seq[Section] =
-    Seq(identificationSection(userAnswers, mode))
+case class CheckIdentificationAnswersViewModel(sections: Seq[Section])
+
+object CheckIdentificationAnswersViewModel {
+
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckIdentificationAnswersViewModel =
+    new CheckIdentificationAnswersViewModelProvider().apply(userAnswers, mode)
+
+  class CheckIdentificationAnswersViewModelProvider @Inject() () {
+
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckIdentificationAnswersViewModel = {
+
+      val helper = new CheckIdentificationAnswersHelper(userAnswers, mode)
+
+      // TODO - add rows for each authorisation
+      val section = Section(
+        rows = Seq(
+          helper.arrivalDate,
+          helper.isSimplified,
+          helper.identificationNumber
+        ).flatten
+      )
+
+      new CheckIdentificationAnswersViewModel(Seq(section))
+    }
+  }
 }

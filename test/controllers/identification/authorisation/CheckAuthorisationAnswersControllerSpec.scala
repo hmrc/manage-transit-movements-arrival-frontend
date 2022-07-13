@@ -27,26 +27,27 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.identification.CheckAuthorisationAnswersViewModel
+import viewModels.identification.CheckAuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
 import viewModels.sections.Section
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModel = mock[CheckAuthorisationAnswersViewModel]
+  private lazy val mockViewModelProvider = mock[CheckAuthorisationAnswersViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckAuthorisationAnswersViewModel].toInstance(mockViewModel))
+      .overrides(bind[CheckAuthorisationAnswersViewModelProvider].toInstance(mockViewModelProvider))
 
   "Check Authorisation Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val sampleSections = arbitrary[Seq[Section]].sample.value
+      val sampleSection = arbitrary[Section].sample.value
 
-      when(mockViewModel.apply(any(), any(), any())(any()))
-        .thenReturn(sampleSections)
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        .thenReturn(CheckAuthorisationAnswersViewModel(sampleSection))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -59,7 +60,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mrn, authorisationIndex, sampleSections)(request, messages).toString
+        view(mrn, authorisationIndex, Seq(sampleSection))(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

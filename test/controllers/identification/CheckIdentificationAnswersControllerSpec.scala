@@ -27,17 +27,18 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.identification.CheckIdentificationAnswersViewModel
+import viewModels.identification.CheckIdentificationAnswersViewModel.CheckIdentificationAnswersViewModelProvider
 import viewModels.sections.Section
 import views.html.identification.CheckIdentificationAnswersView
 
 class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModel = mock[CheckIdentificationAnswersViewModel]
+  private lazy val mockViewModelProvider = mock[CheckIdentificationAnswersViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckIdentificationAnswersViewModel].toInstance(mockViewModel))
+      .overrides(bind[CheckIdentificationAnswersViewModelProvider].toInstance(mockViewModelProvider))
 
   "Check Identification Answers Controller" - {
 
@@ -45,8 +46,8 @@ class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefa
 
       val sampleSections = arbitrary[Seq[Section]].sample.value
 
-      when(mockViewModel.apply(any(), any())(any()))
-        .thenReturn(sampleSections)
+      when(mockViewModelProvider.apply(any(), any())(any()))
+        .thenReturn(CheckIdentificationAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 

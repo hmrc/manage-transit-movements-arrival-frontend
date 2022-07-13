@@ -22,7 +22,7 @@ import models.{CheckMode, MovementReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.identification.CheckIdentificationAnswersViewModel
+import viewModels.identification.CheckIdentificationAnswersViewModel.CheckIdentificationAnswersViewModelProvider
 import views.html.identification.CheckIdentificationAnswersView
 
 class CheckIdentificationAnswersController @Inject() (
@@ -30,13 +30,13 @@ class CheckIdentificationAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckIdentificationAnswersView,
-  viewModel: CheckIdentificationAnswersViewModel
+  viewModelProvider: CheckIdentificationAnswersViewModelProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val sections = viewModel(request.userAnswers, CheckMode)
+      val sections = viewModelProvider(request.userAnswers, CheckMode).sections
       Ok(view(mrn, sections))
   }
 

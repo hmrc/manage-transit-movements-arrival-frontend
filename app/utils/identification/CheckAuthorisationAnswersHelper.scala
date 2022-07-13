@@ -23,19 +23,24 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
-class CheckAuthorisationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
+class CheckAuthorisationAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode,
+  index: Index
+)(implicit messages: Messages)
+    extends AnswersHelper(userAnswers, mode) {
 
-  def authorisationReferenceNumber(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = AuthorisationReferenceNumberPage(eventIndex),
-    formatAnswer = formatAsText,
-    prefix = "identification.authorisation.authorisationReferenceNumber",
-    id = Some(s"change-authorisation-ref-no-${eventIndex.display}")
+  def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
+    page = AuthorisationTypePage(index),
+    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+    prefix = "identification.authorisation.authorisationType",
+    id = Some("change-authorisation-type")
   )
 
-  def authorisationType(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
-    page = AuthorisationTypePage(eventIndex),
+  def authorisationReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AuthorisationReferenceNumberPage(index),
     formatAnswer = formatAsText,
-    prefix = "identification.authorisation.authorisationType",
-    id = Some(s"change-authorisation-type-${eventIndex.display}")
+    prefix = "identification.authorisation.authorisationReferenceNumber",
+    id = Some("change-authorisation-ref-no")
   )
 }

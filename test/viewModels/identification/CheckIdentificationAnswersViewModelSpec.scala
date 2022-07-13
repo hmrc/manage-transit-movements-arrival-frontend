@@ -17,43 +17,26 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.{Generators, ViewModelGenerators}
-import models.CheckMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import generators.Generators
+import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.BeforeAndAfterEach
-import viewModels.sections.identification.IdentificationSection
-import viewModels.sections.Section
+import org.scalacheck.Gen
+import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 
-class CheckIdentificationAnswersViewModelSpec extends SpecBase with Generators with ViewModelGenerators with BeforeAndAfterEach {
+import java.time.LocalDate
 
-  private val mockIdentification: IdentificationSection = mock[IdentificationSection]
-
-  private val sampleIdentification = arbitrary[Section].sample.value
-
-  private val mode = CheckMode
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    reset(mockIdentification)
-
-    when(mockIdentification.apply(any(), any())(any()))
-      .thenReturn(sampleIdentification)
-  }
+class CheckIdentificationAnswersViewModelSpec extends SpecBase with Generators {
 
   "must return sections" in {
     val userAnswers = emptyUserAnswers
+      .setValue(ArrivalDatePage, arbitrary[LocalDate].sample.value)
+      .setValue(IdentificationNumberPage, Gen.alphaNumStr.sample.value)
+      .setValue(IsSimplifiedProcedurePage, true)
 
-    val viewModel = new CheckIdentificationAnswersViewModel(mockIdentification)
-
-    val sections = viewModel.apply(userAnswers, mode)
+    val sections = CheckIdentificationAnswersViewModel.apply(userAnswers, NormalMode).sections
 
     sections.size mustBe 1
-
-    sections.head mustBe sampleIdentification
-
-    verify(mockIdentification).apply(eqTo(userAnswers), eqTo(mode))(any())
+    sections.head.sectionTitle mustNot be(defined)
+    sections.head.rows.size mustBe 3
   }
 }

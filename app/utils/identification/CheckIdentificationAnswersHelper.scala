@@ -26,24 +26,24 @@ import java.time.LocalDate
 
 class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
 
-  def arrivalDate(): Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
+  def arrivalDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = ArrivalDatePage,
     formatAnswer = formatAsDate,
     prefix = "identification.arrivalDate",
-    id = Some(s"change-arrival-date")
+    id = Some("change-arrival-date")
   )
 
-  def isSimplified(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IsSimplifiedProcedurePage,
     formatAnswer = formatAsYesOrNo,
     prefix = "identification.isSimplifiedProcedure",
-    id = Some(s"change-is-simplified-procedure")
+    id = Some("change-is-simplified-procedure")
   )
 
-  def identificationNumber(): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage,
     formatAnswer = formatAsText,
     prefix = "identification.identificationNumber",
-    id = Some(s"change-identification-number")
+    id = Some("change-identification-number")
   )
 }
