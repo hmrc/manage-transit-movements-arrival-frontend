@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveItemFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
@@ -81,7 +81,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn, NormalMode).url
+        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -99,7 +99,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn, NormalMode).url
+        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
 
       verify(mockSessionRepository, never()).set(any())
     }

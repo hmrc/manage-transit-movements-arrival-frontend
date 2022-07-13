@@ -17,39 +17,27 @@
 package utils.identification
 
 import controllers.identification.authorisation.{routes => authorisationRoutes}
+import models.identification.authorisation.AuthorisationType
+import models.journeyDomain.identification.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.authorisation.AuthorisationTypePage
+import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.libs.json.Reads
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AnswersHelper
 
-class AddAuthorisationHelper(prefix: String, userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
 
-  def authorisationListItem(eventIndex: Index): Option[ListItem] =
-    authorisationReference(eventIndex).map {
-      answer =>
-        ListItem(
-          name = answer,
-          changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, eventIndex).url,
-          removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, eventIndex).url
-        )
+  def listItems: Seq[Either[ListItem, ListItem]] =
+    buildListItems(AuthorisationsSection) {
+      position =>
+        val index = Index(position)
+        buildListItem[AuthorisationDomain, AuthorisationType](
+          page = AuthorisationTypePage(Index(position)),
+          getName = _.`type`,
+          formatName = formatEnumAsString(AuthorisationType.messageKeyPrefix),
+          removeRoute = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index)
+        )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
     }
-
-  def authorisation(authorisationIndex: Index): Option[SummaryListRow] =
-    authorisationReference(authorisationIndex) map {
-      answer =>
-        buildSectionRow(
-          prefix = s"$prefix.authorisation",
-          labelKey = s"$prefix.authorisation",
-          answer = answer.toText,
-          id = None,
-          call = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex),
-          args = authorisationIndex.display
-        )
-    }
-
-  private def authorisationReference(authorisationIndex: Index): Option[String] =
-    userAnswers.get(AuthorisationReferenceNumberPage(authorisationIndex))
 }

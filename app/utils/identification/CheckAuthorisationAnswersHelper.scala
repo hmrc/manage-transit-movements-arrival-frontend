@@ -16,7 +16,6 @@
 
 package utils.identification
 
-import controllers.identification.authorisation.{routes => authorisationRoutes}
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -24,22 +23,19 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
-class CheckAuthorisationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class CheckAuthorisationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
 
   def authorisationReferenceNumber(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = AuthorisationReferenceNumberPage(eventIndex),
-    formatAnswer = formatAsLiteral,
+    formatAnswer = formatAsText,
     prefix = "identification.authorisation.authorisationReferenceNumber",
-    id = Some(s"change-authorisation-ref-no-${eventIndex.display}"),
-    call = authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(mrn, eventIndex, mode)
+    id = Some(s"change-authorisation-ref-no-${eventIndex.display}")
   )
 
   def authorisationType(eventIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
     page = AuthorisationTypePage(eventIndex),
-    formatAnswer = formatAsLiteral,
+    formatAnswer = formatAsText,
     prefix = "identification.authorisation.authorisationType",
-    id = Some(s"change-authorisation-type-${eventIndex.display}"),
-    call = authorisationRoutes.AuthorisationTypeController.onPageLoad(mrn, eventIndex, mode)
+    id = Some(s"change-authorisation-type-${eventIndex.display}")
   )
-
 }

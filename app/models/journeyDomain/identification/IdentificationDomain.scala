@@ -19,7 +19,7 @@ package models.journeyDomain.identification
 import cats.implicits._
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification.{ArrivalDatePage, IsSimplifiedProcedurePage}
+import pages.identification._
 import play.api.mvc.Call
 
 import java.time.LocalDate
@@ -28,7 +28,8 @@ case class IdentificationDomain(
   mrn: MovementReferenceNumber,
   arrivalDate: LocalDate,
   isSimplified: Boolean,
-  authorisations: AuthorisationsDomain
+  authorisations: AuthorisationsDomain,
+  identificationNumber: String
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
@@ -47,6 +48,7 @@ object IdentificationDomain {
       mrn,
       ArrivalDatePage.reader,
       IsSimplifiedProcedurePage.reader,
-      UserAnswersReader[AuthorisationsDomain]
+      UserAnswersReader[AuthorisationsDomain],
+      IdentificationNumberPage.reader
     ).tupled.map((IdentificationDomain.apply _).tupled)
 }

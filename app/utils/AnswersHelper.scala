@@ -16,92 +16,93 @@
 
 package utils
 
-import models.{MovementReferenceNumber, UserAnswers}
+import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.{Mode, MovementReferenceNumber, UserAnswers}
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsArray, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
+class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def mrn: MovementReferenceNumber = userAnswers.mrn
 
-  def getAnswerAndBuildRow[T](
+  protected def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
     prefix: String,
     id: Option[String],
-    call: Call,
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
+    for {
+      answer <- userAnswers.get(page)
+      call   <- page.route(userAnswers, mode)
+    } yield buildRow(
+      prefix = prefix,
+      answer = formatAnswer(answer),
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
+  protected def buildListItems(
+    section: Section[JsArray]
+  )(block: Int => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
+    userAnswers
+      .get(section)
+      .map {
+        _.value.zipWithIndex.flatMap {
+          case (_, index) =>
+            block(index)
+        }
+      }
+      .getOrElse(Nil)
+
+  protected def buildListItem[A <: JourneyDomainModel, B](
+    page: QuestionPage[B],
+    getName: A => B,
+    formatName: B => String,
+    removeRoute: Call
+  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
+    UserAnswersReader[A].run(userAnswers) match {
+      case Left(readerError) =>
+        readerError.page.route(userAnswers, mode).flatMap {
+          changeRoute =>
+            getNameAndBuildListItem[B](
+              page = page,
+              formatName = formatName,
+              changeUrl = changeRoute.url,
+              removeUrl = removeRoute.url
+            ).map(Left(_))
+        }
+      case Right(journeyDomainModel) =>
+        journeyDomainModel.routeIfCompleted(userAnswers).map {
+          changeRoute =>
+            Right(
+              ListItem(
+                name = formatName(getName(journeyDomainModel)),
+                changeUrl = changeRoute.url,
+                removeUrl = removeRoute.url
+              )
+            )
+        }
     }
 
-  def getAnswerAndBuildNamedRow[T](
-    namePage: QuestionPage[String],
-    answerPage: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Call
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(namePage) flatMap {
-      name =>
-        getAnswerAndBuildRow[T](
-          page = answerPage,
-          formatAnswer = formatAnswer,
-          prefix = prefix,
-          id = id,
-          call = call,
-          args = name
-        )
-    }
-
-  def getAnswerAndBuildSectionRow[T](
+  protected def getNameAndBuildListItem[T](
     page: QuestionPage[T],
-    formatAnswer: T => String,
-    prefix: String,
-    labelKey: String,
-    id: Option[String],
-    call: Call,
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildSectionRow(
-          prefix = prefix,
-          labelKey = labelKey,
-          answer = s"${formatAnswer(answer)}".toText,
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
-
-  def getAnswerAndBuildListItem[T](
-    page: QuestionPage[T],
-    formatAnswer: T => String,
-    changeCall: Call,
-    removeCall: Call
+    formatName: T => String,
+    changeUrl: String,
+    removeUrl: String
   )(implicit rds: Reads[T]): Option[ListItem] =
     userAnswers.get(page) map {
-      answer =>
+      name =>
         ListItem(
-          name = formatAnswer(answer),
-          changeUrl = changeCall.url,
-          removeUrl = removeCall.url
+          name = formatName(name),
+          changeUrl = changeUrl,
+          removeUrl = removeUrl
         )
     }
-
 }

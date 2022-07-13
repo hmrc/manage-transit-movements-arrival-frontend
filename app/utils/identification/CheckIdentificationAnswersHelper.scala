@@ -16,38 +16,34 @@
 
 package utils.identification
 
-import java.time.LocalDate
-
-import controllers.identification.{routes => identificationRoutes}
 import models.{Mode, UserAnswers}
 import pages.identification._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
-class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+import java.time.LocalDate
+
+class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
 
   def arrivalDate(): Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = ArrivalDatePage,
     formatAnswer = formatAsDate,
     prefix = "identification.arrivalDate",
-    id = Some(s"change-arrival-date"),
-    call = identificationRoutes.ArrivalDateController.onPageLoad(mrn, mode)
+    id = Some(s"change-arrival-date")
   )
 
   def isSimplified(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IsSimplifiedProcedurePage,
     formatAnswer = formatAsYesOrNo,
     prefix = "identification.isSimplifiedProcedure",
-    id = Some(s"change-is-simplified-procedure"),
-    call = identificationRoutes.IsSimplifiedProcedureController.onPageLoad(mrn, mode)
+    id = Some(s"change-is-simplified-procedure")
   )
 
   def identificationNumber(): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage,
-    formatAnswer = formatAsLiteral,
+    formatAnswer = formatAsText,
     prefix = "identification.identificationNumber",
-    id = Some(s"change-identification-number"),
-    call = identificationRoutes.IdentificationNumberController.onPageLoad(mrn, mode)
+    id = Some(s"change-identification-number")
   )
 }

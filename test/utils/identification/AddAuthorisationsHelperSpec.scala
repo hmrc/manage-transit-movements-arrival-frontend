@@ -17,90 +17,46 @@
 package utils.identification
 
 import base.SpecBase
-import controllers.identification.authorisation.routes._
-import models.{CheckMode, Mode}
+import controllers.identification.authorisation.{routes => authRoutes}
+import generators.Generators
+import models.identification.authorisation.AuthorisationType._
+import models.{Index, NormalMode}
+import org.scalacheck.Gen
+import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-class AddAuthorisationsHelperSpec extends SpecBase {
+class AddAuthorisationsHelperSpec extends SpecBase with Generators {
 
-  private val mode: Mode = CheckMode
-  private val prefix     = "identification.addAnotherAuthorisation"
+  "listItems" - {
 
-  "AddAuthorisationsHelper" - {
+    "when empty user answers" - {
+      "must return empty list of list items" in {
+        val userAnswers = emptyUserAnswers
 
-    ".authorisationListItem" - {
-
-      "must return None" - {
-        "when AuthorisationReferenceNumberPage and AuthorisationTypePage undefined" in {
-
-          val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
-          helper.authorisationListItem(authorisationIndex) mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AuthorisationReferenceNumberPage defined" in {
-
-          val authorisationRef = "authRefNo"
-
-          val answers = emptyUserAnswers
-            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authorisationRef)
-
-          val helper = new AddAuthorisationHelper(prefix, answers, mode)
-          helper.authorisationListItem(authorisationIndex) mustBe Some(
-            ListItem(
-              name = authorisationRef,
-              changeUrl = CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url,
-              removeUrl = ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex).url
-            )
-          )
-        }
+        val helper = new AddAuthorisationHelper(userAnswers, NormalMode)
+        helper.listItems mustBe Nil
       }
     }
 
-    ".event" - {
+    "when user answers populated with a complete authorisation" - {
+      "must return one list item" in {
+        val ref = Gen.alphaNumStr.sample.value
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(AuthorisationTypePage(Index(0)), Option1)
+          .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
 
-      "must return None" - {
-        "when AuthorisationReferenceNumberPage undefined" in {
-
-          val helper = new AddAuthorisationHelper(prefix, emptyUserAnswers, mode)
-          helper.authorisation(authorisationIndex) mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AuthorisationReferenceNumberPage defined" in {
-
-          val place = "authRefNo"
-
-          val answers = emptyUserAnswers
-            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), place)
-
-          val helper = new AddAuthorisationHelper(prefix, answers, mode)
-          helper.authorisation(authorisationIndex) mustBe Some(
-            SummaryListRow(
-              key = Key(
-                content = s"Authorisation ${authorisationIndex.display}".toText,
-                classes = "govuk-!-width-one-half"
-              ),
-              value = Value(place.toText),
-              actions = Some(
-                Actions(items =
-                  Seq(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url,
-                      visuallyHiddenText = Some(s"authorisation ${authorisationIndex.display}")
-                    )
-                  )
-                )
-              )
+        val helper = new AddAuthorisationHelper(userAnswers, NormalMode)
+        helper.listItems mustBe Seq(
+          Right(
+            ListItem(
+              name = "Option 1",
+              changeUrl = authRoutes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0)).url,
+              removeUrl = authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url
             )
           )
-        }
+        )
       }
     }
   }

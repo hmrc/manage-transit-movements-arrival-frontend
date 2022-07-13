@@ -35,6 +35,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     generateAuthorisationAnswer orElse {
       case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
       case IsSimplifiedProcedurePage => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
     }
   }
 

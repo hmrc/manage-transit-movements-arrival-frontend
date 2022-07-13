@@ -18,24 +18,22 @@ package controllers.identification
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import derivable.DeriveNumberOfIdentificationAuthorisations
+import controllers.identification.authorisation.{routes => authRoutes}
 import forms.AddItemFormProvider
-import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber}
+import models.{Index, MovementReferenceNumber, NormalMode}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import pages.identification.AddAnotherAuthorisationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.identification.AddAuthorisationHelper
+import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.identification.AddAnotherAuthorisationView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
@@ -45,39 +43,40 @@ class AddAnotherAuthorisationController @Inject() (
   formProvider: AddItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   config: FrontendAppConfig,
+  viewModelProvider: AddAnotherAuthorisationViewModelProvider,
   view: AddAnotherAuthorisationView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "identification.addAnotherAuthorisation"
+  private def form(allowMoreAuthorisations: Boolean): Form[Boolean] =
+    formProvider("identification.addAnotherAuthorisation", allowMoreAuthorisations)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = formProvider("identification.addAnotherAuthorisation", allowMoreItems)
-      Ok(view(preparedForm, mrn, mode, authorisations, allowMoreItems))
+      val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
+      numberOfAuthorisations match {
+        case 0 => Redirect(routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
+        case _ => Ok(view(form(allowMoreAuthorisations), mrn, authorisations, allowMoreAuthorisations))
+      }
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      formProvider(prefix, allowMoreItems)
+      lazy val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
+      form(allowMoreAuthorisations)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, authorisations, allowMoreItems))),
-          value => AddAnotherAuthorisationPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => BadRequest(view(formWithErrors, mrn, authorisations, allowMoreAuthorisations)),
+          {
+            case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), NormalMode))
+            case false => Redirect(routes.IdentificationNumberController.onPageLoad(mrn, NormalMode))
+          }
         )
   }
 
-  private def authorisations(mode: Mode)(implicit request: DataRequest[_]): Seq[ListItem] = {
-    val addAuthorisationsHelper = new AddAuthorisationHelper(prefix, request.userAnswers, mode)
-    (0 to numberOfAuthorisations) flatMap {
-      x => addAuthorisationsHelper.authorisationListItem(Index(x))
-    }
+  private def viewData(implicit request: DataRequest[_]): (Seq[ListItem], Int, Boolean) = {
+    val authorisations         = viewModelProvider.apply(request.userAnswers).listItems
+    val numberOfAuthorisations = authorisations.length
+    (authorisations, numberOfAuthorisations, numberOfAuthorisations < config.maxIdentificationAuthorisations)
   }
-
-  private def allowMoreItems(implicit request: DataRequest[_]): Boolean =
-    numberOfAuthorisations < config.maxIdentificationAuthorisations
-
-  private def numberOfAuthorisations(implicit request: DataRequest[_]): Int =
-    request.userAnswers.get(DeriveNumberOfIdentificationAuthorisations).getOrElse(0)
 }

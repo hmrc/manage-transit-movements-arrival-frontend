@@ -30,12 +30,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, items: Mode => Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
-
-@listItems = @{
-    items(mode)
-}
-
+@(form: Form[Boolean], mrn: MovementReferenceNumber, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.addAnotherAuthorisation.title"),
@@ -43,13 +38,13 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @heading(s"identification.addAnotherAuthorisation.heading", Seq(listItems.length))
+        @heading(s"identification.addAnotherAuthorisation.heading", Seq(authorisations.length))
 
-        @listWithActions(listItems)
+        @listWithActions(authorisations)
 
         @if(allowMoreItems) {
             @inputYesNo(

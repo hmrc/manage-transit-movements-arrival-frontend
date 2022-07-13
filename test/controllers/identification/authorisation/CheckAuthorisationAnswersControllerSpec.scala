@@ -19,7 +19,6 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.authorisation.{routes => authorisationRoutes}
 import generators.Generators
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -86,7 +85,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode).url
+      redirectLocation(result).value mustEqual controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
     }
   }
 }

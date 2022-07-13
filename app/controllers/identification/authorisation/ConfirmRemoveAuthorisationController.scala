@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ConfirmRemoveItemFormProvider
 import models.requests.SpecificDataRequestProvider1
-import models.{Index, MovementReferenceNumber, NormalMode}
+import models.{Index, MovementReferenceNumber}
 import pages.identification.authorisation._
 import pages.sections.AuthorisationSection
 import play.api.data.Form
@@ -71,9 +71,9 @@ class ConfirmRemoveAuthorisationController @Inject() (
                 AuthorisationSection(index)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode))
+                  .navigateTo(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
               case false =>
-                Future.successful(Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode)))
+                Future.successful(Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn)))
             }
           )
     }

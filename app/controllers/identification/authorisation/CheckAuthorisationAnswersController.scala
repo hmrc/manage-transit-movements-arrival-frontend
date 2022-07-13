@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.{CheckMode, Index, MovementReferenceNumber, NormalMode}
+import models.{CheckMode, Index, MovementReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,7 +42,7 @@ class CheckAuthorisationAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn, NormalMode))
+      Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
   }
 
 }

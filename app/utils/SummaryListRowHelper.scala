@@ -35,12 +35,18 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   def formatAsAddress(address: Address): Content =
     HtmlContent(Seq(address.line1, address.line2, address.postalCode).mkString("<br>"))
 
-  def formatAsLiteral[T](answer: T): Content = s"$answer".toText
+  def formatAsText[T](answer: T): Content = s"$answer".toText
 
   def formatAsDate[T](answer: T): Content = s"$answer".toText
 
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
     s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
+
+  protected def formatEnumAsText[T](messageKeyPrefix: String)(answer: T): Content =
+    formatEnumAsString(messageKeyPrefix)(answer).toText
+
+  protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
+    messages(s"$messageKeyPrefix.$answer")
 
   def buildRow(
     prefix: String,

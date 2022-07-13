@@ -17,115 +17,156 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.identification.authorisation.{routes => authorisationRoutes}
 import forms.AddItemFormProvider
-import models.identification.authorisation.AuthorisationType
+import generators.Generators
 import models.{Index, NormalMode}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewModels.identification.AddAnotherAuthorisationViewModel
+import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.identification.AddAnotherAuthorisationView
 
-import scala.concurrent.Future
+class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
   private val formProvider                  = new AddItemFormProvider()
   private def form(allowMoreItems: Boolean) = formProvider("identification.addAnotherAuthorisation", allowMoreItems)
 
-  private val range = 0 to 2
+  private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
 
-  private val maxedUserAnswers = range.foldLeft(emptyUserAnswers) {
-    (acc, i) =>
-      acc
-        .setValue(AuthorisationReferenceNumberPage(Index(i)), s"$i")
-        .setValue(AuthorisationTypePage(Index(i)), AuthorisationType.Option1)
-  }
-
-  private lazy val maxedListItems = range.map {
-    i =>
-      ListItem(
-        name = s"$i",
-        changeUrl = authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, Index(i)).url,
-        removeUrl = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, Index(i)).url
-      )
-  }
-
-  private val mode                              = NormalMode
-  private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode).url
+  private val mockViewModelProvider = mock[AddAnotherAuthorisationViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+      .overrides(bind(classOf[AddAnotherAuthorisationViewModelProvider]).toInstance(mockViewModelProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+  }
+
+  private val listItem          = arbitrary[ListItem].sample.value
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxIdentificationAuthorisations - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxIdentificationAuthorisations)(listItem)
 
   "AddAnotherAuthorisation Controller" - {
 
-    "must return OK and the correct view for a GET" - {
-      "when max limit not reached" in {
-
-        val allowMoreItems = true
+    "redirect to add guarantee yes/no page" - {
+      "when 0 guarantees" in {
+        when(mockViewModelProvider.apply(any())(any()))
+          .thenReturn(AddAnotherAuthorisationViewModel(Nil))
 
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, addAnotherAuthorisationRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddAnotherAuthorisationView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(allowMoreItems), mrn, mode, _ => Nil, allowMoreItems)(request, messages).toString
-      }
-
-      "when max limit reached" in {
-
-        val allowMoreItems = false
-
-        setExistingUserAnswers(maxedUserAnswers)
-
-        val request = FakeRequest(GET, addAnotherAuthorisationRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AddAnotherAuthorisationView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(allowMoreItems), mrn, mode, _ => maxedListItems, allowMoreItems)(request, messages).toString
-      }
-    }
-
-    "must redirect to the next page" - {
-      "when valid data is submitted and max limit not reached" in {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherAuthorisationRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual
+          routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode).url
+      }
+    }
+
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
+        val allowMore = true
+
+        when(mockViewModelProvider.apply(any())(any()))
+          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherAuthorisationRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherAuthorisationView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMore), mrn, listItems, allowMore)(request, messages).toString
       }
 
       "when max limit reached" in {
+        val allowMore = false
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val listItems = maxedOutListItems
 
-        setExistingUserAnswers(maxedUserAnswers)
+        when(mockViewModelProvider.apply(any())(any()))
+          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherAuthorisationRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherAuthorisationView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(allowMore), mrn, listItems, allowMore)(request, messages).toString
+      }
+    }
+
+    "when max limit not reached" - {
+      "when yes submitted" - {
+        "must redirect to authorisation type page at next index" in {
+          when(mockViewModelProvider.apply(any())(any()))
+            .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.identification.authorisation.routes.AuthorisationTypeController.onPageLoad(mrn, Index(listItems.length), NormalMode).url
+        }
+      }
+
+      "when no submitted" - {
+        "must redirect to identification number" in {
+          when(mockViewModelProvider.apply(any())(any()))
+            .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            routes.IdentificationNumberController.onPageLoad(mrn, NormalMode).url
+        }
+      }
+    }
+
+    "when max limit reached" - {
+      "must redirect to identification number" in {
+        when(mockViewModelProvider.apply(any())(any()))
+          .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
+
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, addAnotherAuthorisationRoute)
           .withFormUrlEncodedBody(("value", ""))
@@ -134,19 +175,24 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual
+          routes.IdentificationNumberController.onPageLoad(mrn, NormalMode).url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
+        when(mockViewModelProvider.apply(any())(any()))
+          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
-        val allowMoreItems = true
+        val allowMore = true
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request   = FakeRequest(POST, addAnotherAuthorisationRoute).withFormUrlEncodedBody(("value", ""))
-        val boundForm = form(allowMoreItems).bind(Map("value" -> ""))
+        val request = FakeRequest(POST, addAnotherAuthorisationRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form(allowMore).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
@@ -155,12 +201,11 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, mode, _ => Nil, allowMoreItems)(request, messages).toString
+          view(boundForm, mrn, listItems, allowMore)(request, messages).toString
       }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, addAnotherAuthorisationRoute)
@@ -173,7 +218,6 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, addAnotherAuthorisationRoute)

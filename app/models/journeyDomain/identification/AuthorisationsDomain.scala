@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
@@ -29,7 +29,7 @@ case class AuthorisationsDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, NormalMode))
+    Some(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn))
 }
 
 object AuthorisationsDomain {
