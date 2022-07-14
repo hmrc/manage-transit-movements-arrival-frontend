@@ -21,9 +21,7 @@ import controllers.identification.routes
 import generators.{Generators, IdentificationUserAnswersGenerator}
 import models._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification._
 
 class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
@@ -31,17 +29,12 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
   "Identification Navigator" - {
 
-    val pageGen = Gen.oneOf(
-      ArrivalDatePage,
-      IsSimplifiedProcedurePage
-    )
-
     "when answers complete" - {
       "must redirect to check your answers" in {
-        forAll(arbitraryIdentificationAnswers(emptyUserAnswers), pageGen, arbitrary[Mode]) {
-          (answers, page, mode) =>
+        forAll(arbitraryIdentificationAnswers(emptyUserAnswers), arbitrary[Mode]) {
+          (answers, mode) =>
             navigator
-              .nextPage(page, mode, answers)
+              .nextPage(answers, mode)
               .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
         }
       }

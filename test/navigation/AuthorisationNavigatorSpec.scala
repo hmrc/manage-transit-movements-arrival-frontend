@@ -21,9 +21,7 @@ import controllers.identification.authorisation.{routes => authorisationRoutes}
 import controllers.identification.{routes => identificationRoutes}
 import generators.{Generators, IdentificationUserAnswersGenerator}
 import models._
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.authorisation._
 
 class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
@@ -31,21 +29,16 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
   "Authorisation Navigator" - {
 
-    val pageGen = Gen.oneOf(
-      AuthorisationTypePage(authorisationIndex),
-      AuthorisationReferenceNumberPage(authorisationIndex)
-    )
-
     "when in NormalMode" - {
 
       val mode = NormalMode
 
       "when answers complete" - {
         "must redirect to check your answers" in {
-          forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex), pageGen) {
-            (answers, page) =>
+          forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex)) {
+            answers =>
               navigator
-                .nextPage(page, mode, answers)
+                .nextPage(answers, mode)
                 .mustBe(authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex))
           }
         }
@@ -58,10 +51,10 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
       "when answers complete" - {
         "must redirect to check your answers" in {
-          forAll(arbitraryIdentificationAnswers(emptyUserAnswers), pageGen) {
-            (answers, page) =>
+          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+            answers =>
               navigator
-                .nextPage(page, mode, answers)
+                .nextPage(answers, mode)
                 .mustBe(identificationRoutes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
           }
         }

@@ -20,15 +20,15 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.identification.authorisation.{routes => authRoutes}
 import forms.AddItemFormProvider
-import models.journeyDomain.identification.IdentificationDomain
+import models.journeyDomain.identification.AuthorisationDomain
 import models.requests.DataRequest
 import models.{Index, MovementReferenceNumber, NormalMode}
+import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import navigation.{Navigator, UserAnswersNavigator}
+import pages.sections.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
@@ -38,9 +38,9 @@ import javax.inject.Inject
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  @IdentificationDetails navigator: Navigator,
   actions: Actions,
+  removeInProgressAuthorisations: RemoveInProgressActionProvider,
   formProvider: AddItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   config: FrontendAppConfig,
@@ -52,14 +52,16 @@ class AddAnotherAuthorisationController @Inject() (
   private def form(allowMoreAuthorisations: Boolean): Form[Boolean] =
     formProvider("identification.addAnotherAuthorisation", allowMoreAuthorisations)
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
-      numberOfAuthorisations match {
-        case 0 => Redirect(routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
-        case _ => Ok(view(form(allowMoreAuthorisations), mrn, authorisations, allowMoreAuthorisations))
-      }
-  }
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(removeInProgressAuthorisations[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)) {
+      implicit request =>
+        val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
+        numberOfAuthorisations match {
+          case 0 => Redirect(routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
+          case _ => Ok(view(form(allowMoreAuthorisations), mrn, authorisations, allowMoreAuthorisations))
+        }
+    }
 
   def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
@@ -70,7 +72,7 @@ class AddAnotherAuthorisationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, authorisations, allowMoreAuthorisations)),
           {
             case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), NormalMode))
-            case false => Redirect(UserAnswersNavigator.nextPage[IdentificationDomain](request.userAnswers, NormalMode))
+            case false => Redirect(navigator.nextPage(request.userAnswers, NormalMode))
           }
         )
   }
