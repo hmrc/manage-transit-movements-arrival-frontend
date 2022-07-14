@@ -16,9 +16,9 @@
 
 package controllers.actions
 
-import models.Index
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
 import models.requests.DataRequest
+import models.{Index, RichJsArray}
 import pages.sections.Section
 import play.api.Logging
 import play.api.libs.json.{JsArray, JsObject}
@@ -38,15 +38,14 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
   override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
     val userAnswers = request.userAnswers
     userAnswers.get(array) match {
-      case Some(JsArray(value)) =>
-        val indexesToRemove = value.zipWithIndex
-          .filter {
-            case (_, i) => UserAnswersReader[T](userAnswersReader(Index(i))).run(userAnswers).isLeft
+      case Some(value) =>
+        val indexesToRemove = value
+          .filterWithIndex {
+            (_, i) => UserAnswersReader[T](userAnswersReader(Index(i))).run(userAnswers).isLeft
           }
           .map(_._2)
-          .reverse
 
-        val updatedAnswers = indexesToRemove.foldLeft(userAnswers) {
+        val updatedAnswers = indexesToRemove.reverse.foldLeft(userAnswers) {
           (acc, i) =>
             acc.remove(indexedValue(Index(i))).getOrElse(acc)
         }

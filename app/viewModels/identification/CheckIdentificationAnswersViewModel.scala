@@ -16,7 +16,7 @@
 
 package viewModels.identification
 
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichOptionJsArray, UserAnswers}
 import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
 import utils.identification.CheckIdentificationAnswersHelper
@@ -51,10 +51,9 @@ object CheckIdentificationAnswersViewModel {
         sectionTitle = messages("identification.checkIdentificationAnswers.authorisations.subheading"),
         rows = userAnswers
           .get(AuthorisationsSection)
-          .map(_.value.zipWithIndex.flatMap {
-            case (_, position) => helper.authorisation(Index(position))
-          })
-          .getOrElse(Nil),
+          .mapWithIndex {
+            (_, index) => helper.authorisation(Index(index))
+          },
         addAnotherLink = Link(
           text = messages("identification.checkIdentificationAnswers.addOrRemoveAuthorisations"),
           href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn)

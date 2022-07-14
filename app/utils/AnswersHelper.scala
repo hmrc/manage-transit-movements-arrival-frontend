@@ -17,7 +17,7 @@
 package utils
 
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
-import models.{Mode, MovementReferenceNumber, UserAnswers}
+import models.{Mode, MovementReferenceNumber, RichOptionJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import pages.sections.Section
@@ -73,13 +73,9 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
   )(block: Int => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
     userAnswers
       .get(section)
-      .map {
-        _.value.zipWithIndex.flatMap {
-          case (_, index) =>
-            block(index)
-        }
+      .mapWithIndex {
+        (_, index) => block(index)
       }
-      .getOrElse(Nil)
 
   protected def buildListItem[A <: JourneyDomainModel, B](
     page: QuestionPage[B],

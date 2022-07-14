@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, UserAnswers}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
@@ -37,18 +37,12 @@ object AuthorisationsDomain {
   implicit val userAnswersReader: UserAnswersReader[AuthorisationsDomain] =
     IsSimplifiedProcedurePage.reader.flatMap {
       case true =>
-        AuthorisationsSection.reader
-          .map(_.value.toList)
-          .flatMap {
-            case Nil =>
-              UserAnswersReader.fail[AuthorisationsDomain](AuthorisationTypePage(Index(0)))
-            case x =>
-              x.zipWithIndex
-                .traverse[UserAnswersReader, AuthorisationDomain] {
-                  case (_, index) => AuthorisationDomain.userAnswersReader(Index(index))
-                }
-                .map(AuthorisationsDomain.apply)
-          }
+        AuthorisationsSection.reader.flatMap {
+          case x if x.isEmpty =>
+            UserAnswersReader.fail[AuthorisationsDomain](AuthorisationTypePage(Index(0)))
+          case x =>
+            x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader).map(AuthorisationsDomain.apply)
+        }
       case false =>
         UserAnswersReader(AuthorisationsDomain(Nil))
     }
