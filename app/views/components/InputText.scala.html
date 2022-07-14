@@ -15,14 +15,19 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputTextViewModel
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.Heading
 @import views.utils.ViewUtils._
 
-@this(govukInput: GovukInput)
+@this(
+    govukInput: GovukInput,
+    hmrcHeading: Heading
+)
 
 @(
     field: Field,
-    label: String,
-    labelIsHeading: Boolean = true,
+    inputTextType: InputTextViewModel,
     inputClass: Option[String] = None,
     hint: Option[String] = None,
     prefix: Option[String] = None,
@@ -50,10 +55,21 @@
     .withFormField(field)
 }
 
-@govukInput(
-    if (labelIsHeading) {
-        input.withHeadingAndCaption(heading = label, caption)
-    } else {
-        input.copy(label = Label(isPageHeading = false, content = Text(label)))
+@inputTextType match {
+    case OrdinaryTextInput(heading, caption) => {
+        @govukInput(input.withHeadingAndCaption(heading, caption))
     }
-)
+    case x @ TextInputWithHiddenLabel(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(heading), classes = "govuk-visually-hidden")))
+    }
+    case x @ TextInputWithStatementHeading(heading, caption, label, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(label), classes = "govuk-label--m")))
+    }
+    case AddressTextInput(label) => {
+        @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(label))))
+    }
+}

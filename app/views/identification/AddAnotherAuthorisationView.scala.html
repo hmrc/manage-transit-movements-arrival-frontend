@@ -32,30 +32,35 @@
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
 
+@singularOrPlural = @{
+    if (authorisations.length == 1) "singular" else "plural"
+}
+
 @mainTemplate(
-    title = messages("identification.addAnotherAuthorisation.title"),
+    title = messages(s"identification.addAnotherAuthorisation.$singularOrPlural.title", authorisations.length),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
+    @errorSummary(form.errors)
+
+    @heading(messages(s"identification.addAnotherAuthorisation.$singularOrPlural.heading", authorisations.length))
+
+    @listWithActions(authorisations)
+
     @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn), 'autoComplete -> "off") {
-
-        @errorSummary(form.errors)
-
-        @heading(s"identification.addAnotherAuthorisation.heading", Seq(authorisations.length))
-
-        @listWithActions(authorisations)
 
         @if(allowMoreItems) {
             @inputYesNo(
                 field = form("value"),
-                yesNoType = YesNoWithoutHeading(
-                    label = messages("identification.addAnotherAuthorisation.heading")
+                yesNoType = YesNoWithLegend(
+                    legend = messages("identification.addAnotherAuthorisation.label")
                 )
             )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@messages("identification.addAnotherAuthorisation.maxLimit.label")</p>
         }
+
         @button(attributes = Map("id" -> "submit"))
     }
 }

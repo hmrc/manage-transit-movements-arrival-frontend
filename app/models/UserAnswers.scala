@@ -22,7 +22,7 @@ import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.LocalDateTime
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Try}
 
 final case class UserAnswers(
   mrn: MovementReferenceNumber,
@@ -38,31 +38,17 @@ final case class UserAnswers(
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
     data.setObject(page.path, Json.toJson(value)) match {
-      case JsSuccess(jsObject, _) =>
-        val updatedAnswers = copy(data = jsObject)
-        if (jsObject == data) {
-          Success(updatedAnswers)
-        } else {
-          page.cleanup(Some(value), updatedAnswers)
-        }
+      case JsSuccess(updatedData, _) =>
+        val updatedAnswers = copy(data = updatedData)
+        page.cleanup(Some(value), updatedAnswers)
       case JsError(errors) =>
         Failure(JsResultException(errors))
     }
 
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
-
-    val updatedData = data.removeObject(page.path) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(_) =>
-        Success(data)
-    }
-
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(None, updatedAnswers)
-    }
+    val updatedData    = data.removeObject(page.path).getOrElse(data)
+    val updatedAnswers = copy(data = updatedData)
+    page.cleanup(None, updatedAnswers)
   }
 }
 

@@ -18,23 +18,31 @@ package viewModels.components
 
 import play.twirl.api.Html
 
-sealed trait InputSelectViewModel
+sealed trait InputTextViewModel
 
-object InputSelectViewModel {
+object InputTextViewModel {
 
-  case class OrdinarySelect(
+  case class OrdinaryTextInput(
     heading: String,
     caption: Option[String] = None
-  ) extends InputSelectViewModel
+  ) extends InputTextViewModel
 
-  case class SelectWithAdditionalHtml(
+  case class TextInputWithHiddenLabel(
     heading: String,
     caption: Option[String] = None,
     additionalHtml: Html
-  ) extends InputSelectViewModel
+  ) extends InputTextViewModel
       with AdditionalHtmlViewModel
 
-  case class AddressCountrySelect(
+  case class TextInputWithStatementHeading(
+    heading: String,
+    caption: Option[String] = None,
+    label: String,
+    additionalHtml: Html
+  ) extends InputTextViewModel
+      with AdditionalHtmlViewModel
+
+  case class AddressTextInput(
     label: String
-  ) extends InputSelectViewModel
+  ) extends InputTextViewModel
 }

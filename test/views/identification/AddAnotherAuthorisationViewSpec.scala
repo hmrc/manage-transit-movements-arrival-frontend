@@ -42,13 +42,11 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   override val prefix: String = "identification.addAnotherAuthorisation"
 
-  behave like pageWithTitle()
-
   behave like pageWithBackLink
 
-  behave like pageWithHeading()
+  behave like pageWithMoreItemsAllowed()
 
-  behave like pageWithRadioItems()
+  behave like pageWithItemsMaxedOut()
 
   behave like pageWithSubmitButton("Continue")
 }
