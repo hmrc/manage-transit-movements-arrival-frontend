@@ -16,7 +16,6 @@
 
 package models
 
-import derivable.Derivable
 import pages._
 import play.api.libs.json._
 import queries.Gettable
@@ -36,9 +35,6 @@ final case class UserAnswers(
 
   def get[A](gettable: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(gettable.path)).reads(data).getOrElse(None)
-
-  def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    get(derivable: Gettable[A]).map(derivable.derive)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
     data.setObject(page.path, Json.toJson(value)) match {
@@ -72,10 +68,9 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  import play.api.libs.functional.syntax._
 
-    import play.api.libs.functional.syntax._
-
+  implicit lazy val reads: Reads[UserAnswers] =
     (
       (__ \ "movementReferenceNumber").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
@@ -84,12 +79,8 @@ object UserAnswers {
         (__ \ "arrivalId").readNullable[ArrivalId] and
         (__ \ "_id").read[Id]
     )(UserAnswers.apply _)
-  }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
+  implicit lazy val writes: OWrites[UserAnswers] =
     (
       (__ \ "movementReferenceNumber").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
@@ -98,7 +89,6 @@ object UserAnswers {
         (__ \ "arrivalId").writeNullable[ArrivalId] and
         (__ \ "_id").write[Id]
     )(unlift(UserAnswers.unapply))
-  }
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 }
