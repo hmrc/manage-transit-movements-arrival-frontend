@@ -37,7 +37,7 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-              val postChange = preChange.set(IsSimplifiedProcedurePage, false).success.value
+              val postChange = preChange.setValue(IsSimplifiedProcedurePage, false)
 
               postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
           }
@@ -49,7 +49,7 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-              val postChange = preChange.set(IsSimplifiedProcedurePage, true).success.value
+              val postChange = preChange.setValue(IsSimplifiedProcedurePage, true)
 
               postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
           }

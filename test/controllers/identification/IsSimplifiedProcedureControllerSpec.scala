@@ -17,19 +17,19 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.{NormalMode, UserAnswers}
+import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.identification.IsSimplifiedProcedurePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import forms.YesNoFormProvider
 import views.html.identification.IsSimplifiedProcedureView
-import pages.identification.IsSimplifiedProcedurePage
 
 import scala.concurrent.Future
 
@@ -65,7 +65,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(IsSimplifiedProcedurePage, true).success.value
+      val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, isSimplifiedProcedureRoute)

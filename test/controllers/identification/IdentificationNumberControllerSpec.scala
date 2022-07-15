@@ -16,19 +16,19 @@
 
 package controllers.identification
 
-import models.{NormalMode, UserAnswers}
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.identification.IdentificationNumberFormProvider
+import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.identification.IdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.identification.IdentificationNumberView
-import pages.identification.IdentificationNumberPage
-import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.identification.IdentificationNumberFormProvider
 
 import scala.concurrent.Future
 
@@ -65,7 +65,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(IdentificationNumberPage, "test string").success.value
+      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationNumberRoute)

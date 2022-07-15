@@ -17,20 +17,20 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.{NormalMode, UserAnswers}
+import forms.DateFormProvider
+import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.identification.ArrivalDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import forms.DateFormProvider
 import views.html.identification.ArrivalDateView
-import pages.identification.ArrivalDatePage
-import java.time.{Clock, LocalDate, ZoneOffset}
 
+import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class ArrivalDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -71,7 +71,7 @@ class ArrivalDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(ArrivalDatePage, date).success.value
+      val userAnswers = emptyUserAnswers.setValue(ArrivalDatePage, date)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, arrivalDateRoute)

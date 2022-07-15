@@ -19,7 +19,7 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
 import models.identification.authorisation.AuthorisationType
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -65,7 +65,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set(AuthorisationTypePage(index), AuthorisationType.values.head).success.value
+      val userAnswers = emptyUserAnswers.setValue(AuthorisationTypePage(index), AuthorisationType.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationTypeRoute)
