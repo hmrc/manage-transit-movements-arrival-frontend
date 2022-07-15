@@ -16,6 +16,7 @@ site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = - Manage your transit movements - GOV.UK
 site.movement.reference.number = Movement reference number
 site.youMust = You must
+site.section = This section is
 
 date.day.capitalized = Day
 date.month.capitalized = Month
