@@ -16,14 +16,14 @@
 
 package generators
 
+import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
+
 import java.time._
 
-import cats.data.NonEmptyList
-
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
+trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 

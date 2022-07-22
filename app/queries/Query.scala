@@ -16,8 +16,9 @@
 
 package queries
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 import scala.util.{Success, Try}
 
@@ -25,7 +26,9 @@ sealed trait Query {
   def path: JsPath
 }
 
-trait Gettable[A] extends Query
+trait Gettable[A] extends Query {
+  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
+}
 
 trait Settable[A] extends Query {
 

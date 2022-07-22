@@ -54,7 +54,7 @@ class SessionRepository @Inject() (
 
   def set(userAnswers: UserAnswers): Future[Boolean] = {
     val filter = Filters.and(
-      Filters.eq("movementReferenceNumber", userAnswers.movementReferenceNumber.toString),
+      Filters.eq("movementReferenceNumber", userAnswers.mrn.toString),
       Filters.eq("eoriNumber", userAnswers.eoriNumber.value)
     )
     val updatedUserAnswers = userAnswers.copy(lastUpdated = LocalDateTime.now())

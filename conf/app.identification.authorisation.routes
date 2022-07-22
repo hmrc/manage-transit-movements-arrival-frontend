@@ -1,0 +1,16 @@
+
+GET        /:mrn/identification/authorisation/:index/reference-number                       controllers.identification.authorisation.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:mrn/identification/authorisation/:index/reference-number                       controllers.identification.authorisation.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:mrn/identification/authorisation/:index/change-reference-number                controllers.identification.authorisation.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:mrn/identification/authorisation/:index/change-reference-number                controllers.identification.authorisation.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/identification/authorisation/:index/type                                   controllers.identification.authorisation.AuthorisationTypeController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:mrn/identification/authorisation/:index/type                                   controllers.identification.authorisation.AuthorisationTypeController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:mrn/identification/authorisation/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:mrn/identification/authorisation/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/identification/authorisation/:index/check-authorisation-answers            controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
+POST       /:mrn/identification/authorisation/:index/check-authorisation-answers            controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index)
+
+GET        /:mrn/identification/authorisation/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
+POST       /:mrn/identification/authorisation/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onSubmit(mrn: MovementReferenceNumber, index: Index)

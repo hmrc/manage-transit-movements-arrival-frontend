@@ -17,10 +17,18 @@
 package viewModels.sections
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewModels.Link
 
-case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow])
+case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], addAnotherLink: Option[Link])
 
 object Section {
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
-  def apply(rows: Seq[SummaryListRow]): Section                       = new Section(None, rows)
+
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Link): Section =
+    new Section(Some(sectionTitle), rows, Some(addAnotherLink))
+
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section =
+    new Section(Some(sectionTitle), rows, None)
+
+  def apply(rows: Seq[SummaryListRow]): Section =
+    new Section(None, rows, None)
 }

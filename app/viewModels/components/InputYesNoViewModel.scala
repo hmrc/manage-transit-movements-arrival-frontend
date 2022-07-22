@@ -27,14 +27,14 @@ object InputYesNoViewModel {
     caption: Option[String] = None
   ) extends InputYesNoViewModel
 
-  case class YesNoWithoutHeading(
-    label: String,
-    legendIsVisible: Boolean = true
-  ) extends InputYesNoViewModel
-
   case class YesNoWithAdditionalHtml(
     heading: String,
     caption: Option[String] = None,
     additionalHtml: Html
+  ) extends InputYesNoViewModel
+      with AdditionalHtmlViewModel
+
+  case class YesNoWithLegend(
+    legend: String
   ) extends InputYesNoViewModel
 }

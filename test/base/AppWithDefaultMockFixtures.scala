@@ -18,8 +18,8 @@ package base
 
 import config.annotations._
 import controllers.actions._
-import models.UserAnswers
-import navigation.{FakeNavigator, Navigator}
+import models.{Index, UserAnswers}
+import navigation.{AuthorisationNavigatorProvider, FakeAuthorisationNavigator, FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -63,6 +63,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
+  protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
+    (index: Index) => new FakeAuthorisationNavigator(onwardRoute, index)
+
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
@@ -71,6 +74,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Event]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Container]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator)

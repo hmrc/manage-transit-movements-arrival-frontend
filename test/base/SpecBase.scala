@@ -21,7 +21,7 @@ import models.{EoriNumber, Index, MovementReferenceNumber, UkAddress, UserAnswer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -41,16 +41,18 @@ trait SpecBase
     with TryValues
     with ScalaFutures
     with IntegrationPatience
-    with MockitoSugar {
+    with MockitoSugar
+    with EitherValues {
 
   val eoriNumber: EoriNumber       = EoriNumber("GB123456")
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
 
   val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj())
 
-  val eventIndex: Index     = Index(0)
-  val containerIndex: Index = Index(0)
-  val sealIndex: Index      = Index(0)
+  val authorisationIndex: Index = Index(0)
+  val eventIndex: Index         = Index(0)
+  val containerIndex: Index     = Index(0)
+  val sealIndex: Index          = Index(0)
 
   val traderName: String       = "traderName"
   val consigneeName: String    = "consigneeName"

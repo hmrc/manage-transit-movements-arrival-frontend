@@ -16,30 +16,30 @@
 
 package config
 
-import java.time.Clock
-
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{IdentificationNavigator, Navigator}
 import navigation.annotations.IdentificationDetails
+import navigation.{AuthorisationNavigatorProvider, AuthorisationNavigatorProviderImpl, IdentificationNavigator, Navigator}
 import services.{DateTimeService, DateTimeServiceImpl}
+
+import java.time.Clock
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
     bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+
+    bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
+    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
+    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[RemoveInProgressActionProvider]).to(classOf[RemoveInProgressActionProviderImpl])
 
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
-
-    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
-
-    bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
-
     bind(classOf[Clock]).toInstance(Clock.systemUTC)
   }
 }
