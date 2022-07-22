@@ -49,8 +49,9 @@ class CheckIdentificationAnswersViewModelSpec extends SpecBase with Generators {
     sections(1).sectionTitle.get mustBe "Authorisations"
     sections(1).rows.size mustBe 1
     sections(1).addAnotherLink.get mustBe Link(
-      "Add or remove authorisations",
-      controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn)
+      id = "add-or-remove",
+      text = "Add or remove authorisations",
+      href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
     )
   }
 }

@@ -55,8 +55,9 @@ object CheckIdentificationAnswersViewModel {
             (_, index) => helper.authorisation(Index(index))
           },
         addAnotherLink = Link(
+          id = "add-or-remove",
           text = messages("identification.checkIdentificationAnswers.addOrRemoveAuthorisations"),
-          href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn)
+          href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
         )
       )
 

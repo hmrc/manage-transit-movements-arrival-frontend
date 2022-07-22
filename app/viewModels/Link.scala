@@ -16,6 +16,4 @@
 
 package viewModels
 
-import play.api.mvc.Call
-
-case class Link(text: String, href: Call)
+case class Link(id: String, text: String, href: String)
