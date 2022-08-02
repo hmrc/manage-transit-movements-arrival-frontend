@@ -1,20 +1,20 @@
 package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.$formProvider$
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.$package$.$className$Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import forms.$formProvider$
 import views.html.$package$.$className$View
-import pages.$package$.$className$Page
-import java.time.{Clock, LocalDate, ZoneOffset}
 
+import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -50,12 +50,11 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       contentAsString(result) mustEqual
         view(form, mrn, mode)(request, messages).toString
-
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(mrn, eoriNumber).set($className$Page, date).success.value
+      val userAnswers = emptyUserAnswers.setValue($className$Page, date)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -74,7 +73,6 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, mode)(request, messages).toString
-
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -83,13 +81,12 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request =
-        FakeRequest(POST, $className;format="decap"$Route)
-          .withFormUrlEncodedBody(
-            "value.day"   -> date.getDayOfMonth.toString,
-            "value.month" -> date.getMonthValue.toString,
-            "value.year"  -> date.getYear.toString
-          )
+      val request = FakeRequest(POST, $className;format="decap"$Route)
+        .withFormUrlEncodedBody(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
+        )
 
       val result = route(app, request).value
 
@@ -115,7 +112,6 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, mode)(request, messages).toString
-
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -129,7 +125,6 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
-
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -149,7 +144,6 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
-
     }
   }
 }

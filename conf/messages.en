@@ -16,6 +16,11 @@ site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = - Manage your transit movements - GOV.UK
 site.movement.reference.number = Movement reference number
 site.youMust = You must
+site.section = This section is
+
+date.day.capitalized = Day
+date.month.capitalized = Month
+date.year.capitalized = Year
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
@@ -60,10 +65,18 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab)
 
+concurrent.authorisation = authorisation
+concurrent.remove.error.title = Sorry, there is a problem with this {0}
+concurrent.remove.error.heading = Sorry, there is a problem with this {0}
+concurrent.remove.error.paragraph = You will need to answer some questions again.
+concurrent.remove.error.noAuthorisation.link.text = Go back to add authorisations?
+concurrent.remove.error.multipleAuthorisation.link.text = Go back to you have added authorisations
+
 movementReferenceNumber.title = What is the movement reference number (MRN)?
 movementReferenceNumber.heading = What is the movement reference number (MRN)?
 movementReferenceNumber.hintText = It is on the top right hand corner of the Transit Accompanying Document (TAD) that is with the goods. It is 18 characters, like 19GB12345678901234.
 movementReferenceNumber.checkYourAnswersLabel = Movement reference number
+movementReferenceNumber.change.hidden = movement reference number
 movementReferenceNumber.error.required = Enter the movement reference number
 movementReferenceNumber.error.invalid = Movement reference number is 2 numbers, then 2 letters followed by 14 characters
 movementReferenceNumber.error.invalidCharacter = Movement reference number must only include letters a to z and numbers 0 to 9
@@ -78,3 +91,66 @@ pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpd
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
+
+identification.arrivalDate.title = Arrival Date
+identification.arrivalDate.heading = Arrival Date
+identification.arrivalDate.checkYourAnswersLabel = Arrival Date
+identification.arrivalDate.change.hidden = arrival date
+identification.arrivalDate.hint = For example, 14 1 2020
+identification.arrivalDate.error.required.all = Enter the date for Arrival Date
+identification.arrivalDate.error.required.two = The date for Arrival Date must include {0} and {1}
+identification.arrivalDate.error.required = The date for Arrival Date must include {0}
+identification.arrivalDate.error.invalid = Enter a real date for Arrival Date
+identification.arrivalDate.error.min.date = The date must be after {0}
+identification.arrivalDate.error.max.date = The date must be before the current date
+
+identification.isSimplifiedProcedure.title = Is Simplified Procedure
+identification.isSimplifiedProcedure.heading = Is Simplified Procedure
+identification.isSimplifiedProcedure.checkYourAnswersLabel = Is Simplified Procedure
+identification.isSimplifiedProcedure.change.hidden = if it is a simplified procedure
+identification.isSimplifiedProcedure.error.required = Select yes if Is Simplified Procedure
+
+identification.addAnotherAuthorisation.singular.title = You have added {0} authorisation
+identification.addAnotherAuthorisation.singular.heading = You have added {0} authorisation
+identification.addAnotherAuthorisation.plural.title = You have added {0} authorisations
+identification.addAnotherAuthorisation.plural.heading = You have added {0} authorisations
+identification.addAnotherAuthorisation.error.required = Select yes if you need to add another authorisation
+identification.addAnotherAuthorisation.label = Do you need to add another authorisation?
+identification.addAnotherAuthorisation.maxLimit.label = You cannot add any more authorisations. To add another authorisation, you need to remove one first.
+
+identification.authorisation.label = Authorisation {0}
+identification.authorisation.change.hidden = authorisation {0}
+
+identification.authorisation.authorisationType.title = Authorisation Type
+identification.authorisation.authorisationType.heading = Authorisation Type
+identification.authorisation.authorisationType.option1 = Option 1
+identification.authorisation.authorisationType.option2 = Option 2
+identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
+identification.authorisation.authorisationType.change.hidden = authorisation type
+identification.authorisation.authorisationType.error.required = Select Authorisation Type
+
+identification.authorisation.authorisationReferenceNumber.title = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.heading = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.change.hidden = authorisation reference number
+identification.authorisation.authorisationReferenceNumber.error.required = Enter Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.error.length = Authorisation Reference Number must be 100 characters or less
+
+identification.authorisation.checkAuthorisationAnswers.title = Check your answers
+identification.authorisation.checkAuthorisationAnswers.heading = Check your answers
+
+identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you want to remove the authorisation {0}?
+identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the authorisation {0}?
+identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you are sure you want to remove the authorisation {0}
+
+identification.identificationNumber.title = Identification Number
+identification.identificationNumber.heading = Identification Number
+identification.identificationNumber.checkYourAnswersLabel = Identification Number
+identification.identificationNumber.change.hidden = identification number
+identification.identificationNumber.error.required = Enter Identification Number
+identification.identificationNumber.error.length = Identification Number must be 100 characters or less
+
+identification.checkIdentificationAnswers.title = Check your answers
+identification.checkIdentificationAnswers.heading = Check your answers
+identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
+identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations

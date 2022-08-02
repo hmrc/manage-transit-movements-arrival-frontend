@@ -1,0 +1,66 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.identification.routes
+@import models.MovementReferenceNumber
+@import viewModels.components.InputYesNoViewModel._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ItemType, ListItem}
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+
+@this(
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    formHelper: FormWithCSRF,
+    listWithActions: ListWithActions,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(form: Form[Boolean], mrn: MovementReferenceNumber, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
+
+@singularOrPlural = @{
+    if (authorisations.length == 1) "singular" else "plural"
+}
+
+@mainTemplate(
+    title = messages(s"identification.addAnotherAuthorisation.$singularOrPlural.title", authorisations.length),
+    showBackLink = true,
+    mrn = Some(mrn)
+) {
+
+    @errorSummary(form.errors)
+
+    @heading(messages(s"identification.addAnotherAuthorisation.$singularOrPlural.heading", authorisations.length))
+
+    @listWithActions(authorisations)
+
+    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn), 'autoComplete -> "off") {
+
+        @if(allowMoreItems) {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegend(
+                    legend = messages("identification.addAnotherAuthorisation.label")
+                )
+            )
+        } else {
+            <p class="govuk-body" data-testId="maxLimit">@messages("identification.addAnotherAuthorisation.maxLimit.label")</p>
+        }
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}

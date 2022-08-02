@@ -45,7 +45,7 @@ lazy val root = (project in file("."))
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*TestOnlyController;.*LabelSize;.*LegendSize",
     ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 70,
+    ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq("-feature", "-language:implicitConversions"),
@@ -86,8 +86,7 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
 
 lazy val itSettings = Defaults.itSettings ++ Seq(
   unmanagedSourceDirectories := Seq(
-    baseDirectory.value / "it",
-    baseDirectory.value / "test" / "generators"
+    baseDirectory.value / "it"
   ),
   unmanagedResourceDirectories := Seq(
     baseDirectory.value / "it" / "resources"

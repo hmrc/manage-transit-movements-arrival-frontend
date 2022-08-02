@@ -1,13 +1,19 @@
 package pages.$package$
 
-import play.api.libs.json.JsPath
+import controllers.$package$.routes
+import models.{Mode, UserAnswers}
+import models.reference.$referenceClass$
 import pages.QuestionPage
 import pages.sections.$pageSection$
-import models.reference.$referenceClass$
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object $className$Page extends QuestionPage[$referenceClass$] {
 
   override def path: JsPath = $pageSection$.path \ toString
 
   override def toString: String = "$className;format="decap"$"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.$className;format="cap"$Controller.onPageLoad(userAnswers.lrn, mode))
 }

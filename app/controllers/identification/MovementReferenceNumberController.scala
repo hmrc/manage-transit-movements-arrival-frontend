@@ -18,11 +18,9 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import pages.identification.MovementReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,6 +28,7 @@ import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MovementReferenceNumberController @Inject() (
@@ -62,7 +61,7 @@ class MovementReferenceNumberController @Inject() (
             for {
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
               _           <- sessionRepository.set(userAnswers)
-            } yield Redirect(navigator.nextPage(MovementReferenceNumberPage, NormalMode, userAnswers))
+            } yield Redirect(navigator.nextPage(userAnswers, NormalMode))
         )
   }
 

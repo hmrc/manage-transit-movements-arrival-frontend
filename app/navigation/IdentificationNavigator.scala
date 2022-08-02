@@ -16,20 +16,9 @@
 
 package navigation
 
-import controllers.identification.routes._
+import models.journeyDomain.identification.IdentificationDomain
+
 import javax.inject.{Inject, Singleton}
-import models._
-import pages.identification.MovementReferenceNumberPage
 
 @Singleton
-class IdentificationNavigator @Inject() () extends Navigator {
-
-  override val normalRoutes: RouteMapping = routes(NormalMode)
-
-  override val checkRoutes: RouteMapping = routes(CheckMode)
-
-  override def routes(mode: Mode): RouteMapping = {
-    case MovementReferenceNumberPage => ua => Some(MovementReferenceNumberController.onPageLoad())
-  }
-
-}
+class IdentificationNavigator @Inject() () extends UserAnswersSectionNavigator[IdentificationDomain]

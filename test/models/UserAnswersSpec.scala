@@ -46,33 +46,18 @@ class UserAnswersSpec extends SpecBase {
 
   "UserAnswers" - {
 
-    s"must run cleanup when the new answer is not equal to the existing answer" in {
+    "set" - {
+      "must run cleanup" in {
 
-      val userAnswers = emptyUserAnswers.setValue(TestCleanupPage, testCleanupPageAnswer)
-      val result      = userAnswers.setValue(TestPage, testPageAnswer)
-      val data =
-        Json.obj(
-          testPagePath -> testPageAnswer
-        )
+        val userAnswers = emptyUserAnswers.setValue(TestCleanupPage, testCleanupPageAnswer)
+        val result      = userAnswers.setValue(TestPage, testPageAnswer)
+        val data =
+          Json.obj(
+            testPagePath -> testPageAnswer
+          )
 
-      result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
-    }
-
-    s"must not run cleanup when the new answer is equal to the existing answer" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(TestPage, testPageAnswer)
-        .setValue(TestCleanupPage, testCleanupPageAnswer)
-
-      val result = userAnswers.setValue(TestPage, testPageAnswer)
-      val data =
-        Json.obj(
-          testPagePath        -> testPageAnswer,
-          testCleanupPagePath -> testCleanupPageAnswer
-        )
-
-      result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
+        result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
+      }
     }
   }
-
 }

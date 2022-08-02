@@ -18,53 +18,26 @@ package navigation
 
 import base.SpecBase
 import controllers.identification.routes
-import generators.{Generators, UserAnswersGenerator}
+import generators.{Generators, IdentificationUserAnswersGenerator}
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
-import pages.identification.MovementReferenceNumberPage
 
-class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersGenerator {
+class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
   private val navigator = new IdentificationNavigator
 
-  "Navigator" - {
-    "must go from a page that doesn't exist in the route map" - {
+  "Identification Navigator" - {
 
-      case object UnknownPage extends Page
-
-      "when in normal mode" - {
-        "to start of the departure journey" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(UnknownPage, NormalMode, answers)
-                .mustBe(routes.MovementReferenceNumberController.onPageLoad())
-          }
-        }
-      }
-
-      "when in check mode" - {
-        "to session expired" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(UnknownPage, CheckMode, answers)
-                .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
-          }
+    "when answers complete" - {
+      "must redirect to check your answers" in {
+        forAll(arbitraryIdentificationAnswers(emptyUserAnswers), arbitrary[Mode]) {
+          (answers, mode) =>
+            navigator
+              .nextPage(answers, mode)
+              .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
         }
       }
     }
-
-    "must go from Local Reference Number page to Office of Departure page" in {
-      forAll(arbitrary[UserAnswers], arbitrary[Mode]) {
-        (answers, mode) =>
-          navigator
-            .nextPage(MovementReferenceNumberPage, mode, answers)
-            .mustBe(routes.MovementReferenceNumberController.onPageLoad()) //TODO Update
-      }
-    }
-
   }
 }

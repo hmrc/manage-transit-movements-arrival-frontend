@@ -2,9 +2,8 @@ package controllers.$package$
 
 import base.{SpecBase, AppWithDefaultMockFixtures}
 import forms.$formProvider$
-import views.html.$package$.$className$View
-import models.{$referenceListClass$, NormalMode, UserAnswers}
 import generators.Generators
+import models.{$referenceListClass$, NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import org.mockito.ArgumentMatchers.any
@@ -15,6 +14,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.$serviceName$
+import views.html.$package$.$className$View
 
 import scala.concurrent.Future
 
@@ -40,6 +40,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   "$className$ Controller" - {
 
     "must return OK and the correct view for a GET" in {
+
       when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -56,8 +57,9 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+
       when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
-      val userAnswers = UserAnswers(mrn, eoriNumber).set($className$Page, $referenceClass;format="decap"$1).success.value
+      val userAnswers = emptyUserAnswers.setValue($className$Page, $referenceClass;format="decap"$1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -75,6 +77,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must redirect to the next page when valid data is submitted" in {
+
       when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -92,6 +95,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+
       when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -109,6 +113,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -120,11 +125,11 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
+
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, $className;format="decap"$Route)
-      .withFormUrlEncodedBody(("value", $referenceClass;format="decap"$1.id))
+      val request = FakeRequest(POST, $className;format="decap"$Route)
+        .withFormUrlEncodedBody(("value", $referenceClass;format="decap"$1.id))
 
       val result = route(app, request).value
 
