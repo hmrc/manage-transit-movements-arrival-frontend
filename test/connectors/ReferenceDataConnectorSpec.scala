@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
 
-  private val startUrl = "transit-movements-trader-reference-data"
+  private val startUrl = "test-only/transit-movements-trader-reference-data"
   private val country  = CountryCode("GB")
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
