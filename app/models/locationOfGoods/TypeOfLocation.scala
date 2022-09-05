@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package pages.identification
+package models.locationOfGoods
 
-import controllers.identification.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.IdentificationSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.{RadioModel, WithName}
 
-case object IdentificationNumberPage extends QuestionPage[String] {
+sealed trait TypeOfLocation
 
-  override def path: JsPath = IdentificationSection.path \ toString
+object TypeOfLocation extends RadioModel[TypeOfLocation] {
 
-  override def toString: String = "identificationNumber"
+  case object Foo extends WithName("foo") with TypeOfLocation
+  case object Bar extends WithName("bar") with TypeOfLocation
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
+  override val messageKeyPrefix: String = "identification.typeoflocation"
+
+  val values: Seq[TypeOfLocation] = Seq(
+    Foo,
+    Bar
+  )
 }

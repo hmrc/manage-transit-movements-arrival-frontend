@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.identification
+package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
@@ -24,11 +24,11 @@ import play.api.mvc.Call
 
 import java.time.LocalDate
 
-case class IdentificationDomain(
+// TODO change this to match the location of goods data
+case class LocationOfGoodsDomain(
   mrn: MovementReferenceNumber,
   arrivalDate: LocalDate,
   isSimplified: Boolean,
-  authorisations: AuthorisationsDomain,
   identificationNumber: String
 ) extends JourneyDomainModel {
 
@@ -36,19 +36,18 @@ case class IdentificationDomain(
     Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
 }
 
-object IdentificationDomain {
+object LocationOfGoodsDomain {
 
   private val mrn: UserAnswersReader[MovementReferenceNumber] = {
     val fn: UserAnswers => EitherType[MovementReferenceNumber] = ua => Right(ua.mrn)
     UserAnswersReader(fn)
   }
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
+  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] =
     (
       mrn,
       ArrivalDatePage.reader,
       IsSimplifiedProcedurePage.reader,
-      UserAnswersReader[AuthorisationsDomain],
       IdentificationNumberPage.reader
-    ).tupled.map((IdentificationDomain.apply _).tupled)
+    ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
 }

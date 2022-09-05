@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.identification
+package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.identification.IdentificationNumberFormProvider
+import forms.NameFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import pages.identification.IdentificationNumberPage
+import pages.LocationOfGoods.IdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.identification.IdentificationNumberView
+import views.html.locationOfGoods.IdentificationnumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,15 +36,15 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   @IdentificationDetails implicit val navigator: Navigator,
-  formProvider: IdentificationNumberFormProvider,
+  formProvider: NameFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationNumberView
+  view: IdentificationnumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("identification.identificationNumber")
+  private val form = formProvider("locationOfGoods.identificationNumber")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

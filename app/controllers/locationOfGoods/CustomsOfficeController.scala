@@ -14,54 +14,63 @@
  * limitations under the License.
  */
 
-package controllers.identification
+package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.identification.IdentificationNumberFormProvider
+import forms.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
-import pages.identification.IdentificationNumberPage
+import pages.LocationOfGoods.CustomsOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.identification.IdentificationNumberView
+import views.html.locationOfGoods.CustomsofficeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentificationNumberController @Inject() (
+class CustomsOfficeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   @IdentificationDetails implicit val navigator: Navigator,
-  formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  formProvider: CustomsOfficeFormProvider,
+  service: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationNumberView
+  view: CustomsofficeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("identification.identificationNumber")
-
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IdentificationNumberPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      service.getCustomsOfficesOfArrival.map {
+        customsOfficeList =>
+          val form = formProvider("locationOfGoods.customsoffice", customsOfficeList)
+          val preparedForm = request.userAnswers.get(CustomsOfficePage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          Ok(view(preparedForm, mrn, customsOfficeList.customsOffices, mode))
       }
-      Ok(view(preparedForm, mrn, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => IdentificationNumberPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
-        )
+      service.getCustomsOfficesOfArrival.flatMap {
+        customsOfficeList =>
+          val form = formProvider("locationOfGoods.customsoffice", customsOfficeList)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.customsOffices, mode))),
+              value => CustomsOfficePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            )
+      }
   }
 }

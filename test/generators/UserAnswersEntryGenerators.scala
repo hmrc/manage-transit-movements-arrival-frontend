@@ -19,6 +19,7 @@ package generators
 import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.identification.IdentificationNumberPage
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import queries.Gettable
 

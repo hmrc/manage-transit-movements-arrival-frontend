@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package pages.identification
+package pages.locationOfGoods
 
-import controllers.identification.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.IdentificationSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.LocationOfGoods.UnlocodePage
+import pages.behaviours.PageBehaviours
 
-case object IdentificationNumberPage extends QuestionPage[String] {
+class UnlocodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = IdentificationSection.path \ toString
+  "UnlocodePage" - {
 
-  override def toString: String = "identificationNumber"
+    beRetrievable[String](UnlocodePage)
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
+    beSettable[String](UnlocodePage)
+
+    beRemovable[String](UnlocodePage)
+  }
 }

@@ -23,7 +23,7 @@ import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification._
-import pages.identification.authorisation._
+import pages.identification.authorisation.{_}
 import viewModels.Link
 
 import java.time.LocalDate

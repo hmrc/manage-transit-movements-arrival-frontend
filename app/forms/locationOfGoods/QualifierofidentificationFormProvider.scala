@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.identification
+package forms.locationOfGoods
 
-import controllers.identification.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.IdentificationSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import models.locationOfGoods.QualifierOfIdentification
+import play.api.data.Form
 
-case object IdentificationNumberPage extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = IdentificationSection.path \ toString
+class QualifierofidentificationFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "identificationNumber"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
+  def apply(): Form[QualifierOfIdentification] =
+    Form(
+      "value" -> enumerable[QualifierOfIdentification]("locationOfGoods.qualifierofidentification.error.required")
+    )
 }
