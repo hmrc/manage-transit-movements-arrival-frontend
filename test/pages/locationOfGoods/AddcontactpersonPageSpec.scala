@@ -16,16 +16,17 @@
 
 package pages.locationOfGoods
 
+import pages.LocationOfGoods.AddContactPersonPage
 import pages.behaviours.PageBehaviours
 
 class AddcontactpersonPageSpec extends PageBehaviours {
 
   "AddcontactpersonPage" - {
 
-    beRetrievable[Boolean](AddcontactpersonPage)
+    beRetrievable[Boolean](AddContactPersonPage)
 
-    beSettable[Boolean](AddcontactpersonPage)
+    beSettable[Boolean](AddContactPersonPage)
 
-    beRemovable[Boolean](AddcontactpersonPage)
+    beRemovable[Boolean](AddContactPersonPage)
   }
 }

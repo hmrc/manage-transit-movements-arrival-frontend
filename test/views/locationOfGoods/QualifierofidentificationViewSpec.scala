@@ -18,24 +18,26 @@ package views.locationOfGoods
 
 import forms.locationOfGoods.QualifierofidentificationFormProvider
 import models.NormalMode
+import models.locationOfGoods.QualifierOfIdentification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
+import views.html.locationOfGoods.QualifierofidentificationView
 
-class QualifierofidentificationViewSpec extends RadioViewBehaviours[Qualifierofidentification] {
+class QualifierofidentificationViewSpec extends RadioViewBehaviours[QualifierOfIdentification] {
 
-  override def form: Form[Qualifierofidentification] = new QualifierofidentificationFormProvider()()
+  override def form: Form[QualifierOfIdentification] = new QualifierofidentificationFormProvider()()
 
-  override def applyView(form: Form[Qualifierofidentification]): HtmlFormat.Appendable =
-    injector.instanceOf[QualifierofidentificationView].apply(form, mrn, Qualifierofidentification.radioItems, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[QualifierOfIdentification]): HtmlFormat.Appendable =
+    injector.instanceOf[QualifierofidentificationView].apply(form, mrn, QualifierOfIdentification.radioItems, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.qualifierofidentification"
+  override val prefix: String = "locationOfGoods.qualifierofidentification"
 
-  override def radioItems(fieldId: String, checkedValue: Option[Qualifierofidentification] = None): Seq[RadioItem] =
-    Qualifierofidentification.radioItems(fieldId, checkedValue)
+  override def radioItems(fieldId: String, checkedValue: Option[QualifierOfIdentification] = None): Seq[RadioItem] =
+    QualifierOfIdentification.radioItems(fieldId, checkedValue)
 
-  override def values: Seq[Qualifierofidentification] = Qualifierofidentification.values
+  override def values: Seq[QualifierOfIdentification] = QualifierOfIdentification.values
 
   behave like pageWithTitle()
 

@@ -35,7 +35,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.internationalAddress.title"),
+    title = messages("locationOfGoods.internationalAddress.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -46,7 +46,7 @@
 
         @inputAddress(
             form = form,
-            messageKeyPrefix = "identification.internationalAddress",
+            messageKeyPrefix = "locationOfGoods.internationalAddress",
             caption = None,
             countries = countries
         )

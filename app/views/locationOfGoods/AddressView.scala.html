@@ -33,7 +33,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.address.title"),
+    title = messages("locationOfGoods.address.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -44,7 +44,7 @@
 
         @inputAddress(
             form = form,
-            messageKeyPrefix = "identification.address",
+            messageKeyPrefix = "locationOfGoods.address",
             caption = None
         )
 

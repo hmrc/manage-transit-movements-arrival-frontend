@@ -23,10 +23,11 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
+import views.html.locationOfGoods.UnlocodeView
 
 class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "identification.unlocode"
+  override val prefix: String = "locationOfGoods.unlocode"
 
   override def form: Form[String] = new NameFormProvider()(prefix)
 

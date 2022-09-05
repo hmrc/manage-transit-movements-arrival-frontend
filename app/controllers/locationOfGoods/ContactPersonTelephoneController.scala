@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.NameFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import pages.LocationOfGoods.ContactPersonTelephonePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContactPersonTelephoneController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  @LocationOfGoods implicit val navigator: Navigator,
   formProvider: NameFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,

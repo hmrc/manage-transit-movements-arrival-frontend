@@ -30,7 +30,7 @@
 @(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.authorisationNumber.title"),
+    title = messages("locationOfGoods.authorisationNumber.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,7 +42,7 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("identification.authorisationNumber.heading")
+                heading = messages("locationOfGoods.authorisationNumber.heading")
             ),
             inputClass = InputSize.Width20
         )

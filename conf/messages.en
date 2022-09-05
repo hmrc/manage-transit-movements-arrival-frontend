@@ -225,3 +225,17 @@ locationOfGoods.unlocode.heading = Unlocode
 locationOfGoods.unlocode.checkYourAnswersLabel = Unlocode
 locationOfGoods.unlocode.error.required = Enter Unlocode
 locationOfGoods.unlocode.error.length = Unlocode must be 100 characters or less
+
+locationOfGoods.identificationnumber.title = Identification Number
+locationOfGoods.identificationnumber.heading = Identification Number
+locationOfGoods.identificationnumber.checkYourAnswersLabel = Identification Number
+locationOfGoods.identificationnumber.change.hidden = identification number
+locationOfGoods.identificationnumber.error.required = Enter Identification Number
+locationOfGoods.identificationnumber.error.length = Identification Number must be 100 characters or less
+
+locationOfGoods.qualifierofidentification.title = qualifierofidentification
+locationOfGoods.qualifierofidentification.heading = qualifierofidentification
+locationOfGoods.qualifierofidentification.foo = Foo
+locationOfGoods.qualifierofidentification.bar = Bar
+locationOfGoods.qualifierofidentification.checkYourAnswersLabel = qualifierofidentification
+locationOfGoods.qualifierofidentification.error.required = Select  qualifierofidentification

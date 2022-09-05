@@ -30,7 +30,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.addcontactperson.title"),
+    title = messages("locationOfGoods.addcontactperson.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("identification.addcontactperson.heading")
+                heading = messages("locationOfGoods.addcontactperson.heading")
             )
         )
 

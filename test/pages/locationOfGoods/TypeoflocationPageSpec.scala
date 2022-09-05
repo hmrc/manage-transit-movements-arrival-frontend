@@ -16,16 +16,18 @@
 
 package pages.locationOfGoods
 
+import models.locationOfGoods.TypeOfLocation
+import pages.LocationOfGoods.TypeOfLocationPage
 import pages.behaviours.PageBehaviours
 
 class TypeoflocationPageSpec extends PageBehaviours {
 
   "TypeoflocationPage" - {
 
-    beRetrievable[Typeoflocation](TypeoflocationPage)
+    beRetrievable[TypeOfLocation](TypeOfLocationPage)
 
-    beSettable[Typeoflocation](TypeoflocationPage)
+    beSettable[TypeOfLocation](TypeOfLocationPage)
 
-    beRemovable[Typeoflocation](TypeoflocationPage)
+    beRemovable[TypeOfLocation](TypeOfLocationPage)
   }
 }

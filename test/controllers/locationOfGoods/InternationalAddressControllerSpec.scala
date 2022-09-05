@@ -21,7 +21,7 @@ import forms.InternationalAddressFormProvider
 import generators.Generators
 import models.{CountryList, InternationalAddress, NormalMode, UserAnswers}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -41,7 +41,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
   private val countryList = CountryList(Seq(testAddress.country))
 
   private val formProvider = new InternationalAddressFormProvider()
-  private val form         = formProvider("identification.internationalAddress", countryList)
+  private val form         = formProvider("locationOfGoods.internationalAddress", countryList)
 
   private val mode                           = NormalMode
   private lazy val internationalAddressRoute = routes.InternationalAddressController.onPageLoad(mrn, mode).url
@@ -56,7 +56,6 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
   "InternationalAddress Controller" - {

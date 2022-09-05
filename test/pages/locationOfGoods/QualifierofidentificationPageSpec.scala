@@ -16,16 +16,18 @@
 
 package pages.locationOfGoods
 
+import models.locationOfGoods.QualifierOfIdentification
+import pages.LocationOfGoods.QualifierOfIdentificationPage
 import pages.behaviours.PageBehaviours
 
 class QualifierofidentificationPageSpec extends PageBehaviours {
 
   "QualifierofidentificationPage" - {
 
-    beRetrievable[Qualifierofidentification](QualifierofidentificationPage)
+    beRetrievable[QualifierOfIdentification](QualifierOfIdentificationPage)
 
-    beSettable[Qualifierofidentification](QualifierofidentificationPage)
+    beSettable[QualifierOfIdentification](QualifierOfIdentificationPage)
 
-    beRemovable[Qualifierofidentification](QualifierofidentificationPage)
+    beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage)
   }
 }

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package config.annotations;
 
-import pages.LocationOfGoods.AdditionalIdentifierPage
-import pages.behaviours.PageBehaviours
+import com.google.inject.BindingAnnotation;
 
-class AdditionalidentifierPageSpec extends PageBehaviours {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  "AdditionalidentifierPage" - {
-
-    beRetrievable[String](AdditionalIdentifierPage)
-
-    beSettable[String](AdditionalIdentifierPage)
-
-    beRemovable[String](AdditionalIdentifierPage)
-  }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface LocationOfGoods {}

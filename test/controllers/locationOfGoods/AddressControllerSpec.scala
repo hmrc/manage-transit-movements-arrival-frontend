@@ -21,7 +21,7 @@ import forms.UkAddressFormProvider
 import generators.Generators
 import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,18 +39,13 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val testAddress = arbitrary[UkAddress].sample.value
 
   private val formProvider = new UkAddressFormProvider()
-  private val form         = formProvider("identification.address")
+  private val form         = formProvider("locationOfGoods.address")
 
   private val mode              = NormalMode
   private lazy val addressRoute = routes.AddressController.onPageLoad(mrn, mode).url
 
   override def beforeEach(): Unit =
     super.beforeEach()
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "Address Controller" - {
 

@@ -21,7 +21,7 @@ import forms.locationOfGoods.TypeoflocationFormProvider
 import models.NormalMode
 import models.locationOfGoods.TypeOfLocation
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.TypeOfLocationPage
@@ -38,12 +38,7 @@ class TypeoflocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val formProvider             = new TypeoflocationFormProvider()
   private val form                     = formProvider()
   private val mode                     = NormalMode
-  private lazy val typeoflocationRoute = routes.TypeoflocationController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+  private lazy val typeoflocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
 
   "Typeoflocation Controller" - {
 

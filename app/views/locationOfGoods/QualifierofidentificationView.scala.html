@@ -30,7 +30,7 @@
 @(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.qualifierofidentification.title"),
+    title = messages("locationOfGoods.qualifierofidentification.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -41,7 +41,7 @@
 
         @inputRadio(
             field = form("value"),
-            legend = messages("identification.qualifierofidentification.heading"),
+            legend = messages("locationOfGoods.qualifierofidentification.heading"),
             radioItems = fieldId => radios(fieldId, form.value)
         )
 

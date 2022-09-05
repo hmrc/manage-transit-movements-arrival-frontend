@@ -34,7 +34,7 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours wi
   override def applyView(form: Form[InternationalAddress]): HtmlFormat.Appendable =
     injector.instanceOf[InternationalAddressView].apply(form, mrn, NormalMode, countryList.countries)(fakeRequest, messages)
 
-  override val prefix: String = "identification.internationalAddress"
+  override val prefix: String = "locationOfGoods.internationalAddress"
 
   behave like pageWithTitle()
 

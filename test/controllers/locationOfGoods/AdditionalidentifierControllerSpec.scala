@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.AdditionalIdentifierPage
@@ -35,14 +35,9 @@ import scala.concurrent.Future
 class AdditionalidentifierControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                   = new NameFormProvider()
-  private val form                           = formProvider("identification.additionalidentifier")
+  private val form                           = formProvider("locationOfGoods.additionalidentifier")
   private val mode                           = NormalMode
   private lazy val additionalidentifierRoute = routes.AdditionalIdentifierController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "Additionalidentifier Controller" - {
 

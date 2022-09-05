@@ -23,10 +23,11 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
+import views.html.locationOfGoods.CoordinatesView
 
 class CoordinatesViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "identification.coordinates"
+  override val prefix: String = "locationOfGoods.coordinates"
 
   override def form: Form[String] = new NameFormProvider()(prefix)
 

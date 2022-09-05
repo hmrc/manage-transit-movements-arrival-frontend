@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import pages.LocationOfGoods.CustomsOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsOfficeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  @LocationOfGoods implicit val navigator: Navigator,
   actions: Actions,
   formProvider: CustomsOfficeFormProvider,
   service: CustomsOfficesService,

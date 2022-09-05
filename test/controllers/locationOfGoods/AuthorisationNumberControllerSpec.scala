@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.AuthorisationNumberPage
@@ -28,21 +28,16 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.identification.AuthorisationNumberView
+import views.html.locationOfGoods.AuthorisationNumberView
 
 import scala.concurrent.Future
 
 class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                  = new NameFormProvider()
-  private val form                          = formProvider("identification.authorisationNumber")
+  private val form                          = formProvider("locationOfGoods.authorisationNumber")
   private val mode                          = NormalMode
   private lazy val authorisationNumberRoute = routes.AuthorisationNumberController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "AuthorisationNumber Controller" - {
 

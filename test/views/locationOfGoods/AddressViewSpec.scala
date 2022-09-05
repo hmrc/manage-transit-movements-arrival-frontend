@@ -22,6 +22,7 @@ import models.{NormalMode, UkAddress}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.UkAddressViewBehaviours
+import views.html.locationOfGoods.AddressView
 
 class AddressViewSpec extends UkAddressViewBehaviours with Generators {
 
@@ -30,7 +31,7 @@ class AddressViewSpec extends UkAddressViewBehaviours with Generators {
   override def applyView(form: Form[UkAddress]): HtmlFormat.Appendable =
     injector.instanceOf[AddressView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.address"
+  override val prefix: String = "locationOfGoods.address"
 
   behave like pageWithTitle()
 

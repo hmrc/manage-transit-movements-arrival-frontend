@@ -23,10 +23,11 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
+import views.html.locationOfGoods.ContactPersonNameView
 
 class ContactPersonNameViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "identification.contactPersonName"
+  override val prefix: String = "locationOfGoods.contactPersonName"
 
   override def form: Form[String] = new NameFormProvider()(prefix)
 

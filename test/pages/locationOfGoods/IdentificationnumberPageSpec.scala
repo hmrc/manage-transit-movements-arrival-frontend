@@ -16,16 +16,17 @@
 
 package pages.locationOfGoods
 
+import pages.LocationOfGoods.IdentificationNumberPage
 import pages.behaviours.PageBehaviours
 
 class IdentificationnumberPageSpec extends PageBehaviours {
 
   "IdentificationnumberPage" - {
 
-    beRetrievable[String](IdentificationnumberPage)
+    beRetrievable[String](IdentificationNumberPage)
 
-    beSettable[String](IdentificationnumberPage)
+    beSettable[String](IdentificationNumberPage)
 
-    beRemovable[String](IdentificationnumberPage)
+    beRemovable[String](IdentificationNumberPage)
   }
 }

@@ -18,24 +18,26 @@ package views.locationOfGoods
 
 import forms.locationOfGoods.TypeoflocationFormProvider
 import models.NormalMode
+import models.locationOfGoods.TypeOfLocation
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
+import views.html.locationOfGoods.TypeoflocationView
 
-class TypeoflocationViewSpec extends RadioViewBehaviours[Typeoflocation] {
+class TypeoflocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
 
-  override def form: Form[Typeoflocation] = new TypeoflocationFormProvider()()
+  override def form: Form[TypeOfLocation] = new TypeoflocationFormProvider()()
 
-  override def applyView(form: Form[Typeoflocation]): HtmlFormat.Appendable =
-    injector.instanceOf[TypeoflocationView].apply(form, mrn, Typeoflocation.radioItems, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[TypeOfLocation]): HtmlFormat.Appendable =
+    injector.instanceOf[TypeoflocationView].apply(form, mrn, TypeOfLocation.radioItems, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.typeoflocation"
+  override val prefix: String = "locationOfGoods.typeoflocation"
 
-  override def radioItems(fieldId: String, checkedValue: Option[Typeoflocation] = None): Seq[RadioItem] =
-    Typeoflocation.radioItems(fieldId, checkedValue)
+  override def radioItems(fieldId: String, checkedValue: Option[TypeOfLocation] = None): Seq[RadioItem] =
+    TypeOfLocation.radioItems(fieldId, checkedValue)
 
-  override def values: Seq[Typeoflocation] = Typeoflocation.values
+  override def values: Seq[TypeOfLocation] = TypeOfLocation.values
 
   behave like pageWithTitle()
 

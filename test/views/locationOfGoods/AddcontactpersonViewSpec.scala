@@ -20,13 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
+import views.html.locationOfGoods.AddcontactpersonView
 
 class AddcontactpersonViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddcontactpersonView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.addcontactperson"
+  override val prefix: String = "locationOfGoods.addcontactperson"
 
   behave like pageWithTitle()
 

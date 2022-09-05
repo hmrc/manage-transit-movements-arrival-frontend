@@ -21,9 +21,10 @@ import forms.CustomsOfficeFormProvider
 import generators.Generators
 import models.{CustomsOfficeList, NormalMode}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.LocationOfGoods.CustomsOfficePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -40,7 +41,7 @@ class CustomsofficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
 
   private val formProvider = new CustomsOfficeFormProvider()
-  private val form         = formProvider("identification.customsoffice", customsOfficeList)
+  private val form         = formProvider("locationOfGoods.customsoffice", customsOfficeList)
   private val mode         = NormalMode
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
@@ -49,7 +50,6 @@ class CustomsofficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
   "Customsoffice Controller" - {
@@ -74,7 +74,7 @@ class CustomsofficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
-      val userAnswers = emptyUserAnswers.setValue(CustomsofficePage, customsOffice1)
+      val userAnswers = emptyUserAnswers.setValue(CustomsOfficePage, customsOffice1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, customsofficeRoute)

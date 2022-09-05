@@ -27,7 +27,7 @@ class TypeoflocationFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "identification.typeoflocation.error.required"
+    val requiredKey = "locationOfGoods.typeoflocation.error.required"
 
     behave like optionsField[TypeOfLocation](
       form,

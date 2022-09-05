@@ -30,27 +30,27 @@ class QualifierofidentificationSpec extends AnyFreeSpec with Matchers with Scala
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(Qualifierofidentification.values)
+      val gen = Gen.oneOf(QualifierOfIdentification.values)
 
       forAll(gen) {
         qualifierofidentification =>
-          JsString(qualifierofidentification.toString).validate[Qualifierofidentification].asOpt.value mustEqual qualifierofidentification
+          JsString(qualifierofidentification.toString).validate[QualifierOfIdentification].asOpt.value mustEqual qualifierofidentification
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!Qualifierofidentification.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!QualifierOfIdentification.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[Qualifierofidentification] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[QualifierOfIdentification] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(Qualifierofidentification.values)
+      val gen = Gen.oneOf(QualifierOfIdentification.values)
 
       forAll(gen) {
         qualifierofidentification =>

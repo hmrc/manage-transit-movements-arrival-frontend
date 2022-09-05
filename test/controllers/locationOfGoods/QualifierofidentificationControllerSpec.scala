@@ -21,7 +21,7 @@ import forms.locationOfGoods.QualifierofidentificationFormProvider
 import models.NormalMode
 import models.locationOfGoods.QualifierOfIdentification
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.QualifierOfIdentificationPage
@@ -39,11 +39,6 @@ class QualifierofidentificationControllerSpec extends SpecBase with AppWithDefau
   private val form                                = formProvider()
   private val mode                                = NormalMode
   private lazy val qualifierofidentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "Qualifierofidentification Controller" - {
 
@@ -72,7 +67,7 @@ class QualifierofidentificationControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.values.head))
+      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.values.head.toString))
 
       val view = injector.instanceOf[QualifierofidentificationView]
 

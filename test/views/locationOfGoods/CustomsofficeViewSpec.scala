@@ -23,6 +23,7 @@ import models.reference.CustomsOffice
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
+import views.html.locationOfGoods.CustomsofficeView
 
 class CustomsofficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] with Generators {
 
@@ -42,7 +43,7 @@ class CustomsofficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] wit
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[CustomsofficeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "identification.customsoffice"
+  override val prefix: String = "locationOfGoods.customsoffice"
 
   behave like pageWithTitle()
 

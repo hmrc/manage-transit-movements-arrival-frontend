@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.ContactPersonTelephonePage
@@ -35,15 +35,10 @@ import scala.concurrent.Future
 class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                     = new NameFormProvider()
-  private val form                             = formProvider("identification.contactPersonTelephone")
+  private val form                             = formProvider("locationOfGoods.contactPersonTelephone")
   private val mode                             = NormalMode
   private lazy val contactPersonTelephoneRoute = routes.ContactPersonTelephoneController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
-
+  1
   "ContactPersonTelephone Controller" - {
 
     "must return OK and the correct view for a GET" in {

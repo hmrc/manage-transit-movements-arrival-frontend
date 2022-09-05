@@ -27,7 +27,7 @@ class QualifierofidentificationFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "identification.qualifierofidentification.error.required"
+    val requiredKey = "locationOfGoods.qualifierofidentification.error.required"
 
     behave like optionsField[QualifierOfIdentification](
       form,

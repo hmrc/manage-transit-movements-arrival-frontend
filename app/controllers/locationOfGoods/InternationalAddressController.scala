@@ -22,7 +22,7 @@ import forms.InternationalAddressFormProvider
 import models.requests.DataRequest
 import models.{CountryList, InternationalAddress, Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import pages.LocationOfGoods.InternationalAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class InternationalAddressController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  @LocationOfGoods implicit val navigator: Navigator,
   actions: Actions,
   formProvider: InternationalAddressFormProvider,
   countriesService: CountriesService,
