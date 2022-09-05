@@ -27,7 +27,6 @@ import play.api.data.FormError
 class InternationalAddressFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   private val prefix = Gen.alphaNumStr.sample.value
-  private val name   = Gen.alphaNumStr.sample.value
 
   private val country   = Country(CountryCode("GB"), "United Kingdom")
   private val countries = CountryList(Seq(country))
@@ -36,7 +35,7 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
   private val lengthKey   = s"$prefix.error.length"
   private val invalidKey  = s"$prefix.error.invalid"
 
-  private val form = new InternationalAddressFormProvider()(prefix, name, countries)
+  private val form = new InternationalAddressFormProvider()(prefix, countries)
 
   ".addressLine1" - {
 
@@ -52,19 +51,19 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = AddressLine1.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine1.arg.capitalize, name, AddressLine1.length))
+      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine1.arg.capitalize, AddressLine1.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine1.arg, name))
+      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine1.arg))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(AddressLine1.arg.capitalize, name)),
+      error = FormError(fieldName, invalidKey, Seq(AddressLine1.arg.capitalize)),
       length = AddressLine1.length
     )
   }
@@ -83,19 +82,19 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = AddressLine2.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine2.arg.capitalize, name, AddressLine2.length))
+      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine2.arg.capitalize, AddressLine2.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine2.arg, name))
+      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine2.arg))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(AddressLine2.arg.capitalize, name)),
+      error = FormError(fieldName, invalidKey, Seq(AddressLine2.arg.capitalize)),
       length = AddressLine2.length
     )
   }
@@ -123,20 +122,20 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = PostalCode.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(name, PostalCode.length)),
+      lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.length)),
       gen = validPostalOverLength
     )
 
     behave like mandatoryField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, postalCodeRequiredKey, Seq(name))
+      requiredError = FormError(fieldName, postalCodeRequiredKey)
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, postcodeInvalidKey, Seq(name)),
+      error = FormError(fieldName, postcodeInvalidKey, Seq(PostalCode.regex.regex)),
       length = PostalCode.length
     )
   }
@@ -156,12 +155,12 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like mandatoryField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, countryRequiredKey, Seq(name))
+      requiredError = FormError(fieldName, countryRequiredKey)
     )
 
     "not bind if country code does not exist in the country list" in {
       val result        = form.bind(Map(fieldName -> "foobar")).apply(fieldName)
-      val expectedError = FormError(fieldName, countryRequiredKey, Seq(name))
+      val expectedError = FormError(fieldName, countryRequiredKey)
       result.errors must contain(expectedError)
     }
 

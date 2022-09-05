@@ -24,6 +24,16 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryTypeoflocation: Arbitrary[models.identification.Typeoflocation] =
+    Arbitrary {
+      Gen.oneOf(models.identification.Typeoflocation.values.toSeq)
+    }
+
+  implicit lazy val arbitraryQualifierofidentification: Arbitrary[models.identification.Qualifierofidentification] =
+    Arbitrary {
+      Gen.oneOf(models.identification.Qualifierofidentification.values.toSeq)
+    }
+
   implicit lazy val arbitraryAuthorisationType: Arbitrary[models.identification.authorisation.AuthorisationType] =
     Arbitrary {
       Gen.oneOf(models.identification.authorisation.AuthorisationType.values)
