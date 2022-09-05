@@ -30,19 +30,19 @@
 @(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.identificationnumber.title"),
+    title = messages("locationOfGoods.additionalIdentifier.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.IdentificationNumberController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AdditionalIdentifierController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("locationOfGoods.identificationnumber.heading")
+                heading = messages("locationOfGoods.additionalIdentifier.heading")
             ),
             inputClass = InputSize.Width20
         )

@@ -17,15 +17,15 @@
 package forms.locationOfGoods
 
 import forms.mappings.Mappings
-import models.locationOfGoods.TypeOfLocation
+import models.locationOfGoods.QualifierOfIdentification
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TypeoflocationFormProvider @Inject() extends Mappings {
+class QualifierOfIdentificationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[TypeOfLocation] =
+  def apply(): Form[QualifierOfIdentification] =
     Form(
-      "value" -> enumerable[TypeOfLocation]("locationOfGoods.typeoflocation.error.required")
+      "value" -> enumerable[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification.error.required")
     )
 }

@@ -27,7 +27,7 @@ case object AddContactPersonPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  override def toString: String = "addcontactperson"
+  override def toString: String = "addContactPerson"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddContactPersonController.onPageLoad(userAnswers.mrn, mode))

@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.NameFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import navigation.annotations.LocationOfGoods
 import pages.LocationOfGoods.ContactPersonNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

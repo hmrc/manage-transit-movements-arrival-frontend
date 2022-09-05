@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import navigation.annotations.LocationOfGoods
 import pages.LocationOfGoods.CustomsOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class CustomsOfficeController @Inject() (
     implicit request =>
       service.getCustomsOfficesOfArrival.map {
         customsOfficeList =>
-          val form = formProvider("locationOfGoods.customsoffice", customsOfficeList)
+          val form = formProvider("locationOfGoods.customsOffice", customsOfficeList)
           val preparedForm = request.userAnswers.get(CustomsOfficePage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,7 +64,7 @@ class CustomsOfficeController @Inject() (
     implicit request =>
       service.getCustomsOfficesOfArrival.flatMap {
         customsOfficeList =>
-          val form = formProvider("locationOfGoods.customsoffice", customsOfficeList)
+          val form = formProvider("locationOfGoods.customsOffice", customsOfficeList)
           form
             .bindFromRequest()
             .fold(

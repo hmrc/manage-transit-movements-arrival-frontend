@@ -22,7 +22,7 @@ import forms.InternationalAddressFormProvider
 import models.requests.DataRequest
 import models.{CountryList, InternationalAddress, Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import navigation.annotations.LocationOfGoods
 import pages.LocationOfGoods.InternationalAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

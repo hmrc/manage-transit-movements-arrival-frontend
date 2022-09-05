@@ -20,14 +20,14 @@ import forms.behaviours.OptionFieldBehaviours
 import models.locationOfGoods.QualifierOfIdentification
 import play.api.data.FormError
 
-class QualifierofidentificationFormProviderSpec extends OptionFieldBehaviours {
+class QualifierOfIdentificationFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new QualifierofidentificationFormProvider()()
+  val form = new QualifierOfIdentificationFormProvider()()
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "locationOfGoods.qualifierofidentification.error.required"
+    val requiredKey = "locationOfGoods.qualifierOfIdentification.error.required"
 
     behave like optionsField[QualifierOfIdentification](
       form,

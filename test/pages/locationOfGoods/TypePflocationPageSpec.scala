@@ -16,18 +16,18 @@
 
 package pages.locationOfGoods
 
-import models.reference.CustomsOffice
-import pages.LocationOfGoods.CustomsOfficePage
+import models.locationOfGoods.TypeOfLocation
+import pages.LocationOfGoods.TypeOfLocationPage
 import pages.behaviours.PageBehaviours
 
-class CustomsofficePageSpec extends PageBehaviours {
+class TypeOfLocationPageSpec extends PageBehaviours {
 
-  "CustomsofficePage" - {
+  "TypeoflocationPage" - {
 
-    beRetrievable[CustomsOffice](CustomsOfficePage)
+    beRetrievable[TypeOfLocation](TypeOfLocationPage)
 
-    beSettable[CustomsOffice](CustomsOfficePage)
+    beSettable[TypeOfLocation](TypeOfLocationPage)
 
-    beRemovable[CustomsOffice](CustomsOfficePage)
+    beRemovable[TypeOfLocation](TypeOfLocationPage)
   }
 }

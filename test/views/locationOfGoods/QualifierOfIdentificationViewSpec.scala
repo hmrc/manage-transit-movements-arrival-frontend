@@ -16,28 +16,28 @@
 
 package views.locationOfGoods
 
-import forms.locationOfGoods.TypeoflocationFormProvider
+import forms.locationOfGoods.QualifierOfIdentificationFormProvider
 import models.NormalMode
-import models.locationOfGoods.TypeOfLocation
+import models.locationOfGoods.QualifierOfIdentification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
-import views.html.locationOfGoods.TypeoflocationView
+import views.html.locationOfGoods.QualifierOfIdentificationView
 
-class TypeoflocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
+class QualifierOfIdentificationViewSpec extends RadioViewBehaviours[QualifierOfIdentification] {
 
-  override def form: Form[TypeOfLocation] = new TypeoflocationFormProvider()()
+  override def form: Form[QualifierOfIdentification] = new QualifierOfIdentificationFormProvider()()
 
-  override def applyView(form: Form[TypeOfLocation]): HtmlFormat.Appendable =
-    injector.instanceOf[TypeoflocationView].apply(form, mrn, TypeOfLocation.radioItems, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[QualifierOfIdentification]): HtmlFormat.Appendable =
+    injector.instanceOf[QualifierOfIdentificationView].apply(form, mrn, QualifierOfIdentification.radioItems, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "locationOfGoods.typeoflocation"
+  override val prefix: String = "locationOfGoods.qualifierOfIdentification"
 
-  override def radioItems(fieldId: String, checkedValue: Option[TypeOfLocation] = None): Seq[RadioItem] =
-    TypeOfLocation.radioItems(fieldId, checkedValue)
+  override def radioItems(fieldId: String, checkedValue: Option[QualifierOfIdentification] = None): Seq[RadioItem] =
+    QualifierOfIdentification.radioItems(fieldId, checkedValue)
 
-  override def values: Seq[TypeOfLocation] = TypeOfLocation.values
+  override def values: Seq[QualifierOfIdentification] = QualifierOfIdentification.values
 
   behave like pageWithTitle()
 

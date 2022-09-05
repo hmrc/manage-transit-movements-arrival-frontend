@@ -23,16 +23,16 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.locationOfGoods.IdentificationnumberView
+import views.html.locationOfGoods.AdditionalIdentifierView
 
-class IdentificationnumberViewSpec extends InputTextViewBehaviours[String] {
+class AdditionalIdentifierViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "locationOfGoods.identificationnumber"
+  override val prefix: String = "locationOfGoods.additionalIdentifier"
 
   override def form: Form[String] = new NameFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationnumberView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AdditionalIdentifierView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

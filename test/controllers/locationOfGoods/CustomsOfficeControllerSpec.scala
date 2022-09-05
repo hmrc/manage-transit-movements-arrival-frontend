@@ -17,74 +17,90 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.QualifierofidentificationFormProvider
-import models.NormalMode
-import models.locationOfGoods.QualifierOfIdentification
+import forms.CustomsOfficeFormProvider
+import generators.Generators
+import models.{CustomsOfficeList, NormalMode}
 import navigation.Navigator
 import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.QualifierOfIdentificationPage
+import pages.LocationOfGoods.CustomsOfficePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.QualifierofidentificationView
+import services.CustomsOfficesService
+import views.html.locationOfGoods.CustomsofficeView
 
 import scala.concurrent.Future
 
-class QualifierofidentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                        = new QualifierofidentificationFormProvider()
-  private val form                                = formProvider()
-  private val mode                                = NormalMode
-  private lazy val qualifierofidentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode).url
+  private val customsOffice1    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
 
-  "Qualifierofidentification Controller" - {
+  private val formProvider = new CustomsOfficeFormProvider()
+  private val form         = formProvider("locationOfGoods.customsOffice", customsOfficeList)
+  private val mode         = NormalMode
+
+  private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
+  private lazy val customsofficeRoute                          = routes.CustomsOfficeController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
+
+  "Customsoffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
+      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, qualifierofidentificationRoute)
+      val request = FakeRequest(GET, customsofficeRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[CustomsofficeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, QualifierOfIdentification.radioItems, mode)(request, messages).toString
+        view(form, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.values.head)
+      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
+      val userAnswers = emptyUserAnswers.setValue(CustomsOfficePage, customsOffice1)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, qualifierofidentificationRoute)
+      val request = FakeRequest(GET, customsofficeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.values.head.toString))
+      val filledForm = form.bind(Map("value" -> customsOffice1.id))
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[CustomsofficeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, QualifierOfIdentification.radioItems, mode)(request, messages).toString
+        view(filledForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
+      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, qualifierofidentificationRoute)
-        .withFormUrlEncodedBody(("value", QualifierOfIdentification.values.head.toString))
+      val request =
+        FakeRequest(POST, customsofficeRoute)
+          .withFormUrlEncodedBody(("value", customsOffice1.id))
 
       val result = route(app, request).value
 
@@ -95,26 +111,27 @@ class QualifierofidentificationControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, qualifierofidentificationRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, customsofficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[CustomsofficeView]
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, QualifierOfIdentification.radioItems, mode)(request, messages).toString
+        view(boundForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, qualifierofidentificationRoute)
+      val request = FakeRequest(GET, customsofficeRoute)
 
       val result = route(app, request).value
 
@@ -126,8 +143,8 @@ class QualifierofidentificationControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, qualifierofidentificationRoute)
-        .withFormUrlEncodedBody(("value", QualifierOfIdentification.values.head.toString))
+      val request = FakeRequest(POST, customsofficeRoute)
+        .withFormUrlEncodedBody(("value", customsOffice1.id))
 
       val result = route(app, request).value
 

@@ -131,16 +131,17 @@ identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
 
-locationOfGoods.addcontactperson.title = AddContactPerson
-locationOfGoods.addcontactperson.heading = AddContactPerson
-locationOfGoods.addcontactperson.checkYourAnswersLabel = AddContactPerson
-locationOfGoods.addcontactperson.error.required = Select yes if AddContactPerson
 
-locationOfGoods.additionalidentifier.title = AdditionalIdentifier
-locationOfGoods.additionalidentifier.heading = AdditionalIdentifier
-locationOfGoods.additionalidentifier.checkYourAnswersLabel = AdditionalIdentifier
-locationOfGoods.additionalidentifier.error.required = Enter AdditionalIdentifier
-locationOfGoods.additionalidentifier.error.length = AdditionalIdentifier must be 100 characters or less
+locationOfGoods.addContactPerson.title = AddContactPerson
+locationOfGoods.addContactPerson.heading = AddContactPerson
+locationOfGoods.addContactPerson.checkYourAnswersLabel = AddContactPerson
+locationOfGoods.addContactPerson.error.required = Select yes if AddContactPerson
+
+locationOfGoods.additionalIdentifier.title = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.heading = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.checkYourAnswersLabel = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.error.required = Enter AdditionalIdentifier
+locationOfGoods.additionalIdentifier.error.length = AdditionalIdentifier must be 100 characters or less
 
 locationOfGoods.address.title = Address
 locationOfGoods.address.heading = Address
@@ -178,20 +179,20 @@ locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
 locationOfGoods.coordinates.error.required = Enter Coordinates
 locationOfGoods.coordinates.error.length = Coordinates must be 100 characters or less
 
-locationOfGoods.customsoffice.title = CustomsOffice
-locationOfGoods.customsoffice.heading = CustomsOffice
-locationOfGoods.customsoffice.hintText = CustomsOffice hint
-locationOfGoods.customsoffice.label = CustomsOffice label
-locationOfGoods.customsoffice.placeholder = Select a customsOffice
-locationOfGoods.customsoffice.change.hidden = CustomsOffice
-locationOfGoods.customsoffice.checkYourAnswersLabel = CustomsOffice
-locationOfGoods.customsoffice.error.required = Select the customsOffice
+locationOfGoods.customsOffice.title = CustomsOffice
+locationOfGoods.customsOffice.heading = CustomsOffice
+locationOfGoods.customsOffice.hintText = CustomsOffice hint
+locationOfGoods.customsOffice.label = CustomsOffice label
+locationOfGoods.customsOffice.placeholder = Select a customsOffice
+locationOfGoods.customsOffice.change.hidden = CustomsOffice
+locationOfGoods.customsOffice.checkYourAnswersLabel = CustomsOffice
+locationOfGoods.customsOffice.error.required = Select the customsOffice
 
-locationOfGoods.locationOfGoodsnumber.title = IdentificationNumber
-locationOfGoods.locationOfGoodsnumber.heading = IdentificationNumber
-locationOfGoods.locationOfGoodsnumber.checkYourAnswersLabel = IdentificationNumber
-locationOfGoods.locationOfGoodsnumber.error.required = Enter IdentificationNumber
-locationOfGoods.locationOfGoodsnumber.error.length = IdentificationNumber must be 100 characters or less
+locationOfGoods.identificationNumber.title = IdentificationNumber
+locationOfGoods.identificationNumber.heading = IdentificationNumber
+locationOfGoods.identificationNumber.checkYourAnswersLabel = IdentificationNumber
+locationOfGoods.identificationNumber.error.required = Enter IdentificationNumber
+locationOfGoods.identificationNumber.error.length = IdentificationNumber must be 100 characters or less
 
 locationOfGoods.internationalAddress.title = InternationalAddress
 locationOfGoods.internationalAddress.heading = InternationalAddress
@@ -206,19 +207,19 @@ locationOfGoods.internationalAddress.error.invalid = The {0} of {1}’s address 
 locationOfGoods.internationalAddress.error.required = Enter the {0} of {1}’s address
 locationOfGoods.internationalAddress.error.length = The {0} of {1}’s address must be 35 characters or less
 
-locationOfGoods.qualifieroflocationOfGoods.title = QualifierOfIdentification
-locationOfGoods.qualifieroflocationOfGoods.heading = QualifierOfIdentification
-locationOfGoods.qualifieroflocationOfGoods.foo = Foo
-locationOfGoods.qualifieroflocationOfGoods.bar = Bar
-locationOfGoods.qualifieroflocationOfGoods.checkYourAnswersLabel = QualifierOfIdentification
-locationOfGoods.qualifieroflocationOfGoods.error.required = Select  QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.title = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.heading = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.foo = Foo
+locationOfGoods.qualifierOfLocationOfGoods.bar = Bar
+locationOfGoods.qualifierOfLocationOfGoods.checkYourAnswersLabel = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.error.required = Select  QualifierOfIdentification
 
-locationOfGoods.typeoflocation.title = TypeOfLocation
-locationOfGoods.typeoflocation.heading = TypeOfLocation
-locationOfGoods.typeoflocation.foo = Foo
-locationOfGoods.typeoflocation.bar = Bar
-locationOfGoods.typeoflocation.checkYourAnswersLabel = TypeOfLocation
-locationOfGoods.typeoflocation.error.required = Select  TypeOfLocation
+locationOfGoods.typeOfLocation.title = TypeOfLocation
+locationOfGoods.typeOfLocation.heading = TypeOfLocation
+locationOfGoods.typeOfLocation.foo = Foo
+locationOfGoods.typeOfLocation.bar = Bar
+locationOfGoods.typeOfLocation.checkYourAnswersLabel = TypeOfLocation
+locationOfGoods.typeOfLocation.error.required = Select  TypeOfLocation
 
 locationOfGoods.unlocode.title = Unlocode
 locationOfGoods.unlocode.heading = Unlocode
@@ -226,16 +227,16 @@ locationOfGoods.unlocode.checkYourAnswersLabel = Unlocode
 locationOfGoods.unlocode.error.required = Enter Unlocode
 locationOfGoods.unlocode.error.length = Unlocode must be 100 characters or less
 
-locationOfGoods.identificationnumber.title = Identification Number
-locationOfGoods.identificationnumber.heading = Identification Number
-locationOfGoods.identificationnumber.checkYourAnswersLabel = Identification Number
-locationOfGoods.identificationnumber.change.hidden = identification number
-locationOfGoods.identificationnumber.error.required = Enter Identification Number
-locationOfGoods.identificationnumber.error.length = Identification Number must be 100 characters or less
+locationOfGoods.identificationNumber.title = Identification Number
+locationOfGoods.identificationNumber.heading = Identification Number
+locationOfGoods.identificationNumber.checkYourAnswersLabel = Identification Number
+locationOfGoods.identificationNumber.change.hidden = identification number
+locationOfGoods.identificationNumber.error.required = Enter Identification Number
+locationOfGoods.identificationNumber.error.length = Identification Number must be 100 characters or less
 
-locationOfGoods.qualifierofidentification.title = qualifierofidentification
-locationOfGoods.qualifierofidentification.heading = qualifierofidentification
-locationOfGoods.qualifierofidentification.foo = Foo
-locationOfGoods.qualifierofidentification.bar = Bar
-locationOfGoods.qualifierofidentification.checkYourAnswersLabel = qualifierofidentification
-locationOfGoods.qualifierofidentification.error.required = Select  qualifierofidentification
+locationOfGoods.qualifierOfIdentification.title = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.heading = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.foo = Foo
+locationOfGoods.qualifierOfIdentification.bar = Bar
+locationOfGoods.qualifierOfIdentification.checkYourAnswersLabel = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.error.required = Select  qualifierofidentification

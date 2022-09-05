@@ -18,11 +18,11 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.TypeoflocationFormProvider
+import forms.locationOfGoods.TypeOfLocationFormProvider
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import navigation.annotations.LocationOfGoods
 import pages.LocationOfGoods.TypeOfLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +38,7 @@ class TypeOfLocationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   @LocationOfGoods implicit val navigator: Navigator,
   actions: Actions,
-  formProvider: TypeoflocationFormProvider,
+  formProvider: TypeOfLocationFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TypeoflocationView
 )(implicit ec: ExecutionContext)

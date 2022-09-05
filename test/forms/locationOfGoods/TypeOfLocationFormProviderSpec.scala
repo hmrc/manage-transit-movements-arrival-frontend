@@ -20,14 +20,14 @@ import forms.behaviours.OptionFieldBehaviours
 import models.locationOfGoods.TypeOfLocation
 import play.api.data.FormError
 
-class TypeoflocationFormProviderSpec extends OptionFieldBehaviours {
+class TypeOfLocationFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new TypeoflocationFormProvider()()
+  val form = new TypeOfLocationFormProvider()()
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "locationOfGoods.typeoflocation.error.required"
+    val requiredKey = "locationOfGoods.typeOfLocation.error.required"
 
     behave like optionsField[TypeOfLocation](
       form,

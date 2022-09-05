@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package pages.locationOfGoods
 
-import forms.mappings.Mappings
 import models.locationOfGoods.QualifierOfIdentification
-import play.api.data.Form
+import pages.LocationOfGoods.QualifierOfIdentificationPage
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
-class QualifierofidentificationFormProvider @Inject() extends Mappings {
+  "QualifierofidentificationPage" - {
 
-  def apply(): Form[QualifierOfIdentification] =
-    Form(
-      "value" -> enumerable[QualifierOfIdentification]("locationOfGoods.qualifierofidentification.error.required")
-    )
+    beRetrievable[QualifierOfIdentification](QualifierOfIdentificationPage)
+
+    beSettable[QualifierOfIdentification](QualifierOfIdentificationPage)
+
+    beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage)
+  }
 }

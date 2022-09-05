@@ -34,7 +34,7 @@
 @(form: Form[CustomsOffice], mrn: MovementReferenceNumber, customsOffices: Seq[CustomsOffice], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.customsoffice.title"),
+    title = messages("locationOfGoods.customsOffice.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -46,11 +46,11 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("locationOfGoods.customsoffice.heading")
+                heading = messages("locationOfGoods.customsOffice.heading")
             ),
-            hint = Some(messages("locationOfGoods.customsoffice.hintText")),
+            hint = Some(messages("locationOfGoods.customsOffice.hintText")),
             selectItems = customsOffices.toSelectItems(form.value),
-            placeholder = messages("locationOfGoods.customsoffice.placeholder")
+            placeholder = messages("locationOfGoods.customsOffice.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))
