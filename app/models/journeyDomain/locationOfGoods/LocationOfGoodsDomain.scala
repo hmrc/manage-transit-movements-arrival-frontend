@@ -17,37 +17,26 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification.{IdentificationNumberPage, _}
+import models.UserAnswers
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.locationOfGoods.TypeOfLocation
+import pages.LocationOfGoods.TypeOfLocationPage
 import play.api.mvc.Call
 
-import java.time.LocalDate
-
-// TODO change this to match the location of goods data
 case class LocationOfGoodsDomain(
-  mrn: MovementReferenceNumber,
-  arrivalDate: LocalDate,
-  isSimplified: Boolean,
-  identificationNumber: String
+  typeOfLocation: TypeOfLocation,
+  qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
+    Some(???)
 }
 
 object LocationOfGoodsDomain {
 
-  private val mrn: UserAnswersReader[MovementReferenceNumber] = {
-    val fn: UserAnswers => EitherType[MovementReferenceNumber] = ua => Right(ua.mrn)
-    UserAnswersReader(fn)
-  }
-
   implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] =
     (
-      mrn,
-      ArrivalDatePage.reader,
-      IsSimplifiedProcedurePage.reader,
-      IdentificationNumberPage.reader
+      TypeOfLocationPage.reader,
+      UserAnswersReader[QualifierOfIdentificationDomain]
     ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
 }
