@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CustomsOfficeFormProvider
 import generators.Generators
 import models.{CustomsOfficeList, NormalMode}
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.CustomsOfficePage
@@ -30,7 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CustomsOfficesService
-import views.html.locationOfGoods.CustomsofficeView
+import views.html.locationOfGoods.CustomsOfficeView
 
 import scala.concurrent.Future
 
@@ -63,7 +61,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CustomsofficeView]
+      val view = injector.instanceOf[CustomsOfficeView]
 
       status(result) mustEqual OK
 
@@ -83,7 +81,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val filledForm = form.bind(Map("value" -> customsOffice1.id))
 
-      val view = injector.instanceOf[CustomsofficeView]
+      val view = injector.instanceOf[CustomsOfficeView]
 
       status(result) mustEqual OK
 
@@ -119,7 +117,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CustomsofficeView]
+      val view = injector.instanceOf[CustomsOfficeView]
 
       status(result) mustEqual BAD_REQUEST
 

@@ -25,7 +25,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.LocationOfGoods.AddContactPersonPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AddcontactpersonView
+import views.html.locationOfGoods.AddContactPersonView
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
       val request = FakeRequest(GET, addcontactpersonRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddcontactpersonView]
+      val view = injector.instanceOf[AddContactPersonView]
 
       status(result) mustEqual OK
 
@@ -64,7 +64,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddcontactpersonView]
+      val view = injector.instanceOf[AddContactPersonView]
 
       status(result) mustEqual OK
 
@@ -100,7 +100,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddcontactpersonView]
+      val view = injector.instanceOf[AddContactPersonView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode)(request, messages).toString

@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import pages.LocationOfGoods.TypeOfLocationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.TypeoflocationView
+import views.html.locationOfGoods.TypeOfLocationView
 
 import scala.concurrent.Future
 
@@ -46,7 +46,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TypeoflocationView]
+      val view = injector.instanceOf[TypeOfLocationView]
 
       status(result) mustEqual OK
 
@@ -65,7 +65,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val filledForm = form.bind(Map("value" -> TypeOfLocation.values.head.toString))
 
-      val view = injector.instanceOf[TypeoflocationView]
+      val view = injector.instanceOf[TypeOfLocationView]
 
       status(result) mustEqual OK
 
@@ -98,7 +98,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TypeoflocationView]
+      val view = injector.instanceOf[TypeOfLocationView]
 
       status(result) mustEqual BAD_REQUEST
 

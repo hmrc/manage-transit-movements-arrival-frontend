@@ -19,13 +19,9 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.AuthorisationNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AuthorisationNumberView

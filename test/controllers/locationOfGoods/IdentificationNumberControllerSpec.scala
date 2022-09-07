@@ -19,16 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.IdentificationNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.IdentificationnumberView
+import views.html.locationOfGoods.IdentificationNumberView
 
 import scala.concurrent.Future
 
@@ -39,7 +35,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   private val mode                           = NormalMode
   private lazy val identificationnumberRoute = routes.IdentificationNumberController.onPageLoad(mrn, mode).url
 
-  "Identificationnumber Controller" - {
+  "IdentificationNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -49,7 +45,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[IdentificationnumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -68,7 +64,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[IdentificationnumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -105,7 +101,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[IdentificationnumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, mode)(request, messages).toString

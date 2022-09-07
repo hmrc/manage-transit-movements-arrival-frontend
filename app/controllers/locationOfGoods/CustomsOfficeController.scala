@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.CustomsofficeView
+import views.html.locationOfGoods.CustomsOfficeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,7 @@ class CustomsOfficeController @Inject() (
   formProvider: CustomsOfficeFormProvider,
   service: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
-  view: CustomsofficeView
+  view: CustomsOfficeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import pages.LocationOfGoods.QualifierOfIdentificationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.QualifierofidentificationView
+import views.html.locationOfGoods.QualifierOfIdentificationView
 
 import scala.concurrent.Future
 
@@ -46,7 +46,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[QualifierOfIdentificationView]
 
       status(result) mustEqual OK
 
@@ -65,7 +65,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       val filledForm = form.bind(Map("value" -> QualifierOfIdentification.values.head.toString))
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[QualifierOfIdentificationView]
 
       status(result) mustEqual OK
 
@@ -98,7 +98,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[QualifierofidentificationView]
+      val view = injector.instanceOf[QualifierOfIdentificationView]
 
       status(result) mustEqual BAD_REQUEST
 

@@ -29,7 +29,7 @@ case class LocationOfGoodsDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(???)
+    Some(???) // TODO link to next journey
 }
 
 object LocationOfGoodsDomain {

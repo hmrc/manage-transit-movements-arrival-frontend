@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.QualifierofidentificationView
+import views.html.locationOfGoods.QualifierOfIdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,7 @@ class QualifierOfIdentificationController @Inject() (
   actions: Actions,
   formProvider: QualifierOfIdentificationFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: QualifierofidentificationView
+  view: QualifierOfIdentificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

@@ -19,13 +19,9 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.ContactPersonTelephonePage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.ContactPersonTelephoneView
@@ -38,7 +34,7 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
   private val form                             = formProvider("locationOfGoods.contactPersonTelephone")
   private val mode                             = NormalMode
   private lazy val contactPersonTelephoneRoute = routes.ContactPersonTelephoneController.onPageLoad(mrn, mode).url
-  1
+
   "ContactPersonTelephone Controller" - {
 
     "must return OK and the correct view for a GET" in {

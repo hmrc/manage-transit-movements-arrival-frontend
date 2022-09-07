@@ -20,14 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UkAddressFormProvider
 import generators.Generators
 import models.{NormalMode, UkAddress, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.LocationOfGoods.AddressPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AddressView

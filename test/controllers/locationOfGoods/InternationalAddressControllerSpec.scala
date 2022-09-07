@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.InternationalAddressFormProvider
 import generators.Generators
 import models.{CountryList, InternationalAddress, NormalMode, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

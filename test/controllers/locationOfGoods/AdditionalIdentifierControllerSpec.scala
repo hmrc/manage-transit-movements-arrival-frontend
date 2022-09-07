@@ -19,16 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.LocationOfGoods.AdditionalIdentifierPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AdditionalidentifierView
+import views.html.locationOfGoods.AdditionalIdentifierView
 
 import scala.concurrent.Future
 
@@ -49,7 +45,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalidentifierView]
+      val view = injector.instanceOf[AdditionalIdentifierView]
 
       status(result) mustEqual OK
 
@@ -68,7 +64,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[AdditionalidentifierView]
+      val view = injector.instanceOf[AdditionalIdentifierView]
 
       status(result) mustEqual OK
 
@@ -105,7 +101,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AdditionalidentifierView]
+      val view = injector.instanceOf[AdditionalIdentifierView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, mode)(request, messages).toString
