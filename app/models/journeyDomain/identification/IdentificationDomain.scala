@@ -19,7 +19,7 @@ package models.journeyDomain.identification
 import cats.implicits._
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification._
+import pages.identification.{IdentificationNumberPage, _}
 import play.api.mvc.Call
 
 import java.time.LocalDate

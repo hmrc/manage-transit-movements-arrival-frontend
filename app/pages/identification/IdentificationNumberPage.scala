@@ -18,9 +18,9 @@ package pages.identification
 
 import controllers.identification.routes
 import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.IdentificationSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object IdentificationNumberPage extends QuestionPage[String] {

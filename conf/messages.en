@@ -130,3 +130,113 @@ identification.checkIdentificationAnswers.title = Check your answers
 identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
+
+
+locationOfGoods.addContactPerson.title = AddContactPerson
+locationOfGoods.addContactPerson.heading = AddContactPerson
+locationOfGoods.addContactPerson.checkYourAnswersLabel = AddContactPerson
+locationOfGoods.addContactPerson.error.required = Select yes if AddContactPerson
+
+locationOfGoods.additionalIdentifier.title = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.heading = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.checkYourAnswersLabel = AdditionalIdentifier
+locationOfGoods.additionalIdentifier.error.required = Enter AdditionalIdentifier
+locationOfGoods.additionalIdentifier.error.length = AdditionalIdentifier must be 100 characters or less
+
+locationOfGoods.address.title = Address
+locationOfGoods.address.heading = Address
+locationOfGoods.address.addressLine1 = Building and Street
+locationOfGoods.address.addressLine2 = City
+locationOfGoods.address.postalCode = Post code
+locationOfGoods.address.checkYourAnswersLabel = Address
+locationOfGoods.address.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z, numbers 0 to 9 and spaces
+locationOfGoods.address.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+locationOfGoods.address.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.address.error.required = Enter the {0} of {1}’s address
+locationOfGoods.address.error.length = The {0} of {1}’s address must be 35 characters or less
+
+locationOfGoods.authorisationNumber.title = AuthorisationNumber
+locationOfGoods.authorisationNumber.heading = AuthorisationNumber
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = AuthorisationNumber
+locationOfGoods.authorisationNumber.error.required = Enter AuthorisationNumber
+locationOfGoods.authorisationNumber.error.length = AuthorisationNumber must be 100 characters or less
+
+locationOfGoods.contactPersonName.title = ContactPersonName
+locationOfGoods.contactPersonName.heading = ContactPersonName
+locationOfGoods.contactPersonName.checkYourAnswersLabel = ContactPersonName
+locationOfGoods.contactPersonName.error.required = Enter ContactPersonName
+locationOfGoods.contactPersonName.error.length = ContactPersonName must be 100 characters or less
+
+locationOfGoods.contactPersonTelephone.title = ContactPersonTelephone
+locationOfGoods.contactPersonTelephone.heading = ContactPersonTelephone
+locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = ContactPersonTelephone
+locationOfGoods.contactPersonTelephone.error.required = Enter ContactPersonTelephone
+locationOfGoods.contactPersonTelephone.error.length = ContactPersonTelephone must be 100 characters or less
+
+locationOfGoods.coordinates.title = Coordinates
+locationOfGoods.coordinates.heading = Coordinates
+locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
+locationOfGoods.coordinates.error.required = Enter Coordinates
+locationOfGoods.coordinates.error.length = Coordinates must be 100 characters or less
+
+locationOfGoods.customsOffice.title = CustomsOffice
+locationOfGoods.customsOffice.heading = CustomsOffice
+locationOfGoods.customsOffice.hintText = CustomsOffice hint
+locationOfGoods.customsOffice.label = CustomsOffice label
+locationOfGoods.customsOffice.placeholder = Select a customsOffice
+locationOfGoods.customsOffice.change.hidden = CustomsOffice
+locationOfGoods.customsOffice.checkYourAnswersLabel = CustomsOffice
+locationOfGoods.customsOffice.error.required = Select the customsOffice
+
+locationOfGoods.identificationNumber.title = IdentificationNumber
+locationOfGoods.identificationNumber.heading = IdentificationNumber
+locationOfGoods.identificationNumber.checkYourAnswersLabel = IdentificationNumber
+locationOfGoods.identificationNumber.error.required = Enter IdentificationNumber
+locationOfGoods.identificationNumber.error.length = IdentificationNumber must be 100 characters or less
+
+locationOfGoods.internationalAddress.title = InternationalAddress
+locationOfGoods.internationalAddress.heading = InternationalAddress
+locationOfGoods.internationalAddress.addressLine1 = Address line 1
+locationOfGoods.internationalAddress.addressLine2 = Address line 2
+locationOfGoods.internationalAddress.postalCode = Postal code
+locationOfGoods.internationalAddress.country = Country
+locationOfGoods.internationalAddress.checkYourAnswersLabel = InternationalAddress
+locationOfGoods.internationalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z, numbers 0 to 9 and spaces
+locationOfGoods.internationalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+locationOfGoods.internationalAddress.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.internationalAddress.error.required = Enter the {0} of {1}’s address
+locationOfGoods.internationalAddress.error.length = The {0} of {1}’s address must be 35 characters or less
+
+locationOfGoods.qualifierOfLocationOfGoods.title = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.heading = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.foo = Foo
+locationOfGoods.qualifierOfLocationOfGoods.bar = Bar
+locationOfGoods.qualifierOfLocationOfGoods.checkYourAnswersLabel = QualifierOfIdentification
+locationOfGoods.qualifierOfLocationOfGoods.error.required = Select  QualifierOfIdentification
+
+locationOfGoods.typeOfLocation.title = TypeOfLocation
+locationOfGoods.typeOfLocation.heading = TypeOfLocation
+locationOfGoods.typeOfLocation.foo = Foo
+locationOfGoods.typeOfLocation.bar = Bar
+locationOfGoods.typeOfLocation.checkYourAnswersLabel = TypeOfLocation
+locationOfGoods.typeOfLocation.error.required = Select  TypeOfLocation
+
+locationOfGoods.unlocode.title = Unlocode
+locationOfGoods.unlocode.heading = Unlocode
+locationOfGoods.unlocode.checkYourAnswersLabel = Unlocode
+locationOfGoods.unlocode.error.required = Enter Unlocode
+locationOfGoods.unlocode.error.length = Unlocode must be 100 characters or less
+
+locationOfGoods.identificationNumber.title = Identification Number
+locationOfGoods.identificationNumber.heading = Identification Number
+locationOfGoods.identificationNumber.checkYourAnswersLabel = Identification Number
+locationOfGoods.identificationNumber.change.hidden = identification number
+locationOfGoods.identificationNumber.error.required = Enter Identification Number
+locationOfGoods.identificationNumber.error.length = Identification Number must be 100 characters or less
+
+locationOfGoods.qualifierOfIdentification.title = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.heading = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.foo = Foo
+locationOfGoods.qualifierOfIdentification.bar = Bar
+locationOfGoods.qualifierOfIdentification.checkYourAnswersLabel = qualifierOfIdentification
+locationOfGoods.qualifierOfIdentification.error.required = Select  qualifierofidentification

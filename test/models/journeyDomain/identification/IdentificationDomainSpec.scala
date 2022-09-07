@@ -24,7 +24,7 @@ import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification._
-import pages.identification.authorisation._
+import pages.identification.authorisation.{_}
 
 import java.time.LocalDate
 

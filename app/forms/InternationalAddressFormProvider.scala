@@ -26,41 +26,40 @@ import play.api.i18n.Messages
 
 class InternationalAddressFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, name: String, countryList: CountryList)(implicit messages: Messages): Form[InternationalAddress] =
+  def apply(prefix: String, countryList: CountryList)(implicit messages: Messages): Form[InternationalAddress] =
     Form(
       mapping(
         AddressLine1.field -> {
-          lazy val args = Seq(AddressLine1.arg, name)
+          lazy val args = Seq(AddressLine1.arg)
           trimmedText(s"$prefix.error.required", args)
             .verifying(
               StopOnFirstFail[String](
-                maxLength(AddressLine1.length, s"$prefix.error.length", Seq(AddressLine1.arg.capitalize, name, AddressLine1.length)),
-                regexp(AddressLine1.regex, s"$prefix.error.invalid", Seq(AddressLine1.arg.capitalize, name))
+                maxLength(AddressLine1.length, s"$prefix.error.length", Seq(AddressLine1.arg.capitalize, AddressLine1.length)),
+                regexp(AddressLine1.regex, s"$prefix.error.invalid", Seq(AddressLine1.arg.capitalize))
               )
             )
         },
         AddressLine2.field -> {
-          lazy val args = Seq(AddressLine2.arg, name)
+          lazy val args = Seq(AddressLine2.arg)
           trimmedText(s"$prefix.error.required", args)
             .verifying(
               StopOnFirstFail[String](
-                maxLength(AddressLine2.length, s"$prefix.error.length", Seq(AddressLine2.arg.capitalize, name, AddressLine2.length)),
-                regexp(AddressLine2.regex, s"$prefix.error.invalid", Seq(AddressLine2.arg.capitalize, name))
+                maxLength(AddressLine2.length, s"$prefix.error.length", Seq(AddressLine2.arg.capitalize, AddressLine2.length)),
+                regexp(AddressLine2.regex, s"$prefix.error.invalid", Seq(AddressLine2.arg.capitalize))
               )
             )
         },
         PostalCode.field -> {
-          lazy val args = Seq(name)
-          trimmedText(s"$prefix.error.postalCode.required", args)
+          trimmedText(s"$prefix.error.postalCode.required")
             .verifying(
               StopOnFirstFail[String](
-                maxLength(PostalCode.length, s"$prefix.error.postalCode.length", args :+ PostalCode.length),
-                regexp(PostalCode.regex, s"$prefix.error.postalCode.invalid", args)
+                maxLength(PostalCode.length, s"$prefix.error.postalCode.length", Seq(PostalCode.length)),
+                regexp(PostalCode.regex, s"$prefix.error.postalCode.invalid")
               )
             )
         },
         Country.field -> {
-          country(countryList, s"$prefix.error.country.required", Seq(name))
+          country(countryList, s"$prefix.error.country.required")
         }
       )(InternationalAddress.apply)(InternationalAddress.unapply)
     )
