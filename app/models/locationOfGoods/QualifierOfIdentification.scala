@@ -22,23 +22,23 @@ sealed trait QualifierOfIdentification
 
 object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
 
-  case object InternationalAddress extends WithName("internationalAddress") with QualifierOfIdentification
-  case object IdentificationNumber extends WithName("identificationNumber") with QualifierOfIdentification
+  case object CustomsOffice extends WithName("customsOffice") with QualifierOfIdentification
+  case object EoriNumber extends WithName("eoriNumber") with QualifierOfIdentification
   case object AuthorisationNumber extends WithName("authorisationNumber") with QualifierOfIdentification
   case object Coordinates extends WithName("coordinates") with QualifierOfIdentification
-  case object CustomsOffice extends WithName("customsOffice") with QualifierOfIdentification
   case object Unlocode extends WithName("unlocode") with QualifierOfIdentification
   case object Address extends WithName("address") with QualifierOfIdentification
+  case object PostalCode extends WithName("postalCode") with QualifierOfIdentification
 
   override val messageKeyPrefix: String = "locationOfGoods.qualifierOfIdentification"
 
   val values: Seq[QualifierOfIdentification] = Seq(
-    InternationalAddress,
-    IdentificationNumber,
+    CustomsOffice,
+    EoriNumber,
     AuthorisationNumber,
     Coordinates,
-    CustomsOffice,
     Unlocode,
-    Address
+    Address,
+    PostalCode
   )
 }

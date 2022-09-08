@@ -29,14 +29,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
   "QualifierOfIdentificationDomain" - {
 
-    "can be parsed from UserAnswers from InternationalAddressDomain" in {
+    "can be parsed from UserAnswers from AddressDomain" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.InternationalAddress)
+        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
         .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
         .setValue(AddContactPersonPage, false)
 
-      val expectedResult = InternationalAddressDomain(
+      val expectedResult = AddressDomain(
         InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
         None
       )
@@ -47,15 +47,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     }
 
-    "can be parsed from UserAnswers from IdentificationNumberDomain" in {
+    "can be parsed from UserAnswers from EoriNumberDomain" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.IdentificationNumber)
+        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.EoriNumber)
         .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(AddContactPersonPage, false)
         .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
-      val expectedResult = IdentificationNumberDomain(
+      val expectedResult = EoriNumberDomain(
         "identificationNumber",
         None,
         "additionalIdentifier"
@@ -137,14 +137,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers from UKAddressDomain" in {
+    "can be parsed from UserAnswers from PostalCode" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.PostalCode)
         .setValue(AddressPage, UkAddress("line1", "line2", "postalCode"))
         .setValue(AddContactPersonPage, false)
 
-      val expectedResult = UKAddressDomain(
+      val expectedResult = PostalCodeDomain(
         UkAddress("line1", "line2", "postalCode"),
         None
       )
@@ -165,7 +165,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     }
   }
 
-  "InternationalAddressDomain" - {
+  "AddressDomain" - {
 
     "can be parsed from UserAnswers with contact person" in {
 
@@ -175,12 +175,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
-      val expectedResult = InternationalAddressDomain(
+      val expectedResult = AddressDomain(
         InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
         Some(ContactPerson("contact name", "contact telephone"))
       )
 
-      val result: EitherType[InternationalAddressDomain] = UserAnswersReader[InternationalAddressDomain].run(userAnswers)
+      val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -191,12 +191,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
         .setValue(AddContactPersonPage, false)
 
-      val expectedResult = InternationalAddressDomain(
+      val expectedResult = AddressDomain(
         InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
         None
       )
 
-      val result: EitherType[InternationalAddressDomain] = UserAnswersReader[InternationalAddressDomain].run(userAnswers)
+      val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -217,7 +217,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           page =>
             val updatedUserAnswers = userAnswers.removeValue(page)
 
-            val result: EitherType[InternationalAddressDomain] = UserAnswersReader[InternationalAddressDomain].run(updatedUserAnswers)
+            val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(updatedUserAnswers)
 
             result.left.value.page mustBe page
         }
@@ -236,13 +236,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(ContactPersonTelephonePage, "contact telephone")
         .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
-      val expectedResult = IdentificationNumberDomain(
+      val expectedResult = EoriNumberDomain(
         "identificationNumber",
         Some(ContactPerson("contact name", "contact telephone")),
         "additionalIdentifier"
       )
 
-      val result: EitherType[IdentificationNumberDomain] = UserAnswersReader[IdentificationNumberDomain].run(userAnswers)
+      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -254,13 +254,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(AddContactPersonPage, false)
         .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
-      val expectedResult = IdentificationNumberDomain(
+      val expectedResult = EoriNumberDomain(
         "identificationNumber",
         None,
         "additionalIdentifier"
       )
 
-      val result: EitherType[IdentificationNumberDomain] = UserAnswersReader[IdentificationNumberDomain].run(userAnswers)
+      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -282,7 +282,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           page =>
             val updatedUserAnswers = userAnswers.removeValue(page)
 
-            val result: EitherType[IdentificationNumberDomain] = UserAnswersReader[IdentificationNumberDomain].run(updatedUserAnswers)
+            val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(updatedUserAnswers)
 
             result.left.value.page mustBe page
         }
@@ -502,7 +502,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     }
   }
 
-  "UKAddressDomain" - {
+  "PostalCodeDomain" - {
 
     "can be parsed from UserAnswers with contact person" in {
 
@@ -512,12 +512,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
-      val expectedResult = UKAddressDomain(
+      val expectedResult = PostalCodeDomain(
         UkAddress("line1", "line2", "postalCode"),
         Some(ContactPerson("contact name", "contact telephone"))
       )
 
-      val result: EitherType[UKAddressDomain] = UserAnswersReader[UKAddressDomain].run(userAnswers)
+      val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -528,12 +528,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(AddressPage, UkAddress("line1", "line2", "postalCode"))
         .setValue(AddContactPersonPage, false)
 
-      val expectedResult = UKAddressDomain(
+      val expectedResult = PostalCodeDomain(
         UkAddress("line1", "line2", "postalCode"),
         None
       )
 
-      val result: EitherType[UKAddressDomain] = UserAnswersReader[UKAddressDomain].run(userAnswers)
+      val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
 
       result.value mustBe expectedResult
     }
@@ -554,7 +554,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           page =>
             val updatedUserAnswers = userAnswers.removeValue(page)
 
-            val result: EitherType[UKAddressDomain] = UserAnswersReader[UKAddressDomain].run(updatedUserAnswers)
+            val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(updatedUserAnswers)
 
             result.left.value.page mustBe page
         }

@@ -30,38 +30,37 @@ object QualifierOfIdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[QualifierOfIdentificationDomain] =
     QualifierOfIdentificationPage.reader.flatMap {
-      case QualifierOfIdentification.InternationalAddress => UserAnswersReader[InternationalAddressDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.IdentificationNumber => UserAnswersReader[IdentificationNumberDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.AuthorisationNumber  => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.Coordinates          => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.CustomsOffice        => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.Unlocode             => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
-      case QualifierOfIdentification.Address              => UserAnswersReader[UKAddressDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.Address             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.EoriNumber          => UserAnswersReader[EoriNumberDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.AuthorisationNumber => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.Coordinates         => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.CustomsOffice       => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.Unlocode            => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.PostalCode          => UserAnswersReader[PostalCodeDomain].widen[QualifierOfIdentificationDomain]
     }
 }
 
-case class InternationalAddressDomain(address: InternationalAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class AddressDomain(address: InternationalAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
-object InternationalAddressDomain {
+object AddressDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[InternationalAddressDomain] =
+  implicit val userAnswersReader: UserAnswersReader[AddressDomain] =
     (
       InternationalAddressPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson])
-    ).tupled.map((InternationalAddressDomain.apply _).tupled)
+    ).tupled.map((AddressDomain.apply _).tupled)
 }
 
-case class IdentificationNumberDomain(eoriNumber: String, contactPerson: Option[ContactPerson], additionalIdentifier: String)
-    extends QualifierOfIdentificationDomain
+case class EoriNumberDomain(eoriNumber: String, contactPerson: Option[ContactPerson], additionalIdentifier: String) extends QualifierOfIdentificationDomain
 
-object IdentificationNumberDomain {
+object EoriNumberDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationNumberDomain] =
+  implicit val userAnswersReader: UserAnswersReader[EoriNumberDomain] =
     (
       IdentificationNumberPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson]),
       AdditionalIdentifierPage.reader
-    ).tupled.map((IdentificationNumberDomain.apply _).tupled)
+    ).tupled.map((EoriNumberDomain.apply _).tupled)
 }
 
 case class AuthorisationNumberDomain(authorisationNumber: String, contactPerson: Option[ContactPerson], additionalIdentifier: String)
@@ -107,13 +106,13 @@ object UnlocodeDomain {
     ).tupled.map((UnlocodeDomain.apply _).tupled)
 }
 
-case class UKAddressDomain(address: UkAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class PostalCodeDomain(address: UkAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
-object UKAddressDomain {
+object PostalCodeDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[UKAddressDomain] =
+  implicit val userAnswersReader: UserAnswersReader[PostalCodeDomain] =
     (
       AddressPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson])
-    ).tupled.map((UKAddressDomain.apply _).tupled)
+    ).tupled.map((PostalCodeDomain.apply _).tupled)
 }

@@ -17,14 +17,16 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputRadio}
+@import views.html.components.InputRadioWithoutHeading
 @import models.locationOfGoods.QualifierOfIdentification
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputRadio: InputRadio,
-    errorSummary: ErrorSummary,
-    button: Button
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputRadio: InputRadioWithoutHeading,
+        inputRadioWithHeading: InputRadio,
+        errorSummary: ErrorSummary,
+        button: Button
 )
 
 @(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -39,11 +41,19 @@
 
         @errorSummary(form.errors)
 
-        @inputRadio(
-            field = form("value"),
-            legend = messages("locationOfGoods.qualifierOfIdentification.heading"),
-            radioItems = fieldId => radios(fieldId, form.value)
-        )
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading hmrc-page-heading">@messages("locationOfGoods.qualifierOfIdentification.heading")</h1>
+            </legend>
+
+            <p class="govuk-body">@messages("locationOfGoods.qualifierOfIdentification.paragraph1")</p>
+
+            @inputRadio(
+                field = form("value"),
+                radioItems = fieldId => radios(fieldId, form.value)
+            )
+
+        </fieldset>
 
         @button(attributes = Map("id" -> "submit"))
     }
