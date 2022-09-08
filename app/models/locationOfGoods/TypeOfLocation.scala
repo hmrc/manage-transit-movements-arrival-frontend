@@ -22,13 +22,17 @@ sealed trait TypeOfLocation
 
 object TypeOfLocation extends RadioModel[TypeOfLocation] {
 
-  case object Foo extends WithName("foo") with TypeOfLocation
-  case object Bar extends WithName("bar") with TypeOfLocation
+  case object AuthorisedPlace extends WithName("authorisedPlace") with TypeOfLocation
+  case object DesignatedLocation extends WithName("designatedLocation") with TypeOfLocation
+  case object ApprovedPlace extends WithName("approvedPlace") with TypeOfLocation
+  case object Other extends WithName("other") with TypeOfLocation
 
-  override val messageKeyPrefix: String = "identification.typeoflocation"
+  override val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
   val values: Seq[TypeOfLocation] = Seq(
-    Foo,
-    Bar
+    AuthorisedPlace,
+    DesignatedLocation,
+    ApprovedPlace,
+    Other
   )
 }
