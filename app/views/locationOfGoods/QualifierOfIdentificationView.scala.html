@@ -17,13 +17,13 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputRadio}
-@import views.html.components.InputRadioWithoutHeading
 @import models.locationOfGoods.QualifierOfIdentification
+@import viewModels.components.InputRadioViewModel.RadioWithAdditionalHtml
 
 @this(
         mainTemplate: MainTemplate,
         formHelper: FormWithCSRF,
-        inputRadio: InputRadioWithoutHeading,
+        inputRadio: InputRadio,
         inputRadioWithHeading: InputRadio,
         errorSummary: ErrorSummary,
         button: Button
@@ -41,19 +41,15 @@
 
         @errorSummary(form.errors)
 
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                <h1 class="govuk-fieldset__heading hmrc-page-heading">@messages("locationOfGoods.qualifierOfIdentification.heading")</h1>
-            </legend>
-
-            <p class="govuk-body">@messages("locationOfGoods.qualifierOfIdentification.paragraph1")</p>
-
-            @inputRadio(
-                field = form("value"),
-                radioItems = fieldId => radios(fieldId, form.value)
+        @inputRadio(
+            field = form("value"),
+            radioItems = fieldId => radios(fieldId, form.value),
+            radioType = RadioWithAdditionalHtml(
+                heading = messages("locationOfGoods.qualifierOfIdentification.heading"),
+                caption = None,
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("locationOfGoods.qualifierOfIdentification.paragraph1")}</p>""".stripMargin)
             )
-
-        </fieldset>
+        )
 
         @button(attributes = Map("id" -> "submit"))
     }

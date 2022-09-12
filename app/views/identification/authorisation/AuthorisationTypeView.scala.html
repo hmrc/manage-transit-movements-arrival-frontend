@@ -18,13 +18,14 @@
 @import models.MovementReferenceNumber
 @import models.identification.authorisation.AuthorisationType
 @import views.html.components.{Button, ErrorSummary, InputRadio}
+@import viewModels.components.InputRadioViewModel.Radio
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputRadio: InputRadio,
-    errorSummary: ErrorSummary,
-    button: Button
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputRadio: InputRadio,
+        errorSummary: ErrorSummary,
+        button: Button
 )
 
 @(form: Form[AuthorisationType], mrn: MovementReferenceNumber, index: Index, radios: (String, Option[AuthorisationType]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -41,8 +42,10 @@
 
         @inputRadio(
             field = form("value"),
-            legend = messages("identification.authorisation.authorisationType.heading"),
-            radioItems = fieldId => radios(fieldId, form.value)
+            radioItems = fieldId => radios(fieldId, form.value),
+            radioType = Radio(
+                heading = messages("identification.authorisation.authorisationType.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

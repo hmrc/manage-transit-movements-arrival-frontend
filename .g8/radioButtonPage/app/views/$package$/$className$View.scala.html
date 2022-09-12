@@ -18,6 +18,7 @@
 @import models.MovementReferenceNumber
 @import models.$package$.$className$
 @import views.html.components.{Button, ErrorSummary, InputRadio}
+@import viewModels.components.InputRadioViewModel.Radio
 
 @this(
     mainTemplate: MainTemplate,
@@ -39,10 +40,13 @@
 
         @errorSummary(form.errors)
 
+
         @inputRadio(
             field = form("value"),
-            legend = messages("$package$.$className;format="decap"$.heading"),
-            radioItems = fieldId => radios(fieldId, form.value)
+            radioItems = fieldId => radios(fieldId, form.value),
+            radioType = Radio(
+                heading = messages("$package$.$className;format="decap"$.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))
