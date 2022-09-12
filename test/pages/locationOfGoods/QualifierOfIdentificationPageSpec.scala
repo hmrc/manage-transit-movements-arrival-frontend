@@ -16,9 +16,14 @@
 
 package pages.locationOfGoods
 
+import models.UserAnswers
 import models.locationOfGoods.QualifierOfIdentification
+import org.scalacheck.Arbitrary.arbitrary
 import pages.LocationOfGoods.QualifierOfIdentificationPage
+import pages.QuestionPage
 import pages.behaviours.PageBehaviours
+import pages.sections.QualifierOfIdentificationDetailsSection
+import play.api.libs.json.JsPath
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
@@ -29,5 +34,58 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
     beSettable[QualifierOfIdentification](QualifierOfIdentificationPage)
 
     beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage)
+
+    "cleanup" - {
+
+      case object FakePage extends QuestionPage[String] {
+        override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ "fakeRoute"
+      }
+
+      "must remove previous answers when given a new answer" in {
+
+        val sampleUa = arbitrary[UserAnswers].sample.value
+
+        QualifierOfIdentification.values.foreach {
+          qualifierOfIdentification =>
+            val differentQualifierOfIdentification = QualifierOfIdentification.values.filterNot(_ == qualifierOfIdentification).head
+
+            val result = sampleUa
+              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
+              .success
+              .value
+              .set(FakePage, "fakeValue")
+              .success
+              .value
+              .set(QualifierOfIdentificationPage, differentQualifierOfIdentification)
+              .success
+              .value
+
+            result.get(FakePage) must not be defined
+        }
+      }
+
+      "must not remove previous answers when given the same answer" in {
+
+        val sampleUa = arbitrary[UserAnswers].sample.value
+
+        QualifierOfIdentification.values.foreach {
+          qualifierOfIdentification =>
+            val result = sampleUa
+              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
+              .success
+              .value
+              .set(FakePage, "fakeValue")
+              .success
+              .value
+              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
+              .success
+              .value
+
+            result.get(FakePage) mustBe defined
+        }
+      }
+
+    }
+
   }
 }

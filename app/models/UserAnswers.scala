@@ -22,7 +22,7 @@ import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.LocalDateTime
-import scala.util.{Failure, Try}
+import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
   mrn: MovementReferenceNumber,
@@ -36,14 +36,24 @@ final case class UserAnswers(
   def get[A](gettable: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(gettable.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
-    data.setObject(page.path, Json.toJson(value)) match {
-      case JsSuccess(updatedData, _) =>
-        val updatedAnswers = copy(data = updatedData)
-        page.cleanup(Some(value), updatedAnswers)
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
+    lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
       case JsError(errors) =>
         Failure(JsResultException(errors))
     }
+
+    lazy val cleanup: JsObject => Try[UserAnswers] = d => {
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
+    }
+
+    get(page) match {
+      case Some(`value`) => Success(this)
+      case _             => updatedData flatMap cleanup
+    }
+  }
 
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)

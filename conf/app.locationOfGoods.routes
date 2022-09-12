@@ -48,15 +48,15 @@ POST       /:mrn/location-of-goods/internationaladdress                        c
 GET        /:mrn/location-of-goods/change-internationaladdress                 controllers.locationOfGoods.InternationalAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-internationaladdress                 controllers.locationOfGoods.InternationalAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/location-of-goods/qualifierofidentification                        controllers.locationOfGoods.QualifierOfIdentificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/location-of-goods/qualifierofidentification                        controllers.locationOfGoods.QualifierOfIdentificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/location-of-goods/change-qualifierofidentification                 controllers.locationOfGoods.QualifierOfIdentificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/location-of-goods/change-qualifierofidentification                 controllers.locationOfGoods.QualifierOfIdentificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/location-of-goods/location-of-goods-identification             controllers.locationOfGoods.QualifierOfIdentificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/location-of-goods/location-of-goods-identification             controllers.locationOfGoods.QualifierOfIdentificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/location-of-goods/change-location-of-goods-identification      controllers.locationOfGoods.QualifierOfIdentificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/location-of-goods/change-location-of-goods-identification      controllers.locationOfGoods.QualifierOfIdentificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/location-of-goods/typeoflocation                        controllers.locationOfGoods.TypeOfLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/location-of-goods/typeoflocation                        controllers.locationOfGoods.TypeOfLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/location-of-goods/change-typeoflocation                 controllers.locationOfGoods.TypeOfLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/location-of-goods/change-typeoflocation                 controllers.locationOfGoods.TypeOfLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/location-of-goods/location-of-goods-type               controllers.locationOfGoods.TypeOfLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/location-of-goods/location-of-goods-type               controllers.locationOfGoods.TypeOfLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/location-of-goods/change-location-of-goods-type        controllers.locationOfGoods.TypeOfLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/location-of-goods/change-location-of-goods-type        controllers.locationOfGoods.TypeOfLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:mrn/location-of-goods/unlocode                        controllers.locationOfGoods.UnlocodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/location-of-goods/unlocode                        controllers.locationOfGoods.UnlocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)

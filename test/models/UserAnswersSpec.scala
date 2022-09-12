@@ -24,8 +24,9 @@ import scala.util.Try
 
 class UserAnswersSpec extends SpecBase {
 
-  private val testPageAnswer = "1"
-  private val testPagePath   = "testPath"
+  private val testPageAnswer  = "foo"
+  private val testPageAnswer2 = "bar"
+  private val testPagePath    = "testPath"
 
   private val testCleanupPagePath   = "testCleanupPagePath"
   private val testCleanupPageAnswer = "testCleanupPageAnswer"
@@ -35,8 +36,8 @@ class UserAnswersSpec extends SpecBase {
 
     override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
       value match {
-        case Some("1") => userAnswers.remove(TestCleanupPage)
-        case _         => super.cleanup(value, userAnswers)
+        case Some(_) => userAnswers.remove(TestCleanupPage)
+        case _       => super.cleanup(value, userAnswers)
       }
   }
 
@@ -47,13 +48,45 @@ class UserAnswersSpec extends SpecBase {
   "UserAnswers" - {
 
     "set" - {
-      "must run cleanup" in {
+      "must run cleanup when given a new answer" in {
 
         val userAnswers = emptyUserAnswers.setValue(TestCleanupPage, testCleanupPageAnswer)
         val result      = userAnswers.setValue(TestPage, testPageAnswer)
+
         val data =
           Json.obj(
             testPagePath -> testPageAnswer
+          )
+
+        result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
+      }
+
+      "must run cleanup when given a different answer" in {
+
+        val result = emptyUserAnswers
+          .setValue(TestPage, testPageAnswer)
+          .setValue(TestCleanupPage, testCleanupPageAnswer)
+          .setValue(TestPage, testPageAnswer2)
+
+        val data =
+          Json.obj(
+            testPagePath -> testPageAnswer2
+          )
+
+        result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
+      }
+
+      "must not run cleanup when given the same answer" in {
+
+        val result = emptyUserAnswers
+          .setValue(TestPage, testPageAnswer)
+          .setValue(TestCleanupPage, testCleanupPageAnswer)
+          .setValue(TestPage, testPageAnswer)
+
+        val data =
+          Json.obj(
+            testCleanupPagePath -> testCleanupPageAnswer,
+            testPagePath        -> testPageAnswer
           )
 
         result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)

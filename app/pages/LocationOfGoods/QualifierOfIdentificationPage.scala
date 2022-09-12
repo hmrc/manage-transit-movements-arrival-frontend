@@ -20,9 +20,11 @@ import controllers.locationOfGoods.routes
 import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.LocationOfGoodsSection
+import pages.sections.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object QualifierOfIdentificationPage extends QuestionPage[QualifierOfIdentification] {
 
@@ -32,4 +34,11 @@ case object QualifierOfIdentificationPage extends QuestionPage[QualifierOfIdenti
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.QualifierOfIdentificationController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[QualifierOfIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.isDefined) {
+      userAnswers.remove(QualifierOfIdentificationDetailsSection)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

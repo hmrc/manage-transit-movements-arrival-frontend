@@ -14,14 +14,10 @@
  * limitations under the License.
  *@
 
-@import views.utils.ViewUtils._
-
 @this(govukRadios: GovukRadios)
 
 @(
     field: Field,
-    legend: String,
-    caption: Option[String] = None,
     hint: Option[String] = None,
     radioItems: String => Seq[RadioItem],
     inline: Boolean = false
@@ -37,6 +33,4 @@
         },
         hint = hint.map(x => Hint(content = Text(x))),
         items = radioItems(field.id)
-    )
-    .withHeadingAndCaption(heading = legend, caption = caption)
-)
+    ))

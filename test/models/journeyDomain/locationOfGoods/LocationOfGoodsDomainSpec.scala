@@ -36,14 +36,14 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         value =>
           val userAnswers = emptyUserAnswers
             .setValue(TypeOfLocationPage, value)
-            .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.InternationalAddress)
+            .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
             .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
             LocationOfGoodsDomain(
               typeOfLocation = value,
-              qualifierOfIdentificationDetails = InternationalAddressDomain(
+              qualifierOfIdentificationDetails = AddressDomain(
                 InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
                 None
               )
@@ -65,7 +65,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(TypeOfLocationPage, typeOfLocation)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.InternationalAddress)
+          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
           .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
           .setValue(AddContactPersonPage, false)
 
