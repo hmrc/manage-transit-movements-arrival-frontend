@@ -62,3 +62,8 @@ GET        /:mrn/location-of-goods/unlocode                        controllers.l
 POST       /:mrn/location-of-goods/unlocode                        controllers.locationOfGoods.UnlocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 GET        /:mrn/location-of-goods/change-unlocode                 controllers.locationOfGoods.UnlocodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-unlocode                 controllers.locationOfGoods.UnlocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/locationOfGoods/addadditionalidentifier                        controllers.locationOfGoods.AddAdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/locationOfGoods/addadditionalidentifier                        controllers.locationOfGoods.AddAdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/locationOfGoods/change-addadditionalidentifier                 controllers.locationOfGoods.AddAdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/locationOfGoods/change-addadditionalidentifier                 controllers.locationOfGoods.AddAdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

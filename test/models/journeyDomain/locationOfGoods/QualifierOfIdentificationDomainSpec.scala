@@ -22,7 +22,7 @@ import models.{InternationalAddress, UkAddress}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.QualifierOfIdentification
 import models.reference.{Country, CountryCode, CustomsOffice}
-import pages.LocationOfGoods._
+import pages.locationOfGoods._
 import pages.QuestionPage
 
 class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
@@ -53,12 +53,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.EoriNumber)
         .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(AddContactPersonPage, false)
-        .setValue(AdditionalIdentifierPage, "additionalIdentifier")
+        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = EoriNumberDomain(
         "identificationNumber",
         None,
-        "additionalIdentifier"
+        None
       )
 
       val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
@@ -73,12 +73,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
         .setValue(AuthorisationNumberPage, "authorisationNumber")
         .setValue(AddContactPersonPage, false)
-        .setValue(AdditionalIdentifierPage, "additionalIdentifier")
+        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = AuthorisationNumberDomain(
         "authorisationNumber",
         None,
-        "additionalIdentifier"
+        None
       )
 
       val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
@@ -234,12 +234,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
-        .setValue(AdditionalIdentifierPage, "additionalIdentifier")
+        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = EoriNumberDomain(
         "identificationNumber",
-        Some(ContactPerson("contact name", "contact telephone")),
-        "additionalIdentifier"
+        None,
+        Some(ContactPerson("contact name", "contact telephone"))
       )
 
       val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
@@ -247,17 +247,36 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers without contact person" - {
+    "can be parsed from UserAnswers with additional identifier" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(AddContactPersonPage, false)
+        .setValue(AddAdditionalIdentifierPage, true)
         .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
       val expectedResult = EoriNumberDomain(
         "identificationNumber",
+        Some("additionalIdentifier"),
+        None
+      )
+
+      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
+
+      result.value mustBe expectedResult
+    }
+
+    "can be parsed from UserAnswers without contact person or additional identifier" - {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(IdentificationNumberPage, "identificationNumber")
+        .setValue(AddContactPersonPage, false)
+        .setValue(AddAdditionalIdentifierPage, false)
+
+      val expectedResult = EoriNumberDomain(
+        "identificationNumber",
         None,
-        "additionalIdentifier"
+        None
       )
 
       val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
@@ -267,7 +286,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(IdentificationNumberPage, AddContactPersonPage, AdditionalIdentifierPage)
+      val mandatoryPages: Seq[QuestionPage[_]] = Seq(IdentificationNumberPage, AddContactPersonPage, AddAdditionalIdentifierPage)
 
       "when a mandatory page is missing" in {
 
@@ -276,6 +295,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")
+          .setValue(AddAdditionalIdentifierPage, true)
           .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
         mandatoryPages.map {
@@ -300,12 +320,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
-        .setValue(AdditionalIdentifierPage, "additionalIdentifier")
+        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = AuthorisationNumberDomain(
         "authorisationNumber",
-        Some(ContactPerson("contact name", "contact telephone")),
-        "additionalIdentifier"
+        None,
+        Some(ContactPerson("contact name", "contact telephone"))
       )
 
       val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
@@ -313,17 +333,36 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers without contact person" in {
+    "can be parsed from UserAnswers with additional identifier" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(AuthorisationNumberPage, "authorisationNumber")
         .setValue(AddContactPersonPage, false)
+        .setValue(AddAdditionalIdentifierPage, true)
         .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
       val expectedResult = AuthorisationNumberDomain(
         "authorisationNumber",
+        Some("additionalIdentifier"),
+        None
+      )
+
+      val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
+
+      result.value mustBe expectedResult
+    }
+
+    "can be parsed from UserAnswers without contact person or additional identifier" in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationNumberPage, "authorisationNumber")
+        .setValue(AddContactPersonPage, false)
+        .setValue(AddAdditionalIdentifierPage, false)
+
+      val expectedResult = AuthorisationNumberDomain(
+        "authorisationNumber",
         None,
-        "additionalIdentifier"
+        None
       )
 
       val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
@@ -333,7 +372,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage, AdditionalIdentifierPage)
+      val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage, AddAdditionalIdentifierPage)
 
       "when a mandatory page is missing" in {
 
@@ -342,6 +381,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")
+          .setValue(AddAdditionalIdentifierPage, true)
           .setValue(AdditionalIdentifierPage, "additionalIdentifier")
 
         mandatoryPages.map {

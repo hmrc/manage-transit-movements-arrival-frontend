@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.LocationOfGoods
+package pages.locationOfGoods
 
-import controllers.locationOfGoods.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object AddContactPersonPage extends QuestionPage[Boolean] {
+class AddAdditionalIdentifierPageSpec extends PageBehaviours {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+  "AddAdditionalIdentifierPage" - {
 
-  override def toString: String = "addContactPerson"
+    beRetrievable[Boolean](AddAdditionalIdentifierPage)
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddContactPersonController.onPageLoad(userAnswers.mrn, mode))
+    beSettable[Boolean](AddAdditionalIdentifierPage)
+
+    beRemovable[Boolean](AddAdditionalIdentifierPage)
+  }
 }

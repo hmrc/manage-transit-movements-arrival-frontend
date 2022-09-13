@@ -18,7 +18,7 @@ package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.LocationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
+import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
 
 case class ContactPerson(name: String, phoneNumber: String)
 

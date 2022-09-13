@@ -16,7 +16,6 @@
 
 package pages.locationOfGoods
 
-import pages.LocationOfGoods.ContactPersonTelephonePage
 import pages.behaviours.PageBehaviours
 
 class ContactPersonTelephonePageSpec extends PageBehaviours {

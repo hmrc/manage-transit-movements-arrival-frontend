@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.LocationOfGoods
+package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
 import models.{Mode, UserAnswers}
@@ -23,12 +23,12 @@ import pages.sections.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object ContactPersonTelephonePage extends QuestionPage[String] {
+case object AdditionalIdentifierPage extends QuestionPage[String] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "contactPersonTelephone"
+  override def toString: String = "additionalIdentifier"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ContactPersonTelephoneController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.AdditionalIdentifierController.onPageLoad(userAnswers.mrn, mode))
 }

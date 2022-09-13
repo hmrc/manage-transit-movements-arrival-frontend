@@ -17,7 +17,6 @@
 package pages.locationOfGoods
 
 import models.reference.CustomsOffice
-import pages.LocationOfGoods.CustomsOfficePage
 import pages.behaviours.PageBehaviours
 
 class CustomsOfficePageSpec extends PageBehaviours {

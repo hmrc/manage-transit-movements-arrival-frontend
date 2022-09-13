@@ -22,7 +22,7 @@ import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
 import models.reference.CustomsOffice
 import models.{InternationalAddress, UkAddress}
-import pages.LocationOfGoods._
+import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
 
@@ -51,19 +51,20 @@ object AddressDomain {
     ).tupled.map((AddressDomain.apply _).tupled)
 }
 
-case class EoriNumberDomain(eoriNumber: String, contactPerson: Option[ContactPerson], additionalIdentifier: String) extends QualifierOfIdentificationDomain
+case class EoriNumberDomain(eoriNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPerson])
+    extends QualifierOfIdentificationDomain
 
 object EoriNumberDomain {
 
   implicit val userAnswersReader: UserAnswersReader[EoriNumberDomain] =
     (
       IdentificationNumberPage.reader,
-      AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson]),
-      AdditionalIdentifierPage.reader
+      AddAdditionalIdentifierPage.filterOptionalDependent(identity)(AdditionalIdentifierPage.reader),
+      AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson])
     ).tupled.map((EoriNumberDomain.apply _).tupled)
 }
 
-case class AuthorisationNumberDomain(authorisationNumber: String, contactPerson: Option[ContactPerson], additionalIdentifier: String)
+case class AuthorisationNumberDomain(authorisationNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPerson])
     extends QualifierOfIdentificationDomain
 
 object AuthorisationNumberDomain {
@@ -71,8 +72,8 @@ object AuthorisationNumberDomain {
   implicit val userAnswersReader: UserAnswersReader[AuthorisationNumberDomain] =
     (
       AuthorisationNumberPage.reader,
-      AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson]),
-      AdditionalIdentifierPage.reader
+      AddAdditionalIdentifierPage.filterOptionalDependent(identity)(AdditionalIdentifierPage.reader),
+      AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPerson])
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
 

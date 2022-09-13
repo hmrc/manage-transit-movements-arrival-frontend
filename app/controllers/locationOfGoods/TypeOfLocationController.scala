@@ -23,7 +23,7 @@ import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import pages.LocationOfGoods.TypeOfLocationPage
+import pages.locationOfGoods.TypeOfLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

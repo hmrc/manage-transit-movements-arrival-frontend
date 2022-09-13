@@ -16,16 +16,19 @@
 
 package pages.locationOfGoods
 
-import pages.behaviours.PageBehaviours
+import controllers.locationOfGoods.routes
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.QualifierOfIdentificationDetailsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddContactPersonPageSpec extends PageBehaviours {
+case object UnlocodePage extends QuestionPage[String] {
 
-  "AddcontactpersonPage" - {
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-    beRetrievable[Boolean](AddContactPersonPage)
+  override def toString: String = "unlocode"
 
-    beSettable[Boolean](AddContactPersonPage)
-
-    beRemovable[Boolean](AddContactPersonPage)
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.UnlocodeController.onPageLoad(userAnswers.mrn, mode))
 }

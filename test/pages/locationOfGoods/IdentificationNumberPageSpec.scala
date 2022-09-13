@@ -16,7 +16,6 @@
 
 package pages.locationOfGoods
 
-import pages.LocationOfGoods.IdentificationNumberPage
 import pages.behaviours.PageBehaviours
 
 class IdentificationNumberPageSpec extends PageBehaviours {

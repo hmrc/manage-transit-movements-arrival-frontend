@@ -19,7 +19,6 @@ package pages.locationOfGoods
 import models.UserAnswers
 import models.locationOfGoods.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary
-import pages.LocationOfGoods.QualifierOfIdentificationPage
 import pages.QuestionPage
 import pages.behaviours.PageBehaviours
 import pages.sections.QualifierOfIdentificationDetailsSection

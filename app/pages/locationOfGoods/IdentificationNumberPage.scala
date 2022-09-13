@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package pages.LocationOfGoods
+package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CustomsOfficePage extends QuestionPage[CustomsOffice] {
+case object IdentificationNumberPage extends QuestionPage[String] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "customsOffice"
+  override def toString: String = "identificationNumber"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CustomsOfficeController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.IdentificationNumberController.onPageLoad(userAnswers.mrn, mode))
 }

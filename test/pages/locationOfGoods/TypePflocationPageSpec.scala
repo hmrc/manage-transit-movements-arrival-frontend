@@ -17,7 +17,6 @@
 package pages.locationOfGoods
 
 import models.locationOfGoods.TypeOfLocation
-import pages.LocationOfGoods.TypeOfLocationPage
 import pages.behaviours.PageBehaviours
 
 class TypeOfLocationPageSpec extends PageBehaviours {

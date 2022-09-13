@@ -23,7 +23,7 @@ import models.{NormalMode, UkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.LocationOfGoods.AddressPage
+import pages.locationOfGoods.AddressPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AddressView

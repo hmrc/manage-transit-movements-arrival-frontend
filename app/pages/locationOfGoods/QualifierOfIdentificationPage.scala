@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-package pages.LocationOfGoods
+package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
+import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
+import pages.sections.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AuthorisationNumberPage extends QuestionPage[String] {
+import scala.util.Try
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+case object QualifierOfIdentificationPage extends QuestionPage[QualifierOfIdentification] {
 
-  override def toString: String = "authorisationNumber"
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
+
+  override def toString: String = "qualifierOfIdentification"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AuthorisationNumberController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.QualifierOfIdentificationController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[QualifierOfIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.isDefined) {
+      userAnswers.remove(QualifierOfIdentificationDetailsSection)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

@@ -22,7 +22,7 @@ import generators.Generators
 import models.{CustomsOfficeList, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.CustomsOfficePage
+import pages.locationOfGoods.CustomsOfficePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

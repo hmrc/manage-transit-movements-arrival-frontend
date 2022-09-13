@@ -23,7 +23,7 @@ import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
 import models.reference.{Country, CountryCode}
 import org.scalacheck.Gen
-import pages.LocationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 import pages.QuestionPage
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
