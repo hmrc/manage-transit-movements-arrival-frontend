@@ -20,7 +20,9 @@ import a11ySpecBase.A11ySpecBase
 import forms.YesNoFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import viewModels.components.InputRadioViewModel._
 import views.html.components.InputRadio
 import views.html.templates.MainTemplate
 
@@ -30,21 +32,38 @@ class InputRadioSpec extends A11ySpecBase {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[InputRadio]
 
-    val prefix     = Gen.alphaNumStr.sample.value
-    val title      = nonEmptyString.sample.value
-    val legend     = nonEmptyString.sample.value
-    val caption    = Gen.option(nonEmptyString).sample.value
-    val hint       = Gen.option(nonEmptyString).sample.value
-    val radioItems = (_: String) => listWithMaxLength[RadioItem]().sample.value
-    val inline     = arbitrary[Boolean].sample.value
-    val form       = new YesNoFormProvider()(prefix)
+    val prefix         = Gen.alphaNumStr.sample.value
+    val title          = nonEmptyString.sample.value
+    val legend         = nonEmptyString.sample.value
+    val caption        = Gen.option(nonEmptyString).sample.value
+    val hint           = Gen.option(nonEmptyString).sample.value
+    val radioItems     = (_: String) => listWithMaxLength[RadioItem]().sample.value
+    val inline         = arbitrary[Boolean].sample.value
+    val additionalHtml = arbitrary[Html].sample.value
+    val form           = new YesNoFormProvider()(prefix)
 
-    val content = template.apply(title) {
-      component.apply(form("value"), legend, caption, hint, radioItems, inline)
-    }
+    "pass accessibility checks" when {
 
-    "pass accessibility checks" in {
-      content.toString() must passAccessibilityChecks
+      "ordinary yes/no" in {
+        val content = template.apply(title) {
+          component.apply(form("value"), Radio(title, caption), hint, radioItems, inline)
+        }
+        content.toString() must passAccessibilityChecks
+      }
+
+      "yes/no with additional html" in {
+        val content = template.apply(title) {
+          component.apply(form("value"), RadioWithAdditionalHtml(title, caption, additionalHtml), hint, radioItems, inline)
+        }
+        content.toString() must passAccessibilityChecks
+      }
+
+      "yes/no with legend" in {
+        val content = template.apply(title) {
+          component.apply(form("value"), RadioWithLegend(legend), hint, radioItems, inline).withHeading(title)
+        }
+        content.toString() must passAccessibilityChecks
+      }
     }
   }
 }
