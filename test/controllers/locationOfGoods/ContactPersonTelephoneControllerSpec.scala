@@ -21,7 +21,7 @@ import forms.NameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.ContactPersonTelephonePage
+import pages.locationOfGoods.ContactPersonTelephonePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.ContactPersonTelephoneView

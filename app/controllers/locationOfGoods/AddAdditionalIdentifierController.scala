@@ -18,40 +18,41 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.NameFormProvider
+import forms.YesNoFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import pages.locationOfGoods.AdditionalIdentifierPage
+import pages.locationOfGoods.AddAdditionalIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.AdditionalIdentifierView
+import views.html.locationOfGoods.AddAdditionalIdentifierView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalIdentifierController @Inject() (
+class AddAdditionalIdentifierController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   @LocationOfGoods implicit val navigator: Navigator,
-  formProvider: NameFormProvider,
   actions: Actions,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AdditionalIdentifierView
+  view: AddAdditionalIdentifierView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("locationOfGoods.additionalIdentifier")
+  private val form = formProvider("locationOfGoods.addAdditionalIdentifier")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdditionalIdentifierPage) match {
+      val preparedForm = request.userAnswers.get(AddAdditionalIdentifierPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
+
       Ok(view(preparedForm, mrn, mode))
   }
 
@@ -61,7 +62,7 @@ class AdditionalIdentifierController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => AdditionalIdentifierPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => AddAdditionalIdentifierPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }
 }

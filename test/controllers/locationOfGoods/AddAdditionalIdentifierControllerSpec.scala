@@ -22,30 +22,30 @@ import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.locationOfGoods.AddContactPersonPage
+import pages.locationOfGoods.AddAdditionalIdentifierPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AddContactPersonView
+import views.html.locationOfGoods.AddAdditionalIdentifierView
 
 import scala.concurrent.Future
 
-class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddAdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider               = new YesNoFormProvider()
-  private val form                       = formProvider("locationOfGoods.addContactPerson")
-  private val mode                       = NormalMode
-  private lazy val addcontactpersonRoute = routes.AddContactPersonController.onPageLoad(mrn, mode).url
+  private val formProvider                      = new YesNoFormProvider()
+  private val form                              = formProvider("locationOfGoods.addAdditionalIdentifier")
+  private val mode                              = NormalMode
+  private lazy val addAdditionalIdentifierRoute = routes.AddAdditionalIdentifierController.onPageLoad(mrn, mode).url
 
-  "Addcontactperson Controller" - {
+  "AddAdditionalIdentifier Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addcontactpersonRoute)
+      val request = FakeRequest(GET, addAdditionalIdentifierRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddContactPersonView]
+      val view = injector.instanceOf[AddAdditionalIdentifierView]
 
       status(result) mustEqual OK
 
@@ -55,16 +55,16 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddContactPersonPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddAdditionalIdentifierPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addcontactpersonRoute)
+      val request = FakeRequest(GET, addAdditionalIdentifierRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddContactPersonView]
+      val view = injector.instanceOf[AddAdditionalIdentifierView]
 
       status(result) mustEqual OK
 
@@ -79,7 +79,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addcontactpersonRoute)
+        FakeRequest(POST, addAdditionalIdentifierRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -93,14 +93,14 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addcontactpersonRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addAdditionalIdentifierRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddContactPersonView]
+      val view = injector.instanceOf[AddAdditionalIdentifierView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode)(request, messages).toString
@@ -110,7 +110,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addcontactpersonRoute)
+      val request = FakeRequest(GET, addAdditionalIdentifierRoute)
 
       val result = route(app, request).value
 
@@ -123,7 +123,7 @@ class AddContactPersonControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addcontactpersonRoute)
+      val request = FakeRequest(POST, addAdditionalIdentifierRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

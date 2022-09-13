@@ -21,7 +21,7 @@ import forms.NameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.IdentificationNumberPage
+import pages.locationOfGoods.IdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.IdentificationNumberView

@@ -16,7 +16,6 @@
 
 package pages.locationOfGoods
 
-import pages.LocationOfGoods.CoordinatesPage
 import pages.behaviours.PageBehaviours
 
 class CoordinatesPageSpec extends PageBehaviours {

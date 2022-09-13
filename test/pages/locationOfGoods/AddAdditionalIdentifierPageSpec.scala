@@ -18,14 +18,14 @@ package pages.locationOfGoods
 
 import pages.behaviours.PageBehaviours
 
-class AddContactPersonPageSpec extends PageBehaviours {
+class AddAdditionalIdentifierPageSpec extends PageBehaviours {
 
-  "AddcontactpersonPage" - {
+  "AddAdditionalIdentifierPage" - {
 
-    beRetrievable[Boolean](AddContactPersonPage)
+    beRetrievable[Boolean](AddAdditionalIdentifierPage)
 
-    beSettable[Boolean](AddContactPersonPage)
+    beSettable[Boolean](AddAdditionalIdentifierPage)
 
-    beRemovable[Boolean](AddContactPersonPage)
+    beRemovable[Boolean](AddAdditionalIdentifierPage)
   }
 }

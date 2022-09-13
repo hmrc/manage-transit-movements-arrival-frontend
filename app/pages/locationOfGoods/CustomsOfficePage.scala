@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.LocationOfGoods
+package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
 import models.reference.CustomsOffice

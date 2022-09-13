@@ -20,7 +20,7 @@ import cats.implicits._
 import models.UserAnswers
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
-import pages.LocationOfGoods.TypeOfLocationPage
+import pages.locationOfGoods.TypeOfLocationPage
 import play.api.mvc.Call
 
 case class LocationOfGoodsDomain(

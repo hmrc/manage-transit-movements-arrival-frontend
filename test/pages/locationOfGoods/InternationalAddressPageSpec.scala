@@ -17,7 +17,6 @@
 package pages.locationOfGoods
 
 import models.InternationalAddress
-import pages.LocationOfGoods.InternationalAddressPage
 import pages.behaviours.PageBehaviours
 
 class InternationalAddressPageSpec extends PageBehaviours {

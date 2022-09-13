@@ -22,7 +22,7 @@ import models.NormalMode
 import models.locationOfGoods.TypeOfLocation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.TypeOfLocationPage
+import pages.locationOfGoods.TypeOfLocationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.TypeOfLocationView

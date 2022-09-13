@@ -22,7 +22,7 @@ import models.NormalMode
 import models.locationOfGoods.QualifierOfIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.LocationOfGoods.QualifierOfIdentificationPage
+import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.QualifierOfIdentificationView

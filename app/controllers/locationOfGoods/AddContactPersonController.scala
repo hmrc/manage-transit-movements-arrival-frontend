@@ -22,7 +22,7 @@ import forms.YesNoFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import pages.LocationOfGoods.AddContactPersonPage
+import pages.locationOfGoods.AddContactPersonPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
