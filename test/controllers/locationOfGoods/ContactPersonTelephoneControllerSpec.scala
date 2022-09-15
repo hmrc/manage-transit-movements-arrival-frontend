@@ -17,11 +17,11 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.NameFormProvider
+import forms.TelephoneNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.locationOfGoods.ContactPersonTelephonePage
+import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.ContactPersonTelephoneView
@@ -30,56 +30,61 @@ import scala.concurrent.Future
 
 class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                     = new NameFormProvider()
-  private val form                             = formProvider("locationOfGoods.contactPersonTelephone")
+  private val formProvider                     = new TelephoneNumberFormProvider()
+  private val contactName                      = "contact name"
+  private val form                             = formProvider("locationOfGoods.contactPersonTelephone", contactName)
   private val mode                             = NormalMode
   private lazy val contactPersonTelephoneRoute = routes.ContactPersonTelephoneController.onPageLoad(mrn, mode).url
+  private val validAnswer: String              = "+123123"
+
+  private val userAnswers = emptyUserAnswers.setValue(ContactPersonNamePage, contactName)
 
   "ContactPersonTelephone Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, contactPersonTelephoneRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[ContactPersonTelephoneView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(ContactPersonTelephonePage, "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, contactPersonTelephoneRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val view = injector.instanceOf[ContactPersonTelephoneView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, mrn, contactName, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val updatedUserAnswers = userAnswers.setValue(ContactPersonTelephonePage, validAnswer)
+
+      setExistingUserAnswers(updatedUserAnswers)
+
+      val request = FakeRequest(GET, contactPersonTelephoneRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[ContactPersonTelephoneView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, contactName, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, contactPersonTelephoneRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -90,7 +95,9 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(ContactPersonNamePage, contactName)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
@@ -104,7 +111,7 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
       val view = injector.instanceOf[ContactPersonTelephoneView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, contactName, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -125,7 +132,7 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, contactPersonTelephoneRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
