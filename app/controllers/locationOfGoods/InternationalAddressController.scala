@@ -55,7 +55,7 @@ class InternationalAddressController @Inject() (
     .requireData(mrn)
     .async {
       implicit request: DataRequest[AnyContent] =>
-        countriesService.getCountries().map {
+        countriesService.getTransitCountries().map {
           countryList =>
             val preparedForm = request.userAnswers.get(InternationalAddressPage) match {
               case None        => form(countryList)
@@ -70,7 +70,7 @@ class InternationalAddressController @Inject() (
     .requireData(mrn)
     .async {
       implicit request =>
-        countriesService.getCountries().flatMap {
+        countriesService.getTransitCountries().flatMap {
           countryList =>
             form(countryList)
               .bindFromRequest()

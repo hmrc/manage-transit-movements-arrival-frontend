@@ -60,7 +60,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -77,7 +77,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers = UserAnswers(mrn, eoriNumber)
         .setValue(InternationalAddressPage, testAddress)
@@ -107,7 +107,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 

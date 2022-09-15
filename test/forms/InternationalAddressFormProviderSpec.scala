@@ -31,9 +31,17 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
   private val country   = Country(CountryCode("GB"), "United Kingdom")
   private val countries = CountryList(Seq(country))
 
-  private val requiredKey = s"$prefix.error.required"
-  private val lengthKey   = s"$prefix.error.length"
-  private val invalidKey  = s"$prefix.error.invalid"
+  private val lengthAddressLine1Key   = s"$prefix.error.addressLine1.length"
+  private val requiredAddressLine1Key = s"$prefix.error.addressLine1.required"
+  private val invalidAddressLine1Key  = s"$prefix.error.addressLine1.invalidCharacters"
+
+  private val lengthAddressLine2Key   = s"$prefix.error.addressLine2.length"
+  private val requiredAddressLine2Key = s"$prefix.error.addressLine2.required"
+  private val invalidAddressLine2Key  = s"$prefix.error.addressLine2.invalidCharacters"
+
+  private val lengthPostalCodeKey   = s"$prefix.error.postcode.length"
+  private val requiredPostalCodeKey = s"$prefix.error.postcode.required"
+  private val invalidPostalCodeKey  = s"$prefix.error.postcode.invalidCharacters"
 
   private val form = new InternationalAddressFormProvider()(prefix, countries)
 
@@ -51,19 +59,19 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = AddressLine1.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine1.arg.capitalize, AddressLine1.length))
+      lengthError = FormError(fieldName, lengthAddressLine1Key, Seq(AddressLine1.arg.capitalize, AddressLine1.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine1.arg))
+      requiredError = FormError(fieldName, requiredAddressLine1Key, Seq(AddressLine1.arg))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(AddressLine1.arg.capitalize)),
+      error = FormError(fieldName, invalidAddressLine1Key, Seq(AddressLine1.arg.capitalize)),
       length = AddressLine1.length
     )
   }
@@ -82,35 +90,28 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = AddressLine2.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(AddressLine2.arg.capitalize, AddressLine2.length))
+      lengthError = FormError(fieldName, lengthAddressLine2Key, Seq(AddressLine2.arg.capitalize, AddressLine2.length))
     )
 
     behave like mandatoryTrimmedField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(AddressLine2.arg))
+      requiredError = FormError(fieldName, requiredAddressLine2Key, Seq(AddressLine2.arg))
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidKey, Seq(AddressLine2.arg.capitalize)),
+      error = FormError(fieldName, invalidAddressLine2Key, Seq(AddressLine2.arg.capitalize)),
       length = AddressLine2.length
     )
   }
 
   ".postalCode" - {
 
-    val postcodeInvalidKey    = s"$prefix.error.postalCode.invalid"
-    val postalCodeRequiredKey = s"$prefix.error.postalCode.required"
-    val lengthKey             = s"$prefix.error.postalCode.length"
-
     val fieldName = PostalCode.field
 
-    val validPostalOverLength: Gen[String] = for {
-      num  <- Gen.chooseNum[Int](PostalCode.length + 1, PostalCode.length + 5)
-      list <- Gen.listOfN(num, Gen.alphaNumChar)
-    } yield list.mkString("")
+    val invalidPostalOverLength = stringsLongerThan(PostalCode.length + 1)
 
     behave like fieldThatBindsValidData(
       form = form,
@@ -122,27 +123,29 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form = form,
       fieldName = fieldName,
       maxLength = PostalCode.length,
-      lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.length)),
-      gen = validPostalOverLength
+      lengthError = FormError(fieldName, lengthPostalCodeKey, Seq(PostalCode.length)),
+      gen = invalidPostalOverLength
     )
 
     behave like mandatoryField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, postalCodeRequiredKey)
+      requiredError = FormError(fieldName, requiredPostalCodeKey, Seq())
     )
 
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, postcodeInvalidKey, Seq(PostalCode.regex.regex)),
+      error = FormError(fieldName, invalidPostalCodeKey, Seq()),
       length = PostalCode.length
     )
   }
 
   ".country" - {
 
-    val fieldName = AddressLine.Country.field
+    import AddressLine.Country
+
+    val fieldName = Country.field
 
     val countryRequiredKey = s"$prefix.error.country.required"
 
@@ -155,12 +158,12 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like mandatoryField(
       form = form,
       fieldName = fieldName,
-      requiredError = FormError(fieldName, countryRequiredKey)
+      requiredError = FormError(fieldName, countryRequiredKey, Seq())
     )
 
     "not bind if country code does not exist in the country list" in {
       val result        = form.bind(Map(fieldName -> "foobar")).apply(fieldName)
-      val expectedError = FormError(fieldName, countryRequiredKey)
+      val expectedError = FormError(fieldName, countryRequiredKey, Seq())
       result.errors must contain(expectedError)
     }
 
