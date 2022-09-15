@@ -19,6 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.{routes => identificationRoutes}
 import generators.Generators
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -76,7 +77,7 @@ class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefa
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to MRN Page" in {
+    "must redirect to Location of goods section Page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -86,7 +87,7 @@ class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.identification.routes.MovementReferenceNumberController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(mrn, NormalMode).url
     }
   }
 }
