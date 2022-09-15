@@ -35,6 +35,16 @@ object UkAddress {
   implicit val format: OFormat[UkAddress] = Json.format[UkAddress]
 }
 
+case class PostalCodeAddress(
+  streetNumber: String,
+  postalCode: String,
+  country: Country
+)
+
+object PostalCodeAddress {
+  implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
+}
+
 case class InternationalAddress(
   line1: String,
   line2: String,

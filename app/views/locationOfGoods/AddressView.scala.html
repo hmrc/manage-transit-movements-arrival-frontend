@@ -17,19 +17,22 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputUkAddress}
+@import views.html.components.InputPostalCodeAddress
+@import models.reference.Country
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputAddress: InputUkAddress,
+    inputPostalCodeAddress: InputPostalCodeAddress,
     errorSummary: ErrorSummary,
     button: Button
 )
 
 @(
-    form: Form[UkAddress],
+    form: Form[PostalCodeAddress],
     mrn: MovementReferenceNumber,
-    mode: Mode
+    mode: Mode,
+    countries: Seq[Country]
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
@@ -42,10 +45,11 @@
 
         @errorSummary(form.errors)
 
-        @inputAddress(
+        @inputPostalCodeAddress(
             form = form,
             messageKeyPrefix = "locationOfGoods.address",
-            caption = None
+            caption = None,
+            countries = countries
         )
 
         @button(attributes = Map("id" -> "submit"))

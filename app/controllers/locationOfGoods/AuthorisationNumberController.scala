@@ -18,7 +18,6 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.NameFormProvider
 import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator

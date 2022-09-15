@@ -16,17 +16,17 @@
 
 package pages.locationOfGoods
 
-import models.UkAddress
+import models.PostalCodeAddress
 import pages.behaviours.PageBehaviours
 
 class AddressPageSpec extends PageBehaviours {
 
   "AddressPage" - {
 
-    beRetrievable[UkAddress](AddressPage)
+    beRetrievable[PostalCodeAddress](AddressPage)
 
-    beSettable[UkAddress](AddressPage)
+    beSettable[PostalCodeAddress](AddressPage)
 
-    beRemovable[UkAddress](AddressPage)
+    beRemovable[PostalCodeAddress](AddressPage)
   }
 }

@@ -21,7 +21,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, UkAddress}
+import models.{Coordinates, InternationalAddress, PostalCodeAddress}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -107,7 +107,7 @@ object UnlocodeDomain {
     ).tupled.map((UnlocodeDomain.apply _).tupled)
 }
 
-case class PostalCodeDomain(address: UkAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object PostalCodeDomain {
 

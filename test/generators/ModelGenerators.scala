@@ -16,6 +16,7 @@
 
 package generators
 
+import models.AddressLine.{PostalCode, StreetNumber}
 import models._
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.reference._
@@ -25,6 +26,15 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
+    Arbitrary {
+      for {
+        streetNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
+        postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
+        country      <- arbitrary[Country]
+      } yield PostalCodeAddress(streetNumber, postalCode, country)
+    }
 
   implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
     Arbitrary {

@@ -17,13 +17,13 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.{Mode, UkAddress, UserAnswers}
+import models.{Mode, PostalCodeAddress, UserAnswers}
 import pages.QuestionPage
 import pages.sections.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddressPage extends QuestionPage[UkAddress] {
+case object AddressPage extends QuestionPage[PostalCodeAddress] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
