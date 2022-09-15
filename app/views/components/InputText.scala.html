@@ -72,4 +72,7 @@
     case AddressTextInput(label) => {
         @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(label))))
     }
+    case MultiTextInput(label) => {
+        @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(label))))
+    }
 }

@@ -45,4 +45,9 @@ object InputTextViewModel {
   case class AddressTextInput(
     label: String
   ) extends InputTextViewModel
+
+  case class MultiTextInput(
+    label: String
+  ) extends InputTextViewModel
+
 }

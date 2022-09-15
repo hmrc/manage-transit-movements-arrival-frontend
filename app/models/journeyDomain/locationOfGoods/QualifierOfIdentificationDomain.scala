@@ -21,7 +21,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
 import models.reference.CustomsOffice
-import models.{EoriNumber, InternationalAddress, UkAddress}
+import models.{Coordinates, EoriNumber, InternationalAddress, UkAddress}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -77,7 +77,7 @@ object AuthorisationNumberDomain {
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
 
-case class CoordinatesDomain(coordinates: String, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object CoordinatesDomain {
 

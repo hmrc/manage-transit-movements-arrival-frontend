@@ -17,12 +17,22 @@
 package generators
 
 import models._
+import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryCoordinates: Arbitrary[Coordinates] =
+    Arbitrary {
+      for {
+        latitude  <- RegexpGen.from(coordinatesLatitudeMaxRegex)
+        longitude <- RegexpGen.from(coordinatesLongitudeMaxRegex)
+      } yield models.Coordinates(latitude, longitude)
+    }
 
   implicit lazy val arbitraryTypeoflocation: Arbitrary[models.locationOfGoods.TypeOfLocation] =
     Arbitrary {

@@ -18,7 +18,7 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
-import models.{InternationalAddress, UkAddress}
+import models.{Coordinates, InternationalAddress, UkAddress}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.QualifierOfIdentification
 import models.reference.{Country, CountryCode, CustomsOffice}
@@ -91,13 +91,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Coordinates)
-        .setValue(CoordinatesPage, "coordinates")
+        .setValue(CoordinatesPage, Coordinates("latitude", "longitudes"))
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
       val expectedResult = CoordinatesDomain(
-        "coordinates",
+        Coordinates("latitude", "longitudes"),
         Some(ContactPerson("contact name", "contact telephone"))
       )
 
@@ -402,13 +402,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(CoordinatesPage, "coordinates")
+        .setValue(CoordinatesPage, Coordinates("latitude", "longitudes"))
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
       val expectedResult = CoordinatesDomain(
-        "coordinates",
+        Coordinates("latitude", "longitudes"),
         Some(ContactPerson("contact name", "contact telephone"))
       )
 
@@ -420,11 +420,11 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(CoordinatesPage, "coordinates")
+        .setValue(CoordinatesPage, Coordinates("latitude", "longitudes"))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = CoordinatesDomain(
-        "coordinates",
+        Coordinates("latitude", "longitudes"),
         None
       )
 
@@ -440,7 +440,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(CoordinatesPage, "coordinates")
+          .setValue(CoordinatesPage, Coordinates("latitude", "longitudes"))
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")

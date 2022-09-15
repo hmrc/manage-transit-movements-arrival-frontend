@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import models.Coordinates
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class CoordinatesPageSpec extends PageBehaviours {
+case class Coordinates(
+  latitude: String,
+  longitude: String
+) {
+  override def toString: String = s"($latitude, $longitude)"
+}
 
-  "CoordinatesPage" - {
-
-    beRetrievable[Coordinates](CoordinatesPage)
-
-    beSettable[Coordinates](CoordinatesPage)
-
-    beRemovable[Coordinates](CoordinatesPage)
-  }
+object Coordinates {
+  implicit val format: OFormat[Coordinates] = Json.format[Coordinates]
 }
