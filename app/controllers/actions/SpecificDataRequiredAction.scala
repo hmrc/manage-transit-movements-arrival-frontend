@@ -18,9 +18,10 @@ package controllers.actions
 
 import models.UserAnswers
 import models.requests._
+import play.api.Logging
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Call, Result}
+import play.api.mvc.{ActionRefiner, Result}
 import queries.Gettable
 import shapeless.syntax.std.tuple._
 
@@ -31,63 +32,58 @@ import scala.concurrent.{ExecutionContext, Future}
 class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext) extends SpecificDataRequiredActionProvider {
 
   override def getFirst[T1](
-    page: Gettable[T1]
-  )(route: Call)(implicit rds: Reads[T1]): ActionRefiner[
+    pages: Gettable[T1]*
+  )(implicit rds: Reads[T1]): ActionRefiner[
     DataRequest,
     SpecificDataRequestProvider1[T1]#SpecificDataRequest
-  ] = new SpecificDataRequiredAction1(page)(route)
+  ] = new SpecificDataRequiredAction1(pages: _*)
 
   override def getSecond[T1, T2](
     page: Gettable[T2]
-  )(route: Call)(implicit rds: Reads[T2]): ActionRefiner[
+  )(implicit rds: Reads[T2]): ActionRefiner[
     SpecificDataRequestProvider1[T1]#SpecificDataRequest,
     SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
-  ] = new SpecificDataRequiredAction2(page)(route)
+  ] = new SpecificDataRequiredAction2(page)
 
   override def getThird[T1, T2, T3](
     page: Gettable[T3]
-  )(route: Call)(implicit rds: Reads[T3]): ActionRefiner[
+  )(implicit rds: Reads[T3]): ActionRefiner[
     SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
     SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest
-  ] = new SpecificDataRequiredAction3(page)(route)
+  ] = new SpecificDataRequiredAction3(page)
 }
 
 trait SpecificDataRequiredActionProvider {
 
-  private val defaultErrorRoute: Call = controllers.routes.SessionExpiredController.onPageLoad()
-
   def apply[T1](
-    page: Gettable[T1]
-  )(route: Call = defaultErrorRoute)(implicit rds: Reads[T1]): ActionRefiner[
-    DataRequest,
-    SpecificDataRequestProvider1[T1]#SpecificDataRequest
-  ] = getFirst(page)(route)
+    pages: Gettable[T1]*
+  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(pages: _*)
 
   def getFirst[T1](
-    page: Gettable[T1]
-  )(route: Call = defaultErrorRoute)(implicit rds: Reads[T1]): ActionRefiner[
+    pages: Gettable[T1]*
+  )(implicit rds: Reads[T1]): ActionRefiner[
     DataRequest,
     SpecificDataRequestProvider1[T1]#SpecificDataRequest
   ]
 
   def getSecond[T1, T2](
     page: Gettable[T2]
-  )(route: Call = defaultErrorRoute)(implicit rds: Reads[T2]): ActionRefiner[
+  )(implicit rds: Reads[T2]): ActionRefiner[
     SpecificDataRequestProvider1[T1]#SpecificDataRequest,
     SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
   ]
 
   def getThird[T1, T2, T3](
     page: Gettable[T3]
-  )(route: Call = defaultErrorRoute)(implicit rds: Reads[T3]): ActionRefiner[
+  )(implicit rds: Reads[T3]): ActionRefiner[
     SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
     SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest
   ]
 }
 
-trait SpecificDataRequiredAction {
+trait SpecificDataRequiredAction extends Logging {
 
-  val errorRoute: Call
+  lazy val defaultRedirect: Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
 
   def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
     Future.successful {
@@ -95,14 +91,15 @@ trait SpecificDataRequiredAction {
         case Some(value) =>
           Right(block(value))
         case None =>
-          Left(Redirect(errorRoute))
+          logger.warn(s"${page.path} is missing from user answers. Redirecting to session expired.")
+          Left(defaultRedirect)
       }
     }
 }
 
 class SpecificDataRequiredAction1[T1](
-  page: Gettable[T1]
-)(override val errorRoute: Call)(implicit val executionContext: ExecutionContext, rds: Reads[T1])
+  pages: Gettable[T1]*
+)(implicit val executionContext: ExecutionContext, rds: Reads[T1])
     extends ActionRefiner[
       DataRequest,
       SpecificDataRequestProvider1[T1]#SpecificDataRequest
@@ -111,21 +108,33 @@ class SpecificDataRequiredAction1[T1](
 
   override protected def refine[A](
     request: DataRequest[A]
-  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-    getPage(request.userAnswers, page) {
-      value =>
-        new SpecificDataRequestProvider1[T1].SpecificDataRequest(
-          request = request,
-          eoriNumber = request.eoriNumber,
-          userAnswers = request.userAnswers,
-          arg = value
-        )
-    }
+  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] = {
+    def rec(pages: Seq[Gettable[T1]]): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+      pages match {
+        case Nil =>
+          Future.successful(Left(defaultRedirect))
+        case _ =>
+          getPage(request.userAnswers, pages.head) {
+            value =>
+              new SpecificDataRequestProvider1[T1].SpecificDataRequest(
+                request = request,
+                eoriNumber = request.eoriNumber,
+                userAnswers = request.userAnswers,
+                arg = value
+              )
+          }.flatMap {
+            case Left(_) => rec(pages.tail)
+            case x       => Future.successful(x)
+          }
+      }
+
+    rec(pages)
+  }
 }
 
 class SpecificDataRequiredAction2[T1, T2](
   page: Gettable[T2]
-)(override val errorRoute: Call)(implicit val executionContext: ExecutionContext, rds: Reads[T2])
+)(implicit val executionContext: ExecutionContext, rds: Reads[T2])
     extends ActionRefiner[
       SpecificDataRequestProvider1[T1]#SpecificDataRequest,
       SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
@@ -148,7 +157,7 @@ class SpecificDataRequiredAction2[T1, T2](
 
 class SpecificDataRequiredAction3[T1, T2, T3](
   page: Gettable[T3]
-)(override val errorRoute: Call)(implicit val executionContext: ExecutionContext, rds: Reads[T3])
+)(implicit val executionContext: ExecutionContext, rds: Reads[T3])
     extends ActionRefiner[
       SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
       SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest

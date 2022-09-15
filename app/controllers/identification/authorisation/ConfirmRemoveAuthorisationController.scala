@@ -52,14 +52,14 @@ class ConfirmRemoveAuthorisationController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index))(controllers.routes.ErrorController.notFound())) {
+    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index))) {
       implicit request =>
         Ok(view(form, mrn, index, request.arg))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index))(controllers.routes.ErrorController.notFound()))
+    .andThen(getMandatoryPage(AuthorisationReferenceNumberPage(index)))
     .async {
       implicit request =>
         form

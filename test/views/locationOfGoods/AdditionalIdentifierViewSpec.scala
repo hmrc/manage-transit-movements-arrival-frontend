@@ -42,9 +42,9 @@ class AdditionalIdentifierViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithHint("This can be up to 4 characters long, for example 0000 or X9X9.")
 
-  behave like pageWithInputText(Some(InputSize.Width20))
+  behave like pageWithInputText(Some(InputSize.Width10))
 
   behave like pageWithSubmitButton("Continue")
 }

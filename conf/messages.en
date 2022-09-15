@@ -131,17 +131,18 @@ identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
 
+locationOfGoods.addContactPerson.title = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.
 
-locationOfGoods.addContactPerson.title = AddContactPerson
-locationOfGoods.addContactPerson.heading = AddContactPerson
-locationOfGoods.addContactPerson.checkYourAnswersLabel = AddContactPerson
-locationOfGoods.addContactPerson.error.required = Select yes if AddContactPerson
-
-locationOfGoods.additionalIdentifier.title = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.heading = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.checkYourAnswersLabel = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.error.required = Enter AdditionalIdentifier
-locationOfGoods.additionalIdentifier.error.length = AdditionalIdentifier must be 100 characters or less
+locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.hint = This can be up to 4 characters long, for example 0000 or X9X9.
+locationOfGoods.additionalIdentifier.checkYourAnswersLabel = Additional identifier
+locationOfGoods.additionalIdentifier.error.required = Enter the additional identifier for the location of goods
+locationOfGoods.additionalIdentifier.error.length = The additional identifier must be no more than 4 characters long
+locationOfGoods.additionalIdentifier.error.invalid = The additional identifier must only include the letters a to z and numbers 0 to 9
 
 locationOfGoods.address.title = Address
 locationOfGoods.address.heading = Address
@@ -161,17 +162,23 @@ locationOfGoods.authorisationNumber.checkYourAnswersLabel = AuthorisationNumber
 locationOfGoods.authorisationNumber.error.required = Enter AuthorisationNumber
 locationOfGoods.authorisationNumber.error.length = AuthorisationNumber must be 100 characters or less
 
-locationOfGoods.contactPersonName.title = ContactPersonName
-locationOfGoods.contactPersonName.heading = ContactPersonName
-locationOfGoods.contactPersonName.checkYourAnswersLabel = ContactPersonName
-locationOfGoods.contactPersonName.error.required = Enter ContactPersonName
-locationOfGoods.contactPersonName.error.length = ContactPersonName must be 100 characters or less
+locationOfGoods.contactPersonName.title = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.heading = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.checkYourAnswersLabel = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.error.required = Enter the contact for the location of goods
+locationOfGoods.contactPersonName.error.invalid = The contact must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.contactPersonName.error.length = The contact must be 70 characters or less
 
-locationOfGoods.contactPersonTelephone.title = ContactPersonTelephone
-locationOfGoods.contactPersonTelephone.heading = ContactPersonTelephone
-locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = ContactPersonTelephone
-locationOfGoods.contactPersonTelephone.error.required = Enter ContactPersonTelephone
-locationOfGoods.contactPersonTelephone.error.length = ContactPersonTelephone must be 100 characters or less
+locationOfGoods.contactPersonTelephone.title = What is the contact for the location of goods’ telephone number?
+locationOfGoods.contactPersonTelephone.heading = What is {0}’s telephone number?
+locationOfGoods.contactPersonTelephone.hintText = This has to include the country code, like +44 808 157 0192.
+locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = What is the contact for the location of goods’ telephone number?
+locationOfGoods.contactPersonTelephone.change.hidden = What is the contact for the location of goods’ telephone number?
+locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s telephone number.
+locationOfGoods.contactPersonTelephone.error.invalidCharacter = {0}’s telephone number must only include numbers 0 to 9 and a plus sign
+locationOfGoods.contactPersonTelephone.error.invalidFormat = {0}’s telephone number must start with a plus sign
+locationOfGoods.contactPersonTelephone.error.maxLength = {0}’s telephone number must be {1} characters or less.
+locationOfGoods.contactPersonTelephone.error.minLength = {0}’s telephone number must be {1} characters or more.
 
 locationOfGoods.coordinates.title = Coordinates
 locationOfGoods.coordinates.heading = Coordinates
@@ -179,14 +186,13 @@ locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
 locationOfGoods.coordinates.error.required = Enter Coordinates
 locationOfGoods.coordinates.error.length = Coordinates must be 100 characters or less
 
-locationOfGoods.customsOffice.title = CustomsOffice
-locationOfGoods.customsOffice.heading = CustomsOffice
-locationOfGoods.customsOffice.hintText = CustomsOffice hint
-locationOfGoods.customsOffice.label = CustomsOffice label
-locationOfGoods.customsOffice.placeholder = Select a customsOffice
-locationOfGoods.customsOffice.change.hidden = CustomsOffice
-locationOfGoods.customsOffice.checkYourAnswersLabel = CustomsOffice
-locationOfGoods.customsOffice.error.required = Select the customsOffice
+locationOfGoods.customsOffice.title = What is the customs office identifier for the location of goods?
+locationOfGoods.customsOffice.heading =  What is the customs office identifier for the location of goods?
+locationOfGoods.customsOffice.hintText = Enter the office location or code, like Dover or GB000060.
+locationOfGoods.customsOffice.placeholder = Select a customs office
+locationOfGoods.customsOffice.change.hidden = What is the customs office identifier for the location of goods?
+locationOfGoods.customsOffice.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
+locationOfGoods.customsOffice.error.required = Enter the customs office identifier for the location of goods
 
 locationOfGoods.identificationNumber.title = IdentificationNumber
 locationOfGoods.identificationNumber.heading = IdentificationNumber
@@ -235,14 +241,17 @@ locationOfGoods.unlocode.checkYourAnswersLabel = Unlocode
 locationOfGoods.unlocode.error.required = Enter Unlocode
 locationOfGoods.unlocode.error.length = Unlocode must be 100 characters or less
 
-locationOfGoods.identificationNumber.title = Identification Number
-locationOfGoods.identificationNumber.heading = Identification Number
-locationOfGoods.identificationNumber.checkYourAnswersLabel = Identification Number
-locationOfGoods.identificationNumber.change.hidden = identification number
-locationOfGoods.identificationNumber.error.required = Enter Identification Number
-locationOfGoods.identificationNumber.error.length = Identification Number must be 100 characters or less
+locationOfGoods.identificationNumber.title = What is the EORI number for the location of goods?
+locationOfGoods.identificationNumber.heading = What is the EORI number for the location of goods?
+locationOfGoods.identificationNumber.checkYourAnswersLabel = What is the EORI number for the location of goods?
+locationOfGoods.identificationNumber.error.required = Enter the EORI number for the location of goods
+locationOfGoods.identificationNumber.error.minLength = The EORI number must be between 14 and 17 characters long
+locationOfGoods.identificationNumber.error.maxLength = The EORI number must be between 14 and 17 characters long
+locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number must only include letters a to z and numbers 0 to 9
+locationOfGoods.identificationNumber.error.invalidFormat = The EORI number must start with GB or XI, followed by between 12 and 15 numbers
+locationOfGoods.identificationNumber.hintText = This will start GB or XI, followed by 12 to 15 numbers. For example, GB123456789000.
 
-locationOfGoods.addAdditionalIdentifier.title = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.heading = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.error.required = Select yes if AddAdditionalIdentifier
+locationOfGoods.addAdditionalIdentifier.title = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add another identifier for the location of goods

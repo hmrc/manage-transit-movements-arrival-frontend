@@ -20,6 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.requests._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}
@@ -30,11 +31,9 @@ import queries.Gettable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpecificDataRequiredActionSpec extends SpecBase {
+class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  private val defaultRoute = controllers.routes.SessionExpiredController.onPageLoad()
-
-  private class Harness1[T1](page: Gettable[T1])(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](page)(defaultRoute) {
+  private class Harness1[T1](pages: Gettable[T1]*)(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](pages: _*) {
 
     def callRefine[A](
       request: DataRequest[A]
@@ -42,7 +41,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends SpecificDataRequiredAction2[T1, T2](page)(defaultRoute) {
+  private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends SpecificDataRequiredAction2[T1, T2](page) {
 
     def callRefine[A](
       request: SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]
@@ -50,7 +49,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private class Harness3[T1, T2, T3](page: Gettable[T3])(implicit rds: Reads[T3]) extends SpecificDataRequiredAction3[T1, T2, T3](page)(defaultRoute) {
+  private class Harness3[T1, T2, T3](page: Gettable[T3])(implicit rds: Reads[T3]) extends SpecificDataRequiredAction3[T1, T2, T3](page) {
 
     def callRefine[A](
       request: SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest[A]
@@ -58,8 +57,12 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private case object FakePage extends QuestionPage[String] {
+  private case object FooPage extends QuestionPage[String] {
     override def path: JsPath = JsPath \ "foo"
+  }
+
+  private case object BarPage extends QuestionPage[String] {
+    override def path: JsPath = JsPath \ "bar"
   }
 
   "Specific Data Required Action" - {
@@ -69,36 +72,96 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
         DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-      "when required data not present in user answers" - {
-        "must redirect to session expired" in {
+      "when checking one page" - {
 
-          val action = new Harness1(FakePage)
+        "when required data not present in user answers" - {
+          "must redirect to session expired" in {
 
-          val futureResult = action.callRefine(request(emptyUserAnswers))
+            val action = new Harness1(FooPage)
 
-          whenReady(futureResult) {
-            r =>
-              val result = Future.successful(r.left.get)
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual defaultRoute.url
+            val futureResult = action.callRefine(request(emptyUserAnswers))
+
+            whenReady(futureResult) {
+              r =>
+                val result = Future.successful(r.left.get)
+                status(result) mustEqual SEE_OTHER
+                redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+            }
+          }
+        }
+
+        "when required data present in user answers" - {
+          "must add value to request" in {
+
+            val action = new Harness1(FooPage)
+
+            forAll(arbitrary[String]) {
+              str =>
+                val userAnswers = emptyUserAnswers.setValue(FooPage, str)
+
+                val futureResult = action.callRefine(request(userAnswers))
+
+                whenReady(futureResult) {
+                  _.right.get.arg mustBe str
+                }
+            }
           }
         }
       }
 
-      "when required data present in user answers" - {
-        "must add value to request" in {
+      "when checking multiple pages" - {
 
-          val action = new Harness1(FakePage)
+        "when all pages is present in user answers" - {
+          "must add value to request of the first page" in {
 
-          forAll(arbitrary[String]) {
-            str =>
-              val userAnswers = emptyUserAnswers.setValue(FakePage, str)
+            val action = new Harness1(FooPage, BarPage)
 
-              val futureResult = action.callRefine(request(userAnswers))
+            forAll(arbitrary[String], arbitrary[String]) {
+              (foo, bar) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(FooPage, foo)
+                  .setValue(BarPage, bar)
 
-              whenReady(futureResult) {
-                _.right.get.arg mustBe str
-              }
+                val futureResult = action.callRefine(request(userAnswers))
+
+                whenReady(futureResult) {
+                  _.right.get.arg mustBe foo
+                }
+            }
+          }
+        }
+
+        "when first page not present but second page is present in user answers" - {
+          "must add value to request of the second page" in {
+
+            val action = new Harness1(FooPage, BarPage)
+
+            forAll(arbitrary[String]) {
+              bar =>
+                val userAnswers = emptyUserAnswers.setValue(BarPage, bar)
+
+                val futureResult = action.callRefine(request(userAnswers))
+
+                whenReady(futureResult) {
+                  _.right.get.arg mustBe bar
+                }
+            }
+          }
+        }
+
+        "when no pages present in user answers" - {
+          "must redirect to session expired" in {
+
+            val action = new Harness1(FooPage, BarPage)
+
+            val futureResult = action.callRefine(request(emptyUserAnswers))
+
+            whenReady(futureResult) {
+              r =>
+                val result = Future.successful(r.left.get)
+                status(result) mustEqual SEE_OTHER
+                redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+            }
           }
         }
       }
@@ -112,7 +175,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       "when required data not present in user answers" - {
         "must redirect to session expired" in {
 
-          val action = new Harness2[String, String](FakePage)
+          val action = new Harness2[String, String](FooPage)
 
           forAll(arbitrary[String]) {
             str1 =>
@@ -122,7 +185,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
                 r =>
                   val result = Future.successful(r.left.get)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual defaultRoute.url
+                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
               }
           }
         }
@@ -131,11 +194,11 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       "when required data present in user answers" - {
         "must add value to request" in {
 
-          val action = new Harness2[String, String](FakePage)
+          val action = new Harness2[String, String](FooPage)
 
           forAll(arbitrary[String], arbitrary[String]) {
             (str1, str2) =>
-              val userAnswers = emptyUserAnswers.setValue(FakePage, str2)
+              val userAnswers = emptyUserAnswers.setValue(FooPage, str2)
 
               val futureResult = action.callRefine(request(userAnswers, str1))
 
@@ -161,7 +224,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       "when required data not present in user answers" - {
         "must redirect to session expired" in {
 
-          val action = new Harness3[String, String, String](FakePage)
+          val action = new Harness3[String, String, String](FooPage)
 
           forAll(arbitrary[String], arbitrary[String]) {
             (str1, str2) =>
@@ -171,7 +234,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
                 r =>
                   val result = Future.successful(r.left.get)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual defaultRoute.url
+                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
               }
           }
         }
@@ -180,11 +243,11 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       "when required data present in user answers" - {
         "must add value to request" in {
 
-          val action = new Harness3[String, String, String](FakePage)
+          val action = new Harness3[String, String, String](FooPage)
 
           forAll(arbitrary[String], arbitrary[String], arbitrary[String]) {
             (str1, str2, str3) =>
-              val userAnswers = emptyUserAnswers.setValue(FakePage, str3)
+              val userAnswers = emptyUserAnswers.setValue(FooPage, str3)
 
               val futureResult = action.callRefine(request(userAnswers, str1, str2))
 

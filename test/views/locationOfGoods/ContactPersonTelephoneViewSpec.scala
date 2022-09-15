@@ -21,18 +21,19 @@ import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
-import views.behaviours.InputTextViewBehaviours
+import views.behaviours.TelephoneNumberViewBehaviours
 import views.html.locationOfGoods.ContactPersonTelephoneView
 
-class ContactPersonTelephoneViewSpec extends InputTextViewBehaviours[String] {
+class ContactPersonTelephoneViewSpec extends TelephoneNumberViewBehaviours {
 
   override val prefix: String = "locationOfGoods.contactPersonTelephone"
+
+  private val name: String = Gen.alphaNumStr.sample.value
 
   override def form: Form[String] = new NameFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ContactPersonTelephoneView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[ContactPersonTelephoneView].apply(form, mrn, name, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -40,11 +41,11 @@ class ContactPersonTelephoneViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(name)
 
-  behave like pageWithoutHint
+  behave like pageWithHint("This has to include the country code, like +44 808 157 0192.")
 
-  behave like pageWithInputText(Some(InputSize.Width20))
+  behave like pageWithTelephoneNumberInput()
 
   behave like pageWithSubmitButton("Continue")
 }

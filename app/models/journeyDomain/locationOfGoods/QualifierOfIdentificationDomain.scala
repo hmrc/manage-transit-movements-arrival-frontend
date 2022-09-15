@@ -21,7 +21,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
 import models.reference.CustomsOffice
-import models.{InternationalAddress, UkAddress}
+import models.{EoriNumber, InternationalAddress, UkAddress}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain

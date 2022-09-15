@@ -65,7 +65,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.ErrorController.notFound().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation" in {
