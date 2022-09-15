@@ -21,7 +21,7 @@ import generators.Generators
 import models.{Coordinates, InternationalAddress, UkAddress}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.QualifierOfIdentification
-import models.reference.{Country, CountryCode, CustomsOffice}
+import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
 import pages.locationOfGoods._
 import pages.QuestionPage
 
@@ -124,11 +124,11 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Unlocode)
-        .setValue(UnlocodePage, "unlocode")
+        .setValue(UnlocodePage, UnLocode("code", "name"))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = UnlocodeDomain(
-        "unlocode",
+        UnLocode("code", "name"),
         None
       )
 
@@ -487,13 +487,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(UnlocodePage, "unlocode")
+        .setValue(UnlocodePage, UnLocode("code", "name"))
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
       val expectedResult = UnlocodeDomain(
-        "unlocode",
+        UnLocode("code", "name"),
         Some(ContactPerson("contact name", "contact telephone"))
       )
 
@@ -505,11 +505,11 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(UnlocodePage, "unlocode")
+        .setValue(UnlocodePage, UnLocode("code", "name"))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = UnlocodeDomain(
-        "unlocode",
+        UnLocode("code", "name"),
         None
       )
 
@@ -525,7 +525,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(UnlocodePage, "unlocode")
+          .setValue(UnlocodePage, UnLocode("code", "name"))
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")

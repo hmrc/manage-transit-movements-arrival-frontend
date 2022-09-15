@@ -20,8 +20,8 @@ import cats.implicits._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
-import models.reference.CustomsOffice
-import models.{Coordinates, EoriNumber, InternationalAddress, UkAddress}
+import models.reference.{CustomsOffice, UnLocode}
+import models.{Coordinates, InternationalAddress, UkAddress}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -96,7 +96,7 @@ object CustomsOfficeDomain {
     CustomsOfficePage.reader.map(CustomsOfficeDomain(_))
 }
 
-case class UnlocodeDomain(code: String, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class UnlocodeDomain(code: UnLocode, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object UnlocodeDomain {
 

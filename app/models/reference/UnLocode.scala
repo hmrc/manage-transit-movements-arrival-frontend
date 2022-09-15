@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models.reference
 
-import models.reference.UnLocode
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class UnlocodePageSpec extends PageBehaviours {
+case class UnLocode(
+  unLocodeExtendedCode: String,
+  name: String
+) extends Selectable {
 
-  "UnlocodePage" - {
+  override def toString: String = s"$name ($unLocodeExtendedCode)"
 
-    beRetrievable[UnLocode](UnlocodePage)
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(unLocodeExtendedCode), this.toString, selected)
+}
 
-    beSettable[UnLocode](UnlocodePage)
-
-    beRemovable[UnLocode](UnlocodePage)
-  }
+object UnLocode {
+  implicit val format: OFormat[UnLocode] = Json.format[UnLocode]
 }

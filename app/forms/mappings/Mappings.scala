@@ -17,9 +17,8 @@
 package forms.mappings
 
 import java.time.LocalDate
-
-import models.reference.{Country, CustomsOffice}
-import models.{CountryList, CustomsOfficeList, Enumerable, MovementReferenceNumber}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{CountryList, CustomsOfficeList, Enumerable, MovementReferenceNumber, UnLocodeList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -74,5 +73,12 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[CustomsOffice] =
     of(customsOfficeFormatter(customsOfficeList, errorKey, args))
+
+  protected def unLocode(
+    unLocodeList: UnLocodeList,
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[UnLocode] =
+    of(unLocodeFormatter(unLocodeList, errorKey, args))
 
 }

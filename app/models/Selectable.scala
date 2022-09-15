@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import models.reference.UnLocode
-import pages.behaviours.PageBehaviours
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class UnlocodePageSpec extends PageBehaviours {
+trait Selectable {
+  def toSelectItem(selected: Boolean = false): SelectItem
+}
 
-  "UnlocodePage" - {
+object Selectable {
 
-    beRetrievable[UnLocode](UnlocodePage)
+  implicit class Selectables(selectables: Seq[Selectable]) {
 
-    beSettable[UnLocode](UnlocodePage)
-
-    beRemovable[UnLocode](UnlocodePage)
+    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+      x => x.toSelectItem(selectedValue.contains(x))
+    )
   }
 }

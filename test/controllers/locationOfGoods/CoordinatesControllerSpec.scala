@@ -17,13 +17,11 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.NameFormProvider
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
-import models.{Coordinates, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary
 import pages.locationOfGoods.CoordinatesPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

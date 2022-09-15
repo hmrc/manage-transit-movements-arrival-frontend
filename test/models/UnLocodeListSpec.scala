@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import controllers.locationOfGoods.routes
+import base.SpecBase
+import generators.Generators
 import models.reference.UnLocode
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-case object UnlocodePage extends QuestionPage[UnLocode] {
+class UnLocodeListSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+  "getAll" - {
+    "return the full list of unLocodes" in {
+      forAll(nonEmptyListOf[UnLocode](10)) {
+        unLocodes =>
+          val unLocodeList = UnLocodeList(unLocodes.toList)
 
-  override def toString: String = "unlocode"
+          unLocodeList.getAll must contain theSameElementsAs unLocodes.toList
+      }
+    }
+  }
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.UnlocodeController.onPageLoad(userAnswers.mrn, mode))
 }

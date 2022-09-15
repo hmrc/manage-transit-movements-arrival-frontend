@@ -243,11 +243,16 @@ locationOfGoods.typeOfLocation.other = Other
 locationOfGoods.typeOfLocation.checkYourAnswersLabel = Which type of location is it?
 locationOfGoods.typeOfLocation.error.required = Select which type of location it is
 
-locationOfGoods.unlocode.title = Unlocode
-locationOfGoods.unlocode.heading = Unlocode
-locationOfGoods.unlocode.checkYourAnswersLabel = Unlocode
-locationOfGoods.unlocode.error.required = Enter Unlocode
-locationOfGoods.unlocode.error.length = Unlocode must be 100 characters or less
+locationOfGoods.unlocode.title = What is the UN/LOCODE for the place of loading?
+locationOfGoods.unlocode.heading = What is the UN/LOCODE for the place of loading?
+locationOfGoods.unlocode.hintText = Enter the code, like GB BRS or GB MNC.
+locationOfGoods.unlocode.placeholder = Select a UN/LOCODE.
+locationOfGoods.unlocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+locationOfGoods.unlocode.change.hidden = What is the UN/LOCODE for the place of loading?
+locationOfGoods.unlocode.checkYourAnswersLabel = What is the UN/LOCODE for the place of loading?
+locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the place of loading
+locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the place of loading must only include letters a to z and spaces
+locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the place of loading must be 5 characters long
 
 locationOfGoods.identificationNumber.title = What is the EORI number for the location of goods?
 locationOfGoods.identificationNumber.heading = What is the EORI number for the location of goods?

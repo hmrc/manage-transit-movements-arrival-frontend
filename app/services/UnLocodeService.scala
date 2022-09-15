@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package services
 
-import controllers.locationOfGoods.routes
+import connectors.ReferenceDataConnector
+import models.UnLocodeList
 import models.reference.UnLocode
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import uk.gov.hmrc.http.HeaderCarrier
 
-case object UnlocodePage extends QuestionPage[UnLocode] {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+class UnLocodeService @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
 
-  override def toString: String = "unlocode"
+  def getUnLocodes()(implicit hc: HeaderCarrier): Future[UnLocodeList] =
+    referenceDataConnector
+      .getUnLocodes()
+      .map(sort)
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.UnlocodeController.onPageLoad(userAnswers.mrn, mode))
+  private def sort(unLocodes: Seq[UnLocode]): UnLocodeList =
+    UnLocodeList(unLocodes.sortBy(_.name.toLowerCase))
+
 }
