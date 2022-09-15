@@ -131,11 +131,10 @@ identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
 
-
-locationOfGoods.addContactPerson.title = AddContactPerson
-locationOfGoods.addContactPerson.heading = AddContactPerson
-locationOfGoods.addContactPerson.checkYourAnswersLabel = AddContactPerson
-locationOfGoods.addContactPerson.error.required = Select yes if AddContactPerson
+locationOfGoods.addContactPerson.title = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.
 
 locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
 locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
