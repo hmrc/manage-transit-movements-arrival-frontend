@@ -156,11 +156,13 @@ locationOfGoods.address.error.invalid = The {0} of {1}’s address must only inc
 locationOfGoods.address.error.required = Enter the {0} of {1}’s address
 locationOfGoods.address.error.length = The {0} of {1}’s address must be 35 characters or less
 
-locationOfGoods.authorisationNumber.title = AuthorisationNumber
-locationOfGoods.authorisationNumber.heading = AuthorisationNumber
-locationOfGoods.authorisationNumber.checkYourAnswersLabel = AuthorisationNumber
-locationOfGoods.authorisationNumber.error.required = Enter AuthorisationNumber
-locationOfGoods.authorisationNumber.error.length = AuthorisationNumber must be 100 characters or less
+locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
+locationOfGoods.authorisationNumber.error.maxLength = The authorisation number must be 35 characters or less.
+locationOfGoods.authorisationNumber.error.invalidCharacters = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.hintText = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.contactPersonName.title = Who is the contact for the location of goods?
 locationOfGoods.contactPersonName.heading = Who is the contact for the location of goods?

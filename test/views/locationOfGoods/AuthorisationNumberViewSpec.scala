@@ -16,7 +16,7 @@
 
 package views.locationOfGoods
 
-import forms.NameFormProvider
+import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -29,7 +29,7 @@ class AuthorisationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "locationOfGoods.authorisationNumber"
 
-  override def form: Form[String] = new NameFormProvider()(prefix)
+  override def form: Form[String] = new AuthorisationNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[AuthorisationNumberView].apply(form, mrn, NormalMode)(fakeRequest, messages)
@@ -42,9 +42,9 @@ class AuthorisationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
-
   behave like pageWithInputText(Some(InputSize.Width20))
+
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithSubmitButton("Continue")
 }
