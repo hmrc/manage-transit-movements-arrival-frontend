@@ -53,7 +53,7 @@ class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] wit
 
   behave like pageWithSelect
 
-  behave like pageWithHint("CustomsOffice hint")
+  behave like pageWithHint("Enter the office location or code, like Dover or GB000060.")
 
   behave like pageWithSubmitButton("Continue")
 }
