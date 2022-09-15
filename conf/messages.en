@@ -137,11 +137,13 @@ locationOfGoods.addContactPerson.heading = AddContactPerson
 locationOfGoods.addContactPerson.checkYourAnswersLabel = AddContactPerson
 locationOfGoods.addContactPerson.error.required = Select yes if AddContactPerson
 
-locationOfGoods.additionalIdentifier.title = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.heading = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.checkYourAnswersLabel = AdditionalIdentifier
-locationOfGoods.additionalIdentifier.error.required = Enter AdditionalIdentifier
-locationOfGoods.additionalIdentifier.error.length = AdditionalIdentifier must be 100 characters or less
+locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.hint = This can be up to 4 characters long, for example 0000 or X9X9.
+locationOfGoods.additionalIdentifier.checkYourAnswersLabel = Additional identifier
+locationOfGoods.additionalIdentifier.error.required = Enter the additional identifier for the location of goods
+locationOfGoods.additionalIdentifier.error.length = The additional identifier must be no more than 4 characters long
+locationOfGoods.additionalIdentifier.error.invalid = The additional identifier must only include the letters a to z and numbers 0 to 9
 
 locationOfGoods.address.title = Address
 locationOfGoods.address.heading = Address

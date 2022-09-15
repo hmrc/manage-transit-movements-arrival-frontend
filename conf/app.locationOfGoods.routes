@@ -3,10 +3,10 @@ POST       /:mrn/location-of-goods/addcontactperson                        contr
 GET        /:mrn/location-of-goods/change-addcontactperson                 controllers.locationOfGoods.AddContactPersonController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-addcontactperson                 controllers.locationOfGoods.AddContactPersonController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/location-of-goods/additionalidentifier                        controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/location-of-goods/additionalidentifier                        controllers.locationOfGoods.AdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/location-of-goods/change-additionalidentifier                 controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/location-of-goods/change-additionalidentifier                 controllers.locationOfGoods.AdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/location-of-goods/location-of-goods-additional-identifier                        controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/location-of-goods/location-of-goods-additional-identifier                        controllers.locationOfGoods.AdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/location-of-goods/change-location-of-goods-additional-identifier                 controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/location-of-goods/change-location-of-goods-additional-identifier                 controllers.locationOfGoods.AdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:mrn/location-of-goods/address                        controllers.locationOfGoods.AddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/location-of-goods/address                        controllers.locationOfGoods.AddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
