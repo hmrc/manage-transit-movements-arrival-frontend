@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.identification.IdentificationNumberView
+import views.html.locationOfGoods.IdentificationNumberView
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
@@ -42,7 +42,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithHint("This will start GB or XI, followed by 12 to 15 numbers. For example, GB123456789000.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
