@@ -244,7 +244,7 @@ locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number m
 locationOfGoods.identificationNumber.error.invalidFormat = The EORI number must start with GB or XI, followed by between 12 and 15 numbers
 locationOfGoods.identificationNumber.hintText = This will start GB or XI, followed by 12 to 15 numbers. For example, GB123456789000.
 
-locationOfGoods.addAdditionalIdentifier.title = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.heading = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = AddAdditionalIdentifier
-locationOfGoods.addAdditionalIdentifier.error.required = Select yes if AddAdditionalIdentifier
+locationOfGoods.addAdditionalIdentifier.title = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add another identifier for the location of goods
