@@ -162,11 +162,12 @@ locationOfGoods.authorisationNumber.checkYourAnswersLabel = AuthorisationNumber
 locationOfGoods.authorisationNumber.error.required = Enter AuthorisationNumber
 locationOfGoods.authorisationNumber.error.length = AuthorisationNumber must be 100 characters or less
 
-locationOfGoods.contactPersonName.title = ContactPersonName
-locationOfGoods.contactPersonName.heading = ContactPersonName
-locationOfGoods.contactPersonName.checkYourAnswersLabel = ContactPersonName
-locationOfGoods.contactPersonName.error.required = Enter ContactPersonName
-locationOfGoods.contactPersonName.error.length = ContactPersonName must be 100 characters or less
+locationOfGoods.contactPersonName.title = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.heading = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.checkYourAnswersLabel = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.error.required = Enter the contact for the location of goods
+locationOfGoods.contactPersonName.error.invalid = The contact must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.contactPersonName.error.length = The contact must be 70 characters or less
 
 locationOfGoods.contactPersonTelephone.title = ContactPersonTelephone
 locationOfGoods.contactPersonTelephone.heading = ContactPersonTelephone
