@@ -23,7 +23,6 @@ import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,8 +36,6 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val country2: Country       = Country(CountryCode("FR"), "France")
   private val country3: Country       = Country(CountryCode("ES"), "Spain")
   private val countries: Seq[Country] = Seq(country1, country2, country3)
-
-  implicit val hc: HeaderCarrier = new HeaderCarrier()
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -72,6 +69,19 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach {
         val expectedQueryParams = Seq("membership" -> "ctc")
 
         verify(mockRefDataConnector).getCountries(eqTo(expectedQueryParams))(any(), any())
+      }
+    }
+
+    "getAddressPostcodeBasedCountries" - {
+      "must return a list of sorted address postcode based countries" in {
+
+        when(mockRefDataConnector.getAddressPostcodeBasedCountries()(any(), any()))
+          .thenReturn(Future.successful(countries))
+
+        service.getAddressPostcodeBasedCountries().futureValue mustBe
+          CountryList(Seq(country2, country3, country1))
+
+        verify(mockRefDataConnector).getAddressPostcodeBasedCountries()(any(), any())
       }
     }
   }

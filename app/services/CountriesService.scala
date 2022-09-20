@@ -34,6 +34,11 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
     getCountries(queryParameters)
   }
 
+  def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
+    referenceDataConnector
+      .getAddressPostcodeBasedCountries()
+      .map(sort)
+
   private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[CountryList] =
     referenceDataConnector
       .getCountries(queryParameters)

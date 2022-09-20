@@ -24,7 +24,6 @@ import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,7 +40,34 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
+  private val unlocodeResponseJson: String =
+    """
+      |
+      |[
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2021-02-15",
+      |    "unLocodeExtendedCode": "code1",
+      |    "name": "name1",
+      |    "function": "--34-6--",
+      |    "status": "AI",
+      |    "date": "0601",
+      |    "coordinates": "4230N 00131E",
+      |    "comment": "Muy Vella"
+      |  },
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2021-02-15",
+      |    "unLocodeExtendedCode": "code2",
+      |    "name": "name2",
+      |    "function": "--3-----",
+      |    "status": "RL",
+      |    "date": "0307",
+      |    "coordinates": "4234N 00135E"
+      |  }
+      |]
+      |
+      |""".stripMargin
 
   private val customsOfficeResponseJson: String =
     """
@@ -167,6 +193,49 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         }
       }
 
+    }
+
+    "getUnLocodes" - {
+
+      "must return a successful future response with a sequence of UnLocodes" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/un-locodes"))
+            .willReturn(okJson(unlocodeResponseJson))
+        )
+
+        val expectedResult =
+          Seq(
+            UnLocode("code1", "name1"),
+            UnLocode("code2", "name2")
+          )
+
+        connector.getUnLocodes().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/un-locodes", connector.getUnLocodes())
+      }
+
+    }
+
+    "getAddressPostcodeBasedCountries" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/country-address-postcode-based"))
+            .willReturn(okJson(countryListResponseJson))
+        )
+
+        val expectedResult: Seq[Country] = Seq(
+          Country(CountryCode("GB"), "United Kingdom"),
+          Country(CountryCode("AD"), "Andorra")
+        )
+
+        connector.getAddressPostcodeBasedCountries().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/country-address-postcode-based", connector.getAddressPostcodeBasedCountries())
+      }
     }
 
   }

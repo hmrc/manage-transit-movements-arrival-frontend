@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import controllers.locationOfGoods.routes
-import models.{Coordinates, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case object CoordinatesPage extends QuestionPage[Coordinates] {
+trait Selectable {
+  def toSelectItem(selected: Boolean = false): SelectItem
+}
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+object Selectable {
 
-  override def toString: String = "coordinates"
+  implicit class Selectables(selectables: Seq[Selectable]) {
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(userAnswers.mrn, mode))
+    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+      x => x.toSelectItem(selectedValue.contains(x))
+    )
+  }
 }

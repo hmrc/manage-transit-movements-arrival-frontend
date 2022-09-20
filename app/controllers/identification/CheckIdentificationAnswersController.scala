@@ -18,7 +18,7 @@ package controllers.identification
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.{CheckMode, MovementReferenceNumber}
+import models.{CheckMode, MovementReferenceNumber, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,7 +42,7 @@ class CheckIdentificationAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      Redirect(controllers.identification.routes.MovementReferenceNumberController.onPageLoad())
+      Redirect(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(mrn, NormalMode))
   }
 
 }

@@ -16,25 +16,22 @@
 
 package views.locationOfGoods
 
-import forms.NameFormProvider
-import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
+import forms.locationOfGoods.CoordinatesFormProvider
+import generators.Generators
+import models.{Coordinates, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
-import views.behaviours.InputTextViewBehaviours
+import views.behaviours.CoordinatesViewBehaviours
 import views.html.locationOfGoods.CoordinatesView
 
-class CoordinatesViewSpec extends InputTextViewBehaviours[String] {
+class CoordinatesViewSpec extends CoordinatesViewBehaviours with Generators {
 
   override val prefix: String = "locationOfGoods.coordinates"
 
-  override def form: Form[String] = new NameFormProvider()(prefix)
+  override def form: Form[Coordinates] = new CoordinatesFormProvider()(prefix)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def applyView(form: Form[Coordinates]): HtmlFormat.Appendable =
     injector.instanceOf[CoordinatesView].apply(form, mrn, NormalMode)(fakeRequest, messages)
-
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle()
 
@@ -42,9 +39,9 @@ class CoordinatesViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithHint("These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.")
 
-  behave like pageWithInputText(Some(InputSize.Width20))
+  behave like pageWithCoordinatesInput()
 
   behave like pageWithSubmitButton("Continue")
 }

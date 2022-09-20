@@ -18,16 +18,15 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.UkAddressFormProvider
-import models.requests.DataRequest
-import models.{Mode, MovementReferenceNumber, UkAddress}
+import forms.PostalCodeFormProvider
+import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.AddressPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.AddressView
 
@@ -39,33 +38,41 @@ class AddressController @Inject() (
   implicit val sessionRepository: SessionRepository,
   @LocationOfGoods implicit val navigator: Navigator,
   actions: Actions,
-  formProvider: UkAddressFormProvider,
+  formProvider: PostalCodeFormProvider,
+  countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: AddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form()(implicit request: DataRequest[AnyContent]): Form[UkAddress] =
-    formProvider("locationOfGoods.address")
+  private val prefix: String = "locationOfGoods.address"
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request: DataRequest[AnyContent] =>
-      val preparedForm = request.userAnswers.get(AddressPage) match {
-        case None        => form()
-        case Some(value) => form().fill(value)
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      countriesService.getAddressPostcodeBasedCountries.map {
+        countryList =>
+          val form = formProvider(prefix, countryList)
+          val preparedForm = request.userAnswers.get(AddressPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          Ok(view(preparedForm, mrn, mode, countryList.countries))
       }
-
-      Ok(view(preparedForm, mrn, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => AddressPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
-        )
+      countriesService.getAddressPostcodeBasedCountries.flatMap {
+        countryList =>
+          val form = formProvider(prefix, countryList)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
+              value => AddressPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            )
+      }
   }
 }

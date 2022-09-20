@@ -17,7 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.NameFormProvider
+import forms.locationOfGoods.CoordinatesFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,9 +29,11 @@ import views.html.locationOfGoods.CoordinatesView
 
 import scala.concurrent.Future
 
-class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider          = new NameFormProvider()
+  private val testCoordinates = arbitraryCoordinates.arbitrary.sample.value
+
+  private val formProvider          = new CoordinatesFormProvider()
   private val form                  = formProvider("locationOfGoods.coordinates")
   private val mode                  = NormalMode
   private lazy val coordinatesRoute = routes.CoordinatesController.onPageLoad(mrn, mode).url
@@ -55,14 +58,19 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CoordinatesPage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(CoordinatesPage, testCoordinates)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, coordinatesRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(
+        Map(
+          "latitude"  -> testCoordinates.latitude,
+          "longitude" -> testCoordinates.longitude
+        )
+      )
 
       val view = injector.instanceOf[CoordinatesView]
 
@@ -79,7 +87,10 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, coordinatesRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(
+          ("latitude", testCoordinates.latitude),
+          ("longitude", testCoordinates.longitude)
+        )
 
       val result = route(app, request).value
 
@@ -125,7 +136,10 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, coordinatesRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(
+          ("latitude", testCoordinates.latitude),
+          ("longitude", testCoordinates.longitude)
+        )
 
       val result = route(app, request).value
 

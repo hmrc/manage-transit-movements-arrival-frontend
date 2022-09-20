@@ -16,20 +16,23 @@
 
 package views.locationOfGoods
 
-import forms.UkAddressFormProvider
+import forms.PostalCodeFormProvider
 import generators.Generators
-import models.{NormalMode, UkAddress}
+import models.{CountryList, NormalMode, PostalCodeAddress}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.UkAddressViewBehaviours
+import views.behaviours.PostalCodeAddressViewBehaviours
 import views.html.locationOfGoods.AddressView
 
-class AddressViewSpec extends UkAddressViewBehaviours with Generators {
+class AddressViewSpec extends PostalCodeAddressViewBehaviours with Generators {
 
-  override def form: Form[UkAddress] = new UkAddressFormProvider()(prefix)
+  private val countryList = arbitrary[CountryList].sample.value
 
-  override def applyView(form: Form[UkAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[AddressView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+  override def form: Form[PostalCodeAddress] = new PostalCodeFormProvider()(prefix, countryList)
+
+  override def applyView(form: Form[PostalCodeAddress]): HtmlFormat.Appendable =
+    injector.instanceOf[AddressView].apply(form, mrn, NormalMode, countryList.countries)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.address"
 

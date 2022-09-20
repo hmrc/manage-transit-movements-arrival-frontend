@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-object Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength         = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength            = 35
-  lazy val minTelephoneNumberLength            = 6
-  lazy val authorisationNumberLength           = 35
+import play.api.libs.json.{Json, OFormat}
+
+case class Coordinates(
+  latitude: String,
+  longitude: String
+) {
+  override def toString: String = s"($latitude, $longitude)"
+}
+
+object Coordinates {
+  implicit val format: OFormat[Coordinates] = Json.format[Coordinates]
 }

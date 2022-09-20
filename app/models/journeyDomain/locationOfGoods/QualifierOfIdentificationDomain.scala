@@ -20,8 +20,8 @@ import cats.implicits._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.QualifierOfIdentification._
-import models.reference.CustomsOffice
-import models.{EoriNumber, InternationalAddress, UkAddress}
+import models.reference.{CustomsOffice, UnLocode}
+import models.{Coordinates, InternationalAddress, PostalCodeAddress}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -77,7 +77,7 @@ object AuthorisationNumberDomain {
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
 
-case class CoordinatesDomain(coordinates: String, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object CoordinatesDomain {
 
@@ -96,7 +96,7 @@ object CustomsOfficeDomain {
     CustomsOfficePage.reader.map(CustomsOfficeDomain(_))
 }
 
-case class UnlocodeDomain(code: String, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class UnlocodeDomain(code: UnLocode, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object UnlocodeDomain {
 
@@ -107,7 +107,7 @@ object UnlocodeDomain {
     ).tupled.map((UnlocodeDomain.apply _).tupled)
 }
 
-case class PostalCodeDomain(address: UkAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
+case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPerson]) extends QualifierOfIdentificationDomain
 
 object PostalCodeDomain {
 

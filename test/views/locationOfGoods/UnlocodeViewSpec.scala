@@ -16,25 +16,34 @@
 
 package views.locationOfGoods
 
-import forms.NameFormProvider
-import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
+import forms.locationOfGoods.UnLocodeFormProvider
+import generators.Generators
+import models.reference.UnLocode
+import models.{NormalMode, UnLocodeList}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
-import views.behaviours.InputTextViewBehaviours
+import views.behaviours.InputSelectViewBehaviours
 import views.html.locationOfGoods.UnlocodeView
 
-class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
+class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] with Generators {
+
+  private lazy val unLocode1 = arbitraryUnLocode.arbitrary.sample.get
+  private lazy val unLocode2 = arbitraryUnLocode.arbitrary.sample.get
+  private lazy val unLocode3 = arbitraryUnLocode.arbitrary.sample.get
+
+  override def values: Seq[UnLocode] =
+    Seq(
+      unLocode1,
+      unLocode2,
+      unLocode3
+    )
 
   override val prefix: String = "locationOfGoods.unlocode"
 
-  override def form: Form[String] = new NameFormProvider()(prefix)
+  override def form: Form[UnLocode] = new UnLocodeFormProvider()(prefix, UnLocodeList(values))
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UnlocodeView].apply(form, mrn, NormalMode)(fakeRequest, messages)
-
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
+    injector.instanceOf[UnlocodeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -42,9 +51,11 @@ class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithSelect
 
-  behave like pageWithInputText(Some(InputSize.Width20))
+  behave like pageWithHint("Enter the code, like GB BRS or GB MNC.")
+
+  behave like pageWithContent("p", "This is a 5-character code used to identify a transit-related location, like a port or clearance depot.")
 
   behave like pageWithSubmitButton("Continue")
 }

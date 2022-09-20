@@ -17,35 +17,50 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.UkAddressFormProvider
+import forms.PostalCodeFormProvider
 import generators.Generators
-import models.{NormalMode, UkAddress, UserAnswers}
+import models.{CountryList, NormalMode, PostalCodeAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.AddressPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CountriesService
 import views.html.locationOfGoods.AddressView
 
 import scala.concurrent.Future
 
 class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val testAddress = arbitrary[UkAddress].sample.value
+  private val testAddress = arbitrary[PostalCodeAddress].sample.value
+  private val countryList = CountryList(Seq(testAddress.country))
 
-  private val formProvider = new UkAddressFormProvider()
-  private val form         = formProvider("locationOfGoods.address")
+  private val formProvider = new PostalCodeFormProvider()
+  private val form         = formProvider("locationOfGoods.address", countryList)
 
   private val mode              = NormalMode
   private lazy val addressRoute = routes.AddressController.onPageLoad(mrn, mode).url
 
-  override def beforeEach(): Unit =
+  private lazy val mockCountriesService: CountriesService = mock[CountriesService]
+
+  override def beforeEach(): Unit = {
+    reset(mockCountriesService)
     super.beforeEach()
+  }
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
   "Address Controller" - {
 
     "must return OK and the correct view for a GET" in {
+
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -57,10 +72,12 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+        view(form, mrn, mode, countryList.countries)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers = UserAnswers(mrn, eoriNumber)
         .setValue(AddressPage, testAddress)
@@ -73,9 +90,9 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val filledForm = form.bind(
         Map(
-          "addressLine1" -> testAddress.line1,
-          "addressLine2" -> testAddress.line2,
-          "postalCode"   -> testAddress.postalCode
+          "streetNumber" -> testAddress.streetNumber,
+          "postalCode"   -> testAddress.postalCode,
+          "country"      -> testAddress.country.code.code
         )
       )
 
@@ -84,20 +101,21 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, mode, countryList.countries)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, addressRoute)
         .withFormUrlEncodedBody(
-          ("addressLine1", testAddress.line1),
-          ("addressLine2", testAddress.line2),
-          ("postalCode", testAddress.postalCode)
+          ("streetNumber", testAddress.streetNumber),
+          ("postalCode", testAddress.postalCode),
+          ("country", testAddress.country.code.code)
         )
 
       val result = route(app, request).value
@@ -108,6 +126,8 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -121,7 +141,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val view = injector.instanceOf[AddressView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, mode)(request, messages).toString
+        view(boundForm, mrn, mode, countryList.countries)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -143,9 +163,9 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val request = FakeRequest(POST, addressRoute)
         .withFormUrlEncodedBody(
-          ("addressLine1", testAddress.line1),
-          ("addressLine2", testAddress.line2),
-          ("postalCode", testAddress.postalCode)
+          ("streetNumber", testAddress.streetNumber),
+          ("postalCode", testAddress.postalCode),
+          ("country", testAddress.country.code.code)
         )
 
       val result = route(app, request).value

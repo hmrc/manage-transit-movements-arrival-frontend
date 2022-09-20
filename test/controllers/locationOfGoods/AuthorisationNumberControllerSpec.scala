@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.NameFormProvider
+import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import scala.concurrent.Future
 
 class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                  = new NameFormProvider()
+  private val formProvider                  = new AuthorisationNumberFormProvider()
   private val form                          = formProvider("locationOfGoods.authorisationNumber")
   private val mode                          = NormalMode
   private lazy val authorisationNumberRoute = routes.AuthorisationNumberController.onPageLoad(mrn, mode).url
@@ -55,14 +55,14 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationNumberPage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(AuthorisationNumberPage, "testString")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "testString"))
 
       val view = injector.instanceOf[AuthorisationNumberView]
 
@@ -79,7 +79,7 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, authorisationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "testString"))
 
       val result = route(app, request).value
 
@@ -125,7 +125,7 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, authorisationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "testString"))
 
       val result = route(app, request).value
 

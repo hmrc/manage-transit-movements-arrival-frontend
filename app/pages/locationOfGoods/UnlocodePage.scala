@@ -17,13 +17,14 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
+import models.reference.UnLocode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnlocodePage extends QuestionPage[String] {
+case object UnlocodePage extends QuestionPage[UnLocode] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 

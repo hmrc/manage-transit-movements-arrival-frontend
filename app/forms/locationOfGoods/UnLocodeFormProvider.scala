@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package forms.locationOfGoods
 
-object Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength         = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength            = 35
-  lazy val minTelephoneNumberLength            = 6
-  lazy val authorisationNumberLength           = 35
+import forms.mappings.Mappings
+import models.UnLocodeList
+import models.reference.UnLocode
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class UnLocodeFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, unLocodeList: UnLocodeList): Form[UnLocode] =
+    Form(
+      "value" -> unLocode(unLocodeList, s"$prefix.error.required")
+    )
 }

@@ -23,7 +23,6 @@ import models.reference.{CountryCode, CustomsOffice}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -39,8 +38,6 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val gbCustomsOffices: Seq[CustomsOffice] = Seq(gbCustomsOffice1, gbCustomsOffice2)
   val xiCustomsOffices: Seq[CustomsOffice] = Seq(xiCustomsOffice1, xiCustomsOffice2)
   val customsOffices: CustomsOfficeList    = CustomsOfficeList(gbCustomsOffices ++ xiCustomsOffices)
-
-  implicit val hc: HeaderCarrier = new HeaderCarrier()
 
   val service = new CustomsOfficesService(mockRefDataConnector)
 

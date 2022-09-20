@@ -16,16 +16,17 @@
 
 package pages.locationOfGoods
 
+import models.Coordinates
 import pages.behaviours.PageBehaviours
 
 class CoordinatesPageSpec extends PageBehaviours {
 
   "CoordinatesPage" - {
 
-    beRetrievable[String](CoordinatesPage)
+    beRetrievable[Coordinates](CoordinatesPage)
 
-    beSettable[String](CoordinatesPage)
+    beSettable[Coordinates](CoordinatesPage)
 
-    beRemovable[String](CoordinatesPage)
+    beRemovable[Coordinates](CoordinatesPage)
   }
 }

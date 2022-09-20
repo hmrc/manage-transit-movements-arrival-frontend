@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models.reference
 
-import controllers.locationOfGoods.routes
-import models.{Coordinates, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case object CoordinatesPage extends QuestionPage[Coordinates] {
+case class UnLocode(
+  unLocodeExtendedCode: String,
+  name: String
+) extends Selectable {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+  override def toString: String = s"$name ($unLocodeExtendedCode)"
 
-  override def toString: String = "coordinates"
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(unLocodeExtendedCode), this.toString, selected)
+}
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(userAnswers.mrn, mode))
+object UnLocode {
+  implicit val format: OFormat[UnLocode] = Json.format[UnLocode]
 }

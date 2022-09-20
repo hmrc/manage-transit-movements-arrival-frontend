@@ -40,6 +40,12 @@ object AddressLine {
     val regex: Regex           = stringFieldRegex
   }
 
+  case object StreetNumber extends AddressLine {
+    override val field: String = "streetNumber"
+    val length: Int            = 6
+    val regex: Regex           = stringFieldRegex
+  }
+
   case object PostalCode extends AddressLine {
     override val field: String = "postalCode"
     val length: Int            = 9
