@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.locationOfGoods
+package models.journeyDomain.incident
 
 import cats.implicits._
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import models.locationOfGoods.TypeOfLocation
-import pages.locationOfGoods.TypeOfLocationPage
+import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
-case class LocationOfGoodsDomain(
-  typeOfLocation: TypeOfLocation,
-  qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
-) extends JourneyDomainModel {
+// TODO could probably remove the incident flag later as part of the larger domain model
+case class IncidentDomain(incidentFlag: Boolean) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(controllers.incident.routes.IncidentFlagController.onSubmit(userAnswers.mrn, NormalMode))
+    Some(???) // TODO link to next journey
 }
 
-object LocationOfGoodsDomain {
+object IncidentDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] =
-    (
-      TypeOfLocationPage.reader,
-      UserAnswersReader[QualifierOfIdentificationDomain]
-    ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
+  implicit val userAnswersReader: UserAnswersReader[IncidentDomain] = IncidentFlagPage.reader.map(IncidentDomain.apply)
 }

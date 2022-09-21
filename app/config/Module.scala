@@ -18,8 +18,15 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
-import navigation.{AuthorisationNavigatorProvider, AuthorisationNavigatorProviderImpl, IdentificationNavigator, LocationOfGoodsNavigator, Navigator}
+import navigation.annotations.{IdentificationDetails, Incident, LocationOfGoods}
+import navigation.{
+  AuthorisationNavigatorProvider,
+  AuthorisationNavigatorProviderImpl,
+  IdentificationNavigator,
+  IncidentNavigator,
+  LocationOfGoodsNavigator,
+  Navigator
+}
 import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
@@ -29,8 +36,8 @@ class Module extends AbstractModule {
   override def configure(): Unit = {
 
     bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
-
     bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Incident]).to(classOf[IncidentNavigator])
 
     bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
 

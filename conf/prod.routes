@@ -3,6 +3,7 @@
 ->         /manage-transit-movements/arrival                   app.identification.Routes
 ->         /manage-transit-movements/arrival                   app.locationOfGoods.Routes
 ->         /manage-transit-movements/arrival                   app.identification.authorisation.Routes
+->         /manage-transit-movements/arrival                   app.incident.Routes
 
 ->         /                          health.Routes
 

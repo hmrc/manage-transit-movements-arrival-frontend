@@ -19,7 +19,7 @@ package base
 import config.annotations._
 import controllers.actions._
 import models.{Index, UserAnswers}
-import navigation.annotations.LocationOfGoods
+import navigation.annotations.{Incident, LocationOfGoods}
 import navigation.{AuthorisationNavigatorProvider, FakeAuthorisationNavigator, FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -79,6 +79,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[Navigator].qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Event]).toInstance(fakeNavigator),
         bind[Navigator].qualifiedWith(classOf[Container]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator)
+        bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator),
+        bind[Navigator].qualifiedWith(classOf[Incident]).toInstance(fakeNavigator)
       )
 }
