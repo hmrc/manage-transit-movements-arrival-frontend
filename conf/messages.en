@@ -275,3 +275,8 @@ locationOfGoods.addAdditionalIdentifier.title = Do you want to add another ident
 locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add another identifier for the location of goods
+
+Incident.incidentFlag.title = IncidentFlag
+Incident.incidentFlag.heading = IncidentFlag
+Incident.incidentFlag.checkYourAnswersLabel = IncidentFlag
+Incident.incidentFlag.error.required = Select yes if IncidentFlag

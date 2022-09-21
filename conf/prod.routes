@@ -6,6 +6,8 @@
 
 ->         /                          health.Routes
 
+->         /manage-transit-movements/arrival                   app.Incident.Routes
+
 
 
 
