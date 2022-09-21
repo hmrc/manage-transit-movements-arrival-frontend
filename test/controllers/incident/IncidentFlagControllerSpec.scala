@@ -14,36 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.Incident
+package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.Incident
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.Incident.IncidentFlagPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import pages.incident.IncidentFlagPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.Incident.IncidentFlagView
+import views.html.incident.IncidentFlagView
 
 import scala.concurrent.Future
 
 class IncidentFlagControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider           = new YesNoFormProvider()
-  private val form                   = formProvider("Incident.incidentFlag")
+  private val form                   = formProvider("incident.incidentFlag")
   private val mode                   = NormalMode
   private lazy val incidentFlagRoute = routes.IncidentFlagController.onPageLoad(mrn, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[Incident]).toInstance(fakeNavigator))
 
   "IncidentFlag Controller" - {
 

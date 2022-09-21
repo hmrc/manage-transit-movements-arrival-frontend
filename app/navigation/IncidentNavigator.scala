@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package pages.Incident
+package navigation
 
-import controllers.Incident.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.IncidentSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.journeyDomain.incident.IncidentDomain
 
-case object IncidentFlagPage extends QuestionPage[Boolean] {
+import javax.inject.{Inject, Singleton}
 
-  override def path: JsPath = IncidentSection.path \ toString
-
-  override def toString: String = "incidentFlag"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentFlagController.onPageLoad(userAnswers.mrn, mode))
-}
+@Singleton
+class IncidentNavigator @Inject() () extends UserAnswersSectionNavigator[IncidentDomain]

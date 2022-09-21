@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.Incident
+package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -22,12 +22,12 @@ import forms.YesNoFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.Incident
-import pages.Incident.IncidentFlagPage
+import pages.incident.IncidentFlagPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.Incident.IncidentFlagView
+import views.html.incident.IncidentFlagView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +44,7 @@ class IncidentFlagController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("Incident.incidentFlag")
+  private val form = formProvider("incident.incidentFlag")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

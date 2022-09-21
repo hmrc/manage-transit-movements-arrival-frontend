@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.Incident
+package views.incident
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.Incident.IncidentFlagView
+import views.html.incident.IncidentFlagView
 
 class IncidentFlagViewSpec extends YesNoViewBehaviours {
 

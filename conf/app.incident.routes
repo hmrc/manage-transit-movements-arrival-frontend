@@ -1,0 +1,5 @@
+
+GET        /:mrn/incident/incident-flag                        controllers.incident.IncidentFlagController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/incident/incident-flag                        controllers.incident.IncidentFlagController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/incident/change-incident-flag                 controllers.incident.IncidentFlagController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/incident/change-incident-flag                 controllers.incident.IncidentFlagController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

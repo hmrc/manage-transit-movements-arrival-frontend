@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package pages.Incident
+package pages.incident
 
-import pages.behaviours.PageBehaviours
+import controllers.incident.routes
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.IncidentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class IncidentFlagPageSpec extends PageBehaviours {
+case object IncidentFlagPage extends QuestionPage[Boolean] {
 
-  "IncidentFlagPage" - {
+  override def path: JsPath = IncidentSection.path \ toString
 
-    beRetrievable[Boolean](IncidentFlagPage)
+  override def toString: String = "incidentFlag"
 
-    beSettable[Boolean](IncidentFlagPage)
-
-    beRemovable[Boolean](IncidentFlagPage)
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IncidentFlagController.onPageLoad(userAnswers.mrn, mode))
 }
