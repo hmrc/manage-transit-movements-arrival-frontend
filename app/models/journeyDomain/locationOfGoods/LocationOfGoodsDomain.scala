@@ -17,7 +17,7 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import pages.locationOfGoods.TypeOfLocationPage
@@ -29,7 +29,7 @@ case class LocationOfGoodsDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(???) // TODO link to next journey
+    Some(controllers.incident.routes.IncidentFlagController.onSubmit(userAnswers.mrn, NormalMode))
 }
 
 object LocationOfGoodsDomain {
