@@ -31,3 +31,4 @@ project/.bloop/
 project/metals.sbt
 .hydra
 .DS_Store
+.java-version
