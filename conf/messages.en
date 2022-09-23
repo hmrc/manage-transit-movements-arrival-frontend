@@ -276,7 +276,19 @@ locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another ide
 locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add another identifier for the location of goods
 
+# Incidents and Endorsements
+
+incident.caption = Incidents and Endorsements
+
 incident.incidentFlag.title = IncidentFlag
 incident.incidentFlag.heading = IncidentFlag
 incident.incidentFlag.checkYourAnswersLabel = IncidentFlag
 incident.incidentFlag.error.required = Select yes if IncidentFlag
+
+incident.incidentCountry.title = In which country is the place of incident in?
+incident.incidentCountry.heading = In which country is the place of incident in?
+incident.incidentCountry.hintText = Enter the country, like Italy or Spain.
+incident.incidentCountry.placeholder = Select a country
+incident.incidentCountry.change.hidden = Which country is the place of incident in
+incident.incidentCountry.checkYourAnswersLabel = In which country is the place of incident in?
+incident.incidentCountry.error.required = Enter which country the place of incident is in
