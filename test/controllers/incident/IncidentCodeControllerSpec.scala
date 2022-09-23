@@ -17,88 +17,88 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CountryFormProvider
+import forms.IncidentCodeFormProvider
 import generators.Generators
-import models.{CountryList, NormalMode}
+import models.{IncidentCodeList, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.IncidentCountryPage
+import pages.incident.IncidentCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CountriesService
-import views.html.incident.IncidentCountryView
+import services.IncidentCodeService
+import views.html.incident.IncidentCodeView
 
 import scala.concurrent.Future
 
-class IncidentCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val country1    = arbitraryCountry.arbitrary.sample.get
-  private val country2    = arbitraryCountry.arbitrary.sample.get
-  private val countryList = CountryList(Seq(country1, country2))
+  private val incidentCode1    = arbitraryIncidentCode.arbitrary.sample.get
+  private val incidentCode2    = arbitraryIncidentCode.arbitrary.sample.get
+  private val incidentCodeList = IncidentCodeList(Seq(incidentCode1, incidentCode2))
 
-  private val formProvider = new CountryFormProvider()
-  private val form         = formProvider("incident.incidentCountry", countryList)
+  private val formProvider = new IncidentCodeFormProvider()
+  private val form         = formProvider("incident.incidentCode", incidentCodeList)
   private val mode         = NormalMode
 
-  private val mockCountriesService: CountriesService = mock[CountriesService]
-  private lazy val incidentCountryRoute              = routes.IncidentCountryController.onPageLoad(mrn, mode).url
+  private val mockIncidentCodeService: IncidentCodeService = mock[IncidentCodeService]
+  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
+      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockIncidentCodeService))
 
-  "IncidentCountry Controller" - {
+  "IncidentCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, incidentCountryRoute)
+      val request = FakeRequest(GET, incidentCodeRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[IncidentCountryView]
+      val view = injector.instanceOf[IncidentCodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, countryList.countries, mode)(request, messages).toString
+        view(form, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers = emptyUserAnswers.setValue(IncidentCountryPage, country1)
+      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
+      val userAnswers = emptyUserAnswers.setValue(IncidentCodePage, incidentCode1)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, incidentCountryRoute)
+      val request = FakeRequest(GET, incidentCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> country1.code.code))
+      val filledForm = form.bind(Map("value" -> incidentCode1.code))
 
-      val view = injector.instanceOf[IncidentCountryView]
+      val view = injector.instanceOf[IncidentCodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, countryList.countries, mode)(request, messages).toString
+        view(filledForm, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, incidentCountryRoute)
-          .withFormUrlEncodedBody(("value", country1.code.code))
+        FakeRequest(POST, incidentCodeRoute)
+          .withFormUrlEncodedBody(("value", incidentCode1.code))
 
       val result = route(app, request).value
 
@@ -109,27 +109,27 @@ class IncidentCountryControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, incidentCountryRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, incidentCodeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[IncidentCountryView]
+      val view = injector.instanceOf[IncidentCodeView]
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, countryList.countries, mode)(request, messages).toString
+        view(boundForm, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, incidentCountryRoute)
+      val request = FakeRequest(GET, incidentCodeRoute)
 
       val result = route(app, request).value
 
@@ -141,8 +141,8 @@ class IncidentCountryControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, incidentCountryRoute)
-        .withFormUrlEncodedBody(("value", country1.code.code))
+      val request = FakeRequest(POST, incidentCodeRoute)
+        .withFormUrlEncodedBody(("value", incidentCode1.code))
 
       val result = route(app, request).value
 

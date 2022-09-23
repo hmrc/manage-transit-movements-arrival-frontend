@@ -19,12 +19,12 @@ package models.journeyDomain.incident
 import cats.implicits._
 import models.UserAnswers
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import models.reference.Country
-import pages.incident.{IncidentCountryPage, IncidentFlagPage}
+import models.reference.{Country, IncidentCode}
+import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
 import play.api.mvc.Call
 
 // TODO could probably remove the incident flag later as part of the larger domain model
-case class IncidentDomain(incidentCountry: Option[Country]) extends JourneyDomainModel {
+case class IncidentDomain(incidentCountry: Option[Country], incidentCode: IncidentCode) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
     Some(???) // TODO link to next journey
@@ -33,7 +33,9 @@ case class IncidentDomain(incidentCountry: Option[Country]) extends JourneyDomai
 object IncidentDomain {
 
   implicit val userAnswersReader: UserAnswersReader[IncidentDomain] =
-    IncidentFlagPage
-      .filterOptionalDependent(identity)(IncidentCountryPage.reader)
-      .map(IncidentDomain.apply(_))
+    (
+      IncidentFlagPage.filterOptionalDependent(identity)(IncidentCountryPage.reader),
+      IncidentCodePage.reader
+    ).tupled.map((IncidentDomain.apply _).tupled)
+
 }

@@ -19,13 +19,14 @@ package models.journeyDomain.incident
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.incident.{IncidentCountryPage, IncidentFlagPage}
+import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
 
 class IncidentDomainSpec extends SpecBase with Generators {
 
-  private val country = arbitrary[Country].sample.value
+  private val country      = arbitrary[Country].sample.value
+  private val incidentCode = arbitrary[IncidentCode].sample.value
 
   "IncidentDomain" - {
 
@@ -34,8 +35,9 @@ class IncidentDomainSpec extends SpecBase with Generators {
       val userAnswers = emptyUserAnswers
         .setValue(IncidentFlagPage, true)
         .setValue(IncidentCountryPage, country)
+        .setValue(IncidentCodePage, incidentCode)
 
-      val expectedResult = IncidentDomain(incidentCountry = Some(country))
+      val expectedResult = IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain].run(userAnswers)
 

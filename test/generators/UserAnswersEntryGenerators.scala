@@ -26,6 +26,7 @@ import queries.Gettable
 import java.time.LocalDate
 
 trait UserAnswersEntryGenerators {
+
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
