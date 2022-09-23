@@ -8,3 +8,8 @@ GET        /:mrn/incident/incident-country                     controllers.incid
 POST       /:mrn/incident/incident-country                     controllers.incident.IncidentCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 GET        /:mrn/incident/change-incident-country              controllers.incident.IncidentCountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/incident/change-incident-country              controllers.incident.IncidentCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/incident/incident-description                 controllers.incident.IncidentDescriptionController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/incident/incident-description                 controllers.incident.IncidentDescriptionController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/incident/change-incident-description          controllers.incident.IncidentDescriptionController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/incident/change-incident-description          controllers.incident.IncidentDescriptionController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
