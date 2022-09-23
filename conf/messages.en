@@ -278,8 +278,6 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 
 # Incidents and Endorsements
 
-incident.caption = Incidents and Endorsements
-
 incident.incidentFlag.title = IncidentFlag
 incident.incidentFlag.heading = IncidentFlag
 incident.incidentFlag.checkYourAnswersLabel = IncidentFlag
