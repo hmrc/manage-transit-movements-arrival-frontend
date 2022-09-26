@@ -23,10 +23,10 @@ class IncidentCountryPageSpec extends PageBehaviours {
 
   "IncidentCountryPage" - {
 
-    beRetrievable[Country](IncidentCountryPage)
+    beRetrievable[Country](IncidentCountryPage(index))
 
-    beSettable[Country](IncidentCountryPage)
+    beSettable[Country](IncidentCountryPage(index))
 
-    beRemovable[Country](IncidentCountryPage)
+    beRemovable[Country](IncidentCountryPage(index))
   }
 }

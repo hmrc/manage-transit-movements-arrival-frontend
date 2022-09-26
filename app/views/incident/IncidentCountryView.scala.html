@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Country], mrn: MovementReferenceNumber, countryList: Seq[Country], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], mrn: MovementReferenceNumber, countryList: Seq[Country], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentCountry.title"),
@@ -39,7 +39,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.IncidentCountryController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.IncidentCountryController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

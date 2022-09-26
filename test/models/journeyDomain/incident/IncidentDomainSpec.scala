@@ -34,12 +34,12 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IncidentFlagPage, true)
-        .setValue(IncidentCountryPage, country)
-        .setValue(IncidentCodePage, incidentCode)
+        .setValue(IncidentCountryPage(index), country)
+        .setValue(IncidentCodePage(index), incidentCode)
 
-      val expectedResult = IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)
+      val expectedResult = IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)(index)
 
-      val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain].run(userAnswers)
+      val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
 
       result.value mustBe expectedResult
 
@@ -49,7 +49,7 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
       "when a mandatory page is missing" in {
 
-        val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain].run(emptyUserAnswers)
+        val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(emptyUserAnswers)
 
         result.left.value.page mustBe IncidentFlagPage
       }

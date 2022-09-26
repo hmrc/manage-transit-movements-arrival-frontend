@@ -16,9 +16,27 @@
 
 package navigation
 
+import models.Index
+import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomain
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentNavigator @Inject() () extends UserAnswersSectionNavigator[IncidentDomain]
+class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
+
+  def apply(index: Index): IncidentNavigator =
+    new IncidentNavigator(index)
+}
+
+trait IncidentNavigatorProvider {
+
+  def apply(index: Index): IncidentNavigator
+}
+
+class IncidentNavigator(
+  index: Index
+) extends UserAnswersNavigator[IncidentDomain, IdentificationDomain]()(
+      IncidentDomain.userAnswersReader(index),
+      IdentificationDomain.userAnswersReader
+    )

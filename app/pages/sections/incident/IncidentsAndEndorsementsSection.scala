@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.sections.incident
 
-import models.reference.IncidentCode
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class IncidentCodePageSpec extends PageBehaviours {
+case object IncidentsAndEndorsementsSection extends Section[JsObject] {
 
-  "IncidentCodePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[IncidentCode](IncidentCodePage(index))
-
-    beSettable[IncidentCode](IncidentCodePage(index))
-
-    beRemovable[IncidentCode](IncidentCodePage(index))
-  }
+  override def toString: String = "incidentsAndEndorsements"
 }

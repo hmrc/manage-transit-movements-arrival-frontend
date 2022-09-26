@@ -42,7 +42,7 @@ class IncidentCodeViewSpec extends InputSelectViewBehaviours[IncidentCode] with 
   override def form: Form[IncidentCode] = new IncidentCodeFormProvider()(prefix, IncidentCodeList(values))
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
   override val prefix: String = "incident.incidentCode"
 

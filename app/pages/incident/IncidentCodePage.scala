@@ -17,19 +17,20 @@
 package pages.incident
 
 import controllers.incident.routes
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import models.reference.IncidentCode
 import pages.QuestionPage
-import pages.sections.IncidentSection
+import pages.sections.incident
+import pages.sections.incident.IncidentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object IncidentCodePage extends QuestionPage[IncidentCode] {
+case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
-  override def path: JsPath = IncidentSection.path \ toString
+  override def path: JsPath = incident.IncidentSection(index).path \ toString
 
   override def toString: String = "incidentCode"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
 }

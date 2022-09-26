@@ -43,7 +43,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val mode         = NormalMode
 
   private val mockIncidentCodeService: IncidentCodeService = mock[IncidentCodeService]
-  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode).url
+  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -66,13 +66,13 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
+        view(form, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
-      val userAnswers = emptyUserAnswers.setValue(IncidentCodePage, incidentCode1)
+      val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(index), incidentCode1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentCodeRoute)
@@ -86,7 +86,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
+        view(filledForm, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -122,7 +122,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, incidentCodeList.incidentCodes, mode)(request, messages).toString
+        view(boundForm, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -17,27 +17,33 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.{Index, UserAnswers}
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import pages.sections.incident.IncidentsSection
 import play.api.mvc.Call
 
-// TODO could probably remove the incident flag later as part of the larger domain model
-case class IncidentDomain(incidentCountry: Option[Country], incidentCode: IncidentCode)(index: Index) extends JourneyDomainModel {
+case class IncidentDomainList(incidentsDomain: Seq[IncidentDomain])
 
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
-    Some(???) // TODO link to next journey
-}
+object IncidentDomainList {
 
-object IncidentDomain {
+  implicit val userAnswersReader: UserAnswersReader[IncidentDomainList] = {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
-    (
-      IncidentFlagPage.filterOptionalDependent(identity)(IncidentCountryPage(index).reader),
-      IncidentCodePage(index).reader
-    ).mapN {
-      (country, code) => IncidentDomain(country, code)(index)
-    }
+    val incidentsReader: UserAnswersReader[Seq[IncidentDomain]] =
+      IncidentsSection.reader.flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader[IncidentDomain](
+            IncidentDomain.userAnswersReader(Index(0))
+          ).map(Seq(_))
+
+        case x =>
+          x.traverse[IncidentDomain](
+            IncidentDomain.userAnswersReader
+          ).map(_.toSeq)
+      }
+
+    UserAnswersReader[Seq[IncidentDomain]](incidentsReader).map(IncidentDomainList(_))
+  }
 
 }

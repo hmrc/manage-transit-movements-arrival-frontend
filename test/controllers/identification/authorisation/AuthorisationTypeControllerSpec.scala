@@ -18,8 +18,8 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
+import models.NormalMode
 import models.identification.authorisation.AuthorisationType
-import models.{Index, NormalMode}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -36,7 +36,6 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val formProvider                = new AuthorisationTypeFormProvider()
   private val form                        = formProvider()
-  private val index                       = Index(0)
   private val mode                        = NormalMode
   private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(mrn, index, mode).url
 

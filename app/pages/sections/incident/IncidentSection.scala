@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.incident
 
-import play.api.libs.json.JsPath
-import pages.QuestionPage
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object IncidentSection extends QuestionPage[Nothing] {
+case class IncidentSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = IncidentsSection.path \ index.position
 
-  override def toString: String = "incidentFlag"
 }

@@ -42,7 +42,7 @@ class IncidentCountryViewSpec extends InputSelectViewBehaviours[Country] with Ge
   override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentCountryView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IncidentCountryView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
   override val prefix: String = "incident.incidentCountry"
 
