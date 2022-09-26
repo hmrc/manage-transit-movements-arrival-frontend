@@ -17,7 +17,7 @@
 package pages.incident
 
 import controllers.incident.routes
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.IncidentSection
 import play.api.libs.json.JsPath
@@ -25,12 +25,12 @@ import play.api.mvc.Call
 
 import java.time.LocalDate
 
-case object EndorsementDatePage extends QuestionPage[LocalDate] {
+case class EndorsementDatePage(index: Index) extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = IncidentSection.path \ toString
+  override def path: JsPath = IncidentSection.path \ index.position \ toString
 
   override def toString: String = "endorsementDate"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.EndorsementDateController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.EndorsementDateController.onPageLoad(userAnswers.mrn, index, mode))
 }

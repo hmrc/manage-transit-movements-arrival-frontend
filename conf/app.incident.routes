@@ -9,7 +9,7 @@ POST       /:mrn/incident/incident-country                     controllers.incid
 GET        /:mrn/incident/change-incident-country              controllers.incident.IncidentCountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/incident/change-incident-country              controllers.incident.IncidentCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/incident/endorsement-date                        controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/incident/endorsement-date                        controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/incident/change-endorsement-date                 controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/incident/change-endorsement-date                 controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/incident/:index/endorsement-date                     controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:mrn/incident/:index/endorsement-date                     controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:mrn/incident/:index/change-endorsement-date              controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:mrn/incident/:index/change-endorsement-date              controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)

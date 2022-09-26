@@ -16,6 +16,7 @@
 
 package pages.incident
 
+import models.Index
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -29,10 +30,12 @@ class EndorsementDatePageSpec extends PageBehaviours {
       datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
 
-    beRetrievable[LocalDate](EndorsementDatePage)
+    val index: Index = Index(0)
 
-    beSettable[LocalDate](EndorsementDatePage)
+    beRetrievable[LocalDate](EndorsementDatePage(index))
 
-    beRemovable[LocalDate](EndorsementDatePage)
+    beSettable[LocalDate](EndorsementDatePage(index))
+
+    beRemovable[LocalDate](EndorsementDatePage(index))
   }
 }

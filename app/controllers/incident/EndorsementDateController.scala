@@ -19,7 +19,7 @@ package controllers.incident
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.Incident
 import pages.incident.EndorsementDatePage
@@ -48,22 +48,22 @@ class EndorsementDateController @Inject() (
   private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
   private val form    = formProvider("incident.endorsementDate", minDate)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(EndorsementDatePage) match {
+      val preparedForm = request.userAnswers.get(EndorsementDatePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mrn, mode))
+      Ok(view(preparedForm, mrn, index, mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => EndorsementDatePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode))),
+          value => EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }
 }

@@ -18,14 +18,10 @@ package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.Incident
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.EndorsementDatePage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.EndorsementDateView
@@ -39,10 +35,12 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val zone    = ZoneOffset.UTC
   private val clock   = Clock.systemDefaultZone.withZone(zone)
 
+  private val index = Index(0)
+
   private val formProvider              = new DateFormProvider(clock)
   private val form                      = formProvider("incident.endorsementDate", minDate)
   private val mode                      = NormalMode
-  private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, mode).url
+  private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, index, mode).url
   private val date                      = LocalDate.now
 
   "EndorsementDate Controller" - {
@@ -60,12 +58,12 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+        view(form, mrn, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementDatePage, date)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementDatePage(index), date)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, endorsementDateRoute)
@@ -85,7 +83,7 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -124,7 +122,7 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val view = injector.instanceOf[EndorsementDateView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

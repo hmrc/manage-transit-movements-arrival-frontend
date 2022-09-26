@@ -17,11 +17,12 @@
 package views.incident
 
 import forms.DateFormProvider
-import models.NormalMode
+import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DateInputViewBehaviours
 import views.html.incident.EndorsementDateView
+
 import java.time.{Clock, LocalDate, ZoneOffset}
 
 class EndorsementDateViewSpec extends DateInputViewBehaviours {
@@ -33,7 +34,7 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
   override def form: Form[LocalDate] = new DateFormProvider(clock)(prefix, minDate)
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
-    injector.instanceOf[EndorsementDateView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[EndorsementDateView].apply(form, mrn, Index(0), NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "incident.endorsementDate"
 
