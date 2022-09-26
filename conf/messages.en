@@ -290,3 +290,14 @@ incident.incidentCountry.placeholder = Select a country
 incident.incidentCountry.change.hidden = which country the place of incident is in
 incident.incidentCountry.checkYourAnswersLabel = In which country is the place of incident?
 incident.incidentCountry.error.required = Enter which country the place of incident is in
+
+incident.endorsementDate.title = Endorsement date
+incident.endorsementDate.heading = Endorsement date
+incident.endorsementDate.checkYourAnswersLabel = Endorsement date
+incident.endorsementDate.hint = For example, 14 1 2020
+incident.endorsementDate.error.required.all = Enter the date for Endorsement date
+incident.endorsementDate.error.required.two = The date for Endorsement date must include {0} and {1}
+incident.endorsementDate.error.required = The date for Endorsement date must include {0}
+incident.endorsementDate.error.invalid = Enter a real date for Endorsement date
+incident.endorsementDate.error.min.date = The date must be after {0}
+incident.endorsementDate.error.max.date = The date must be before the current date
