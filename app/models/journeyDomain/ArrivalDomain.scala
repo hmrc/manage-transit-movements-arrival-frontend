@@ -16,14 +16,15 @@
 
 package models.journeyDomain
 
+import cats.implicits._
 import models.UserAnswers
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
+import models.journeyDomain.incident.IncidentDomainList
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
+import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
-import cats.implicits._
 
-case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain, incident: IncidentDomainList)
+case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain, incidents: Option[IncidentDomainList])
     extends JourneyDomainModel {
 
   //TODO: Add confirmation page
@@ -37,6 +38,6 @@ object ArrivalDomain {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      incident        <- UserAnswersReader[IncidentDomainList]
-    } yield ArrivalDomain(identification, locationOfGoods, incident)
+      incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentDomainList])
+    } yield ArrivalDomain(identification, locationOfGoods, incidents)
 }

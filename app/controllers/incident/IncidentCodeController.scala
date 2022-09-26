@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IncidentCodeFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{AuthorisationNavigatorProvider, IncidentNavigator, IncidentNavigatorProvider, Navigator}
-import navigation.annotations.Incident
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.IncidentCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

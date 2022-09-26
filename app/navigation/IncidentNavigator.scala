@@ -18,7 +18,6 @@ package navigation
 
 import models.Index
 import models.journeyDomain.ArrivalDomain
-import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomain
 
 import javax.inject.{Inject, Singleton}

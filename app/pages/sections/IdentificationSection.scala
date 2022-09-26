@@ -20,7 +20,7 @@ import play.api.libs.json.{JsObject, JsPath}
 
 case object IdentificationSection extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = ArrivalSection.path \ toString
 
   override def toString: String = "identification"
 }

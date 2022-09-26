@@ -17,14 +17,13 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.{Index, UserAnswers}
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import models.{Index, UserAnswers}
+import pages.incident.{IncidentCodePage, IncidentCountryPage}
 import play.api.mvc.Call
 
-// TODO could probably remove the incident flag later as part of the larger domain model
-case class IncidentDomain(incidentCountry: Option[Country], incidentCode: IncidentCode)(index: Index) extends JourneyDomainModel {
+case class IncidentDomain(incidentCountry: Country, incidentCode: IncidentCode) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
     Some(???) // TODO link to next journey
@@ -34,10 +33,10 @@ object IncidentDomain {
 
   def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
     (
-      IncidentFlagPage.filterOptionalDependent(identity)(IncidentCountryPage(index).reader),
+      IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader
     ).mapN {
-      (country, code) => IncidentDomain(country, code)(index)
+      (country, code) => IncidentDomain(country, code)
     }
 
 }

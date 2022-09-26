@@ -23,7 +23,7 @@ import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import pages.incident.{IncidentCodePage, IncidentCountryPage}
 
 class IncidentDomainListSpec extends SpecBase with Generators {
 
@@ -37,7 +37,6 @@ class IncidentDomainListSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IncidentFlagPage, true)
         .setValue(IncidentCountryPage(index1), country)
         .setValue(IncidentCodePage(index1), incidentCode)
         .setValue(IncidentCountryPage(index2), country)
@@ -45,8 +44,8 @@ class IncidentDomainListSpec extends SpecBase with Generators {
 
       val expectedResult = IncidentDomainList(
         Seq(
-          IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)(index1),
-          IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)(index2)
+          IncidentDomain(incidentCountry = country, incidentCode = incidentCode),
+          IncidentDomain(incidentCountry = country, incidentCode = incidentCode)
         )
       )
 
@@ -61,13 +60,12 @@ class IncidentDomainListSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(IncidentFlagPage, true)
           .setValue(IncidentCountryPage(index1), country)
           .setValue(IncidentCodePage(index1), incidentCode)
           .setValue(IncidentCountryPage(index2), country)
           .setValue(IncidentCodePage(index2), incidentCode)
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(IncidentFlagPage, IncidentCountryPage(index1), IncidentCodePage(index1))
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(IncidentCountryPage(index1), IncidentCodePage(index1))
 
         mandatoryPages.map {
 

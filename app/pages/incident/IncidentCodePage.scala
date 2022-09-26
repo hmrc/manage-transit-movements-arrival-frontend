@@ -17,11 +17,10 @@
 package pages.incident
 
 import controllers.incident.routes
-import models.{Index, Mode, UserAnswers}
 import models.reference.IncidentCode
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
-import pages.sections.incident.IncidentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

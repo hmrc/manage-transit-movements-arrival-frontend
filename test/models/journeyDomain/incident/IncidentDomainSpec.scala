@@ -21,7 +21,8 @@ import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import pages.QuestionPage
+import pages.incident.{IncidentCodePage, IncidentCountryPage}
 
 class IncidentDomainSpec extends SpecBase with Generators {
 
@@ -33,11 +34,10 @@ class IncidentDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IncidentFlagPage, true)
         .setValue(IncidentCountryPage(index), country)
         .setValue(IncidentCodePage(index), incidentCode)
 
-      val expectedResult = IncidentDomain(incidentCountry = Some(country), incidentCode = incidentCode)(index)
+      val expectedResult = IncidentDomain(incidentCountry = country, incidentCode = incidentCode)
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
 
@@ -49,9 +49,24 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
       "when a mandatory page is missing" in {
 
-        val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(emptyUserAnswers)
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+          IncidentCountryPage(index),
+          IncidentCodePage(index)
+        )
 
-        result.left.value.page mustBe IncidentFlagPage
+        val userAnswers = emptyUserAnswers
+          .setValue(IncidentCountryPage(index), country)
+          .setValue(IncidentCodePage(index), incidentCode)
+
+        mandatoryPages.map {
+          mandatoryPage =>
+            val updatedAnswers = userAnswers.removeValue(mandatoryPage)
+
+            val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(updatedAnswers)
+
+            result.left.value.page mustBe mandatoryPage
+        }
+
       }
     }
   }

@@ -17,12 +17,9 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import models.reference.{Country, IncidentCode}
-import models.{Index, RichJsArray, UserAnswers}
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
 import pages.sections.incident.IncidentsSection
-import play.api.mvc.Call
 
 case class IncidentDomainList(incidentsDomain: Seq[IncidentDomain])
 
