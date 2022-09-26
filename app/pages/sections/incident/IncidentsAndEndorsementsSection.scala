@@ -16,12 +16,12 @@
 
 package pages.sections.incident
 
-import pages.sections.{ArrivalSection, Section}
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
 case object IncidentsAndEndorsementsSection extends Section[JsObject] {
 
-  override def path: JsPath = ArrivalSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "incidentsAndEndorsements"
 }
