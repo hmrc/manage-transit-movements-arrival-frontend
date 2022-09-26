@@ -17,6 +17,7 @@
 package navigation
 
 import models.Index
+import models.journeyDomain.ArrivalDomain
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomain
 
@@ -36,7 +37,7 @@ trait IncidentNavigatorProvider {
 
 class IncidentNavigator(
   index: Index
-) extends UserAnswersNavigator[IncidentDomain, IdentificationDomain]()(
+) extends UserAnswersNavigator[IncidentDomain, ArrivalDomain]()(
       IncidentDomain.userAnswersReader(index),
-      IdentificationDomain.userAnswersReader
+      ArrivalDomain.userAnswersReader
     )

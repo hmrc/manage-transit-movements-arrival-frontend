@@ -64,7 +64,7 @@ class IncidentCodeController @Inject() (
     implicit request =>
       service.getIncidentCodes.flatMap {
         incidentCodeList =>
-          val form = formProvider("incident.incidentCode", incidentCodeList)
+          val form                         = formProvider("incident.incidentCode", incidentCodeList)
           val navigator: IncidentNavigator = navigatorProvider(index)
           form
             .bindFromRequest()

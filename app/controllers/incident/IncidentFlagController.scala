@@ -58,7 +58,7 @@ class IncidentFlagController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val index = request.userAnswers.get(IncidentsSection).map(_.value.length - 1).getOrElse(0)
+      val index     = request.userAnswers.get(IncidentsSection).map(_.value.length - 1).getOrElse(0)
       val navigator = navigatorProvider(Index(index))
       form
         .bindFromRequest()

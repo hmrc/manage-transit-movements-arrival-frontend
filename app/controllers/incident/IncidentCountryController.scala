@@ -64,7 +64,7 @@ class IncidentCountryController @Inject() (
     implicit request =>
       service.getTransitCountries.flatMap {
         countryList =>
-          val form = formProvider("incident.incidentCountry", countryList)
+          val form      = formProvider("incident.incidentCountry", countryList)
           val navigator = navigatorProvider(index)
           form
             .bindFromRequest()
