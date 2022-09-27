@@ -20,10 +20,14 @@ import cats.implicits._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import models.{Index, UserAnswers}
-import pages.incident.{IncidentCodePage, IncidentCountryPage}
+import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 import play.api.mvc.Call
 
-case class IncidentDomain(incidentCountry: Country, incidentCode: IncidentCode) extends JourneyDomainModel {
+case class IncidentDomain(
+  incidentCountry: Country,
+  incidentCode: IncidentCode,
+  incidentText: String
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
     Some(???) // TODO link to next journey
@@ -34,9 +38,10 @@ object IncidentDomain {
   def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
     (
       IncidentCountryPage(index).reader,
-      IncidentCodePage(index).reader
+      IncidentCodePage(index).reader,
+      IncidentTextPage(index).reader
     ).mapN {
-      (country, code) => IncidentDomain(country, code)
+      (country, code, text) => IncidentDomain(country, code, text)
     }
 
 }

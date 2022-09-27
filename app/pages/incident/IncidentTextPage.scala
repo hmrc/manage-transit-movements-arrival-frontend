@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident
 
-object Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int    = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength: Int       = 35
-  lazy val minTelephoneNumberLength: Int       = 6
-  lazy val authorisationNumberLength: Int      = 35
-  lazy val maxIncidentTextLength: Int          = 512
+import controllers.incident.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.IncidentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+case class IncidentTextPage(index: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = IncidentSection(index).path \ toString
+
+  override def toString: String = "incidentText"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, index))
 }
