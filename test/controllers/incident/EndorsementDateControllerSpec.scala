@@ -18,7 +18,7 @@ package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.EndorsementDatePage
@@ -34,8 +34,6 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
   private val zone    = ZoneOffset.UTC
   private val clock   = Clock.systemDefaultZone.withZone(zone)
-
-  private val index = Index(0)
 
   private val formProvider              = new DateFormProvider(clock)
   private val form                      = formProvider("incident.endorsementDate", minDate)

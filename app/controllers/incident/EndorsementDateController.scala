@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.Incident
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.EndorsementDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,14 +28,14 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.EndorsementDateView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import java.time.LocalDate
 
 class EndorsementDateController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @Incident implicit val navigator: Navigator,
+  navigatorProvider: IncidentNavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -59,6 +58,7 @@ class EndorsementDateController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
+      implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
       form
         .bindFromRequest()
         .fold(
