@@ -16,17 +16,20 @@
 
 package pages.incident
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import controllers.incident.routes
+import models.reference.IncidentCode
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class IncidentCountryPageSpec extends PageBehaviours {
+case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
-  "IncidentCountryPage" - {
+  override def path: JsPath = incident.IncidentSection(index).path \ toString
 
-    beRetrievable[Country](IncidentCountryPage(index))
+  override def toString: String = "incidentCode"
 
-    beSettable[Country](IncidentCountryPage(index))
-
-    beRemovable[Country](IncidentCountryPage(index))
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
 }

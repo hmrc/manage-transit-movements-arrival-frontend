@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.AuthorisationRefNoFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -35,7 +35,6 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
   private val formProvider                           = new AuthorisationRefNoFormProvider()
   private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber")
-  private val index                                  = Index(0)
   private val mode                                   = NormalMode
   private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, index, mode).url
 

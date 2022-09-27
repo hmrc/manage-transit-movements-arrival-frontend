@@ -19,13 +19,13 @@ package pages.incident
 import controllers.incident.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.IncidentSection
+import pages.sections.incident.IncidentsAndEndorsementsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object IncidentFlagPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = IncidentSection.path \ toString
+  override def path: JsPath = IncidentsAndEndorsementsSection.path \ toString
 
   override def toString: String = "incidentFlag"
 

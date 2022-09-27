@@ -16,35 +16,35 @@
 
 package views.incident
 
-import forms.CountryFormProvider
+import forms.IncidentCodeFormProvider
 import generators.Generators
 import views.behaviours.InputSelectViewBehaviours
 import models.NormalMode
-import models.reference.Country
-import models.CountryList
+import models.reference.IncidentCode
+import models.IncidentCodeList
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.html.incident.IncidentCountryView
+import views.html.incident.IncidentCodeView
 
-class IncidentCountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
+class IncidentCodeViewSpec extends InputSelectViewBehaviours[IncidentCode] with Generators {
 
-  private lazy val country1 = arbitraryCountry.arbitrary.sample.get
-  private lazy val country2 = arbitraryCountry.arbitrary.sample.get
-  private lazy val country3 = arbitraryCountry.arbitrary.sample.get
+  private lazy val incidentCode1 = arbitraryIncidentCode.arbitrary.sample.get
+  private lazy val incidentCode2 = arbitraryIncidentCode.arbitrary.sample.get
+  private lazy val incidentCode3 = arbitraryIncidentCode.arbitrary.sample.get
 
-  override def values: Seq[Country] =
+  override def values: Seq[IncidentCode] =
     Seq(
-      country1,
-      country2,
-      country3
+      incidentCode1,
+      incidentCode2,
+      incidentCode3
     )
 
-  override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
+  override def form: Form[IncidentCode] = new IncidentCodeFormProvider()(prefix, IncidentCodeList(values))
 
-  override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentCountryView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
+  override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
+    injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "incident.incidentCountry"
+  override val prefix: String = "incident.incidentCode"
 
   behave like pageWithTitle()
 
@@ -54,7 +54,7 @@ class IncidentCountryViewSpec extends InputSelectViewBehaviours[Country] with Ge
 
   behave like pageWithSelect
 
-  behave like pageWithHint("Enter the country, like Italy or Spain.")
+  behave like pageWithHint("Hint")
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package pages.incident
+package models.reference
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class IncidentCountryPageSpec extends PageBehaviours {
+case class IncidentCode(
+  code: String,
+  description: String
+) extends Selectable {
 
-  "IncidentCountryPage" - {
+  override def toString: String = s"$code - $description"
 
-    beRetrievable[Country](IncidentCountryPage(index))
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
+}
 
-    beSettable[Country](IncidentCountryPage(index))
-
-    beRemovable[Country](IncidentCountryPage(index))
-  }
+object IncidentCode {
+  implicit val format: OFormat[IncidentCode] = Json.format[IncidentCode]
 }

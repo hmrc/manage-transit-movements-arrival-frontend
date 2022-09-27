@@ -54,6 +54,7 @@ trait SpecBase
   val eventIndex: Index         = Index(0)
   val containerIndex: Index     = Index(0)
   val sealIndex: Index          = Index(0)
+  val index: Index              = Index(0)
 
   val traderName: String       = "traderName"
   val consigneeName: String    = "consigneeName"
