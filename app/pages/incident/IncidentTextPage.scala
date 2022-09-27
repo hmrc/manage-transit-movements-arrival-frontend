@@ -16,16 +16,19 @@
 
 package pages.incident
 
-import pages.behaviours.PageBehaviours
+import controllers.incident.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.IncidentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class IncidentDescriptionPageSpec extends PageBehaviours {
+case class IncidentTextPage(index: Index) extends QuestionPage[String] {
 
-  "IncidentDescriptionPage" - {
+  override def path: JsPath = IncidentSection(index).path \ toString
 
-    beRetrievable[String](IncidentDescriptionPage)
+  override def toString: String = "incidentText"
 
-    beSettable[String](IncidentDescriptionPage)
-
-    beRemovable[String](IncidentDescriptionPage)
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, index))
 }

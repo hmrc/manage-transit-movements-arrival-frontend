@@ -16,22 +16,22 @@
 
 package views.incident
 
-import forms.Constants.maxIncidentDescriptionLength
-import forms.IncidentDescriptionFormProvider
+import forms.Constants.maxIncidentTextLength
+import forms.IncidentTextFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.incident.IncidentDescriptionView
+import views.html.incident.IncidentTextView
 
-class IncidentDescriptionViewSpec extends CharacterCountViewBehaviours {
+class IncidentTextViewSpec extends CharacterCountViewBehaviours {
 
-  override val prefix: String = "incident.incidentDescription"
+  override val prefix: String = "incident.incidentText"
 
-  override def form: Form[String] = new IncidentDescriptionFormProvider()(prefix)
+  override def form: Form[String] = new IncidentTextFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentDescriptionView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IncidentTextView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -39,7 +39,7 @@ class IncidentDescriptionViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxIncidentDescriptionLength)
+  behave like pageWithCharacterCount(maxIncidentTextLength)
 
   behave like pageWithSubmitButton("Continue")
 }

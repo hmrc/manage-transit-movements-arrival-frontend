@@ -299,9 +299,9 @@ incident.incidentCode.change.hidden = What is the incident code for the place of
 incident.incidentCode.checkYourAnswersLabel = What is the incident code for the place of incident?
 incident.incidentCode.error.required = Enter the incident code for the place of incident
 
-incident.incidentDescription.title = Description of the incident.
-incident.incidentDescription.heading = Description of the incident.
-incident.incidentDescription.checkYourAnswersLabel = Description of the incident.
-incident.incidentDescription.error.required = Enter description of the incident.
-incident.incidentDescription.error.maxLength = The Incident description must be 512 characters or less
-incident.incidentDescription.error.invalidCharacters = The Incident description must only include letters a to z, numbers 0 to 9 and spaces
+incident.incidentText.title = Description of the incident.
+incident.incidentText.heading = Description of the incident.
+incident.incidentText.checkYourAnswersLabel = Description of the incident.
+incident.incidentText.error.required = Enter description of the incident.
+incident.incidentText.error.maxLength = The Incident description must be 512 characters or less
+incident.incidentText.error.invalidCharacters = The Incident description must only include letters a to z, numbers 0 to 9 and spaces

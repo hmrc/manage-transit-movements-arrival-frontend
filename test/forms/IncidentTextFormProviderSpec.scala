@@ -16,19 +16,19 @@
 
 package forms
 
-import forms.Constants.maxIncidentDescriptionLength
+import forms.Constants.maxIncidentTextLength
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
-class IncidentDescriptionFormProviderSpec extends StringFieldBehaviours {
+class IncidentTextFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix       = Gen.alphaNumStr.sample.value
   private val requiredKey  = s"$prefix.error.required"
   private val maxLengthKey = s"$prefix.error.maxLength"
-  private val maxLength    = maxIncidentDescriptionLength
+  private val maxLength    = maxIncidentTextLength
 
-  val form = new IncidentDescriptionFormProvider()(prefix)
+  val form = new IncidentTextFormProvider()(prefix)
 
   ".value" - {
 

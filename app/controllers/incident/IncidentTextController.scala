@@ -18,50 +18,52 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.IncidentDescriptionFormProvider
-import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.Incident
-import pages.incident.IncidentDescriptionPage
+import forms.IncidentTextFormProvider
+import models.{Index, Mode, MovementReferenceNumber}
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import pages.incident.IncidentTextPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.IncidentDescriptionView
+import views.html.incident.IncidentTextView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncidentDescriptionController @Inject() (
+class IncidentTextController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @Incident implicit val navigator: Navigator,
-  formProvider: IncidentDescriptionFormProvider,
+  navigatorProvider: IncidentNavigatorProvider,
+  formProvider: IncidentTextFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: IncidentDescriptionView
+  view: IncidentTextView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("incident.incidentDescription")
+  private val form = formProvider("incident.incidentText")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IncidentDescriptionPage) match {
+      val preparedForm = request.userAnswers.get(IncidentTextPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mrn, mode))
+      Ok(view(preparedForm, mrn, mode, index))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => IncidentDescriptionPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          value => {
+            implicit val navigator: IncidentNavigator = navigatorProvider(index)
+            IncidentTextPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          }
         )
   }
 }

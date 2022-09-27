@@ -16,14 +16,14 @@
 
 package forms
 
-import forms.Constants.maxIncidentDescriptionLength
+import forms.Constants.maxIncidentTextLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class IncidentDescriptionFormProvider @Inject() extends Mappings {
+class IncidentTextFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
@@ -31,7 +31,7 @@ class IncidentDescriptionFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxIncidentDescriptionLength, s"$prefix.error.maxLength")
+            maxLength(maxIncidentTextLength, s"$prefix.error.maxLength")
           )
         )
     )

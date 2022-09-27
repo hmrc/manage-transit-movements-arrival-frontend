@@ -14,7 +14,7 @@ POST       /:mrn/incident/:index/incident-code                        controller
 GET        /:mrn/incident/:index/change-incident-code                 controllers.incident.IncidentCodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 POST       /:mrn/incident/:index/change-incident-code                 controllers.incident.IncidentCodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 
-GET        /:mrn/incident/incident-description                 controllers.incident.IncidentDescriptionController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/incident/incident-description                 controllers.incident.IncidentDescriptionController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/incident/change-incident-description          controllers.incident.IncidentDescriptionController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/incident/change-incident-description          controllers.incident.IncidentDescriptionController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/incident/:index/incident-text                        controllers.incident.IncidentTextController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:mrn/incident/:index/incident-text                        controllers.incident.IncidentTextController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:mrn/incident/:index/change-incident-text                 controllers.incident.IncidentTextController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:mrn/incident/:index/change-incident-text                 controllers.incident.IncidentTextController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)

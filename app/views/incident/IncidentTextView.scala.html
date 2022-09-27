@@ -15,7 +15,7 @@
  *@
 
 @import controllers.incident.routes
-@import forms.Constants.maxIncidentDescriptionLength
+@import forms.Constants.maxIncidentTextLength
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
@@ -28,22 +28,22 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.incidentDescription.title"),
+    title = messages("incident.incidentText.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.IncidentDescriptionController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.IncidentTextController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputCharacterCount(
             field = form("value"),
-            label = messages("incident.incidentDescription.heading"),
-            maxLength = maxIncidentDescriptionLength,
+            label = messages("incident.incidentText.heading"),
+            maxLength = maxIncidentTextLength,
             hint = None
         )
 
