@@ -39,7 +39,6 @@ class EndorsementDomainSpec extends SpecBase with Generators {
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
         .setValue(EndorsementPlacePage(index), place)
-        .setValue(EndorsementPlacePage(index), place)
 
       val expectedResult = EndorsementDomain(localDate, authority, place)
 
