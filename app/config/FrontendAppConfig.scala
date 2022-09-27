@@ -21,7 +21,7 @@ import play.api.Configuration
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
-import java.time.{LocalDate, Period}
+import java.time.LocalDate
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {

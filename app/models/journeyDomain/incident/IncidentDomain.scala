@@ -17,6 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
+import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import models.{Index, UserAnswers}
@@ -27,7 +28,7 @@ case class IncidentDomain(
   incidentCountry: Country,
   incidentCode: IncidentCode,
   incidentText: String,
-  endorsement: Option[???]
+  endorsement: Option[EndorsementDomain]
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
@@ -41,7 +42,7 @@ object IncidentDomain {
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
-      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[???])
+      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)))
     ).mapN {
       (country, code, text, endorsement) => IncidentDomain(country, code, text, endorsement)
     }

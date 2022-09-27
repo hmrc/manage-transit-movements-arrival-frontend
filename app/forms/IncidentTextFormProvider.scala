@@ -27,7 +27,7 @@ class IncidentTextFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),

@@ -19,10 +19,8 @@ package models.journeyDomain.incident.endorsement
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, IncidentCode}
-import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
-import pages.incident.{EndorsementDatePage, IncidentCodePage, IncidentCountryPage}
+import pages.incident.EndorsementDatePage
 
 import java.time.LocalDate
 
