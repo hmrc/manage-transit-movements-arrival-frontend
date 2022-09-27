@@ -310,3 +310,10 @@ incident.endorsementDate.error.required = The date for Endorsement date must inc
 incident.endorsementDate.error.invalid = Enter a real date for Endorsement date
 incident.endorsementDate.error.min.date = The date must be after {0}
 incident.endorsementDate.error.max.date = The date must be before the current date
+
+incident.incidentText.title = Description of the incident.
+incident.incidentText.heading = Description of the incident.
+incident.incidentText.checkYourAnswersLabel = Description of the incident.
+incident.incidentText.error.required = Enter description of the incident.
+incident.incidentText.error.maxLength = The Incident description must be 512 characters or less
+incident.incidentText.error.invalidCharacters = The Incident description must only include letters a to z, numbers 0 to 9 and spaces

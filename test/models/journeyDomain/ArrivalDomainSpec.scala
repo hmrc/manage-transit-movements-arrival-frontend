@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
+import forms.Constants
 import generators.Generators
 import models.InternationalAddress
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
@@ -28,7 +29,7 @@ import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage, IncidentTextPage}
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 import java.time.LocalDate
@@ -37,6 +38,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
+  private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val date         = arbitrary[LocalDate].sample.value
   private val id           = Gen.alphaNumStr.sample.value
 
@@ -55,6 +57,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         .setValue(IncidentFlagPage, true)
         .setValue(IncidentCountryPage(index), country)
         .setValue(IncidentCodePage(index), incidentCode)
+        .setValue(IncidentTextPage(index), incidentText)
 
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
@@ -78,7 +81,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
             Seq(
               IncidentDomain(
                 incidentCountry = country,
-                incidentCode = incidentCode
+                incidentCode = incidentCode,
+                incidentText = incidentText
               )
             )
           )
@@ -143,6 +147,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
           .setValue(AddContactPersonPage, false)
           .setValue(IncidentCountryPage(index), country)
           .setValue(IncidentCodePage(index), incidentCode)
+          .setValue(IncidentTextPage(index), incidentText)
 
         val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 

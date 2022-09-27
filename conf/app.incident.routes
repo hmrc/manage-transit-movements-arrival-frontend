@@ -18,3 +18,8 @@ GET        /:mrn/incident/:index/endorsement-date                     controller
 POST       /:mrn/incident/:index/endorsement-date                     controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:mrn/incident/:index/change-endorsement-date              controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:mrn/incident/:index/change-endorsement-date              controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:mrn/incident/:index/incident-text                        controllers.incident.IncidentTextController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:mrn/incident/:index/incident-text                        controllers.incident.IncidentTextController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:mrn/incident/:index/change-incident-text                 controllers.incident.IncidentTextController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:mrn/incident/:index/change-incident-text                 controllers.incident.IncidentTextController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
