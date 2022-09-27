@@ -17,17 +17,20 @@
 package models.journeyDomain.incident
 
 import base.SpecBase
+import forms.Constants
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{IncidentCodePage, IncidentCountryPage}
+import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 
 class IncidentDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
+  private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
 
   "IncidentDomain" - {
 
@@ -36,8 +39,9 @@ class IncidentDomainSpec extends SpecBase with Generators {
       val userAnswers = emptyUserAnswers
         .setValue(IncidentCountryPage(index), country)
         .setValue(IncidentCodePage(index), incidentCode)
+        .setValue(IncidentTextPage(index), incidentText)
 
-      val expectedResult = IncidentDomain(incidentCountry = country, incidentCode = incidentCode)
+      val expectedResult = IncidentDomain(incidentCountry = country, incidentCode = incidentCode, incidentText = incidentText)
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
 
@@ -51,12 +55,14 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
           IncidentCountryPage(index),
-          IncidentCodePage(index)
+          IncidentCodePage(index),
+          IncidentTextPage(index)
         )
 
         val userAnswers = emptyUserAnswers
           .setValue(IncidentCountryPage(index), country)
           .setValue(IncidentCodePage(index), incidentCode)
+          .setValue(IncidentTextPage(index), incidentText)
 
         mandatoryPages.map {
           mandatoryPage =>

@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package forms
+package models.journeyDomain.incident.endorsement
 
-object Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int    = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength: Int       = 35
-  lazy val minTelephoneNumberLength: Int       = 6
-  lazy val authorisationNumberLength: Int      = 35
-  lazy val maxIncidentTextLength: Int          = 512
+import models.Index
+import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
+import cats.implicits._
+
+import java.time.LocalDate
+
+case class EndorsementDomain(date: LocalDate, authority: String)
+
+object EndorsementDomain {
+
+  def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
+    (
+      EndorsementDatePage(index).reader,
+      EndorsementAuthorityPage(index).reader
+    ).tupled.map((EndorsementDomain.apply _).tupled)
+
 }

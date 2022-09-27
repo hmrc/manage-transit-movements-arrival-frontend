@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident
 
-object Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int    = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength: Int       = 35
-  lazy val minTelephoneNumberLength: Int       = 6
-  lazy val authorisationNumberLength: Int      = 35
-  lazy val maxIncidentTextLength: Int          = 512
+import models.Index
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
+
+import java.time.LocalDate
+
+class EndorsementDatePageSpec extends PageBehaviours {
+
+  "EndorsementDatePage" - {
+
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
+
+    val index: Index = Index(0)
+
+    beRetrievable[LocalDate](EndorsementDatePage(index))
+
+    beSettable[LocalDate](EndorsementDatePage(index))
+
+    beRemovable[LocalDate](EndorsementDatePage(index))
+  }
 }

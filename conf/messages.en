@@ -299,6 +299,30 @@ incident.incidentCode.change.hidden = What is the incident code for the place of
 incident.incidentCode.checkYourAnswersLabel = What is the incident code for the place of incident?
 incident.incidentCode.error.required = Enter the incident code for the place of incident
 
+incident.endorsementDate.title = Endorsement date
+incident.endorsementDate.heading = Endorsement date
+incident.endorsementDate.checkYourAnswersLabel = Endorsement date
+incident.endorsementDate.hint = For example, 14 1 2020
+incident.endorsementDate.error.required.all = Enter the date for Endorsement date
+incident.endorsementDate.error.required.two = The date for Endorsement date must include {0} and {1}
+incident.endorsementDate.error.required = The date for Endorsement date must include {0}
+incident.endorsementDate.error.invalid = Enter a real date for Endorsement date
+incident.endorsementDate.error.min.date = The date must be after {0}
+incident.endorsementDate.error.max.date = The date must be before the current date
+
+incident.incidentText.title = Description of the incident.
+incident.incidentText.heading = Description of the incident.
+incident.incidentText.checkYourAnswersLabel = Description of the incident.
+incident.incidentText.error.required = Enter description of the incident.
+incident.incidentText.error.maxLength = The Incident description must be 512 characters or less
+incident.incidentText.error.invalidCharacters = The Incident description must only include letters a to z, numbers 0 to 9 and spaces
+
+incident.endorsementAuthority.title = What is the authority of endorsement
+incident.endorsementAuthority.heading = What is the authority of endorsement
+incident.endorsementAuthority.checkYourAnswersLabel = What is the authority of endorsement
+incident.endorsementAuthority.error.required = Enter the authority of endorsement
+incident.endorsementAuthority.error.length = The authority of endorsement must be 35 characters or less
+
 incident.endorsementPlace.title = Endorsement place //TODO: Add content when created
 incident.endorsementPlace.heading = Endorsement place
 incident.endorsementPlace.checkYourAnswersLabel = Endorsement place
