@@ -19,10 +19,10 @@ package controllers.incident
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.Incident
+import models.{Index, Mode, MovementReferenceNumber}
+import navigation.IncidentNavigatorProvider
 import pages.incident.IncidentFlagPage
+import pages.sections.incident.IncidentsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncidentFlagController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @Incident implicit val navigator: Navigator,
+  navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -58,6 +58,8 @@ class IncidentFlagController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
+      val index                   = request.userAnswers.get(IncidentsSection).map(_.value.length - 1).getOrElse(0)
+      implicit lazy val navigator = navigatorProvider(Index(index))
       form
         .bindFromRequest()
         .fold(

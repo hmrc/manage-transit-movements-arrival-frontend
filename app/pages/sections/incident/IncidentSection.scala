@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.sections.incident
 
 import models.Index
-import models.journeyDomain.ArrivalDomain
-import models.journeyDomain.incident.IncidentDomain
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import javax.inject.{Inject, Singleton}
+case class IncidentSection(index: Index) extends Section[JsObject] {
 
-@Singleton
-class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
+  override def path: JsPath = IncidentsSection.path \ index.position
 
-  def apply(index: Index): IncidentNavigator =
-    new IncidentNavigator(index)
 }
-
-trait IncidentNavigatorProvider {
-
-  def apply(index: Index): IncidentNavigator
-}
-
-class IncidentNavigator(
-  index: Index
-) extends UserAnswersNavigator[IncidentDomain, ArrivalDomain]()(
-      IncidentDomain.userAnswersReader(index),
-      ArrivalDomain.userAnswersReader
-    )

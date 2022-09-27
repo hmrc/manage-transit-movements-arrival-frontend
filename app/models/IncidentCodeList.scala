@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package pages.incident
+package models
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import models.reference.IncidentCode
 
-class IncidentCountryPageSpec extends PageBehaviours {
+case class IncidentCodeList(incidentCodes: Seq[IncidentCode]) {
 
-  "IncidentCountryPage" - {
+  def getAll: Seq[IncidentCode] = incidentCodes
 
-    beRetrievable[Country](IncidentCountryPage(index))
+  def getIncidentCode(code: String): Option[IncidentCode] = incidentCodes.find(_.code == code)
 
-    beSettable[Country](IncidentCountryPage(index))
-
-    beRemovable[Country](IncidentCountryPage(index))
+  override def equals(obj: Any): Boolean = obj match {
+    case x: IncidentCodeList => x.getAll == getAll
+    case _                   => false
   }
+
+}
+
+object IncidentCodeList {
+
+  def apply(incidentCodes: Seq[IncidentCode]): IncidentCodeList =
+    new IncidentCodeList(incidentCodes)
 }

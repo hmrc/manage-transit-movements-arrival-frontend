@@ -18,28 +18,38 @@ package models.journeyDomain.incident
 
 import base.SpecBase
 import generators.Generators
+import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
 import pages.incident.{IncidentCodePage, IncidentCountryPage}
 
-class IncidentDomainSpec extends SpecBase with Generators {
+class IncidentDomainListSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
+  private val index1       = Index(0)
+  private val index2       = Index(1)
 
-  "IncidentDomain" - {
+  "IncidentDomainList" - {
 
     "can be parsed from UserAnswers" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IncidentCountryPage(index), country)
-        .setValue(IncidentCodePage(index), incidentCode)
+        .setValue(IncidentCountryPage(index1), country)
+        .setValue(IncidentCodePage(index1), incidentCode)
+        .setValue(IncidentCountryPage(index2), country)
+        .setValue(IncidentCodePage(index2), incidentCode)
 
-      val expectedResult = IncidentDomain(incidentCountry = country, incidentCode = incidentCode)
+      val expectedResult = IncidentDomainList(
+        Seq(
+          IncidentDomain(incidentCountry = country, incidentCode = incidentCode),
+          IncidentDomain(incidentCountry = country, incidentCode = incidentCode)
+        )
+      )
 
-      val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
+      val result: EitherType[IncidentDomainList] = UserAnswersReader[IncidentDomainList].run(userAnswers)
 
       result.value mustBe expectedResult
 
@@ -49,24 +59,23 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
       "when a mandatory page is missing" in {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(
-          IncidentCountryPage(index),
-          IncidentCodePage(index)
-        )
-
         val userAnswers = emptyUserAnswers
-          .setValue(IncidentCountryPage(index), country)
-          .setValue(IncidentCodePage(index), incidentCode)
+          .setValue(IncidentCountryPage(index1), country)
+          .setValue(IncidentCodePage(index1), incidentCode)
+          .setValue(IncidentCountryPage(index2), country)
+          .setValue(IncidentCodePage(index2), incidentCode)
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(IncidentCountryPage(index1), IncidentCodePage(index1))
 
         mandatoryPages.map {
-          mandatoryPage =>
-            val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(updatedAnswers)
+          mandatoryPage =>
+            val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
+
+            val result: EitherType[IncidentDomainList] = UserAnswersReader[IncidentDomainList].run(updatedUserAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }
-
       }
     }
   }
