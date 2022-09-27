@@ -323,6 +323,11 @@ incident.endorsementAuthority.checkYourAnswersLabel = What is the authority of e
 incident.endorsementAuthority.error.required = Enter the authority of endorsement
 incident.endorsementAuthority.error.length = The authority of endorsement must be 35 characters or less
 
+incident.addEndorsement.title = Do you want to add an Endorsement?
+incident.addEndorsement.heading = Do you want to add an Endorsement?
+incident.addEndorsement.checkYourAnswersLabel = Do you want to add an Endorsement?
+incident.addEndorsement.error.required = Select yes if you want to add an Endorsement
+
 incident.endorsementPlace.title = Endorsement place //TODO: Add content when created
 incident.endorsementPlace.heading = Endorsement place
 incident.endorsementPlace.checkYourAnswersLabel = Endorsement place

@@ -17,35 +17,35 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.IncidentTextFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.IncidentTextPage
+import org.scalatestplus.mockito.MockitoSugar
+import pages.incident.AddEndorsementPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.IncidentTextView
+import views.html.incident.AddEndorsementView
 
 import scala.concurrent.Future
 
-class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddEndorsementControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider           = new IncidentTextFormProvider()
-  private val form                   = formProvider("incident.incidentText")
-  private val mode                   = NormalMode
-  private lazy val incidentTextRoute = routes.IncidentTextController.onPageLoad(mrn, mode, index).url
+  private val formProvider             = new YesNoFormProvider()
+  private val form                     = formProvider("Incident.addEndorsement")
+  private val mode                     = NormalMode
+  private lazy val addEndorsementRoute = routes.AddEndorsementController.onPageLoad(mrn, mode, index).url
 
-  "IncidentText Controller" - {
+  "AddEndorsement Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, incidentTextRoute)
+      val request = FakeRequest(GET, addEndorsementRoute)
+      val result  = route(app, request).value
 
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[IncidentTextView]
+      val view = injector.instanceOf[AddEndorsementView]
 
       status(result) mustEqual OK
 
@@ -55,16 +55,16 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IncidentTextPage(index), "test string 1")
+      val userAnswers = emptyUserAnswers.setValue(AddEndorsementPage(index), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, incidentTextRoute)
+      val request = FakeRequest(GET, addEndorsementRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string 1"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[IncidentTextView]
+      val view = injector.instanceOf[AddEndorsementView]
 
       status(result) mustEqual OK
 
@@ -74,12 +74,13 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, incidentTextRoute)
-        .withFormUrlEncodedBody(("value", "test string."))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request =
+        FakeRequest(POST, addEndorsementRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -92,26 +93,24 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, incidentTextRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, addEndorsementRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[IncidentTextView]
+      val view = injector.instanceOf[AddEndorsementView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(boundForm, mrn, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, incidentTextRoute)
+      val request = FakeRequest(GET, addEndorsementRoute)
 
       val result = route(app, request).value
 
@@ -124,8 +123,8 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, incidentTextRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+      val request = FakeRequest(POST, addEndorsementRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
