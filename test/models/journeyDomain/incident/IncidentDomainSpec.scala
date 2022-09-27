@@ -25,7 +25,15 @@ import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{
+  AddEndorsementPage,
+  EndorsementAuthorityPage,
+  EndorsementCountryPage,
+  EndorsementDatePage,
+  IncidentCodePage,
+  IncidentCountryPage,
+  IncidentTextPage
+}
 
 import java.time.LocalDate
 
@@ -48,12 +56,13 @@ class IncidentDomainSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
+        .setValue(EndorsementCountryPage(index), country)
 
       val expectedResult = IncidentDomain(
         incidentCountry = country,
         incidentCode = incidentCode,
         incidentText = incidentText,
-        endorsement = Some(EndorsementDomain(localDate, authority))
+        endorsement = Some(EndorsementDomain(localDate, authority, country))
       )
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
@@ -101,6 +110,7 @@ class IncidentDomainSpec extends SpecBase with Generators {
           .setValue(AddEndorsementPage(index), true)
           .setValue(EndorsementDatePage(index), localDate)
           .setValue(EndorsementAuthorityPage(index), authority)
+          .setValue(EndorsementCountryPage(index), country)
 
         mandatoryPages.map {
           mandatoryPage =>

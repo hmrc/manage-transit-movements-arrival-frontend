@@ -328,3 +328,11 @@ incident.addEndorsement.title = Do you want to add an Endorsement?
 incident.addEndorsement.heading = Do you want to add an Endorsement?
 incident.addEndorsement.checkYourAnswersLabel = Do you want to add an Endorsement?
 incident.addEndorsement.error.required = Select yes if you want to add an Endorsement
+
+incident.endorsementCountry.title = Which country is the place of endorsement in?
+incident.endorsementCountry.heading = Which country is the place of endorsement in?
+incident.endorsementCountry.hintText = Enter the country, like Italy or Spain.
+incident.endorsementCountry.placeholder = Select a country
+incident.endorsementCountry.change.hidden = Which country is the place of endorsement in?
+incident.endorsementCountry.checkYourAnswersLabel = Which country is the place of endorsement in?
+incident.endorsementCountry.error.required = Select which country the place of endorsement is in

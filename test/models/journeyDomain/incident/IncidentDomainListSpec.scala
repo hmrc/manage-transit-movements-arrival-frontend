@@ -26,7 +26,15 @@ import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{
+  AddEndorsementPage,
+  EndorsementAuthorityPage,
+  EndorsementCountryPage,
+  EndorsementDatePage,
+  IncidentCodePage,
+  IncidentCountryPage,
+  IncidentTextPage
+}
 
 import java.time.LocalDate
 
@@ -51,12 +59,14 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index1), true)
         .setValue(EndorsementDatePage(index1), localDate)
         .setValue(EndorsementAuthorityPage(index1), authority)
+        .setValue(EndorsementCountryPage(index1), country)
         .setValue(IncidentCountryPage(index2), country)
         .setValue(IncidentCodePage(index2), incidentCode)
         .setValue(IncidentTextPage(index2), incidentText)
         .setValue(AddEndorsementPage(index2), true)
         .setValue(EndorsementDatePage(index2), localDate)
         .setValue(EndorsementAuthorityPage(index2), authority)
+        .setValue(EndorsementCountryPage(index2), country)
 
       val expectedResult = IncidentDomainList(
         Seq(
@@ -64,13 +74,13 @@ class IncidentDomainListSpec extends SpecBase with Generators {
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority))
+            endorsement = Some(EndorsementDomain(localDate, authority, country))
           ),
           IncidentDomain(
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority))
+            endorsement = Some(EndorsementDomain(localDate, authority, country))
           )
         )
       )
