@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.sections.incident
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-class IncidentCountryPageSpec extends PageBehaviours {
+case object IncidentsSection extends Section[JsArray] {
 
-  "IncidentCountryPage" - {
+  override def path: JsPath = IncidentsAndEndorsementsSection.path \ toString
 
-    beRetrievable[Country](IncidentCountryPage(index))
-
-    beSettable[Country](IncidentCountryPage(index))
-
-    beRemovable[Country](IncidentCountryPage(index))
-  }
+  override def toString: String = "incidents"
 }

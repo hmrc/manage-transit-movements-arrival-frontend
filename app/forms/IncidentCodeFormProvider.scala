@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages.incident
+package forms
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.reference.IncidentCode
+import models.IncidentCodeList
 
-class IncidentCountryPageSpec extends PageBehaviours {
+class IncidentCodeFormProvider @Inject() extends Mappings {
 
-  "IncidentCountryPage" - {
-
-    beRetrievable[Country](IncidentCountryPage(index))
-
-    beSettable[Country](IncidentCountryPage(index))
-
-    beRemovable[Country](IncidentCountryPage(index))
-  }
+  def apply(prefix: String, incidentCodeList: IncidentCodeList): Form[IncidentCode] =
+    Form(
+      "value" -> incidentCode(incidentCodeList, s"$prefix.error.required")
+    )
 }

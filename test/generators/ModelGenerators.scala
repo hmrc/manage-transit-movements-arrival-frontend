@@ -151,4 +151,12 @@ trait ModelGenerators {
         postCodeEnd     <- stringsWithLength(2, Gen.alphaChar)
       } yield UkAddress(addressLine1, addressLine2, postCodeStart + postCodeMiddle + " " + postCodeLastNum + postCodeEnd)
     }
+
+  implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
+    Arbitrary {
+      for {
+        code        <- nonEmptyString
+        description <- nonEmptyString
+      } yield IncidentCode(code, description)
+    }
 }

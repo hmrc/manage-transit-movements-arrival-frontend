@@ -283,10 +283,19 @@ incident.incidentFlag.heading = IncidentFlag
 incident.incidentFlag.checkYourAnswersLabel = IncidentFlag
 incident.incidentFlag.error.required = Select yes if IncidentFlag
 
-incident.incidentCountry.title = In which country is the place of incident?
-incident.incidentCountry.heading = In which country is the place of incident?
+incident.incidentCountry.title = Which country is the place of incident in?
+incident.incidentCountry.heading = Which country is the place of incident in?
 incident.incidentCountry.hintText = Enter the country, like Italy or Spain.
 incident.incidentCountry.placeholder = Select a country
-incident.incidentCountry.change.hidden = which country the place of incident is in
-incident.incidentCountry.checkYourAnswersLabel = In which country is the place of incident?
+incident.incidentCountry.change.hidden = which country is the place of incident in
+incident.incidentCountry.checkYourAnswersLabel = Which country is the place of incident in?
 incident.incidentCountry.error.required = Enter which country the place of incident is in
+
+incident.incidentCode.title = What is the incident code for the place of incident?
+incident.incidentCode.heading = What is the incident code for the place of incident?
+incident.incidentCode.hintText = Hint
+incident.incidentCode.placeholder = Select a incident code
+incident.incidentCode.change.hidden = What is the incident code for the place of incident?
+incident.incidentCode.checkYourAnswersLabel = What is the incident code for the place of incident?
+incident.incidentCode.error.required = Enter the incident code for the place of incident
+

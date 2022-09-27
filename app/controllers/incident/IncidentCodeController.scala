@@ -18,58 +18,58 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CountryFormProvider
+import forms.IncidentCodeFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.IncidentNavigatorProvider
-import pages.incident.IncidentCountryPage
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import pages.incident.IncidentCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountriesService
+import services.IncidentCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.IncidentCountryView
+import views.html.incident.IncidentCodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncidentCountryController @Inject() (
+class IncidentCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: CountryFormProvider,
-  service: CountriesService,
+  formProvider: IncidentCodeFormProvider,
+  service: IncidentCodeService,
   val controllerComponents: MessagesControllerComponents,
-  view: IncidentCountryView
+  view: IncidentCodeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTransitCountries.map {
-        countryList =>
-          val form = formProvider("incident.incidentCountry", countryList)
-          val preparedForm = request.userAnswers.get(IncidentCountryPage(index)) match {
+      service.getIncidentCodes.map {
+        incidentCodeList =>
+          val form = formProvider("incident.incidentCode", incidentCodeList)
+          val preparedForm = request.userAnswers.get(IncidentCodePage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, countryList.countries, mode, index))
+          Ok(view(preparedForm, mrn, incidentCodeList.incidentCodes, mode, index))
       }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTransitCountries.flatMap {
-        countryList =>
-          val form                    = formProvider("incident.incidentCountry", countryList)
-          implicit lazy val navigator = navigatorProvider(index)
+      service.getIncidentCodes.flatMap {
+        incidentCodeList =>
+          val form                                       = formProvider("incident.incidentCode", incidentCodeList)
+          implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
-              value => IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, incidentCodeList.incidentCodes, mode, index))),
+              value => IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
             )
       }
   }
