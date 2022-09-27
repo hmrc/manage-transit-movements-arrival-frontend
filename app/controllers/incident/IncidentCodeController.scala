@@ -63,13 +63,13 @@ class IncidentCodeController @Inject() (
     implicit request =>
       service.getIncidentCodes.flatMap {
         incidentCodeList =>
-          val form                         = formProvider("incident.incidentCode", incidentCodeList)
-          val navigator: IncidentNavigator = navigatorProvider(index)
+          val form                                       = formProvider("incident.incidentCode", incidentCodeList)
+          implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
           form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, incidentCodeList.incidentCodes, mode, index))),
-              value => IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)(navigator, ec)
+              value => IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
             )
       }
   }

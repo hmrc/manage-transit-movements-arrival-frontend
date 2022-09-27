@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{AuthorisationNavigatorProvider, IncidentNavigatorProvider, Navigator}
-import navigation.annotations.Incident
+import navigation.IncidentNavigatorProvider
 import pages.incident.IncidentCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -64,8 +63,8 @@ class IncidentCountryController @Inject() (
     implicit request =>
       service.getTransitCountries.flatMap {
         countryList =>
-          val form      = formProvider("incident.incidentCountry", countryList)
-          val navigator = navigatorProvider(index)
+          val form                    = formProvider("incident.incidentCountry", countryList)
+          implicit lazy val navigator = navigatorProvider(index)
           form
             .bindFromRequest()
             .fold(
