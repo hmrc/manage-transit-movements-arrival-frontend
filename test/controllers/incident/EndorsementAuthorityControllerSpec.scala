@@ -19,13 +19,9 @@ package controllers.incident
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EndorsementAuthorityFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.EndorsementAuthorityPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.EndorsementAuthorityView
@@ -38,11 +34,6 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
   private val form                           = formProvider("incident.endorsementAuthority")
   private val mode                           = NormalMode
   private lazy val endorsementAuthorityRoute = routes.EndorsementAuthorityController.onPageLoad(mrn, mode, index).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "EndorsementAuthority Controller" - {
 

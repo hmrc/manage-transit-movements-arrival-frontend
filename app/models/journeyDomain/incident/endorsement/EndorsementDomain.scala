@@ -18,16 +18,19 @@ package models.journeyDomain.incident.endorsement
 
 import models.Index
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.incident.EndorsementDatePage
+import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
 import cats.implicits._
 
 import java.time.LocalDate
 
-case class EndorsementDomain(date: LocalDate)
+case class EndorsementDomain(date: LocalDate, authority: String)
 
 object EndorsementDomain {
 
   def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
-    EndorsementDatePage(index).reader.map(EndorsementDomain(_))
+    (
+      EndorsementDatePage(index).reader,
+      EndorsementAuthorityPage(index).reader
+    ).tupled.map((EndorsementDomain.apply _).tupled)
 
 }

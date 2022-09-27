@@ -19,16 +19,16 @@ package models.journeyDomain.incident.endorsement
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, IncidentCode}
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{EndorsementDatePage, IncidentCodePage, IncidentCountryPage}
+import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
 
 import java.time.LocalDate
 
 class EndorsementDomainSpec extends SpecBase with Generators {
 
   private val localDate = LocalDate.now()
+  private val authority = Gen.alphaNumStr.sample.value
 
   "IncidentDomain" - {
 
@@ -36,8 +36,9 @@ class EndorsementDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(EndorsementDatePage(index), localDate)
+        .setValue(EndorsementAuthorityPage(index), authority)
 
-      val expectedResult = EndorsementDomain(localDate)
+      val expectedResult = EndorsementDomain(localDate, authority)
 
       val result: EitherType[EndorsementDomain] = UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)).run(userAnswers)
 
@@ -50,11 +51,13 @@ class EndorsementDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
-          EndorsementDatePage(index)
+          EndorsementDatePage(index),
+          EndorsementAuthorityPage(index)
         )
 
         val userAnswers = emptyUserAnswers
           .setValue(EndorsementDatePage(index), localDate)
+          .setValue(EndorsementAuthorityPage(index), authority)
 
         mandatoryPages.map {
           mandatoryPage =>

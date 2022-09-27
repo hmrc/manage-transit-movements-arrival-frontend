@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EndorsementAuthorityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.EndorsementAuthorityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EndorsementAuthorityController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: IncidentNavigatorProvider,
   formProvider: EndorsementAuthorityFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -57,6 +56,7 @@ class EndorsementAuthorityController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
+      implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
       form
         .bindFromRequest()
         .fold(
