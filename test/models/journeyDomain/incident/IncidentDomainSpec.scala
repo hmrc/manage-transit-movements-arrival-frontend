@@ -19,29 +19,63 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
+import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+
+import java.time.LocalDate
 
 class IncidentDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
+  private val localDate    = LocalDate.now()
+  private val authority    = Gen.alphaNumStr.sample.value
 
   "IncidentDomain" - {
 
-    "can be parsed from UserAnswers" in {
+    "can be parsed from UserAnswers when addEndorsement is true" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(IncidentCountryPage(index), country)
         .setValue(IncidentCodePage(index), incidentCode)
         .setValue(IncidentTextPage(index), incidentText)
+        .setValue(AddEndorsementPage(index), true)
+        .setValue(EndorsementDatePage(index), localDate)
+        .setValue(EndorsementAuthorityPage(index), authority)
 
-      val expectedResult = IncidentDomain(incidentCountry = country, incidentCode = incidentCode, incidentText = incidentText)
+      val expectedResult = IncidentDomain(
+        incidentCountry = country,
+        incidentCode = incidentCode,
+        incidentText = incidentText,
+        endorsement = Some(EndorsementDomain(localDate, authority))
+      )
+
+      val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
+
+      result.value mustBe expectedResult
+
+    }
+
+    "can be parsed from UserAnswers when addEndorsement is false" in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(IncidentCountryPage(index), country)
+        .setValue(IncidentCodePage(index), incidentCode)
+        .setValue(IncidentTextPage(index), incidentText)
+        .setValue(AddEndorsementPage(index), false)
+
+      val expectedResult = IncidentDomain(
+        incidentCountry = country,
+        incidentCode = incidentCode,
+        incidentText = incidentText,
+        endorsement = None
+      )
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
 
@@ -51,18 +85,48 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswer" - {
 
-      "when a mandatory page is missing" in {
+      "when a mandatory page is missing and addEndorsement is true" in {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
           IncidentCountryPage(index),
           IncidentCodePage(index),
-          IncidentTextPage(index)
+          IncidentTextPage(index),
+          AddEndorsementPage(index)
         )
 
         val userAnswers = emptyUserAnswers
           .setValue(IncidentCountryPage(index), country)
           .setValue(IncidentCodePage(index), incidentCode)
           .setValue(IncidentTextPage(index), incidentText)
+          .setValue(AddEndorsementPage(index), true)
+          .setValue(EndorsementDatePage(index), localDate)
+          .setValue(EndorsementAuthorityPage(index), authority)
+
+        mandatoryPages.map {
+          mandatoryPage =>
+            val updatedAnswers = userAnswers.removeValue(mandatoryPage)
+
+            val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(updatedAnswers)
+
+            result.left.value.page mustBe mandatoryPage
+        }
+
+      }
+
+      "when a mandatory page is missing and addEndorsement is false" in {
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+          IncidentCountryPage(index),
+          IncidentCodePage(index),
+          IncidentTextPage(index),
+          AddEndorsementPage(index)
+        )
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IncidentCountryPage(index), country)
+          .setValue(IncidentCodePage(index), incidentCode)
+          .setValue(IncidentTextPage(index), incidentText)
+          .setValue(AddEndorsementPage(index), false)
 
         mandatoryPages.map {
           mandatoryPage =>

@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident
 
-import forms.Constants.maxIncidentTextLength
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class AddEndorsementPageSpec extends PageBehaviours {
 
-class IncidentTextFormProvider @Inject() extends Mappings {
+  "AddEndorsementPage" - {
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxIncidentTextLength, s"$prefix.error.maxLength")
-          )
-        )
-    )
+    beRetrievable[Boolean](AddEndorsementPage(index))
+
+    beSettable[Boolean](AddEndorsementPage(index))
+
+    beRemovable[Boolean](AddEndorsementPage(index))
+  }
 }

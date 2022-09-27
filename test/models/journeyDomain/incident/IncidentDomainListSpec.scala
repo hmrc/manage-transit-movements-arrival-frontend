@@ -20,12 +20,15 @@ import base.SpecBase
 import forms.Constants
 import generators.Generators
 import models.Index
+import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+
+import java.time.LocalDate
 
 class IncidentDomainListSpec extends SpecBase with Generators {
 
@@ -34,6 +37,8 @@ class IncidentDomainListSpec extends SpecBase with Generators {
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val index1       = Index(0)
   private val index2       = Index(1)
+  private val localDate    = LocalDate.now()
+  private val authority    = Gen.alphaNumStr.sample.value
 
   "IncidentDomainList" - {
 
@@ -43,14 +48,30 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(IncidentCountryPage(index1), country)
         .setValue(IncidentCodePage(index1), incidentCode)
         .setValue(IncidentTextPage(index1), incidentText)
+        .setValue(AddEndorsementPage(index1), true)
+        .setValue(EndorsementDatePage(index1), localDate)
+        .setValue(EndorsementAuthorityPage(index1), authority)
         .setValue(IncidentCountryPage(index2), country)
         .setValue(IncidentCodePage(index2), incidentCode)
         .setValue(IncidentTextPage(index2), incidentText)
+        .setValue(AddEndorsementPage(index2), true)
+        .setValue(EndorsementDatePage(index2), localDate)
+        .setValue(EndorsementAuthorityPage(index2), authority)
 
       val expectedResult = IncidentDomainList(
         Seq(
-          IncidentDomain(incidentCountry = country, incidentCode = incidentCode, incidentText = incidentText),
-          IncidentDomain(incidentCountry = country, incidentCode = incidentCode, incidentText = incidentText)
+          IncidentDomain(
+            incidentCountry = country,
+            incidentCode = incidentCode,
+            incidentText = incidentText,
+            endorsement = Some(EndorsementDomain(localDate, authority))
+          ),
+          IncidentDomain(
+            incidentCountry = country,
+            incidentCode = incidentCode,
+            incidentText = incidentText,
+            endorsement = Some(EndorsementDomain(localDate, authority))
+          )
         )
       )
 
@@ -68,9 +89,15 @@ class IncidentDomainListSpec extends SpecBase with Generators {
           .setValue(IncidentCountryPage(index1), country)
           .setValue(IncidentCodePage(index1), incidentCode)
           .setValue(IncidentTextPage(index1), incidentText)
+          .setValue(AddEndorsementPage(index1), true)
+          .setValue(EndorsementDatePage(index1), localDate)
+          .setValue(EndorsementAuthorityPage(index1), authority)
           .setValue(IncidentCountryPage(index2), country)
           .setValue(IncidentCodePage(index2), incidentCode)
           .setValue(IncidentTextPage(index2), incidentText)
+          .setValue(AddEndorsementPage(index2), true)
+          .setValue(EndorsementDatePage(index2), localDate)
+          .setValue(EndorsementAuthorityPage(index2), authority)
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(IncidentCountryPage(index1), IncidentCodePage(index1), IncidentTextPage(index1))
 
