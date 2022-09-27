@@ -21,6 +21,7 @@ import forms.Constants
 import generators.Generators
 import models.InternationalAddress
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.QualifierOfIdentification
@@ -29,7 +30,16 @@ import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage, IncidentTextPage}
+import pages.incident.{
+  AddEndorsementPage,
+  EndorsementAuthorityPage,
+  EndorsementDatePage,
+  EndorsementPlacePage,
+  IncidentCodePage,
+  IncidentCountryPage,
+  IncidentFlagPage,
+  IncidentTextPage
+}
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 import java.time.LocalDate
@@ -41,6 +51,9 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val date         = arbitrary[LocalDate].sample.value
   private val id           = Gen.alphaNumStr.sample.value
+  private val localDate    = LocalDate.now()
+  private val authority    = Gen.alphaNumStr.sample.value
+  private val place        = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
 
@@ -58,6 +71,10 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         .setValue(IncidentCountryPage(index), country)
         .setValue(IncidentCodePage(index), incidentCode)
         .setValue(IncidentTextPage(index), incidentText)
+        .setValue(AddEndorsementPage(index), true)
+        .setValue(EndorsementDatePage(index), localDate)
+        .setValue(EndorsementAuthorityPage(index), authority)
+        .setValue(EndorsementPlacePage(index), place)
 
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
@@ -82,7 +99,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
               IncidentDomain(
                 incidentCountry = country,
                 incidentCode = incidentCode,
-                incidentText = incidentText
+                incidentText = incidentText,
+                endorsement = Some(EndorsementDomain(localDate, authority, place))
               )
             )
           )

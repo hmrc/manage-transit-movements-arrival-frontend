@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident
 
-import forms.Constants.maxIncidentTextLength
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
-import play.api.data.Form
+import controllers.incident.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.IncidentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case class AddEndorsementPage(index: Index) extends QuestionPage[Boolean] {
 
-class IncidentTextFormProvider @Inject() extends Mappings {
+  override def path: JsPath = IncidentSection(index).path \ toString
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxIncidentTextLength, s"$prefix.error.maxLength")
-          )
-        )
-    )
+  override def toString: String = "addEndorsement"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddEndorsementController.onPageLoad(userAnswers.mrn, mode, index))
 }

@@ -17,16 +17,18 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.incident.endorsement.EndorsementDomain
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import models.{Index, UserAnswers}
-import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 import play.api.mvc.Call
 
 case class IncidentDomain(
   incidentCountry: Country,
   incidentCode: IncidentCode,
-  incidentText: String
+  incidentText: String,
+  endorsement: Option[EndorsementDomain]
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
@@ -39,9 +41,10 @@ object IncidentDomain {
     (
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
-      IncidentTextPage(index).reader
+      IncidentTextPage(index).reader,
+      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)))
     ).mapN {
-      (country, code, text) => IncidentDomain(country, code, text)
+      (country, code, text, endorsement) => IncidentDomain(country, code, text, endorsement)
     }
 
 }
