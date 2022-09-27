@@ -21,6 +21,8 @@ import play.api.Configuration
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
+import java.time.{LocalDate, Period}
+
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
@@ -73,4 +75,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val maxIdentificationAuthorisations: Int = configuration.get[Int]("limits.maxIdentificationAuthorisations")
 
   lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+
+  lazy val endorsementDateMin: LocalDate = LocalDate.of(
+    configuration.get[Int]("dates.endorsementDateMin.year"),
+    configuration.get[Int]("dates.endorsementDateMin.month"),
+    configuration.get[Int]("dates.endorsementDateMin.day")
+  )
 }
