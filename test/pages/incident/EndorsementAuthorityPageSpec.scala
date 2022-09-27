@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.endorsement
+package pages.incident
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
-import cats.implicits._
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class EndorsementAuthorityPageSpec extends PageBehaviours {
 
-case class EndorsementDomain(date: LocalDate, authority: String)
+  "EndorsementAuthorityPage" - {
 
-object EndorsementDomain {
+    beRetrievable[String](EndorsementAuthorityPage(index))
 
-  def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
-    (
-      EndorsementDatePage(index).reader,
-      EndorsementAuthorityPage(index).reader
-    ).tupled.map((EndorsementDomain.apply _).tupled)
+    beSettable[String](EndorsementAuthorityPage(index))
 
+    beRemovable[String](EndorsementAuthorityPage(index))
+  }
 }

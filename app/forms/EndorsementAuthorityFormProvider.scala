@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.endorsement
+package forms
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
-import cats.implicits._
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-import java.time.LocalDate
+class EndorsementAuthorityFormProvider @Inject() extends Mappings {
 
-case class EndorsementDomain(date: LocalDate, authority: String)
-
-object EndorsementDomain {
-
-  def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
-    (
-      EndorsementDatePage(index).reader,
-      EndorsementAuthorityPage(index).reader
-    ).tupled.map((EndorsementDomain.apply _).tupled)
-
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(maxLength(35, s"$prefix.error.length"))
+    )
 }

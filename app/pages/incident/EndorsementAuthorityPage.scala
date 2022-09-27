@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.endorsement
+package pages.incident
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
-import cats.implicits._
+import controllers.incident.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.IncidentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import java.time.LocalDate
+case class EndorsementAuthorityPage(index: Index) extends QuestionPage[String] {
 
-case class EndorsementDomain(date: LocalDate, authority: String)
+  override def path: JsPath = IncidentSection(index).path \ toString
 
-object EndorsementDomain {
+  override def toString: String = "endorsementAuthority"
 
-  def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
-    (
-      EndorsementDatePage(index).reader,
-      EndorsementAuthorityPage(index).reader
-    ).tupled.map((EndorsementDomain.apply _).tupled)
-
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.EndorsementAuthorityController.onPageLoad(userAnswers.mrn, mode, index))
 }
