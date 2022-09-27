@@ -16,6 +16,7 @@
 
 package controllers.incident
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
@@ -39,12 +40,13 @@ class EndorsementDateController @Inject() (
   formProvider: DateFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: EndorsementDateView
+  view: EndorsementDateView,
+  appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
+  private val minDate = appConfig.endorsementDateMin
   private val form    = formProvider("incident.endorsementDate", minDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
