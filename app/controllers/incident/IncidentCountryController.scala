@@ -69,7 +69,7 @@ class IncidentCountryController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
-              value => IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)(navigator, ec)
+              value => IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
             )
       }
   }

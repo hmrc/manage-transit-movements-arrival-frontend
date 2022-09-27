@@ -64,7 +64,7 @@ class IncidentFlagController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => IncidentFlagPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)(navigator, ec)
+          value => IncidentFlagPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }
 }
