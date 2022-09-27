@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxIncidentTextLength
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class IncidentTextFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
             maxLength(maxIncidentTextLength, s"$prefix.error.maxLength")
           )
         )

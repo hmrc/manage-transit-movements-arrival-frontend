@@ -30,7 +30,15 @@ import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.{AddEndorsementPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentFlagPage, IncidentTextPage}
+import pages.incident.{
+  AddEndorsementPage,
+  EndorsementAuthorityPage,
+  EndorsementDatePage,
+  IncidentCodePage,
+  IncidentCountryPage,
+  IncidentFlagPage,
+  IncidentTextPage
+}
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 import java.time.LocalDate
@@ -43,6 +51,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val date         = arbitrary[LocalDate].sample.value
   private val id           = Gen.alphaNumStr.sample.value
   private val localDate    = LocalDate.now()
+  private val authority    = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
 
@@ -62,6 +71,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         .setValue(IncidentTextPage(index), incidentText)
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
+        .setValue(EndorsementAuthorityPage(index), authority)
 
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
@@ -87,7 +97,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
                 incidentCountry = country,
                 incidentCode = incidentCode,
                 incidentText = incidentText,
-                endorsement = Some(EndorsementDomain(localDate))
+                endorsement = Some(EndorsementDomain(localDate, authority))
               )
             )
           )

@@ -55,14 +55,14 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IncidentTextPage(index), "testString")
+      val userAnswers = emptyUserAnswers.setValue(IncidentTextPage(index), "test string 1")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentTextRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "testString"))
+      val filledForm = form.bind(Map("value" -> "test string 1"))
 
       val view = injector.instanceOf[IncidentTextView]
 
@@ -79,7 +79,7 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, incidentTextRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+        .withFormUrlEncodedBody(("value", "test string."))
 
       val result = route(app, request).value
 

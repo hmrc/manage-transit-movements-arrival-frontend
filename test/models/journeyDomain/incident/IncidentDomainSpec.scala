@@ -25,7 +25,7 @@ import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{AddEndorsementPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 
 import java.time.LocalDate
 
@@ -35,6 +35,7 @@ class IncidentDomainSpec extends SpecBase with Generators {
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val localDate    = LocalDate.now()
+  private val authority    = Gen.alphaNumStr.sample.value
 
   "IncidentDomain" - {
 
@@ -46,12 +47,13 @@ class IncidentDomainSpec extends SpecBase with Generators {
         .setValue(IncidentTextPage(index), incidentText)
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
+        .setValue(EndorsementAuthorityPage(index), authority)
 
       val expectedResult = IncidentDomain(
         incidentCountry = country,
         incidentCode = incidentCode,
         incidentText = incidentText,
-        endorsement = Some(EndorsementDomain(localDate))
+        endorsement = Some(EndorsementDomain(localDate, authority))
       )
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
@@ -98,6 +100,7 @@ class IncidentDomainSpec extends SpecBase with Generators {
           .setValue(IncidentTextPage(index), incidentText)
           .setValue(AddEndorsementPage(index), true)
           .setValue(EndorsementDatePage(index), localDate)
+          .setValue(EndorsementAuthorityPage(index), authority)
 
         mandatoryPages.map {
           mandatoryPage =>
