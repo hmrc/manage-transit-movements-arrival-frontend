@@ -299,7 +299,6 @@ incident.incidentCode.change.hidden = What is the incident code for the place of
 incident.incidentCode.checkYourAnswersLabel = What is the incident code for the place of incident?
 incident.incidentCode.error.required = Enter the incident code for the place of incident
 
-
 incident.endorsementDate.title = Endorsement date
 incident.endorsementDate.heading = Endorsement date
 incident.endorsementDate.checkYourAnswersLabel = Endorsement date
@@ -328,6 +327,13 @@ incident.addEndorsement.title = Do you want to add an Endorsement?
 incident.addEndorsement.heading = Do you want to add an Endorsement?
 incident.addEndorsement.checkYourAnswersLabel = Do you want to add an Endorsement?
 incident.addEndorsement.error.required = Select yes if you want to add an Endorsement
+
+incident.endorsementPlace.title = Endorsement place //TODO: Add content when created
+incident.endorsementPlace.heading = Endorsement place
+incident.endorsementPlace.checkYourAnswersLabel = Endorsement place
+incident.endorsementPlace.error.required = Enter Endorsement place
+incident.endorsementPlace.error.length = Endorsement place must be 35 characters or less
+incident.endorsementPlace.error.invalid = The endorsement place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 incident.endorsementCountry.title = Which country is the place of endorsement in?
 incident.endorsementCountry.heading = Which country is the place of endorsement in?

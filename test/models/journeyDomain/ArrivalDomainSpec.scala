@@ -33,8 +33,9 @@ import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimpli
 import pages.incident.{
   AddEndorsementPage,
   EndorsementAuthorityPage,
-  EndorsementCountryPage,
   EndorsementDatePage,
+  EndorsementPlacePage,
+  EndorsementCountryPage,
   IncidentCodePage,
   IncidentCountryPage,
   IncidentFlagPage,
@@ -53,6 +54,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val id           = Gen.alphaNumStr.sample.value
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
+  private val place        = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
 
@@ -73,6 +75,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
+        .setValue(EndorsementPlacePage(index), place)
         .setValue(EndorsementCountryPage(index), country)
 
       val expectedResult = ArrivalDomain(
@@ -99,7 +102,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
                 incidentCountry = country,
                 incidentCode = incidentCode,
                 incidentText = incidentText,
-                endorsement = Some(EndorsementDomain(localDate, authority, country))
+                endorsement = Some(EndorsementDomain(localDate, authority, place, country))
               )
             )
           )
