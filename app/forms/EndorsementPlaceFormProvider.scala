@@ -17,6 +17,8 @@
 package forms
 
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
+
 import javax.inject.Inject
 import play.api.data.Form
 
@@ -25,6 +27,11 @@ class EndorsementPlaceFormProvider @Inject() extends Mappings {
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(35, s"$prefix.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(35, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid") //TODO check against error message content
+          )
+        )
     )
 }

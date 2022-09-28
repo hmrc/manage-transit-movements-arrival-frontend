@@ -333,3 +333,4 @@ incident.endorsementPlace.heading = Endorsement place
 incident.endorsementPlace.checkYourAnswersLabel = Endorsement place
 incident.endorsementPlace.error.required = Enter Endorsement place
 incident.endorsementPlace.error.length = Endorsement place must be 35 characters or less
+incident.endorsementPlace.error.invalid = The endorsement place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
