@@ -21,7 +21,7 @@ import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage}
+import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage, EndorsementPlacePage}
 
 import java.time.LocalDate
 
@@ -29,6 +29,7 @@ class EndorsementDomainSpec extends SpecBase with Generators {
 
   private val localDate = LocalDate.now()
   private val authority = Gen.alphaNumStr.sample.value
+  private val place     = Gen.alphaNumStr.sample.value
 
   "IncidentDomain" - {
 
@@ -37,8 +38,9 @@ class EndorsementDomainSpec extends SpecBase with Generators {
       val userAnswers = emptyUserAnswers
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
+        .setValue(EndorsementPlacePage(index), place)
 
-      val expectedResult = EndorsementDomain(localDate, authority)
+      val expectedResult = EndorsementDomain(localDate, authority, place)
 
       val result: EitherType[EndorsementDomain] = UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)).run(userAnswers)
 
@@ -52,12 +54,14 @@ class EndorsementDomainSpec extends SpecBase with Generators {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
           EndorsementDatePage(index),
-          EndorsementAuthorityPage(index)
+          EndorsementAuthorityPage(index),
+          EndorsementPlacePage(index)
         )
 
         val userAnswers = emptyUserAnswers
           .setValue(EndorsementDatePage(index), localDate)
           .setValue(EndorsementAuthorityPage(index), authority)
+          .setValue(EndorsementPlacePage(index), place)
 
         mandatoryPages.map {
           mandatoryPage =>

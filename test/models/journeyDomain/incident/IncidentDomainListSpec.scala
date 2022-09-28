@@ -26,7 +26,15 @@ import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{AddEndorsementPage, EndorsementAuthorityPage, EndorsementDatePage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.incident.{
+  AddEndorsementPage,
+  EndorsementAuthorityPage,
+  EndorsementDatePage,
+  EndorsementPlacePage,
+  IncidentCodePage,
+  IncidentCountryPage,
+  IncidentTextPage
+}
 
 import java.time.LocalDate
 
@@ -39,6 +47,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
   private val index2       = Index(1)
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
+  private val place        = Gen.alphaNumStr.sample.value
 
   "IncidentDomainList" - {
 
@@ -51,12 +60,14 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index1), true)
         .setValue(EndorsementDatePage(index1), localDate)
         .setValue(EndorsementAuthorityPage(index1), authority)
+        .setValue(EndorsementPlacePage(index1), place)
         .setValue(IncidentCountryPage(index2), country)
         .setValue(IncidentCodePage(index2), incidentCode)
         .setValue(IncidentTextPage(index2), incidentText)
         .setValue(AddEndorsementPage(index2), true)
         .setValue(EndorsementDatePage(index2), localDate)
         .setValue(EndorsementAuthorityPage(index2), authority)
+        .setValue(EndorsementPlacePage(index2), place)
 
       val expectedResult = IncidentDomainList(
         Seq(
@@ -64,13 +75,13 @@ class IncidentDomainListSpec extends SpecBase with Generators {
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority))
+            endorsement = Some(EndorsementDomain(localDate, authority, place))
           ),
           IncidentDomain(
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority))
+            endorsement = Some(EndorsementDomain(localDate, authority, place))
           )
         )
       )

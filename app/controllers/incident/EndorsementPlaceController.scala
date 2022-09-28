@@ -16,55 +16,54 @@
 
 package controllers.incident
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DateFormProvider
+import forms.EndorsementPlaceFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigator, IncidentNavigatorProvider}
-import pages.incident.EndorsementDatePage
+import pages.incident.EndorsementPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.EndorsementDateView
+import views.html.incident.EndorsementPlaceView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EndorsementDateController @Inject() (
+class EndorsementPlaceController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
-  formProvider: DateFormProvider,
+  formProvider: EndorsementPlaceFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: EndorsementDateView,
-  appConfig: FrontendAppConfig
+  view: EndorsementPlaceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val minDate = appConfig.endorsementDateMin
-  private val form    = formProvider("incident.endorsementDate", minDate)
+  private val form = formProvider("incident.endorsementPlace")
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(EndorsementDatePage(index)) match {
+      val preparedForm = request.userAnswers.get(EndorsementPlacePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mrn, index, mode))
+      Ok(view(preparedForm, mrn, mode, index))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode))),
-          value => EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          value => {
+            implicit val navigator: IncidentNavigator = navigatorProvider(index)
+            EndorsementPlacePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          }
         )
   }
 }
