@@ -28,9 +28,9 @@ import pages.QuestionPage
 import pages.incident.{
   AddEndorsementPage,
   EndorsementAuthorityPage,
+  EndorsementCountryPage,
   EndorsementDatePage,
   EndorsementPlacePage,
-  EndorsementCountryPage,
   IncidentCodePage,
   IncidentCountryPage,
   IncidentTextPage

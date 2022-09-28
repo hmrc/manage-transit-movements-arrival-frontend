@@ -23,7 +23,7 @@ import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{EndorsementAuthorityPage, EndorsementDatePage, EndorsementPlacePage, EndorsementCountryPage}
+import pages.incident.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementPlacePage}
 
 import java.time.LocalDate
 

@@ -20,13 +20,13 @@ import controllers.incident.routes
 import models.{Index, Mode, UserAnswers}
 import models.reference.Country
 import pages.QuestionPage
-import pages.sections.incident.IncidentSection
+import pages.sections.incident
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class EndorsementCountryPage(index: Index) extends QuestionPage[Country] {
 
-  override def path: JsPath = IncidentSection(index).path \ toString
+  override def path: JsPath = incident.IncidentSection(index).path \ toString
 
   override def toString: String = "endorsementCountry"
 
