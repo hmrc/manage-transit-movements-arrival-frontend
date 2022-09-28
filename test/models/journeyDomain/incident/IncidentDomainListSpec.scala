@@ -29,6 +29,7 @@ import pages.QuestionPage
 import pages.incident.{
   AddEndorsementPage,
   EndorsementAuthorityPage,
+  EndorsementCountryPage,
   EndorsementDatePage,
   EndorsementPlacePage,
   IncidentCodePage,
@@ -61,6 +62,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(EndorsementDatePage(index1), localDate)
         .setValue(EndorsementAuthorityPage(index1), authority)
         .setValue(EndorsementPlacePage(index1), place)
+        .setValue(EndorsementCountryPage(index1), country)
         .setValue(IncidentCountryPage(index2), country)
         .setValue(IncidentCodePage(index2), incidentCode)
         .setValue(IncidentTextPage(index2), incidentText)
@@ -68,6 +70,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(EndorsementDatePage(index2), localDate)
         .setValue(EndorsementAuthorityPage(index2), authority)
         .setValue(EndorsementPlacePage(index2), place)
+        .setValue(EndorsementCountryPage(index2), country)
 
       val expectedResult = IncidentDomainList(
         Seq(
@@ -75,13 +78,13 @@ class IncidentDomainListSpec extends SpecBase with Generators {
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority, place))
+            endorsement = Some(EndorsementDomain(localDate, authority, place, country))
           ),
           IncidentDomain(
             incidentCountry = country,
             incidentCode = incidentCode,
             incidentText = incidentText,
-            endorsement = Some(EndorsementDomain(localDate, authority, place))
+            endorsement = Some(EndorsementDomain(localDate, authority, place, country))
           )
         )
       )

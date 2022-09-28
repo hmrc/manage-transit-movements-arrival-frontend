@@ -334,3 +334,11 @@ incident.endorsementPlace.checkYourAnswersLabel = Endorsement place
 incident.endorsementPlace.error.required = Enter Endorsement place
 incident.endorsementPlace.error.length = Endorsement place must be 35 characters or less
 incident.endorsementPlace.error.invalid = The endorsement place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+incident.endorsementCountry.title = Which country is the place of endorsement in?
+incident.endorsementCountry.heading = Which country is the place of endorsement in?
+incident.endorsementCountry.hintText = Enter the country, like Italy or Spain.
+incident.endorsementCountry.placeholder = Select a country
+incident.endorsementCountry.change.hidden = Which country is the place of endorsement in?
+incident.endorsementCountry.checkYourAnswersLabel = Which country is the place of endorsement in?
+incident.endorsementCountry.error.required = Select which country the place of endorsement is in

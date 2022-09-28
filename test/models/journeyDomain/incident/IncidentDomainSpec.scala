@@ -28,6 +28,7 @@ import pages.QuestionPage
 import pages.incident.{
   AddEndorsementPage,
   EndorsementAuthorityPage,
+  EndorsementCountryPage,
   EndorsementDatePage,
   EndorsementPlacePage,
   IncidentCodePage,
@@ -58,12 +59,13 @@ class IncidentDomainSpec extends SpecBase with Generators {
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
         .setValue(EndorsementPlacePage(index), place)
+        .setValue(EndorsementCountryPage(index), country)
 
       val expectedResult = IncidentDomain(
         incidentCountry = country,
         incidentCode = incidentCode,
         incidentText = incidentText,
-        endorsement = Some(EndorsementDomain(localDate, authority, place))
+        endorsement = Some(EndorsementDomain(localDate, authority, place, country))
       )
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
