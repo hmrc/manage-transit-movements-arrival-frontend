@@ -18,6 +18,7 @@ package forms
 
 import forms.Constants.maxIncidentTextLength
 import forms.behaviours.StringFieldBehaviours
+import forms.incident.IncidentTextFormProvider
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 

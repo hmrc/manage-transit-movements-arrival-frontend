@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.incident.IncidentCodeFormProvider
 import models.IncidentCodeList
 import play.api.data.FormError
 import generators.Generators

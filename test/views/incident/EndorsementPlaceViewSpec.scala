@@ -16,7 +16,7 @@
 
 package views.incident
 
-import forms.EndorsementPlaceFormProvider
+import forms.incident.EndorsementPlaceFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

@@ -18,7 +18,7 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EndorsementAuthorityFormProvider
+import forms.incident.EndorsementAuthorityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.EndorsementAuthorityPage

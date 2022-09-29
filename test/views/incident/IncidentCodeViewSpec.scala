@@ -16,7 +16,7 @@
 
 package views.incident
 
-import forms.IncidentCodeFormProvider
+import forms.incident.IncidentCodeFormProvider
 import generators.Generators
 import views.behaviours.InputSelectViewBehaviours
 import models.NormalMode

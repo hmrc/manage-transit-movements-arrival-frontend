@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package forms.incident
 
-import forms.Constants.maxIncidentTextLength
+import forms.StopOnFirstFail
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class IncidentTextFormProvider @Inject() extends Mappings {
+class EndorsementPlaceFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxIncidentTextLength, s"$prefix.error.maxLength")
+          StopOnFirstFail[String](
+            maxLength(35, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid") //TODO check against error message content
           )
         )
     )

@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.incident.EndorsementAuthorityFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 

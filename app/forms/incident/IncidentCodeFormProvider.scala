@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package forms.incident
+
+import forms.mappings.Mappings
+import models.IncidentCodeList
+import models.reference.IncidentCode
+import play.api.data.Form
 
 import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.reference.IncidentCode
-import models.IncidentCodeList
 
 class IncidentCodeFormProvider @Inject() extends Mappings {
 
