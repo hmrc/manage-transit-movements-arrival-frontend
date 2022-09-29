@@ -17,7 +17,7 @@
 package views.incident
 
 import forms.Constants.maxIncidentTextLength
-import forms.IncidentTextFormProvider
+import forms.incident.IncidentTextFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

@@ -17,7 +17,7 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EndorsementAuthorityFormProvider
+import forms.incident.EndorsementAuthorityFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

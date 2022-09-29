@@ -17,7 +17,7 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.IncidentCodeFormProvider
+import forms.incident.IncidentCodeFormProvider
 import generators.Generators
 import models.{IncidentCodeList, NormalMode}
 import org.mockito.ArgumentMatchers.any

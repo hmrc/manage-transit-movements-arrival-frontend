@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.incident.EndorsementPlaceFormProvider
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
