@@ -131,6 +131,10 @@ identification.checkIdentificationAnswers.heading = Check your answers
 identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
 identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
 
+#location of goods
+
+locationOfGoods.caption = Arrivals - Location of goods
+
 locationOfGoods.addContactPerson.title = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.heading = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
@@ -261,15 +265,13 @@ locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the place of l
 locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the place of loading must only include letters a to z and spaces
 locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the place of loading must be 5 characters long
 
-locationOfGoods.identificationNumber.title = What is the EORI number for the location of goods?
-locationOfGoods.identificationNumber.heading = What is the EORI number for the location of goods?
-locationOfGoods.identificationNumber.checkYourAnswersLabel = What is the EORI number for the location of goods?
-locationOfGoods.identificationNumber.error.required = Enter the EORI number for the location of goods
-locationOfGoods.identificationNumber.error.minLength = The EORI number must be between 14 and 17 characters long
-locationOfGoods.identificationNumber.error.maxLength = The EORI number must be between 14 and 17 characters long
-locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number must only include letters a to z and numbers 0 to 9
-locationOfGoods.identificationNumber.error.invalidFormat = The EORI number must start with GB or XI, followed by between 12 and 15 numbers
-locationOfGoods.identificationNumber.hintText = This will start GB or XI, followed by 12 to 15 numbers. For example, GB123456789000.
+locationOfGoods.identificationNumber.title = What is the EORI number or TIN for the location of goods?
+locationOfGoods.identificationNumber.heading = What is the EORI number or TIN for the location of goods?
+locationOfGoods.identificationNumber.checkYourAnswersLabel = What is the EORI number or TIN for the location of goods?
+locationOfGoods.identificationNumber.error.required = Enter the EORI number or TIN for the location of goods
+locationOfGoods.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less
+locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9
+locationOfGoods.identificationNumber.hintText = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 
 locationOfGoods.addAdditionalIdentifier.title = Do you want to add another identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another identifier for the location of goods?
