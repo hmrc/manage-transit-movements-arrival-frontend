@@ -30,8 +30,6 @@ class EoriNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            regexp(eoriNumberRegex, s"$prefix.error.invalidFormat"),
-            minLength(minEoriNumberLength, s"$prefix.error.minLength"),
             maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
           )
         )
