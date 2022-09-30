@@ -40,6 +40,8 @@ class AddressViewSpec extends PostalCodeAddressViewBehaviours with Generators {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithAddressInput()

@@ -40,6 +40,8 @@ class AdditionalIdentifierViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithHint("This can be up to 4 characters long, for example 0000 or X9X9.")

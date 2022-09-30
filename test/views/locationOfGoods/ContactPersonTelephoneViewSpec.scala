@@ -41,9 +41,11 @@ class ContactPersonTelephoneViewSpec extends TelephoneNumberViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading(name)
 
-  behave like pageWithHint("This has to include the country code, like +44 808 157 0192.")
+  behave like pageWithHint("For international numbers include the country code.")
 
   behave like pageWithTelephoneNumberInput()
 

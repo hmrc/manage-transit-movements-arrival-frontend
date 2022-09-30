@@ -42,7 +42,8 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("locationOfGoods.authorisationNumber.heading")
+                heading = messages("locationOfGoods.authorisationNumber.heading"),
+                caption = Some(messages("locationOfGoods.caption"))
             ),
             hint = Some(messages("locationOfGoods.authorisationNumber.hintText")),
             inputClass = InputSize.Width20

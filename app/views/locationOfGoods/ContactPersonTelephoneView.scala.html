@@ -42,7 +42,8 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("locationOfGoods.contactPersonTelephone.heading", name)
+                heading = messages("locationOfGoods.contactPersonTelephone.heading", name),
+                caption = Some(messages("locationOfGoods.caption"))
             ),
             hint = Some(messages("locationOfGoods.contactPersonTelephone.hintText")),
             inputType = "tel",

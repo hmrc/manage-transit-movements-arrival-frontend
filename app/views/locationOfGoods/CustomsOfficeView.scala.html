@@ -46,7 +46,8 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("locationOfGoods.customsOffice.heading")
+                heading = messages("locationOfGoods.customsOffice.heading"),
+                caption = Some(messages("locationOfGoods.caption"))
             ),
             hint = Some(messages("locationOfGoods.customsOffice.hintText")),
             selectItems = customsOffices.toSelectItems(form.value),

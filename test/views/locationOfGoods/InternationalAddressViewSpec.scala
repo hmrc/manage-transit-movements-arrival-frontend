@@ -40,6 +40,8 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours wi
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithAddressInput()
