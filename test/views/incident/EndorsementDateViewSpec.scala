@@ -42,6 +42,8 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
 
   behave like pageWithDateInput
