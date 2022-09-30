@@ -43,7 +43,7 @@ class AddEndorsementController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("Incident.addEndorsement")
+  private val form = formProvider("incident.addEndorsement")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

@@ -33,7 +33,13 @@ class AddEndorsementViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.")
+
+  behave like pageWithContent("p", "An endorsement can only be provided by customs, Border Force or the police.")
 
   behave like pageWithRadioItems()
 

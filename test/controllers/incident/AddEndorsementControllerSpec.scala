@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class AddEndorsementControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider             = new YesNoFormProvider()
-  private val form                     = formProvider("Incident.addEndorsement")
+  private val form                     = formProvider("incident.addEndorsement")
   private val mode                     = NormalMode
   private lazy val addEndorsementRoute = routes.AddEndorsementController.onPageLoad(mrn, mode, index).url
 
