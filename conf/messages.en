@@ -305,17 +305,17 @@ incident.incidentCode.checkYourAnswersLabel = incident code
 incident.incidentCode.change.hidden = What is the incident code for the place of incident?
 incident.incidentCode.error.required = Enter the incident code for the place of incident
 
-incident.endorsementDate.title = Endorsement date
-incident.endorsementDate.heading = Endorsement date
+incident.endorsementDate.title = When was the endorsement made?
+incident.endorsementDate.heading = When was the endorsement made?
 incident.endorsementDate.checkYourAnswersLabel = Endorsement date
 incident.endorsementDate.change.hidden = endorsement date
-incident.endorsementDate.hint = For example, 14 1 2020
-incident.endorsementDate.error.required.all = Enter the date for Endorsement date
-incident.endorsementDate.error.required.two = The date for Endorsement date must include {0} and {1}
-incident.endorsementDate.error.required = The date for Endorsement date must include {0}
-incident.endorsementDate.error.invalid = Enter a real date for Endorsement date
-incident.endorsementDate.error.min.date = The date must be after {0}
-incident.endorsementDate.error.max.date = The date must be before the current date
+incident.endorsementDate.hint = For example, 15 08 2022.
+incident.endorsementDate.error.required.all = Enter the date the endorsement was made
+incident.endorsementDate.error.required.two = The endorsement date must include a {0} and {1}
+incident.endorsementDate.error.required = The endorsement date must include a {0}
+incident.endorsementDate.error.invalid = The endorsement date must only include numbers 0 to 9 //TODO: Check with content
+incident.endorsementDate.error.min.date = The endorsement date must be after {0}
+incident.endorsementDate.error.max.date = The endorsement date must be before today’s date
 
 incident.incidentText.title = What happened during the incident?
 incident.incidentText.heading = What happened during the incident?

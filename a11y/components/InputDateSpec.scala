@@ -32,31 +32,19 @@ class InputDateSpec extends A11ySpecBase {
     val component = app.injector.instanceOf[InputDate]
     val clock     = app.injector.instanceOf[Clock]
 
-    val prefix      = Gen.alphaNumStr.sample.value
-    val minDate     = arbitrary[LocalDate].sample.value
-    val title       = nonEmptyString.sample.value
-    val legend      = nonEmptyString.sample.value
-    val legendClass = Gen.alphaNumStr.sample.value
-    val hint        = Gen.option(nonEmptyString).sample.value
-    val form        = new DateFormProvider(clock)(prefix, minDate)
+    val prefix  = Gen.alphaNumStr.sample.value
+    val minDate = arbitrary[LocalDate].sample.value
+    val title   = nonEmptyString.sample.value
+    val legend  = nonEmptyString.sample.value
+    val hint    = Gen.option(nonEmptyString).sample.value
+    val caption = Gen.option(nonEmptyString).sample.value
+    val form    = new DateFormProvider(clock)(prefix, minDate)
 
-    "pass accessibility checks" when {
-
-      "legend is heading" in {
-        val content = template.apply(title) {
-          val legendIsHeading = true
-          component.apply(form("value"), legend, legendClass, hint, legendIsHeading)
-        }
-        content.toString() must passAccessibilityChecks
+    "pass accessibility checks" in {
+      val content = template.apply(title) {
+        component.apply(form("value"), legend, hint, caption)
       }
-
-      "legend isn't heading" in {
-        val content = template.apply(title) {
-          val legendIsHeading = false
-          component.apply(form("value"), legend, legendClass, hint, legendIsHeading).withHeading(title)
-        }
-        content.toString() must passAccessibilityChecks
-      }
+      content.toString() must passAccessibilityChecks
     }
   }
 }
