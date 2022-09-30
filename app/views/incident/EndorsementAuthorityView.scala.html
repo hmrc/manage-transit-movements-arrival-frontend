@@ -42,7 +42,8 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("incident.endorsementAuthority.heading")
+                heading = messages("incident.endorsementAuthority.heading"),
+                caption = Some(messages("incident.caption"))
             ),
             inputClass = InputSize.Width20
         )

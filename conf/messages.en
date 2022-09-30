@@ -322,11 +322,12 @@ incident.incidentText.error.required = Describe what happened during the inciden
 incident.incidentText.error.maxLength = The description of the incident must be 512 characters or less
 incident.incidentText.error.invalidCharacters = The description of the incident must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
-incident.endorsementAuthority.title = What is the authority of endorsement
-incident.endorsementAuthority.heading = What is the authority of endorsement
-incident.endorsementAuthority.checkYourAnswersLabel = What is the authority of endorsement
-incident.endorsementAuthority.error.required = Enter the authority of endorsement
-incident.endorsementAuthority.error.length = The authority of endorsement must be 35 characters or less
+incident.endorsementAuthority.title = What authority made the endorsement?
+incident.endorsementAuthority.heading = What authority made the endorsement?
+incident.endorsementAuthority.checkYourAnswersLabel = What is the authority of endorsement //TODO check CYA task content
+incident.endorsementAuthority.error.required = Enter the name of the authority that made the endorsement
+incident.endorsementAuthority.error.length = The name of the authority must be 35 characters or less
+incident.endorsementAuthority.error.invalid = The name of the authority must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 incident.addEndorsement.title = Do you need to add an endorsement for the incident?
 incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
