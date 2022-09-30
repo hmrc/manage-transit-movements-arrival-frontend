@@ -288,13 +288,13 @@ incident.incidentFlag.paragraph = This could be any disruption that risked or de
 incident.incidentFlag.checkYourAnswersLabel = IncidentFlag //TODO check CYA task content
 incident.incidentFlag.error.required = Select yes if there were any incidents during the transit
 
-incident.incidentCountry.title = Which country is the place of incident in?
-incident.incidentCountry.heading = Which country is the place of incident in?
+incident.incidentCountry.title = In which country did the incident happen?
+incident.incidentCountry.heading = In which country did the incident happen?
 incident.incidentCountry.hintText = Enter the country, like Italy or Spain.
 incident.incidentCountry.placeholder = Select a country
-incident.incidentCountry.change.hidden = which country is the place of incident in
-incident.incidentCountry.checkYourAnswersLabel = Which country is the place of incident in?
-incident.incidentCountry.error.required = Enter which country the place of incident is in
+incident.incidentCountry.change.hidden = which country is the place of incident in //TODO check CYA task content
+incident.incidentCountry.checkYourAnswersLabel = Which country is the place of incident in? //TODO check CYA task content
+incident.incidentCountry.error.required = Enter which country the incident happened in
 
 incident.incidentCode.title = What is the incident code for the place of incident?
 incident.incidentCode.heading = What is the incident code for the place of incident?
