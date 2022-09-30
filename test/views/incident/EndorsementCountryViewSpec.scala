@@ -50,6 +50,8 @@ class EndorsementCountryViewSpec extends InputSelectViewBehaviours[Country] with
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect
