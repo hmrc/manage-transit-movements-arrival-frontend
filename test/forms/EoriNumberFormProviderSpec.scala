@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants._
 import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
-import models.domain.StringFieldRegex.{alphaNumericRegex, eoriNumberRegex}
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 

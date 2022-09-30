@@ -41,8 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("incident.incidentFlag.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("incident.incidentFlag.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.incidentFlag.paragraph")}</p>""")
             )
         )
 

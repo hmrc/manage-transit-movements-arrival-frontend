@@ -280,10 +280,13 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 
 # Incidents and Endorsements
 
-incident.incidentFlag.title = IncidentFlag
-incident.incidentFlag.heading = IncidentFlag
-incident.incidentFlag.checkYourAnswersLabel = IncidentFlag
-incident.incidentFlag.error.required = Select yes if IncidentFlag
+incident.caption = Arrivals - Incidents
+
+incident.incidentFlag.title = Were there any incidents during the transit?
+incident.incidentFlag.heading = Were there any incidents during the transit?
+incident.incidentFlag.paragraph = This could be any disruption that risked or delayed the transit, like a broken seal or deviation from the itinerary.
+incident.incidentFlag.checkYourAnswersLabel = IncidentFlag //TODO check CYA task content
+incident.incidentFlag.error.required = Select yes if there were any incidents during the transit
 
 incident.incidentCountry.title = Which country is the place of incident in?
 incident.incidentCountry.heading = Which country is the place of incident in?
