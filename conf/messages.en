@@ -296,7 +296,7 @@ incident.incidentCountry.change.hidden = which country is the place of incident 
 incident.incidentCountry.checkYourAnswersLabel = Which country is the place of incident in? //TODO check CYA task content
 incident.incidentCountry.error.required = Enter which country the incident happened in
 
-incident.incidentCode.title = What is the incident code for the place of incident?
+incident.incidentCode.title = What is the incident code for the place of incident? //TODO do as radio page
 incident.incidentCode.heading = What is the incident code for the place of incident?
 incident.incidentCode.hintText = Hint
 incident.incidentCode.placeholder = Select a incident code
@@ -315,12 +315,12 @@ incident.endorsementDate.error.invalid = Enter a real date for Endorsement date
 incident.endorsementDate.error.min.date = The date must be after {0}
 incident.endorsementDate.error.max.date = The date must be before the current date
 
-incident.incidentText.title = Description of the incident.
-incident.incidentText.heading = Description of the incident.
-incident.incidentText.checkYourAnswersLabel = Description of the incident.
-incident.incidentText.error.required = Enter description of the incident.
-incident.incidentText.error.maxLength = The Incident description must be 512 characters or less
-incident.incidentText.error.invalidCharacters = The Incident description must only include letters a to z, numbers 0 to 9 and spaces
+incident.incidentText.title = What happened during the incident?
+incident.incidentText.heading = What happened during the incident?
+incident.incidentText.checkYourAnswersLabel = Description of the incident. //TODO check CYA task content
+incident.incidentText.error.required = Describe what happened during the incident
+incident.incidentText.error.maxLength = The description of the incident must be 512 characters or less
+incident.incidentText.error.invalidCharacters = The description of the incident must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 incident.endorsementAuthority.title = What is the authority of endorsement
 incident.endorsementAuthority.heading = What is the authority of endorsement

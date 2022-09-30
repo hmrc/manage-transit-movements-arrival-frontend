@@ -37,6 +37,8 @@ class IncidentTextViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
 
   behave like pageWithCharacterCount(maxIncidentTextLength)

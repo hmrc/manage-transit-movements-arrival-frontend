@@ -44,7 +44,8 @@
             field = form("value"),
             label = messages("incident.incidentText.heading"),
             maxLength = maxIncidentTextLength,
-            hint = None
+            hint = None,
+            caption = Some(messages("incident.caption"))
         )
 
         @button(attributes = Map("id" -> "submit"))
