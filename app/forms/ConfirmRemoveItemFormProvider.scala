@@ -17,13 +17,15 @@
 package forms
 
 import forms.mappings.Mappings
+import models.identification.authorisation.AuthorisationType
+
 import javax.inject.Inject
 import play.api.data.Form
 
 class ConfirmRemoveItemFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, itemTitle: String): Form[Boolean] =
+  def apply(prefix: String, referenceNumber: String, authorisationType: AuthorisationType): Form[Boolean] =
     Form(
-      "value" -> boolean(s"$prefix.error.required", args = Seq(itemTitle))
+      "value" -> boolean(s"$prefix.error.required", args = Seq(authorisationType.toString, referenceNumber))
     )
 }

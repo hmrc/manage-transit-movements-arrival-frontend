@@ -19,6 +19,7 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveItemFormProvider
 import models.UserAnswers
+import models.identification.authorisation.AuthorisationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
@@ -35,15 +36,20 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
 
   private val prefix                  = "identification.authorisation.confirmRemoveAuthorisation"
   private val authTitle               = Gen.alphaNumStr.sample.value
+  private val authType                = AuthorisationType.ACT
   private val formProvider            = new ConfirmRemoveItemFormProvider()
-  private val form                    = formProvider(prefix, authTitle)
+  private val form                    = formProvider(prefix, authTitle, authType)
   private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex).url
-  private val baseAnswers             = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), authTitle)
 
   "ConfirmRemoveAuthorisation Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(baseAnswers)
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), authType)
+        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, confirmRemoveRoute)
       val result  = route(app, request).value
@@ -53,10 +59,11 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, authorisationIndex, authTitle)(request, messages).toString
+        view(form, mrn, authorisationIndex, authTitle, authType.toString)(request, messages).toString
     }
 
     "must return error page when user tries to remove an authorisation that does not exist" in {
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveRoute)
@@ -71,7 +78,11 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
     "must redirect to the next page when valid data is submitted and call to remove authorisation" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(baseAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), authType)
+        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, confirmRemoveRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -81,7 +92,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
+        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -89,7 +100,12 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation is false" in {
-      setExistingUserAnswers(baseAnswers)
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), authType)
+        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, confirmRemoveRoute)
         .withFormUrlEncodedBody(("value", "false"))
@@ -99,13 +115,18 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
+        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
 
       verify(mockSessionRepository, never()).set(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      setExistingUserAnswers(baseAnswers)
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), authType)
+        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, confirmRemoveRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +137,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, authorisationIndex, authTitle)(request, messages).toString
+        view(boundForm, mrn, authorisationIndex, authTitle, authType.toString)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

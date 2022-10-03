@@ -17,6 +17,7 @@
 package views.identification.authorisation
 
 import forms.ConfirmRemoveItemFormProvider
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,21 +27,24 @@ import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
 class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
 
   private val authorisationTitle: String = Gen.alphaNumStr.sample.value
+  private val authorisationType          = AuthorisationType.ACT
 
-  override def form: Form[Boolean] = new ConfirmRemoveItemFormProvider()(prefix, authorisationTitle)
+  override def form: Form[Boolean] = new ConfirmRemoveItemFormProvider()(prefix, authorisationTitle, authorisationType)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveAuthorisationView].apply(form, mrn, authorisationIndex, authorisationTitle)(fakeRequest, messages)
+    injector
+      .instanceOf[ConfirmRemoveAuthorisationView]
+      .apply(form, mrn, authorisationIndex, authorisationTitle, authorisationType.toString)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.confirmRemoveAuthorisation"
 
-  behave like pageWithTitle(authorisationTitle)
+  behave like pageWithTitle(authorisationType.toString, authorisationTitle)
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading(authorisationTitle)
+  behave like pageWithHeading(authorisationType.toString, authorisationTitle)
 
-  behave like pageWithRadioItems(args = Seq(authorisationTitle))
+  behave like pageWithRadioItems(args = Seq(authorisationType.toString, authorisationTitle))
 
   behave like pageWithSubmitButton("Continue")
 }

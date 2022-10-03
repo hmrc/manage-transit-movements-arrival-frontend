@@ -27,10 +27,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, index: Index, authorisationTitle: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, index: Index, authorisationTitle: String, authorisationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("identification.authorisation.confirmRemoveAuthorisation.title", authorisationTitle),
+    title = messages("identification.authorisation.confirmRemoveAuthorisation.title", authorisationType, authorisationTitle),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -41,7 +41,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("identification.authorisation.confirmRemoveAuthorisation.heading", authorisationTitle)
+                heading = messages("identification.authorisation.confirmRemoveAuthorisation.heading", authorisationType, authorisationTitle),
+                caption = Some(messages("site.caption.authorisations"))
             )
         )
 
