@@ -19,22 +19,14 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
+import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, IncidentCode}
+import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{
-  AddEndorsementPage,
-  EndorsementAuthorityPage,
-  EndorsementCountryPage,
-  EndorsementDatePage,
-  EndorsementPlacePage,
-  IncidentCodePage,
-  IncidentCountryPage,
-  IncidentTextPage
-}
+import pages.incident._
 
 import java.time.LocalDate
 

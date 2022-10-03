@@ -27,6 +27,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryIncidentCode: Arbitrary[models.incident.IncidentCode] =
+    Arbitrary {
+      Gen.oneOf(models.incident.IncidentCode.values)
+    }
+
   implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
     Arbitrary {
       for {
@@ -152,11 +157,4 @@ trait ModelGenerators {
       } yield UkAddress(addressLine1, addressLine2, postCodeStart + postCodeMiddle + " " + postCodeLastNum + postCodeEnd)
     }
 
-  implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      for {
-        code        <- nonEmptyString
-        description <- nonEmptyString
-      } yield IncidentCode(code, description)
-    }
 }

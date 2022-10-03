@@ -297,13 +297,17 @@ incident.incidentCountry.checkYourAnswersLabel = Country
 incident.incidentCountry.change.hidden = incident country
 incident.incidentCountry.error.required = Enter which country the incident happened in
 
-incident.incidentCode.title = What is the incident code for the place of incident? //TODO do as radio page
-incident.incidentCode.heading = What is the incident code for the place of incident?
-incident.incidentCode.hintText = Hint
-incident.incidentCode.placeholder = Select a incident code
-incident.incidentCode.checkYourAnswersLabel = incident code
-incident.incidentCode.change.hidden = What is the incident code for the place of incident?
-incident.incidentCode.error.required = Enter the incident code for the place of incident
+incident.incidentCode.title = Which type of incident was it?
+incident.incidentCode.heading = Which type of incident was it?
+incident.incidentCode.1 = 1 - The carrier deviated from the itinerary due to circumstances beyond their control
+incident.incidentCode.2 = 2 - The seals were broken or tampered with during transit for reasons beyond the carrier's control
+incident.incidentCode.3 = 3 - The goods were transferred to another means of transport under the supervision of the customs authority
+incident.incidentCode.4 = 4 - The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
+incident.incidentCode.5 = 5 - The holder of procedure or carrier was unable to comply with their obligations due to an incident
+incident.incidentCode.6 = 6 - The means of transport was unexpectedly changed
+incident.incidentCode.checkYourAnswersLabel = Incident code
+incident.incidentCode.change.hidden = incident code
+incident.incidentCode.error.required = Select the type of incident
 
 incident.endorsementDate.title = When was the endorsement made?
 incident.endorsementDate.heading = When was the endorsement made?

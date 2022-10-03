@@ -20,27 +20,18 @@ import base.SpecBase
 import forms.Constants
 import generators.Generators
 import models.InternationalAddress
+import models.incident.IncidentCode
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CountryCode, IncidentCode}
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.{
-  AddEndorsementPage,
-  EndorsementAuthorityPage,
-  EndorsementCountryPage,
-  EndorsementDatePage,
-  EndorsementPlacePage,
-  IncidentCodePage,
-  IncidentCountryPage,
-  IncidentFlagPage,
-  IncidentTextPage
-}
+import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 import java.time.LocalDate

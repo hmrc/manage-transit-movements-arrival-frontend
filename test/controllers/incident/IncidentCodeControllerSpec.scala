@@ -18,8 +18,10 @@ package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.IncidentCodeFormProvider
-import generators.Generators
-import models.{IncidentCodeList, NormalMode}
+import models.NormalMode
+import models.incident.IncidentCode
+import navigation.Navigator
+import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.IncidentCodePage
@@ -27,34 +29,26 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.IncidentCodeService
 import views.html.incident.IncidentCodeView
 
 import scala.concurrent.Future
 
-class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val incidentCode1    = arbitraryIncidentCode.arbitrary.sample.get
-  private val incidentCode2    = arbitraryIncidentCode.arbitrary.sample.get
-  private val incidentCodeList = IncidentCodeList(Seq(incidentCode1, incidentCode2))
-
-  private val formProvider = new IncidentCodeFormProvider()
-  private val form         = formProvider("incident.incidentCode", incidentCodeList)
-  private val mode         = NormalMode
-
-  private val mockIncidentCodeService: IncidentCodeService = mock[IncidentCodeService]
-  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
+  private val formProvider           = new IncidentCodeFormProvider()
+  private val form                   = formProvider()
+  private val mode                   = NormalMode
+  private lazy val incidentCodeRoute = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockIncidentCodeService))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
 
   "IncidentCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, incidentCodeRoute)
@@ -66,39 +60,36 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
+        view(form, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
-      val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(index), incidentCode1)
+      val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(index), IncidentCode.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, incidentCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> incidentCode1.code))
+      val filledForm = form.bind(Map("value" -> IncidentCode.values.head.toString))
 
       val view = injector.instanceOf[IncidentCodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
+        view(filledForm, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, incidentCodeRoute)
-          .withFormUrlEncodedBody(("value", incidentCode1.code))
+      val request = FakeRequest(POST, incidentCodeRoute)
+        .withFormUrlEncodedBody(("value", IncidentCode.values.head.toString))
 
       val result = route(app, request).value
 
@@ -109,7 +100,6 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockIncidentCodeService.getIncidentCodes()(any())).thenReturn(Future.successful(incidentCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, incidentCodeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -122,7 +112,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, incidentCodeList.incidentCodes, mode, index)(request, messages).toString
+        view(boundForm, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -142,7 +132,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, incidentCodeRoute)
-        .withFormUrlEncodedBody(("value", incidentCode1.code))
+        .withFormUrlEncodedBody(("value", IncidentCode.values.head.toString))
 
       val result = route(app, request).value
 

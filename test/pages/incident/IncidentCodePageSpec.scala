@@ -16,7 +16,7 @@
 
 package pages.incident
 
-import models.reference.IncidentCode
+import models.incident.IncidentCode
 import pages.behaviours.PageBehaviours
 
 class IncidentCodePageSpec extends PageBehaviours {

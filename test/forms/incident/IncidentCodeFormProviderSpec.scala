@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package pages.incident
+package forms.incident
 
-import controllers.incident.routes
+import forms.behaviours.OptionFieldBehaviours
 import models.incident.IncidentCode
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.incident
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.data.FormError
 
-case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
+class IncidentCodeFormProviderSpec extends OptionFieldBehaviours {
 
-  override def path: JsPath = incident.IncidentSection(index).path \ toString
+  val form = new IncidentCodeFormProvider()()
 
-  override def toString: String = "incidentCode"
+  ".value" - {
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
+    val fieldName   = "value"
+    val requiredKey = "incident.incidentCode.error.required"
+
+    behave like optionsField[IncidentCode](
+      form,
+      fieldName,
+      validValues = IncidentCode.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
