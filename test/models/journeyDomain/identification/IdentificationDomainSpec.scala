@@ -34,17 +34,14 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
       "when not a simplified journey" in {
-        val date = arbitrary[LocalDate].sample.value
-        val id   = Gen.alphaNumStr.sample.value
+        val id = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
           .setValue(IsSimplifiedProcedurePage, false)
           .setValue(IdentificationNumberPage, id)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
-          arrivalDate = date,
           isSimplified = false,
           authorisations = AuthorisationsDomain(Nil),
           identificationNumber = id
@@ -56,13 +53,11 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       }
 
       "when a simplified journey and at least one authorisation" in {
-        val date              = arbitrary[LocalDate].sample.value
         val authorisationType = arbitrary[AuthorisationType].sample.value
         val referenceNumber   = Gen.alphaNumStr.sample.value
         val id                = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
           .setValue(IsSimplifiedProcedurePage, true)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
@@ -70,7 +65,6 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
-          arrivalDate = date,
           isSimplified = true,
           authorisations = AuthorisationsDomain(
             Seq(
@@ -91,30 +85,16 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from user answers" - {
 
-      "when arrival date unanswered" in {
-        val userAnswers = emptyUserAnswers
-
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
-
-        result.left.value.page mustBe ArrivalDatePage
-      }
-
       "when is simplified question unanswered" in {
-        val date = arbitrary[LocalDate].sample.value
 
-        val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
-
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
+        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(emptyUserAnswers)
 
         result.left.value.page mustBe IsSimplifiedProcedurePage
       }
 
       "when a simplified journey and no authorisations" in {
-        val date = arbitrary[LocalDate].sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
           .setValue(IsSimplifiedProcedurePage, true)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -123,10 +103,8 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       }
 
       "when identification number unanswered" in {
-        val date = arbitrary[LocalDate].sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
           .setValue(IsSimplifiedProcedurePage, false)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)

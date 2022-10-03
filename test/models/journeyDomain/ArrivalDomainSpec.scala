@@ -30,17 +30,7 @@ import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.{
-  AddEndorsementPage,
-  EndorsementAuthorityPage,
-  EndorsementCountryPage,
-  EndorsementDatePage,
-  EndorsementPlacePage,
-  IncidentCodePage,
-  IncidentCountryPage,
-  IncidentFlagPage,
-  IncidentTextPage
-}
+import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 import java.time.LocalDate
@@ -50,7 +40,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val date         = arbitrary[LocalDate].sample.value
   private val id           = Gen.alphaNumStr.sample.value
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
@@ -61,7 +50,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ArrivalDatePage, date)
         .setValue(IsSimplifiedProcedurePage, false)
         .setValue(IdentificationNumberPage, id)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
@@ -81,7 +69,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          arrivalDate = date,
           isSimplified = false,
           authorisations = AuthorisationsDomain(
             Seq.empty
@@ -118,7 +105,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with no Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ArrivalDatePage, date)
         .setValue(IsSimplifiedProcedurePage, false)
         .setValue(IdentificationNumberPage, id)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
@@ -130,7 +116,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          arrivalDate = date,
           isSimplified = false,
           authorisations = AuthorisationsDomain(
             Seq.empty
@@ -158,7 +143,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       "when a incident flag page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
           .setValue(IsSimplifiedProcedurePage, false)
           .setValue(IdentificationNumberPage, id)
           .setValue(TypeOfLocationPage, AuthorisedPlace)

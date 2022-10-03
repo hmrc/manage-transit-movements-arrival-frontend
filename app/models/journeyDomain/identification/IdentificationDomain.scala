@@ -26,7 +26,6 @@ import java.time.LocalDate
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
-  arrivalDate: LocalDate,
   isSimplified: Boolean,
   authorisations: AuthorisationsDomain,
   identificationNumber: String
@@ -46,7 +45,6 @@ object IdentificationDomain {
   implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
     (
       mrn,
-      ArrivalDatePage.reader,
       IsSimplifiedProcedurePage.reader,
       UserAnswersReader[AuthorisationsDomain],
       IdentificationNumberPage.reader
