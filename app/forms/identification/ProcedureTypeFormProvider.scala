@@ -18,7 +18,6 @@ package forms.identification
 
 import forms.mappings.Mappings
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 
 import javax.inject.Inject

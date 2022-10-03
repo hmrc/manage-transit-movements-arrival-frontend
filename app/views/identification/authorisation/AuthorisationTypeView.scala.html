@@ -44,7 +44,8 @@
             field = form("value"),
             radioItems = fieldId => radios(fieldId, form.value),
             radioType = Radio(
-                heading = messages("identification.authorisation.authorisationType.heading")
+                heading = messages("identification.authorisation.authorisationType.heading"),
+                caption = Some(messages("site.caption.authorisations"))
             )
         )
 

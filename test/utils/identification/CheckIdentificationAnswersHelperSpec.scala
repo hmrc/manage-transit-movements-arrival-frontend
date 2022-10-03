@@ -21,7 +21,7 @@ import controllers.identification.authorisation.{routes => authRoutes}
 import controllers.identification.routes
 import generators.Generators
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType.Option1
+import models.identification.authorisation.AuthorisationType
 import models.{Mode, MovementReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -216,7 +216,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
           forAll(arbitrary[Mode], Gen.alphaNumStr) {
             (mode, ref) =>
               val answers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(authorisationIndex), Option1)
+                .setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
                 .setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
 
               val helper = new CheckIdentificationAnswersHelper(answers, mode)
@@ -225,7 +225,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Authorisation 1".toText),
-                  value = Value("Option 1".toText),
+                  value = Value("ACT - authorised consignee for TIR procedures".toText),
                   actions = Some(
                     Actions(
                       items = List(

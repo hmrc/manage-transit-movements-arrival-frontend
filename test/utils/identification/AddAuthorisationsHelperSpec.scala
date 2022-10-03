@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.identification.authorisation.{routes => authRoutes}
 import generators.Generators
 import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
@@ -45,14 +46,14 @@ class AddAuthorisationsHelperSpec extends SpecBase with Generators {
         val ref = Gen.alphaNumStr.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationTypePage(Index(0)), Option1)
+          .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACE)
           .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
 
         val helper = new AddAuthorisationHelper(userAnswers, NormalMode)
         helper.listItems mustBe Seq(
           Right(
             ListItem(
-              name = "Option 1",
+              name = "ACE - authorised consignee for common or Union transits",
               changeUrl = authRoutes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0)).url,
               removeUrl = authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url
             )

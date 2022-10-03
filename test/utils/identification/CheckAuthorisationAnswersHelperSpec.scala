@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.identification.authorisation.routes
 import generators.Generators
 import models.Mode
-import models.identification.authorisation.AuthorisationType.Option1
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -48,7 +48,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AuthorisationTypePage defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), Option1)
+              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
 
               val helper = new CheckAuthorisationAnswersHelper(answers, mode, authorisationIndex)
               val result = helper.authorisationType
@@ -56,7 +56,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Authorisation Type".toText),
-                  value = Value("Option 1".toText),
+                  value = Value("ACT - authorised consignee for TIR procedures".toText),
                   actions = Some(
                     Actions(
                       items = List(

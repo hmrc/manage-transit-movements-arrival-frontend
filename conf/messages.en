@@ -15,7 +15,9 @@ site.service_name = Manage your transit movements
 site.movement.reference.number = Movement reference number
 site.youMust = You must
 site.section = This section is
+
 site.caption = Arrivals
+site.caption.authorisations = Arrivals - Authorisations
 
 date.day.capitalized = Day
 date.month.capitalized = Month
@@ -100,13 +102,13 @@ identification.addAnotherAuthorisation.maxLimit.label = You cannot add any more 
 identification.authorisation.label = Authorisation {0}
 identification.authorisation.change.hidden = authorisation {0}
 
-identification.authorisation.authorisationType.title = Authorisation Type
-identification.authorisation.authorisationType.heading = Authorisation Type
-identification.authorisation.authorisationType.option1 = Option 1
-identification.authorisation.authorisationType.option2 = Option 2
+identification.authorisation.authorisationType.title = Which type of authorisation are you using?
+identification.authorisation.authorisationType.heading = Which type of authorisation are you using?
+identification.authorisation.authorisationType.act = ACT - authorised consignee for TIR procedures
+identification.authorisation.authorisationType.ace = ACE - authorised consignee for common or Union transits
 identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
 identification.authorisation.authorisationType.change.hidden = authorisation type
-identification.authorisation.authorisationType.error.required = Select Authorisation Type
+identification.authorisation.authorisationType.error.required = Select which type of authorisation you want to add
 
 identification.authorisation.authorisationReferenceNumber.title = Authorisation Reference Number
 identification.authorisation.authorisationReferenceNumber.heading = Authorisation Reference Number
