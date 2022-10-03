@@ -41,7 +41,9 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("movementReferenceNumber.heading")
+                heading = messages("movementReferenceNumber.heading"),
+                caption = Some(messages("site.caption"))
+
             ),
             hint = Some(messages("movementReferenceNumber.hintText")),
             inputClass = InputSize.Width20

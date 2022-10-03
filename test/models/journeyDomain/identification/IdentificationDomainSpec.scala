@@ -19,14 +19,13 @@ package models.journeyDomain.identification
 import base.SpecBase
 import generators.Generators
 import models.Index
+import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification._
-import pages.identification.authorisation.{_}
-
-import java.time.LocalDate
+import pages.identification.authorisation._
 
 class IdentificationDomainSpec extends SpecBase with Generators {
 
@@ -37,12 +36,12 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val id = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, false)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(IdentificationNumberPage, id)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
-          isSimplified = false,
+          procedureType = ProcedureType.Normal,
           authorisations = AuthorisationsDomain(Nil),
           identificationNumber = id
         )
@@ -58,14 +57,14 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val id                = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
           .setValue(IdentificationNumberPage, id)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
-          isSimplified = true,
+          procedureType = ProcedureType.Simplified,
           authorisations = AuthorisationsDomain(
             Seq(
               AuthorisationDomain(
@@ -95,7 +94,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when a simplified journey and no authorisations" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 
@@ -105,7 +104,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when identification number unanswered" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, false)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 

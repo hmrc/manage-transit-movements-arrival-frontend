@@ -15,6 +15,7 @@ site.service_name = Manage your transit movements
 site.movement.reference.number = Movement reference number
 site.youMust = You must
 site.section = This section is
+site.caption = Arrivals
 
 date.day.capitalized = Day
 date.month.capitalized = Month
@@ -51,8 +52,8 @@ concurrent.remove.error.multipleAuthorisation.link.text = Go back to you have ad
 movementReferenceNumber.title = What is the Movement Reference Number (MRN)?
 movementReferenceNumber.heading = What is the Movement Reference Number (MRN)?
 movementReferenceNumber.hintText = This will be 18 characters long and include both letters and numbers.
-movementReferenceNumber.checkYourAnswersLabel = Movement Reference Number
-movementReferenceNumber.change.hidden = movement reference number
+movementReferenceNumber.checkYourAnswersLabel = Movement Reference Number (MRN)
+movementReferenceNumber.change.hidden = Movement Reference Number (MRN)
 movementReferenceNumber.error.required = Enter the Movement Reference Number
 movementReferenceNumber.error.invalid = The Movement Reference Number must only include letters a to z and numbers 0 to 9
 movementReferenceNumber.error.invalidCharacter = The Movement Reference Number must be 18 characters long
@@ -80,11 +81,13 @@ identification.arrivalDate.error.invalid = Enter a real date for Arrival Date
 identification.arrivalDate.error.min.date = The date must be after {0}
 identification.arrivalDate.error.max.date = The date must be before the current date
 
-identification.isSimplifiedProcedure.title = Is Simplified Procedure
-identification.isSimplifiedProcedure.heading = Is Simplified Procedure
-identification.isSimplifiedProcedure.checkYourAnswersLabel = Is Simplified Procedure
-identification.isSimplifiedProcedure.change.hidden = if it is a simplified procedure
-identification.isSimplifiedProcedure.error.required = Select yes if Is Simplified Procedure
+identification.isSimplifiedProcedure.title = What type of procedure are you using?
+identification.isSimplifiedProcedure.heading = What type of procedure are you using?
+identification.isSimplifiedProcedure.normal = Normal - customs-approved location
+identification.isSimplifiedProcedure.simplified = Simplified - authorised consignor’s location
+identification.isSimplifiedProcedure.checkYourAnswersLabel = Procedure type
+identification.isSimplifiedProcedure.change.hidden = procedure type
+identification.isSimplifiedProcedure.error.required = Select the type of procedure you’re using
 
 identification.addAnotherAuthorisation.singular.title = You have added {0} authorisation
 identification.addAnotherAuthorisation.singular.heading = You have added {0} authorisation

@@ -20,6 +20,7 @@ import base.SpecBase
 import forms.Constants
 import generators.Generators
 import models.InternationalAddress
+import models.identification.ProcedureType
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
@@ -29,7 +30,7 @@ import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
+import pages.identification.{IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
@@ -50,7 +51,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, false)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, id)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -69,7 +70,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          isSimplified = false,
+          procedureType = ProcedureType.Normal,
           authorisations = AuthorisationsDomain(
             Seq.empty
           ),
@@ -105,7 +106,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with no Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, false)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, id)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -116,7 +117,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          isSimplified = false,
+          procedureType = ProcedureType.Normal,
           authorisations = AuthorisationsDomain(
             Seq.empty
           ),
@@ -143,7 +144,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       "when a incident flag page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, false)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(IdentificationNumberPage, id)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)

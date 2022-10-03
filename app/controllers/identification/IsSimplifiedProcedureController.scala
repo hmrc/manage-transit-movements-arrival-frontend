@@ -19,6 +19,8 @@ package controllers.identification
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import forms.identification.ProcedureTypeFormProvider
+import models.identification.ProcedureType
 import models.{Mode, MovementReferenceNumber}
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
@@ -37,14 +39,14 @@ class IsSimplifiedProcedureController @Inject() (
   implicit val sessionRepository: SessionRepository,
   @IdentificationDetails implicit val navigator: Navigator,
   actions: Actions,
-  formProvider: YesNoFormProvider,
+  formProvider: ProcedureTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IsSimplifiedProcedureView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("identification.isSimplifiedProcedure")
+  private val form = formProvider()
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
@@ -53,7 +55,7 @@ class IsSimplifiedProcedureController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, mode))
+      Ok(view(preparedForm, mrn, ProcedureType.radioItems, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -61,7 +63,7 @@ class IsSimplifiedProcedureController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.radioItems, mode))),
           value => IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
         )
   }

@@ -16,18 +16,29 @@
 
 package views.identification
 
+import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
+import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import views.behaviours.{RadioViewBehaviours, YesNoViewBehaviours}
 import views.html.identification.IsSimplifiedProcedureView
 
-class IsSimplifiedProcedureViewSpec extends YesNoViewBehaviours {
+class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[IsSimplifiedProcedureView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+  override def form: Form[ProcedureType] = new ProcedureTypeFormProvider()()
+
+  override def applyView(form: Form[ProcedureType]): HtmlFormat.Appendable =
+    injector.instanceOf[IsSimplifiedProcedureView].apply(form, mrn, ProcedureType.radioItems, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "identification.isSimplifiedProcedure"
+
+  override def radioItems(fieldId: String, checkedValue: Option[ProcedureType] = None): Seq[RadioItem] =
+    ProcedureType.radioItems(fieldId, checkedValue)
+
+  override def values: Seq[ProcedureType] = ProcedureType.values
 
   behave like pageWithTitle()
 

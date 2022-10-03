@@ -18,7 +18,9 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
+import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
+import models.identification.ProcedureType
 import navigation.Navigator
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
@@ -35,8 +37,8 @@ import scala.concurrent.Future
 
 class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                    = new YesNoFormProvider()
-  private val form                            = formProvider("identification.isSimplifiedProcedure")
+  private val formProvider                    = new ProcedureTypeFormProvider()
+  private val form                            = formProvider()
   private val mode                            = NormalMode
   private lazy val isSimplifiedProcedureRoute = routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode).url
 
@@ -59,13 +61,13 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode)(request, messages).toString
+        view(form, mrn, ProcedureType.radioItems, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, true)
+      val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, isSimplifiedProcedureRoute)
@@ -79,7 +81,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode)(request, messages).toString
+        view(filledForm, mrn, ProcedureType.radioItems, mode)(request, messages).toString
 
     }
 
@@ -115,7 +117,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       val view = injector.instanceOf[IsSimplifiedProcedureView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, mode)(request, messages).toString
+        view(boundForm, mrn, ProcedureType.radioItems, mode)(request, messages).toString
 
     }
 

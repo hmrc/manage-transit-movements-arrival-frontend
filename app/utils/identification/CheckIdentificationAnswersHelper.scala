@@ -16,6 +16,7 @@
 
 package utils.identification
 
+import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.identification.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
@@ -44,9 +45,9 @@ class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
     id = Some("change-arrival-date")
   )
 
-  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[ProcedureType](
     page = IsSimplifiedProcedurePage,
-    formatAnswer = formatAsYesOrNo,
+    formatAnswer = formatEnumAsText(ProcedureType.messageKeyPrefix),
     prefix = "identification.isSimplifiedProcedure",
     id = Some("change-is-simplified-procedure")
   )

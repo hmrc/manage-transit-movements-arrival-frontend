@@ -19,6 +19,7 @@ package models.journeyDomain.identification
 import base.SpecBase
 import generators.Generators
 import models.Index
+import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
@@ -33,7 +34,7 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" - {
       "when not a simplified journey" in {
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, false)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
         val expectedResult = AuthorisationsDomain(
           value = Nil
@@ -49,7 +50,7 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
         val referenceNumber   = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
@@ -72,7 +73,7 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
 
       "when a simplified journey and no authorisations" in {
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
         val result: EitherType[AuthorisationsDomain] = UserAnswersReader[AuthorisationsDomain].run(userAnswers)
 

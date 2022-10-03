@@ -19,6 +19,7 @@ package utils.identification
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authRoutes}
 import generators.Generators
+import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType._
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
@@ -43,7 +44,7 @@ class AddAuthorisationsHelperSpec extends SpecBase with Generators {
       "must return one list item" in {
         val ref = Gen.alphaNumStr.sample.value
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(Index(0)), Option1)
           .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
 
