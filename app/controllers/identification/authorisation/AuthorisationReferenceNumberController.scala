@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider}
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -38,32 +38,43 @@ class AuthorisationReferenceNumberController @Inject() (
   formProvider: AuthorisationRefNoFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: AuthorisationReferenceNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("identification.authorisation.authorisationReferenceNumber")
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(index))) {
+        implicit request =>
+          val form = formProvider("identification.authorisation.authorisationReferenceNumber", request.arg.toString)
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, mrn, index, mode))
-  }
-
-  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index: Index, mode))),
-          value => {
-            implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
-            AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(index)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
           }
-        )
-  }
+
+          Ok(view(preparedForm, mrn, index, request.arg.toString, mode))
+      }
+
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(mrn)
+      .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(index)))
+      .async {
+        implicit request =>
+          val form = formProvider("identification.authorisation.authorisationReferenceNumber", request.arg.toString)
+
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index: Index, request.arg.toString, mode))),
+              value => {
+                implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
+                AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+              }
+            )
+      }
 }

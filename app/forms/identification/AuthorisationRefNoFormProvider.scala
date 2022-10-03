@@ -16,15 +16,24 @@
 
 package forms.identification
 
+import forms.Constants.authorisationNumberLength
+import forms.StopOnFirstFail
 import forms.mappings.Mappings
-import javax.inject.Inject
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class AuthorisationRefNoFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, authorisationType: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(100, s"$prefix.error.length"))
+      "value" -> text(s"$prefix.error.required", Seq(authorisationType))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(authorisationNumberLength, s"$prefix.error.length"),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid")
+          )
+        )
     )
 }

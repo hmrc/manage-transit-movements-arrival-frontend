@@ -22,8 +22,8 @@ sealed trait AuthorisationType
 
 object AuthorisationType extends RadioModel[AuthorisationType] {
 
-  case object ACT extends WithName("act") with AuthorisationType
-  case object ACE extends WithName("ace") with AuthorisationType
+  case object ACT extends WithName("ACT") with AuthorisationType
+  case object ACE extends WithName("ACE") with AuthorisationType
 
   override val messageKeyPrefix: String = "identification.authorisation.authorisationType"
 
