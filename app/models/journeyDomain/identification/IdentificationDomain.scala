@@ -28,8 +28,7 @@ import java.time.LocalDate
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
   procedureType: ProcedureType,
-  authorisations: AuthorisationsDomain,
-  identificationNumber: String
+  authorisations: AuthorisationsDomain
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
@@ -47,7 +46,6 @@ object IdentificationDomain {
     (
       mrn,
       IsSimplifiedProcedurePage.reader,
-      UserAnswersReader[AuthorisationsDomain],
-      IdentificationNumberPage.reader
+      UserAnswersReader[AuthorisationsDomain]
     ).tupled.map((IdentificationDomain.apply _).tupled)
 }

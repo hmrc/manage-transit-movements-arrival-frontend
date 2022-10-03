@@ -37,13 +37,11 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(IdentificationNumberPage, id)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           procedureType = ProcedureType.Normal,
-          authorisations = AuthorisationsDomain(Nil),
-          identificationNumber = id
+          authorisations = AuthorisationsDomain(Nil)
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -54,13 +52,11 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when a simplified journey and at least one authorisation" in {
         val authorisationType = arbitrary[AuthorisationType].sample.value
         val referenceNumber   = Gen.alphaNumStr.sample.value
-        val id                = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
-          .setValue(IdentificationNumberPage, id)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
@@ -72,8 +68,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
                 referenceNumber = referenceNumber
               )(authorisationIndex)
             )
-          ),
-          identificationNumber = id
+          )
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -99,16 +94,6 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 
         result.left.value.page mustBe AuthorisationTypePage(Index(0))
-      }
-
-      "when identification number unanswered" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
-
-        result.left.value.page mustBe IdentificationNumberPage
       }
     }
   }
