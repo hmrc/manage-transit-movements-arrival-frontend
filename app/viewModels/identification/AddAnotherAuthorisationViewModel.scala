@@ -18,8 +18,8 @@ package viewModels.identification
 
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.identification.AddAuthorisationHelper
+import viewModels.ListItem
 
 import javax.inject.Inject
 

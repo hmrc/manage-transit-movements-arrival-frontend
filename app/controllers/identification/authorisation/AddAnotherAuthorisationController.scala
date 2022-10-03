@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.identification
+package controllers.identification.authorisation
 
 import config.FrontendAppConfig
 import controllers.actions._
@@ -29,10 +29,10 @@ import pages.sections.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.ListItem
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
-import views.html.identification.AddAnotherAuthorisationView
+import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 import javax.inject.Inject
 
@@ -50,7 +50,7 @@ class AddAnotherAuthorisationController @Inject() (
     with I18nSupport {
 
   private def form(allowMoreAuthorisations: Boolean): Form[Boolean] =
-    formProvider("identification.addAnotherAuthorisation", allowMoreAuthorisations)
+    formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreAuthorisations)
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
     .requireData(mrn)
@@ -58,7 +58,7 @@ class AddAnotherAuthorisationController @Inject() (
       implicit request =>
         val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
         numberOfAuthorisations match {
-          case 0 => Redirect(routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
+          case 0 => Redirect(controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
           case _ => Ok(view(form(allowMoreAuthorisations), mrn, authorisations, allowMoreAuthorisations))
         }
     }

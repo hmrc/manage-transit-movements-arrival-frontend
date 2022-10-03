@@ -55,8 +55,8 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Authorisation Type".toText),
-                  value = Value("ACT - authorised consignee for TIR procedures".toText),
+                  key = Key("Type".toText),
+                  value = Value("ACT".toText),
                   actions = Some(
                     Actions(
                       items = List(
@@ -99,7 +99,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Authorisation Reference Number".toText),
+                  key = Key("Reference number".toText),
                   value = Value(ref.toText),
                   actions = Some(
                     Actions(
@@ -108,7 +108,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
                           content = "Change".toText,
                           href = routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, authorisationIndex, mode).url,
                           visuallyHiddenText = Some("authorisation reference number"),
-                          attributes = Map("id" -> "change-authorisation-ref-no")
+                          attributes = Map("id" -> "change-authorisation-reference-number")
                         )
                       )
                     )

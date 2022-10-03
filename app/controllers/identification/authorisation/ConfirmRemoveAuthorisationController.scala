@@ -71,9 +71,9 @@ class ConfirmRemoveAuthorisationController @Inject() (
                 AuthorisationSection(index)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
+                  .navigateTo(routes.AddAnotherAuthorisationController.onPageLoad(mrn))
               case false =>
-                Future.successful(Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn)))
+                Future.successful(Redirect(routes.AddAnotherAuthorisationController.onPageLoad(mrn)))
             }
           )
     }

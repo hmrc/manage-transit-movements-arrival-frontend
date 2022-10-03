@@ -81,7 +81,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
+        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -99,7 +99,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
+        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(baseAnswers.mrn).url
 
       verify(mockSessionRepository, never()).set(any())
     }

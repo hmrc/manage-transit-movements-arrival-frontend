@@ -20,7 +20,7 @@ import forms.AddItemFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.ListWithActionsViewBehaviours
-import views.html.identification.AddAnotherAuthorisationView
+import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
@@ -40,7 +40,7 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
       .instanceOf[AddAnotherAuthorisationView]
       .apply(formProvider(prefix, allowMoreItems = false), mrn, maxedOutListItems, allowMoreItems = false)(fakeRequest, messages)
 
-  override val prefix: String = "identification.addAnotherAuthorisation"
+  override val prefix: String = "identification.authorisation.addAnotherAuthorisation"
 
   behave like pageWithBackLink
 

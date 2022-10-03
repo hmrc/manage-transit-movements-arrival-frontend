@@ -18,7 +18,6 @@ package forms.identification
 
 import forms.behaviours.OptionFieldBehaviours
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import play.api.data.FormError
 
 class ProcedureTypeFormProviderSpec extends OptionFieldBehaviours {

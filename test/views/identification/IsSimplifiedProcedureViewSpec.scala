@@ -19,11 +19,10 @@ package views.identification
 import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.{RadioViewBehaviours, YesNoViewBehaviours}
+import views.behaviours.RadioViewBehaviours
 import views.html.identification.IsSimplifiedProcedureView
 
 class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {

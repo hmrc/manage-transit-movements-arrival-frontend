@@ -35,7 +35,12 @@
     mrn = Some(mrn)
 ) {
 
-    @heading(messages("identification.authorisation.checkAuthorisationAnswers.heading"))
+    @heading(
+        heading = messages("identification.authorisation.checkAuthorisationAnswers.heading"),
+        caption = Some(messages("site.caption"))
+    )
+
+    <h2 class="govuk-heading-m">@messages("identification.authorisation.checkAuthorisationAnswers.subHeading")</h2>
 
     @answerSections(sections)
 

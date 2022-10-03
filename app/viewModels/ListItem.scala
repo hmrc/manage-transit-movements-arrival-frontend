@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package viewModels
 
-import models.UserAnswers
-import play.api.mvc.Call
-
-trait JourneyDomainModel {
-
-  def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] = None
-
-}
+case class ListItem(
+  name: String,
+  changeUrl: String,
+  removeUrl: Option[String]
+)

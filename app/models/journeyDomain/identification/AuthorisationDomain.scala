@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.authorisation.AuthorisationType
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, UserAnswers}
 import pages.identification.authorisation._
 import play.api.mvc.Call
@@ -29,7 +29,9 @@ case class AuthorisationDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
+  override def toString: String = s"${`type`.toString} - $referenceNumber"
+
+  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
     Some(controllers.identification.authorisation.routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index))
 }
 

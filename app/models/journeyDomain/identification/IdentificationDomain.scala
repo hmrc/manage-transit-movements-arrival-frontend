@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification.{IdentificationNumberPage, _}
 import play.api.mvc.Call
@@ -32,7 +32,7 @@ case class IdentificationDomain(
   identificationNumber: String
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
     Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
 }
 

@@ -22,8 +22,7 @@ import play.api.data.FormError
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import viewModels.Link
+import viewModels.{Link, ListItem}
 import viewModels.sections.Section
 
 trait ViewModelGenerators {
@@ -149,7 +148,7 @@ trait ViewModelGenerators {
     for {
       name      <- nonEmptyString
       changeUrl <- nonEmptyString
-      removeUrl <- nonEmptyString
+      removeUrl <- Gen.option(nonEmptyString)
     } yield ListItem(name, changeUrl, removeUrl)
   }
 }

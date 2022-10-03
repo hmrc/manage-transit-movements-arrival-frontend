@@ -54,7 +54,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
     messages(s"$messageKeyPrefix.$answer")
 
-  def buildRow(
+  protected def buildRow(
     prefix: String,
     answer: Content,
     id: Option[String],
@@ -66,8 +66,21 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
       label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
       answer = answer,
       id = id,
-      call = call,
+      call = Some(call),
       args = args: _*
+    )
+
+  protected def buildRowWithNoChangeLink(
+    prefix: String,
+    answer: Content,
+    args: Any*
+  ): SummaryListRow =
+    buildSimpleRow(
+      prefix = prefix,
+      label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
+      answer = answer,
+      id = None,
+      call = None
     )
 
   def buildSimpleRow(
@@ -75,26 +88,27 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     label: String,
     answer: Content,
     id: Option[String],
-    call: Call,
+    call: Option[Call],
     args: Any*
   ): SummaryListRow =
     SummaryListRow(
       key = label.toKey,
       value = Value(answer),
-      actions = Some(
-        Actions(items =
-          List(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = call.url,
-              visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
-              attributes = id.fold[Map[String, String]](Map.empty)(
-                id => Map("id" -> id)
+      actions = call.map {
+        route =>
+          Actions(
+            items = List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = route.url,
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                attributes = id.fold[Map[String, String]](Map.empty)(
+                  id => Map("id" -> id)
+                )
               )
             )
           )
-        )
-      )
+      }
     )
 
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.identification.routes
+@import controllers.identification.authorisation.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ItemType, ListItem}
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import viewModels.ListItem
 
 @this(
     mainTemplate: MainTemplate,
@@ -37,14 +37,17 @@
 }
 
 @mainTemplate(
-    title = messages(s"identification.addAnotherAuthorisation.$singularOrPlural.title", authorisations.length),
+    title = messages(s"identification.authorisation.addAnotherAuthorisation.$singularOrPlural.title", authorisations.length),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
     @errorSummary(form.errors)
 
-    @heading(messages(s"identification.addAnotherAuthorisation.$singularOrPlural.heading", authorisations.length))
+    @heading(
+        heading = messages(s"identification.authorisation.addAnotherAuthorisation.$singularOrPlural.heading", authorisations.length),
+        caption = Some(messages("site.caption.authorisations"))
+    )
 
     @listWithActions(authorisations)
 
@@ -54,11 +57,11 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = messages("identification.addAnotherAuthorisation.label")
+                    legend = messages("identification.authorisation.addAnotherAuthorisation.label")
                 )
             )
         } else {
-            <p class="govuk-body" data-testId="maxLimit">@messages("identification.addAnotherAuthorisation.maxLimit.label")</p>
+            <p class="govuk-body" data-testId="maxLimit">@messages("identification.authorisation.addAnotherAuthorisation.maxLimit.label")</p>
         }
 
         @button(attributes = Map("id" -> "submit"))

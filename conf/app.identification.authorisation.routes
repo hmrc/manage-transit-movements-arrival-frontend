@@ -9,8 +9,11 @@ POST       /:mrn/authorisations/:index/type                                   co
 GET        /:mrn/authorisations/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:mrn/authorisations/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:mrn/authorisations/:index/check-authorisation-answers            controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
-POST       /:mrn/authorisations/:index/check-authorisation-answers            controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index)
+GET        /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
+POST       /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index)
 
 GET        /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
 POST       /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onSubmit(mrn: MovementReferenceNumber, index: Index)
+
+GET        /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber)
+POST       /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber)

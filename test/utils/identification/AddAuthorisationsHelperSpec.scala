@@ -26,7 +26,7 @@ import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewModels.ListItem
 
 class AddAuthorisationsHelperSpec extends SpecBase with Generators {
 
@@ -53,9 +53,9 @@ class AddAuthorisationsHelperSpec extends SpecBase with Generators {
         helper.listItems mustBe Seq(
           Right(
             ListItem(
-              name = "ACE - authorised consignee for common or Union transits",
+              name = s"ACE - $ref",
               changeUrl = authRoutes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0)).url,
-              removeUrl = authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url
+              removeUrl = Some(authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url)
             )
           )
         )

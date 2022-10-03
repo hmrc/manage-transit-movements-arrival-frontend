@@ -17,7 +17,6 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
 import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
