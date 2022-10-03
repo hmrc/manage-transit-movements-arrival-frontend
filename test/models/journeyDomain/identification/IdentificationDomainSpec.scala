@@ -104,7 +104,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when identification number unanswered" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 

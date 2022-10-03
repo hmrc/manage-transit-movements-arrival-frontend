@@ -135,7 +135,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Procedure type".toText),
-                  value = Value("Yes".toText),
+                  value = Value("Simplified - authorised consignor’s location".toText),
                   actions = Some(
                     Actions(
                       items = List(

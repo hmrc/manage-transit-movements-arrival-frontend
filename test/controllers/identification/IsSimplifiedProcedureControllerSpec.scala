@@ -74,7 +74,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> ProcedureType.values.head.toString))
 
       val view = injector.instanceOf[IsSimplifiedProcedureView]
 
@@ -93,7 +93,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       val request =
         FakeRequest(POST, isSimplifiedProcedureRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", ProcedureType.values.head.toString))
 
       val result = route(app, request).value
 
@@ -141,7 +141,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       val request =
         FakeRequest(POST, isSimplifiedProcedureRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", ProcedureType.values.head.toString))
 
       val result = route(app, request).value
 
