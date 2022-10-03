@@ -43,8 +43,7 @@ object CheckIdentificationAnswersViewModel {
         rows = Seq(
           Some(helper.movementReferenceNumber),
           helper.arrivalDate,
-          helper.isSimplified,
-          helper.identificationNumber
+          helper.isSimplified
         ).flatten
       )
 

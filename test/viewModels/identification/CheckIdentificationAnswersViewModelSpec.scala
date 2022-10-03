@@ -37,14 +37,13 @@ class CheckIdentificationAnswersViewModelSpec extends SpecBase with Generators {
       .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
       .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
       .setValue(AuthorisationReferenceNumberPage(authorisationIndex), Gen.alphaNumStr.sample.value)
-      .setValue(IdentificationNumberPage, Gen.alphaNumStr.sample.value)
 
     val sections = CheckIdentificationAnswersViewModel.apply(userAnswers, NormalMode).sections
 
     sections.size mustBe 2
 
     sections.head.sectionTitle mustNot be(defined)
-    sections.head.rows.size mustBe 4
+    sections.head.rows.size mustBe 3
     sections.head.addAnotherLink mustNot be(defined)
 
     sections(1).sectionTitle.get mustBe "Authorisations"

@@ -59,12 +59,11 @@ class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
     id = Some("change-identification-number")
   )
 
-  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain, AuthorisationType](
-    page = AuthorisationTypePage(index),
-    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
+    formatAnswer = formatAsText,
     prefix = "identification.authorisation",
     id = Some(s"change-authorisation-${index.display}"),
     args = index.display
-  )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
+  )(AuthorisationDomain.userAnswersReader(index))
 
 }

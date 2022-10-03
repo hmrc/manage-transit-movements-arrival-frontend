@@ -213,10 +213,10 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
 
       "must return Some(Row)" - {
         "when AuthorisationTypePage defined at index" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr) {
-            (mode, ref) =>
+          forAll(arbitrary[Mode], Gen.alphaNumStr, arbitrary[AuthorisationType]) {
+            (mode, ref, auth) =>
               val answers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
+                .setValue(AuthorisationTypePage(authorisationIndex), auth)
                 .setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
 
               val helper = new CheckIdentificationAnswersHelper(answers, mode)
@@ -225,7 +225,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Authorisation 1".toText),
-                  value = Value("ACT - authorised consignee for TIR procedures".toText),
+                  value = Value(s"${auth.toString} - $ref".toText),
                   actions = Some(
                     Actions(
                       items = List(
