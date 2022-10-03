@@ -46,7 +46,7 @@
             radioItems = fieldId => radios(fieldId, form.value),
             radioType = RadioWithAdditionalHtml(
                 heading = messages("locationOfGoods.qualifierOfIdentification.heading"),
-                caption = None,
+                caption = Some(messages("locationOfGoods.caption")),
                 additionalHtml = Html(s"""<p class="govuk-body">${messages("locationOfGoods.qualifierOfIdentification.paragraph1")}</p>""".stripMargin)
             )
         )

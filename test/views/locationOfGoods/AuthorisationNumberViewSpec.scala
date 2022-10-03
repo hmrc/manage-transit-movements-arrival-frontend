@@ -40,6 +40,8 @@ class AuthorisationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithInputText(Some(InputSize.Width20))

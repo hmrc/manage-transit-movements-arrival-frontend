@@ -158,7 +158,7 @@ locationOfGoods.address.error.streetNumber.required = Enter the street number fo
 locationOfGoods.address.error.streetNumber.invalidCharacters = The street number must only include numbers 0 to 9 and letters a to z
 locationOfGoods.address.error.streetNumber.length = The street number must be 6 characters or less
 locationOfGoods.address.error.postalCode.required = Enter the postal code for the location of goods
-locationOfGoods.address.error.postalCode.invalidCharacters = The postcode of address must only include letters a to z, numbers 0 to 9 and spaces
+locationOfGoods.address.error.postalCode.invalidCharacters = The postal code must only include letters a to z, numbers 0 to 9 and spaces
 locationOfGoods.address.error.postalCode.length = The postal code must be 9 characters or less
 locationOfGoods.address.error.country.required = Enter the country for the location of goods
 
@@ -179,7 +179,7 @@ locationOfGoods.contactPersonName.error.length = The contact must be 70 characte
 
 locationOfGoods.contactPersonTelephone.title = What is the contact for the location of goods’ telephone number?
 locationOfGoods.contactPersonTelephone.heading = What is {0}’s telephone number?
-locationOfGoods.contactPersonTelephone.hintText = This has to include the country code, like +44 808 157 0192.
+locationOfGoods.contactPersonTelephone.hintText = For international numbers include the country code.
 locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = What is the contact for the location of goods’ telephone number?
 locationOfGoods.contactPersonTelephone.change.hidden = What is the contact for the location of goods’ telephone number?
 locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s telephone number.
@@ -207,12 +207,6 @@ locationOfGoods.customsOffice.placeholder = Select a customs office
 locationOfGoods.customsOffice.change.hidden = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOffice.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOffice.error.required = Enter the customs office identifier for the location of goods
-
-locationOfGoods.identificationNumber.title = IdentificationNumber
-locationOfGoods.identificationNumber.heading = IdentificationNumber
-locationOfGoods.identificationNumber.checkYourAnswersLabel = IdentificationNumber
-locationOfGoods.identificationNumber.error.required = Enter IdentificationNumber
-locationOfGoods.identificationNumber.error.length = IdentificationNumber must be 100 characters or less
 
 locationOfGoods.internationalAddress.title = What is the address for the location of goods?
 locationOfGoods.internationalAddress.heading = What is the address for the location of goods?
@@ -245,25 +239,25 @@ locationOfGoods.qualifierOfIdentification.postalCode = Postal code
 locationOfGoods.qualifierOfIdentification.checkYourAnswersLabel = How do you want to identify the location of goods?
 locationOfGoods.qualifierOfIdentification.error.required = Select how you want to identify the location of goods
 
-locationOfGoods.typeOfLocation.title = Which type of location is it?
-locationOfGoods.typeOfLocation.heading = Which type of location is it?
+locationOfGoods.typeOfLocation.title = Which type of location are the goods in?
+locationOfGoods.typeOfLocation.heading = Which type of location are the goods in?
 locationOfGoods.typeOfLocation.authorisedPlace = Authorised place – the authorised consignor’s own premises
 locationOfGoods.typeOfLocation.designatedLocation = Designated location – any other premises the consignor is authorised to use as an office of departure
 locationOfGoods.typeOfLocation.approvedPlace = Approved place – a designated location approved and controlled by the office of departure or destination
 locationOfGoods.typeOfLocation.other = Other
-locationOfGoods.typeOfLocation.checkYourAnswersLabel = Which type of location is it?
-locationOfGoods.typeOfLocation.error.required = Select which type of location it is
+locationOfGoods.typeOfLocation.checkYourAnswersLabel = Which type of location are the goods in?
+locationOfGoods.typeOfLocation.error.required = Select which type of location the goods are in
 
-locationOfGoods.unlocode.title = What is the UN/LOCODE for the place of loading?
-locationOfGoods.unlocode.heading = What is the UN/LOCODE for the place of loading?
-locationOfGoods.unlocode.hintText = Enter the code, like GB BRS or GB MNC.
+locationOfGoods.unlocode.title = What is the UN/LOCODE for the location of goods?
+locationOfGoods.unlocode.heading = What is the UN/LOCODE for the location of goods?
+locationOfGoods.unlocode.hintText = Enter the location or code, like Berlin or DEBER.
 locationOfGoods.unlocode.placeholder = Select a UN/LOCODE.
 locationOfGoods.unlocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
-locationOfGoods.unlocode.change.hidden = What is the UN/LOCODE for the place of loading?
-locationOfGoods.unlocode.checkYourAnswersLabel = What is the UN/LOCODE for the place of loading?
-locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the place of loading
-locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the place of loading must only include letters a to z and spaces
-locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the place of loading must be 5 characters long
+locationOfGoods.unlocode.change.hidden = the UN/LOCODE for the location of goods
+locationOfGoods.unlocode.checkYourAnswersLabel = WWhat is the UN/LOCODE for the location of goods?
+locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the location of goods must only include letters a to z and spaces
+locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the location of goods must be 5 characters long
 
 locationOfGoods.identificationNumber.title = What is the EORI number or TIN for the location of goods?
 locationOfGoods.identificationNumber.heading = What is the EORI number or TIN for the location of goods?
@@ -273,10 +267,10 @@ locationOfGoods.identificationNumber.error.maxLength = The EORI number or TIN mu
 locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9
 locationOfGoods.identificationNumber.hintText = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 
-locationOfGoods.addAdditionalIdentifier.title = Do you want to add another identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.heading = Do you want to add another identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add another identifier for the location of goods
+locationOfGoods.addAdditionalIdentifier.title = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.heading = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add an additional identifier for the location of goods
 
 # Incidents and Endorsements
 
