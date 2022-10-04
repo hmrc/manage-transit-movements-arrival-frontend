@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.IncidentCodeFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import models.incident.IncidentCode
-import navigation.Navigator
+import navigation.{IncidentNavigator, IncidentNavigatorProvider, Navigator}
 import navigation.annotations.IdentificationDetails
 import pages.incident.IncidentCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncidentCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   formProvider: IncidentCodeFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,7 +63,10 @@ class IncidentCodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, IncidentCode.radioItems, mode, index))),
-          value => IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: IncidentNavigator = navigatorProvider(index)
+            IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          }
         )
   }
 }

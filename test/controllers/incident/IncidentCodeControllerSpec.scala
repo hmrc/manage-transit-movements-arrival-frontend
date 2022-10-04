@@ -40,11 +40,6 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val mode                   = NormalMode
   private lazy val incidentCodeRoute = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
-
   "IncidentCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
