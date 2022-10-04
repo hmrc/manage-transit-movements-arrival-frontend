@@ -115,6 +115,11 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnsw
       chars <- listOfN(length, charGen)
     } yield chars.mkString
 
+  def alphaStringWithLength(length: Int): Gen[String] =
+    for {
+      chars <- listOfN(length, Gen.alphaNumChar)
+    } yield chars.mkString
+
   def alphaStringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)

@@ -42,7 +42,7 @@ final case class MovementReferenceNumber(year: String, countryCode: String, seri
 object MovementReferenceNumber {
 
   object Constants {
-    val length               = 100
+    val length               = 18
     val validCharactersRegex = """^[a-zA-Z0-9 ]*$"""
   }
 
