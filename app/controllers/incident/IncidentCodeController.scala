@@ -19,10 +19,9 @@ package controllers.incident
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.IncidentCodeFormProvider
-import models.{Index, Mode, MovementReferenceNumber}
 import models.incident.IncidentCode
-import navigation.{IncidentNavigator, IncidentNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import models.{Index, Mode, MovementReferenceNumber}
+import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.IncidentCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

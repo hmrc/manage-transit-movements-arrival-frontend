@@ -317,6 +317,7 @@ incident.endorsementDate.error.max.date = The endorsement date must be before to
 
 incident.incidentText.title = What happened during the incident?
 incident.incidentText.heading = What happened during the incident?
+incident.incidentText.hintText = Describe the incident in detail. This can be up to 512 characters long.
 incident.incidentText.checkYourAnswersLabel = Description
 incident.incidentText.change.hidden = incident description
 incident.incidentText.error.required = Describe what happened during the incident

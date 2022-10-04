@@ -44,7 +44,7 @@
             field = form("value"),
             label = messages("incident.incidentText.heading"),
             maxLength = maxIncidentTextLength,
-            hint = None,
+            hint = Some(messages("incident.incidentText.hintText")),
             caption = Some(messages("incident.caption"))
         )
 
