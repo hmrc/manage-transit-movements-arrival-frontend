@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package navigation
+package controllers
 
-import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
-import models.transitionJourneyDomain.locationOfGoods.LocationOfGoodsTransitionDomain
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.{TestCYAView, UnauthorisedView}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-@Singleton
-class LocationOfGoodsNavigator @Inject() () extends UserAnswersSectionNavigator[LocationOfGoodsDomain]
+class TestCYAController @Inject() (
+  view: TestCYAView,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController
+    with I18nSupport {
 
-@Singleton
-class LocationOfGoodsTransitionNavigator @Inject() () extends UserAnswersSectionNavigator[LocationOfGoodsTransitionDomain]
+  def onPageLoad: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(view())
+  }
+}
