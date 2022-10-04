@@ -59,8 +59,8 @@ class EndorsementDomainSpec extends SpecBase with Generators {
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
           EndorsementDatePage(index),
           EndorsementAuthorityPage(index),
-          EndorsementLocationPage(index),
-          EndorsementCountryPage(index)
+          EndorsementCountryPage(index),
+          EndorsementLocationPage(index)
         )
 
         val userAnswers = emptyUserAnswers
