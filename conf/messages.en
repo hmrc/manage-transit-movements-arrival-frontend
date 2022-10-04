@@ -345,14 +345,6 @@ incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsemen
 incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
 incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
 
-incident.endorsementPlace.title = Endorsement place //TODO: Correct content when clarified
-incident.endorsementPlace.heading = Endorsement place
-incident.endorsementPlace.checkYourAnswersLabel = Location
-incident.endorsementPlace.change.hidden = endorsement location
-incident.endorsementPlace.error.required = Enter Endorsement place
-incident.endorsementPlace.error.length = Endorsement place must be 35 characters or less
-incident.endorsementPlace.error.invalid = The endorsement place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
-
 incident.endorsementCountry.title = In which country was the endorsement made?
 incident.endorsementCountry.heading = In which country was the endorsement made?
 incident.endorsementCountry.hintText = Enter the country, like Italy or Spain.
@@ -360,3 +352,12 @@ incident.endorsementCountry.placeholder = Select a country
 incident.endorsementCountry.checkYourAnswersLabel = Country
 incident.endorsementCountry.change.hidden = endorsement country
 incident.endorsementCountry.error.required = Enter which country the endorsement was made in
+
+incident.endorsementLocation.title = Where in {0} was the endorsement made?
+incident.endorsementLocation.heading = Where in {0} was the endorsement made?
+incident.endorsementLocation.hintText = Describe the specific location of the endorsement. This can be up to 35 characters long.
+incident.endorsementLocation.checkYourAnswersLabel = Location
+incident.endorsementLocation.change.hidden = endorsement location
+incident.endorsementLocation.error.required = Enter where in {0} the endorsement was made
+incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
+incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces

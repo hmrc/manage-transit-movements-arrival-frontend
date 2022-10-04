@@ -46,6 +46,8 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithHint("For example, 15 08 2022.")
+
   behave like pageWithDateInput
 
   behave like pageWithSubmitButton("Continue")

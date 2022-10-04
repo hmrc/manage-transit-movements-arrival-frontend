@@ -47,6 +47,8 @@ class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
   behave like pageWithHeading()
 
+  behave like pageWithoutHint()
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

@@ -17,68 +17,78 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.incident.EndorsementPlaceFormProvider
+import forms.incident.EndorsementLocationFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.EndorsementPlacePage
+import org.scalacheck.Arbitrary.arbitrary
+import pages.incident.{EndorsementCountryPage, EndorsementLocationPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.EndorsementPlaceView
+import views.html.incident.EndorsementLocationView
 
 import scala.concurrent.Future
 
-class EndorsementPlaceControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider               = new EndorsementPlaceFormProvider()
-  private val form                       = formProvider("incident.endorsementPlace")
-  private val mode                       = NormalMode
-  private lazy val endorsementPlaceRoute = routes.EndorsementPlaceController.onPageLoad(mrn, mode, index).url
+  private val country                       = arbitrary[Country].sample.value
+  private val formProvider                  = new EndorsementLocationFormProvider()
+  private val form                          = formProvider("incident.endorsementLocation", country.description)
+  private val mode                          = NormalMode
+  private lazy val endorsementLocationRoute = routes.EndorsementLocationController.onPageLoad(mrn, mode, index).url
 
-  "EndorsementPlace Controller" - {
+  "EndorsementLocation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
 
-      val request = FakeRequest(GET, endorsementPlaceRoute)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[EndorsementPlaceView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode, index)(request, messages).toString
+        view(form, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementPlacePage(index), "test string")
+      val userAnswers = emptyUserAnswers
+        .setValue(EndorsementCountryPage(index), country)
+        .setValue(EndorsementLocationPage(index), "test string")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, endorsementPlaceRoute)
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[EndorsementPlaceView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, endorsementPlaceRoute)
+      val request = FakeRequest(POST, endorsementLocationRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
@@ -90,28 +100,30 @@ class EndorsementPlaceControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, endorsementPlaceRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, endorsementLocationRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[EndorsementPlaceView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, endorsementPlaceRoute)
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
@@ -124,7 +136,7 @@ class EndorsementPlaceControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, endorsementPlaceRoute)
+      val request = FakeRequest(POST, endorsementLocationRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
