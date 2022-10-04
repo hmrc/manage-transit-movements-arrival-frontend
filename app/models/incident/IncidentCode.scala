@@ -22,21 +22,21 @@ sealed trait IncidentCode
 
 object IncidentCode extends RadioModel[IncidentCode] {
 
-  case object Option1 extends WithName("1") with IncidentCode
-  case object Option2 extends WithName("2") with IncidentCode
-  case object Option3 extends WithName("3") with IncidentCode
-  case object Option4 extends WithName("4") with IncidentCode
-  case object Option5 extends WithName("5") with IncidentCode
-  case object Option6 extends WithName("6") with IncidentCode
+  case object DeviatedFromItinerary extends WithName("deviatedFromItinerary") with IncidentCode
+  case object SealsBrokenOrTampered extends WithName("sealsBrokenOrTampered") with IncidentCode
+  case object TransferredToAnotherTransport extends WithName("transferredToAnotherTransport") with IncidentCode
+  case object PartiallyOrFullyUnloaded extends WithName("partiallyOrFullyUnloaded") with IncidentCode
+  case object CarrierUnableToComply extends WithName("carrierUnableToComply") with IncidentCode
+  case object UnexpectedlyChanged extends WithName("unexpectedlyChanged") with IncidentCode
 
   override val messageKeyPrefix: String = "incident.incidentCode"
 
   val values: Seq[IncidentCode] = Seq(
-    Option1,
-    Option2,
-    Option3,
-    Option4,
-    Option5,
-    Option6
+    DeviatedFromItinerary,
+    SealsBrokenOrTampered,
+    TransferredToAnotherTransport,
+    PartiallyOrFullyUnloaded,
+    CarrierUnableToComply,
+    UnexpectedlyChanged
   )
 }
