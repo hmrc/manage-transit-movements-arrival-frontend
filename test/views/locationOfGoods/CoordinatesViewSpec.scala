@@ -37,6 +37,8 @@ class CoordinatesViewSpec extends CoordinatesViewBehaviours with Generators {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithHint("These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.")

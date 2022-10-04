@@ -44,6 +44,7 @@
             field = form("value"),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("locationOfGoods.unlocode.heading"),
+                caption = Some(messages("locationOfGoods.caption")),
                 additionalHtml = Html(s"""<p class="govuk-body">${messages("locationOfGoods.unlocode.paragraph")}</p>""")
             ),
             hint = Some(messages("locationOfGoods.unlocode.hintText")),

@@ -49,6 +49,8 @@ class CustomsOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] wit
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect

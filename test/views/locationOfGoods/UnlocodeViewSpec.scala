@@ -49,11 +49,13 @@ class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] with Generato
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Location of goods")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect
 
-  behave like pageWithHint("Enter the code, like GB BRS or GB MNC.")
+  behave like pageWithHint("Enter the location or code, like Berlin or DEBER.")
 
   behave like pageWithContent("p", "This is a 5-character code used to identify a transit-related location, like a port or clearance depot.")
 
