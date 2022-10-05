@@ -37,7 +37,11 @@ class IncidentTextViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
+
+  behave like pageWithHint("Describe the incident in detail. This can be up to 512 characters long.")
 
   behave like pageWithCharacterCount(maxIncidentTextLength)
 

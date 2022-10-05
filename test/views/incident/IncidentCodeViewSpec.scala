@@ -17,44 +17,39 @@
 package views.incident
 
 import forms.incident.IncidentCodeFormProvider
-import generators.Generators
-import views.behaviours.InputSelectViewBehaviours
 import models.NormalMode
-import models.reference.IncidentCode
-import models.IncidentCodeList
+import models.incident.IncidentCode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import views.behaviours.RadioViewBehaviours
 import views.html.incident.IncidentCodeView
 
-class IncidentCodeViewSpec extends InputSelectViewBehaviours[IncidentCode] with Generators {
+class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
-  private lazy val incidentCode1 = arbitraryIncidentCode.arbitrary.sample.get
-  private lazy val incidentCode2 = arbitraryIncidentCode.arbitrary.sample.get
-  private lazy val incidentCode3 = arbitraryIncidentCode.arbitrary.sample.get
-
-  override def values: Seq[IncidentCode] =
-    Seq(
-      incidentCode1,
-      incidentCode2,
-      incidentCode3
-    )
-
-  override def form: Form[IncidentCode] = new IncidentCodeFormProvider()(prefix, IncidentCodeList(values))
+  override def form: Form[IncidentCode] = new IncidentCodeFormProvider()()
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[IncidentCodeView].apply(form, mrn, IncidentCode.radioItems, NormalMode, index)(fakeRequest, messages)
 
   override val prefix: String = "incident.incidentCode"
+
+  override def radioItems(fieldId: String, checkedValue: Option[IncidentCode] = None): Seq[RadioItem] =
+    IncidentCode.radioItems(fieldId, checkedValue)
+
+  override def values: Seq[IncidentCode] = IncidentCode.values
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
 
-  behave like pageWithSelect
+  behave like pageWithoutHint()
 
-  behave like pageWithHint("Hint")
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
 }

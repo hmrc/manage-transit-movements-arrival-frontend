@@ -16,33 +16,37 @@
 
 package views.incident
 
-import forms.incident.EndorsementPlaceFormProvider
+import forms.incident.EndorsementLocationFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.incident.EndorsementPlaceView
+import views.html.incident.EndorsementLocationView
 import org.scalacheck.{Arbitrary, Gen}
 
-class EndorsementPlaceViewSpec extends InputTextViewBehaviours[String] {
+class EndorsementLocationViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "incident.endorsementPlace"
+  private lazy val countryName = arbitraryCountry.arbitrary.sample.get.description
 
-  override def form: Form[String] = new EndorsementPlaceFormProvider()(prefix)
+  override val prefix: String = "incident.endorsementLocation"
+
+  override def form: Form[String] = new EndorsementLocationFormProvider()(prefix, countryName)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[EndorsementPlaceView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[EndorsementLocationView].apply(form, mrn, countryName, NormalMode, index)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(countryName)
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithoutHint
+  behave like pageWithHeading(countryName)
+
+  behave like pageWithHint("Describe the specific location of the endorsement. This can be up to 35 characters long.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

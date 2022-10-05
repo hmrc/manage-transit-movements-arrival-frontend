@@ -23,12 +23,12 @@ import pages.sections.incident
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class EndorsementPlacePage(index: Index) extends QuestionPage[String] {
+case class EndorsementLocationPage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = incident.IncidentSection(index).path \ toString
 
-  override def toString: String = "endorsementPlace"
+  override def toString: String = "endorsementLocation"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.EndorsementPlaceController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.EndorsementLocationController.onPageLoad(userAnswers.mrn, mode, index))
 }

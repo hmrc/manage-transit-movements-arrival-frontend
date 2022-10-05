@@ -17,12 +17,12 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import forms.incident.EndorsementPlaceFormProvider
+import forms.incident.EndorsementLocationFormProvider
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class EndorsementPlaceFormProviderSpec extends StringFieldBehaviours {
+class EndorsementLocationFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
@@ -30,7 +30,9 @@ class EndorsementPlaceFormProviderSpec extends StringFieldBehaviours {
   val invalidKey     = s"$prefix.error.invalid"
   val maxLength      = 35
 
-  val form = new EndorsementPlaceFormProvider()(prefix)
+  private val countryName = arbitraryCountry.arbitrary.sample.get.description
+
+  val form = new EndorsementLocationFormProvider()(prefix, countryName)
 
   ".value" - {
 
@@ -52,7 +54,7 @@ class EndorsementPlaceFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(countryName))
     )
 
     behave like fieldWithInvalidCharacters(

@@ -33,7 +33,13 @@ class IncidentFlagViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
+
+  behave like pageWithoutHint()
+
+  behave like pageWithContent("p", "This could be any disruption that risked or delayed the transit, like a broken seal or deviation from the itinerary.")
 
   behave like pageWithRadioItems()
 

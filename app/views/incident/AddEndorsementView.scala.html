@@ -29,6 +29,11 @@
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
+@html = {
+    <p class="govuk-body">@messages("incident.addEndorsement.paragraph1")</p>
+    <p class="govuk-body">@messages("incident.addEndorsement.paragraph2")</p>
+}
+
 @mainTemplate(
     title = messages("incident.addEndorsement.title"),
     showBackLink = true,
@@ -41,8 +46,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("incident.addEndorsement.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("incident.addEndorsement.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = html
             )
         )
 

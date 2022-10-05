@@ -27,23 +27,25 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, countryName: String, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.endorsementPlace.title"),
+    title = messages("incident.endorsementLocation.title", countryName),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.EndorsementPlaceController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.EndorsementLocationController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("incident.endorsementPlace.heading")
+                heading = messages("incident.endorsementLocation.heading", countryName),
+                caption = Some(messages("incident.caption"))
             ),
+            hint = Some(messages("incident.endorsementLocation.hintText")),
             inputClass = InputSize.Width20
         )
 

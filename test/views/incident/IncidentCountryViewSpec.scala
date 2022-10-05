@@ -50,6 +50,8 @@ class IncidentCountryViewSpec extends InputSelectViewBehaviours[Country] with Ge
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect

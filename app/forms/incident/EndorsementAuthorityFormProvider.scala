@@ -16,7 +16,9 @@
 
 package forms.incident
 
+import forms.StopOnFirstFail
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -26,6 +28,11 @@ class EndorsementAuthorityFormProvider @Inject() extends Mappings {
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(35, s"$prefix.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(35, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
     )
 }

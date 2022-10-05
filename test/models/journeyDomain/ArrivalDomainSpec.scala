@@ -21,13 +21,14 @@ import forms.Constants
 import generators.Generators
 import models.InternationalAddress
 import models.identification.ProcedureType
+import models.incident.IncidentCode
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CountryCode, IncidentCode}
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.IsSimplifiedProcedurePage
@@ -43,7 +44,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
-  private val place        = Gen.alphaNumStr.sample.value
+  private val location     = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
 
@@ -62,8 +63,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
-        .setValue(EndorsementPlacePage(index), place)
         .setValue(EndorsementCountryPage(index), country)
+        .setValue(EndorsementLocationPage(index), location)
 
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
@@ -87,7 +88,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
                 incidentCountry = country,
                 incidentCode = incidentCode,
                 incidentText = incidentText,
-                endorsement = Some(EndorsementDomain(localDate, authority, place, country))
+                endorsement = Some(EndorsementDomain(localDate, authority, country, location))
               )
             )
           )

@@ -16,12 +16,11 @@
 
 package forms.mappings
 
-import models.reference.{Country, CustomsOffice, IncidentCode, UnLocode}
-import models.{CountryList, CustomsOfficeList, Enumerable, IncidentCodeList, MovementReferenceNumber, RichString, UnLocodeList}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{CountryList, CustomsOfficeList, Enumerable, MovementReferenceNumber, RichString, UnLocodeList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
-import scala.collection.immutable.Map
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
@@ -219,29 +218,6 @@ trait Formatters {
 
     override def unbind(key: String, unLocode: UnLocode): Map[String, String] =
       Map(key -> unLocode.unLocodeExtendedCode)
-
-  }
-
-  private[mappings] def incidentCodeFormatter(
-    incidentCodeList: IncidentCodeList,
-    errorKey: String,
-    args: Seq[Any] = Seq.empty
-  ): Formatter[IncidentCode] = new Formatter[IncidentCode] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], IncidentCode] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None => error
-        case Some(code) =>
-          incidentCodeList.getIncidentCode(code) match {
-            case Some(incidentCode: IncidentCode) => Right(incidentCode)
-            case None                             => error
-          }
-      }
-    }
-
-    override def unbind(key: String, incidentCode: IncidentCode): Map[String, String] =
-      Map(key -> incidentCode.code)
 
   }
 

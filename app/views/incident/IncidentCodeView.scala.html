@@ -16,22 +16,19 @@
 
 @import controllers.incident.routes
 @import models.MovementReferenceNumber
-@import models.reference.IncidentCode
-@import models.reference.Selectable
-@import models.reference.Selectable._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import viewModels.components.InputSelectViewModel._
-@import views.html.components.{Button, ErrorSummary, InputSelect}
+@import models.incident.IncidentCode
+@import views.html.components.{Button, ErrorSummary, InputRadio}
+@import viewModels.components.InputRadioViewModel.Radio
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputSelect: InputSelect,
+    inputRadio: InputRadio,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[IncidentCode], mrn: MovementReferenceNumber, incidentCodeList: Seq[IncidentCode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[IncidentCode], mrn: MovementReferenceNumber, radios: (String, Option[IncidentCode]) => Seq[RadioItem], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentCode.title"),
@@ -43,14 +40,13 @@
 
         @errorSummary(form.errors)
 
-        @inputSelect(
+        @inputRadio(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("incident.incidentCode.heading")
-            ),
-            hint = Some(messages("incident.incidentCode.hintText")),
-            selectItems = incidentCodeList.toSelectItems(form.value),
-            placeholder = messages("incident.incidentCode.placeholder")
+            radioItems = fieldId => radios(fieldId, form.value),
+            radioType = Radio(
+                heading = messages("incident.incidentCode.heading"),
+                caption = Some(messages("incident.caption"))
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

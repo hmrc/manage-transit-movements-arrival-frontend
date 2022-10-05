@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package pages.incident
+package forms.incident
 
-import pages.behaviours.PageBehaviours
+import forms.StopOnFirstFail
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
+import play.api.data.Form
 
-class EndorsementPlacePageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "EndorsementPlacePage" - {
+class EndorsementLocationFormProvider @Inject() extends Mappings {
 
-    beRetrievable[String](EndorsementPlacePage(index))
-
-    beSettable[String](EndorsementPlacePage(index))
-
-    beRemovable[String](EndorsementPlacePage(index))
-  }
+  def apply(prefix: String, countryName: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required", Seq(countryName))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(35, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
+    )
 }

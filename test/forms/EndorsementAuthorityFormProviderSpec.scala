@@ -18,6 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import forms.incident.EndorsementAuthorityFormProvider
+import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -26,6 +27,7 @@ class EndorsementAuthorityFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
+  val invalidKey     = s"$prefix.error.invalid"
   val maxLength      = 35
 
   val form = new EndorsementAuthorityFormProvider()(prefix)
@@ -51,6 +53,13 @@ class EndorsementAuthorityFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+      maxLength
     )
   }
 }

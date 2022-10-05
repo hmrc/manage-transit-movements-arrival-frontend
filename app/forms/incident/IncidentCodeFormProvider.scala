@@ -16,17 +16,16 @@
 
 package forms.incident
 
-import forms.mappings.Mappings
-import models.IncidentCodeList
-import models.reference.IncidentCode
-import play.api.data.Form
-
 import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.incident.IncidentCode
 
 class IncidentCodeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, incidentCodeList: IncidentCodeList): Form[IncidentCode] =
+  def apply(): Form[IncidentCode] =
     Form(
-      "value" -> incidentCode(incidentCodeList, s"$prefix.error.required")
+      "value" -> enumerable[IncidentCode]("incident.incidentCode.error.required")
     )
 }

@@ -16,12 +16,13 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-import models.reference.{Country, CustomsOffice, IncidentCode, UnLocode}
-import models.{CountryList, CustomsOfficeList, Enumerable, IncidentCodeList, MovementReferenceNumber, UnLocodeList}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{CountryList, CustomsOfficeList, Enumerable, MovementReferenceNumber, UnLocodeList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
@@ -80,12 +81,5 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[UnLocode] =
     of(unLocodeFormatter(unLocodeList, errorKey, args))
-
-  protected def incidentCode(
-    incidentCodeList: IncidentCodeList,
-    errorKey: String = "error.required",
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[IncidentCode] =
-    of(incidentCodeFormatter(incidentCodeList, errorKey, args))
 
 }

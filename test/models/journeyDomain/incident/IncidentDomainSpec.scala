@@ -19,22 +19,14 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
+import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, IncidentCode}
+import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{
-  AddEndorsementPage,
-  EndorsementAuthorityPage,
-  EndorsementCountryPage,
-  EndorsementDatePage,
-  EndorsementPlacePage,
-  IncidentCodePage,
-  IncidentCountryPage,
-  IncidentTextPage
-}
+import pages.incident._
 
 import java.time.LocalDate
 
@@ -45,7 +37,7 @@ class IncidentDomainSpec extends SpecBase with Generators {
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
-  private val place        = Gen.alphaNumStr.sample.value
+  private val location     = Gen.alphaNumStr.sample.value
 
   "IncidentDomain" - {
 
@@ -58,14 +50,14 @@ class IncidentDomainSpec extends SpecBase with Generators {
         .setValue(AddEndorsementPage(index), true)
         .setValue(EndorsementDatePage(index), localDate)
         .setValue(EndorsementAuthorityPage(index), authority)
-        .setValue(EndorsementPlacePage(index), place)
         .setValue(EndorsementCountryPage(index), country)
+        .setValue(EndorsementLocationPage(index), location)
 
       val expectedResult = IncidentDomain(
         incidentCountry = country,
         incidentCode = incidentCode,
         incidentText = incidentText,
-        endorsement = Some(EndorsementDomain(localDate, authority, place, country))
+        endorsement = Some(EndorsementDomain(localDate, authority, country, location))
       )
 
       val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
