@@ -33,8 +33,6 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
       "when not a simplified journey" in {
-        val id = Gen.alphaNumStr.sample.value
-
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 

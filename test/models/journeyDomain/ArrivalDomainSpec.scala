@@ -30,7 +30,7 @@ import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.{IdentificationNumberPage, IsSimplifiedProcedurePage}
+import pages.identification.IsSimplifiedProcedurePage
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 

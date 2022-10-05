@@ -20,10 +20,8 @@ import cats.implicits._
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification.{IdentificationNumberPage, _}
+import pages.identification._
 import play.api.mvc.Call
-
-import java.time.LocalDate
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,

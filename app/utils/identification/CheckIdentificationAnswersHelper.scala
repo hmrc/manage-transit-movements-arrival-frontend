@@ -17,13 +17,10 @@
 package utils.identification
 
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.identification.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
 import pages.identification._
-import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
