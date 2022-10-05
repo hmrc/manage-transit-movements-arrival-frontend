@@ -18,7 +18,6 @@ package controllers.identification
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.YesNoFormProvider
 import forms.identification.ProcedureTypeFormProvider
 import models.identification.ProcedureType
 import models.{Mode, MovementReferenceNumber}
