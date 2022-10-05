@@ -16,13 +16,14 @@
 
 package forms
 
-import forms.Constants.{maxTelephoneNumberLength, minTelephoneNumberLength}
 import forms.mappings.Mappings
-import javax.inject.Inject
 import models.domain.StringFieldRegex.{telephoneNumberCharacterRegex, telephoneNumberFormatRegex}
+import navigation.annotations.Constants
 import play.api.data.Form
 
-class TelephoneNumberFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class TelephoneNumberFormProvider @Inject() (@Constants constants: FormConstants) extends Mappings {
 
   def apply(prefix: String, args: String*): Form[String] =
     Form(
@@ -31,8 +32,8 @@ class TelephoneNumberFormProvider @Inject() extends Mappings {
           StopOnFirstFail[String](
             regexp(telephoneNumberCharacterRegex, s"$prefix.error.invalidCharacter", args = args),
             regexp(telephoneNumberFormatRegex, s"$prefix.error.invalidFormat", args = args),
-            minLength(minTelephoneNumberLength, s"$prefix.error.minLength", args = args :+ minTelephoneNumberLength, trim = true),
-            maxLength(maxTelephoneNumberLength, s"$prefix.error.maxLength", args = args :+ maxTelephoneNumberLength, trim = true)
+            minLength(constants.minTelephoneNumberLength, s"$prefix.error.minLength", args = args :+ constants.minTelephoneNumberLength, trim = true),
+            maxLength(constants.maxTelephoneNumberLength, s"$prefix.error.maxLength", args = args :+ constants.maxTelephoneNumberLength, trim = true)
           )
         )
     )

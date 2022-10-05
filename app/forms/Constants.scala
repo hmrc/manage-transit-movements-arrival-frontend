@@ -16,28 +16,40 @@
 
 package forms
 
-trait Constants
-
-class TransitionConstants extends Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int    = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength: Int       = 35
-  lazy val minTelephoneNumberLength: Int       = 6
-  lazy val authorisationNumberLength: Int      = 35
-  lazy val maxIncidentTextLength: Int          = 512
+trait FormConstants {
+  val addiationalIdentifierMaxLength: Int
+  val tirCarnetReferenceMaxLength: Int
+  val maxEoriNumberLength: Int
+  val minEoriNumberLength: Int
+  val maxNameLength: Int
+  val maxTelephoneNumberLength: Int
+  val minTelephoneNumberLength: Int
+  val authorisationNumberLength: Int
+  val maxIncidentTextLength: Int
 }
 
-class PostTransitionConstants extends Constants {
-  lazy val addiationalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int    = 12
-  lazy val maxEoriNumberLength: Int            = 17
-  lazy val minEoriNumberLength: Int            = 14
-  lazy val maxNameLength: Int                  = 70
-  lazy val maxTelephoneNumberLength: Int       = 35
-  lazy val minTelephoneNumberLength: Int       = 6
-  lazy val authorisationNumberLength: Int      = 35
-  lazy val maxIncidentTextLength: Int          = 512
+class TransitionConstants extends FormConstants {
+  val addiationalIdentifierMaxLength: Int = 4
+  val tirCarnetReferenceMaxLength: Int    = 12
+  val maxEoriNumberLength: Int            = 17
+  val minEoriNumberLength: Int            = 14
+  val maxNameLength: Int                  = 70
+  val maxTelephoneNumberLength: Int       = 35
+  val minTelephoneNumberLength: Int       = 6
+  val maxIncidentTextLength: Int          = 512
+
+  // DEMO of changing constants (not really constants anymore, might change name)
+  val authorisationNumberLength: Int      = 2
+}
+
+class PostTransitionConstants extends FormConstants {
+  val addiationalIdentifierMaxLength: Int = 4
+  val tirCarnetReferenceMaxLength: Int    = 12
+  val maxEoriNumberLength: Int            = 17
+  val minEoriNumberLength: Int            = 14
+  val maxNameLength: Int                  = 70
+  val maxTelephoneNumberLength: Int       = 35
+  val minTelephoneNumberLength: Int       = 6
+  val authorisationNumberLength: Int      = 35
+  val maxIncidentTextLength: Int          = 512
 }

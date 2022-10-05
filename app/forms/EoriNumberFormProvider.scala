@@ -16,13 +16,14 @@
 
 package forms
 
-import forms.Constants._
 import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
 import models.domain.StringFieldRegex._
+import navigation.annotations.Constants
+import play.api.data.Form
 
-class EoriNumberFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class EoriNumberFormProvider @Inject() (@Constants constants: FormConstants) extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
@@ -30,7 +31,7 @@ class EoriNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
+            maxLength(constants.maxEoriNumberLength, s"$prefix.error.maxLength")
           )
         )
     )

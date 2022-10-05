@@ -16,14 +16,15 @@
 
 package forms.locationOfGoods
 
-import forms.Constants.authorisationNumberLength
+import forms.FormConstants
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
+import navigation.annotations.Constants
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AuthorisationNumberFormProvider @Inject() extends Mappings {
+class AuthorisationNumberFormProvider @Inject() (@Constants constants: FormConstants) extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
@@ -31,7 +32,7 @@ class AuthorisationNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(authorisationNumberLength, s"$prefix.error.maxLength")
+            maxLength(constants.authorisationNumberLength, s"$prefix.error.maxLength")
           )
         )
     )

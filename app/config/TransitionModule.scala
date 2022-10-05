@@ -18,10 +18,11 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
+import forms.{FormConstants, PostTransitionConstants, TransitionConstants}
 import models.journeyDomain.JourneyDomainModel
 import models.transitionJourneyDomain.ArrivalDomainTransition
 import navigation._
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import navigation.annotations.{Constants, IdentificationDetails, LocationOfGoods}
 import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
@@ -31,10 +32,12 @@ class TransitionModule extends AbstractModule {
   override def configure(): Unit = {
 
     bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsTransitionNavigator])
-
     bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
     bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
+
+    // New transition modules:
+    bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsTransitionNavigator])
+    bind(classOf[FormConstants]).annotatedWith(classOf[Constants]).to(classOf[TransitionConstants])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()

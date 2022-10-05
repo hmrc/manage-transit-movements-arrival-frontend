@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package navigation.annotations;
 
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex._
-import navigation.annotations.Constants
-import play.api.data.Form
+import com.google.inject.BindingAnnotation;
 
-import javax.inject.Inject
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-class NameFormProvider @Inject() (@Constants constants: FormConstants) extends Mappings {
-
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(constants.maxNameLength, s"$prefix.error.length"),
-            regexp(stringFieldRegex, s"$prefix.error.invalid")
-          )
-        )
-    )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Constants {
 }

@@ -18,8 +18,9 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
+import forms.{FormConstants, PostTransitionConstants}
 import navigation._
+import navigation.annotations.{Constants, IdentificationDetails, LocationOfGoods}
 import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
@@ -31,6 +32,8 @@ class Module extends AbstractModule {
     bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsNavigator])
     bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
+
+    bind(classOf[FormConstants]).annotatedWith(classOf[Constants]).to(classOf[PostTransitionConstants])
 
     bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
 

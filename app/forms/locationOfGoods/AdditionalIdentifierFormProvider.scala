@@ -16,22 +16,22 @@
 
 package forms.locationOfGoods
 
-import forms.Constants.addiationalIdentifierMaxLength
-import forms.StopOnFirstFail
 import forms.mappings.Mappings
+import forms.{FormConstants, StopOnFirstFail}
 import models.domain.StringFieldRegex.alphaNumericRegex
+import navigation.annotations.Constants
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AdditionalIdentifierFormProvider @Inject() extends Mappings {
+class AdditionalIdentifierFormProvider @Inject() (@Constants constants: FormConstants) extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(addiationalIdentifierMaxLength, s"$prefix.error.length"),
+            maxLength(constants.addiationalIdentifierMaxLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )

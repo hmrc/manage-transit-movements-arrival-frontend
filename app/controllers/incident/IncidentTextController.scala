@@ -18,8 +18,10 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.FormConstants
 import forms.incident.IncidentTextFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
+import navigation.annotations.Constants
 import navigation.{IncidentNavigator, IncidentNavigatorProvider}
 import pages.incident.IncidentTextPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +40,8 @@ class IncidentTextController @Inject() (
   formProvider: IncidentTextFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: IncidentTextView
+  view: IncidentTextView,
+  @Constants constants: FormConstants
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -51,7 +54,7 @@ class IncidentTextController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mrn, mode, index))
+      Ok(view(preparedForm, mrn, constants.maxIncidentTextLength, mode, index))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
@@ -59,7 +62,7 @@ class IncidentTextController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, constants.maxIncidentTextLength, mode, index))),
           value => {
             implicit val navigator: IncidentNavigator = navigatorProvider(index)
             IncidentTextPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)

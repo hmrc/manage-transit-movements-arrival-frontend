@@ -15,9 +15,7 @@
  *@
 
 @import controllers.incident.routes
-@import forms.Constants.maxIncidentTextLength
 @import models.MovementReferenceNumber
-@import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 @this(
@@ -28,7 +26,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, maxIncidentTextLength: Int, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentText.title"),
