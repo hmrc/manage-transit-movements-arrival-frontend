@@ -16,8 +16,10 @@
 
 package navigation
 
-import models.journeyDomain.{JourneyDomainModel, ReaderError, UserAnswersReader}
+import models.journeyDomain.Stage.CompletingJourney
+import models.journeyDomain.{JourneyDomainModel, ReaderError, Stage, UserAnswersReader}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import play.api.Logging
 import play.api.mvc.Call
 
 abstract class UserAnswersNavigator[A <: JourneyDomainModel, B <: JourneyDomainModel](implicit
@@ -35,18 +37,28 @@ abstract class UserAnswersNavigator[A <: JourneyDomainModel, B <: JourneyDomainM
     }
 }
 
-object UserAnswersNavigator {
+object UserAnswersNavigator extends Logging {
 
   def nextPage[T <: JourneyDomainModel](
     userAnswers: UserAnswers,
-    mode: Mode
-  )(implicit userAnswersReader: UserAnswersReader[T]): Call =
-    (UserAnswersReader[T].run(userAnswers) match {
+    mode: Mode,
+    stage: Stage = CompletingJourney
+  )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
+    lazy val errorCall = controllers.routes.ErrorController.notFound()
+
+    UserAnswersReader[T].run(userAnswers) match {
       case Left(ReaderError(page, _)) =>
-        page.route(userAnswers, mode)
+        page.route(userAnswers, mode).getOrElse {
+          logger.debug(s"Route not defined for page ${page.path}")
+          errorCall
+        }
       case Right(x) =>
-        x.routeIfCompleted(userAnswers)
-    }).getOrElse(controllers.routes.ErrorController.notFound())
+        x.routeIfCompleted(userAnswers, stage).getOrElse {
+          logger.debug(s"Completed route not defined for model $x")
+          errorCall
+        }
+    }
+  }
 }
 
 abstract class UserAnswersSectionNavigator[A <: JourneyDomainModel](implicit userAnswersReader: UserAnswersReader[A]) extends UserAnswersNavigator[A, A]

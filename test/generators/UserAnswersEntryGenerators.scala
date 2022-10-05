@@ -16,11 +16,11 @@
 
 package generators
 
+import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.IdentificationNumberPage
-import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 import queries.Gettable
 
 import java.time.LocalDate
@@ -36,7 +36,7 @@ trait UserAnswersEntryGenerators {
     import pages.identification._
     generateAuthorisationAnswer orElse {
       case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
-      case IsSimplifiedProcedurePage => arbitrary[Boolean].map(JsBoolean)
+      case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
       case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
     }
   }

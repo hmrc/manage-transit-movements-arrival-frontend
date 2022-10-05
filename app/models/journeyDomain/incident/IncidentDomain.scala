@@ -19,6 +19,8 @@ package models.journeyDomain.incident
 import cats.implicits._
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.reference.Country
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
 import models.{Index, UserAnswers}
@@ -32,7 +34,7 @@ case class IncidentDomain(
   endorsement: Option[EndorsementDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
     Some(???) // TODO link to next journey
 }
 

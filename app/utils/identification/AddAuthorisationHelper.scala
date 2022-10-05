@@ -24,8 +24,8 @@ import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AnswersHelper
+import viewModels.ListItem
 
 class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
 
@@ -35,9 +35,9 @@ class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
         val index = Index(position)
         buildListItem[AuthorisationDomain, AuthorisationType](
           page = AuthorisationTypePage(Index(position)),
-          getName = _.`type`,
-          formatName = formatEnumAsString(AuthorisationType.messageKeyPrefix),
-          removeRoute = authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index)
+          formatJourneyDomainModel = _.toString,
+          formatType = _.toString,
+          removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index))
         )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
     }
 }

@@ -86,7 +86,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
+      redirectLocation(result).value mustEqual controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
     }
   }
 }

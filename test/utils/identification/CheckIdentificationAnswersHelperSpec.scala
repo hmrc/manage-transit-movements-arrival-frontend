@@ -20,13 +20,14 @@ import base.SpecBase
 import controllers.identification.authorisation.{routes => authRoutes}
 import controllers.identification.routes
 import generators.Generators
-import models.identification.authorisation.AuthorisationType.Option1
+import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import models.{Mode, MovementReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification._
-import pages.identification.authorisation.{_}
+import pages.identification.authorisation._
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
@@ -46,7 +47,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
             val result = helper.movementReferenceNumber
 
             result mustBe SummaryListRow(
-              key = Key("Movement reference number".toText),
+              key = Key("Movement Reference Number (MRN)".toText),
               value = Value(s"$mrn".toText),
               actions = Some(
                 Actions(
@@ -54,7 +55,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
                     ActionItem(
                       content = "Change".toText,
                       href = routes.MovementReferenceNumberController.onPageLoad().url,
-                      visuallyHiddenText = Some("movement reference number"),
+                      visuallyHiddenText = Some("Movement Reference Number (MRN)"),
                       attributes = Map()
                     )
                   )
@@ -110,7 +111,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
       }
     }
 
-    "isSimplified" - {
+    "procedureType" - {
       "must return None" - {
         "when IsSimplifiedProcedurePage undefined" in {
           forAll(arbitrary[Mode]) {
@@ -126,22 +127,22 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
         "when IsSimplifiedProcedurePage defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, true)
+              val answers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
               val helper = new CheckIdentificationAnswersHelper(answers, mode)
               val result = helper.isSimplified
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Is Simplified Procedure".toText),
-                  value = Value("Yes".toText),
+                  key = Key("Procedure type".toText),
+                  value = Value("Simplified - authorised consignor’s location".toText),
                   actions = Some(
                     Actions(
                       items = List(
                         ActionItem(
                           content = "Change".toText,
                           href = routes.IsSimplifiedProcedureController.onPageLoad(answers.mrn, mode).url,
-                          visuallyHiddenText = Some("if it is a simplified procedure"),
+                          visuallyHiddenText = Some("procedure type"),
                           attributes = Map("id" -> "change-is-simplified-procedure")
                         )
                       )
@@ -212,10 +213,10 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
 
       "must return Some(Row)" - {
         "when AuthorisationTypePage defined at index" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr) {
-            (mode, ref) =>
+          forAll(arbitrary[Mode], Gen.alphaNumStr, arbitrary[AuthorisationType]) {
+            (mode, ref, auth) =>
               val answers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(authorisationIndex), Option1)
+                .setValue(AuthorisationTypePage(authorisationIndex), auth)
                 .setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
 
               val helper = new CheckIdentificationAnswersHelper(answers, mode)
@@ -224,7 +225,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Authorisation 1".toText),
-                  value = Value("Option 1".toText),
+                  value = Value(s"${auth.toString} - $ref".toText),
                   actions = Some(
                     Actions(
                       items = List(

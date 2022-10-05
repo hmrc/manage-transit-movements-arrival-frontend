@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.identification.authorisation.routes
 import generators.Generators
 import models.Mode
-import models.identification.authorisation.AuthorisationType.Option1
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -48,15 +48,15 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AuthorisationTypePage defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), Option1)
+              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
 
               val helper = new CheckAuthorisationAnswersHelper(answers, mode, authorisationIndex)
               val result = helper.authorisationType
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Authorisation Type".toText),
-                  value = Value("Option 1".toText),
+                  key = Key("Type".toText),
+                  value = Value("ACT".toText),
                   actions = Some(
                     Actions(
                       items = List(
@@ -99,7 +99,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Authorisation Reference Number".toText),
+                  key = Key("Reference number".toText),
                   value = Value(ref.toText),
                   actions = Some(
                     Actions(
@@ -108,7 +108,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
                           content = "Change".toText,
                           href = routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, authorisationIndex, mode).url,
                           visuallyHiddenText = Some("authorisation reference number"),
-                          attributes = Map("id" -> "change-authorisation-ref-no")
+                          attributes = Map("id" -> "change-authorisation-reference-number")
                         )
                       )
                     )

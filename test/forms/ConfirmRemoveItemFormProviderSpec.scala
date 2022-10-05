@@ -17,17 +17,19 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class ConfirmRemoveEventFormProviderSpec extends BooleanFieldBehaviours {
+class ConfirmRemoveItemFormProviderSpec extends BooleanFieldBehaviours {
 
-  private val prefix      = Gen.alphaNumStr.sample.value
-  private val requiredKey = s"$prefix.error.required"
-  private val invalidKey  = "error.boolean"
-  private val eventTitle  = "eventTitle"
+  private val prefix            = Gen.alphaNumStr.sample.value
+  private val requiredKey       = s"$prefix.error.required"
+  private val invalidKey        = "error.boolean"
+  private val referenceNumber   = "eventTitle"
+  private val authorisationType = AuthorisationType.ACT
 
-  val form = new ConfirmRemoveItemFormProvider()(prefix, eventTitle)
+  val form = new ConfirmRemoveItemFormProvider()(prefix, referenceNumber, authorisationType)
 
   ".value" - {
 
@@ -36,13 +38,13 @@ class ConfirmRemoveEventFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(eventTitle))
+      invalidError = FormError(fieldName, invalidKey, Seq(authorisationType.toString, referenceNumber))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(eventTitle))
+      requiredError = FormError(fieldName, requiredKey, Seq(authorisationType.toString, referenceNumber))
     )
   }
 }

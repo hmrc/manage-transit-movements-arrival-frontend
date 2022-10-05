@@ -72,6 +72,11 @@ trait ModelGenerators {
       Gen.oneOf(models.identification.authorisation.AuthorisationType.values)
     }
 
+  implicit lazy val arbitraryProcedureType: Arbitrary[models.identification.ProcedureType] =
+    Arbitrary {
+      Gen.oneOf(models.identification.ProcedureType.values)
+    }
+
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       for {

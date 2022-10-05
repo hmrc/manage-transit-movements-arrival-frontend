@@ -17,6 +17,7 @@
 package pages.identification
 
 import controllers.identification.routes
+import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import pages.QuestionPage
@@ -25,16 +26,16 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object IsSimplifiedProcedurePage extends QuestionPage[Boolean] {
+case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
   override def path: JsPath = IdentificationSection.path \ toString
 
   override def toString: String = "isSimplifiedProcedure"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(AuthorisationsSection)
-      case _           => super.cleanup(value, userAnswers)
+      case Some(ProcedureType.Normal) => userAnswers.remove(AuthorisationsSection)
+      case _                          => super.cleanup(value, userAnswers)
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =

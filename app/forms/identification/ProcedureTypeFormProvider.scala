@@ -16,24 +16,16 @@
 
 package forms.identification
 
-import forms.Constants.authorisationNumberLength
-import forms.StopOnFirstFail
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.identification.ProcedureType
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AuthorisationRefNoFormProvider @Inject() extends Mappings {
+class ProcedureTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, authorisationType: String): Form[String] =
+  def apply(): Form[ProcedureType] =
     Form(
-      "value" -> text(s"$prefix.error.required", Seq(authorisationType))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(authorisationNumberLength, s"$prefix.error.length"),
-            regexp(alphaNumericRegex, s"$prefix.error.invalid")
-          )
-        )
+      "value" -> enumerable[ProcedureType]("identification.isSimplifiedProcedure.error.required")
     )
 }

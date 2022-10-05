@@ -19,12 +19,14 @@ package utils.identification
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authRoutes}
 import generators.Generators
+import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewModels.ListItem
 
 class AddAuthorisationsHelperSpec extends SpecBase with Generators {
 
@@ -43,17 +45,17 @@ class AddAuthorisationsHelperSpec extends SpecBase with Generators {
       "must return one list item" in {
         val ref = Gen.alphaNumStr.sample.value
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, true)
-          .setValue(AuthorisationTypePage(Index(0)), Option1)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+          .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACE)
           .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
 
         val helper = new AddAuthorisationHelper(userAnswers, NormalMode)
         helper.listItems mustBe Seq(
           Right(
             ListItem(
-              name = "Option 1",
+              name = s"ACE - $ref",
               changeUrl = authRoutes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0)).url,
-              removeUrl = authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url
+              removeUrl = Some(authRoutes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url)
             )
           )
         )

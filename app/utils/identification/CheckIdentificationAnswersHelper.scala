@@ -16,13 +16,11 @@
 
 package utils.identification
 
-import models.identification.authorisation.AuthorisationType
+import models.identification.ProcedureType
 import models.journeyDomain.identification.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
 import pages.identification._
-import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
@@ -44,9 +42,9 @@ class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
     id = Some("change-arrival-date")
   )
 
-  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[ProcedureType](
     page = IsSimplifiedProcedurePage,
-    formatAnswer = formatAsYesOrNo,
+    formatAnswer = formatEnumAsText(ProcedureType.messageKeyPrefix),
     prefix = "identification.isSimplifiedProcedure",
     id = Some("change-is-simplified-procedure")
   )
@@ -58,12 +56,11 @@ class CheckIdentificationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
     id = Some("change-identification-number")
   )
 
-  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain, AuthorisationType](
-    page = AuthorisationTypePage(index),
-    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
+    formatAnswer = formatAsText,
     prefix = "identification.authorisation",
     id = Some(s"change-authorisation-${index.display}"),
     args = index.display
-  )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
+  )(AuthorisationDomain.userAnswersReader(index))
 
 }

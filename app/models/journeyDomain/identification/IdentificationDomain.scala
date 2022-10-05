@@ -17,22 +17,19 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.identification.ProcedureType
+import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification.{IdentificationNumberPage, _}
+import pages.identification._
 import play.api.mvc.Call
-
-import java.time.LocalDate
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
-  arrivalDate: LocalDate,
-  isSimplified: Boolean,
-  authorisations: AuthorisationsDomain,
-  identificationNumber: String
+  procedureType: ProcedureType,
+  authorisations: AuthorisationsDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
     Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
 }
 
@@ -46,9 +43,7 @@ object IdentificationDomain {
   implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
     (
       mrn,
-      ArrivalDatePage.reader,
       IsSimplifiedProcedurePage.reader,
-      UserAnswersReader[AuthorisationsDomain],
-      IdentificationNumberPage.reader
+      UserAnswersReader[AuthorisationsDomain]
     ).tupled.map((IdentificationDomain.apply _).tupled)
 }

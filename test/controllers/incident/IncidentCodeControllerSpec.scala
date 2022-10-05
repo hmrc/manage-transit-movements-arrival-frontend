@@ -20,13 +20,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.IncidentCodeFormProvider
 import models.NormalMode
 import models.incident.IncidentCode
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.IncidentCodePage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.IncidentCodeView

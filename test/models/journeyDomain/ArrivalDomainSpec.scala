@@ -20,6 +20,7 @@ import base.SpecBase
 import forms.Constants
 import generators.Generators
 import models.InternationalAddress
+import models.identification.ProcedureType
 import models.incident.IncidentCode
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.endorsement.EndorsementDomain
@@ -30,7 +31,7 @@ import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.{ArrivalDatePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
+import pages.identification.IsSimplifiedProcedurePage
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
@@ -41,8 +42,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val date         = arbitrary[LocalDate].sample.value
-  private val id           = Gen.alphaNumStr.sample.value
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value
   private val location     = Gen.alphaNumStr.sample.value
@@ -52,9 +51,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ArrivalDatePage, date)
-        .setValue(IsSimplifiedProcedurePage, false)
-        .setValue(IdentificationNumberPage, id)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
         .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
@@ -72,12 +69,10 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          arrivalDate = date,
-          isSimplified = false,
+          procedureType = ProcedureType.Normal,
           authorisations = AuthorisationsDomain(
             Seq.empty
-          ),
-          identificationNumber = id
+          )
         ),
         LocationOfGoodsDomain(
           typeOfLocation = AuthorisedPlace,
@@ -109,9 +104,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with no Incidents" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ArrivalDatePage, date)
-        .setValue(IsSimplifiedProcedurePage, false)
-        .setValue(IdentificationNumberPage, id)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
         .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
@@ -121,12 +114,10 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
-          arrivalDate = date,
-          isSimplified = false,
+          procedureType = ProcedureType.Normal,
           authorisations = AuthorisationsDomain(
             Seq.empty
-          ),
-          identificationNumber = id
+          )
         ),
         LocationOfGoodsDomain(
           typeOfLocation = AuthorisedPlace,
@@ -149,9 +140,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       "when a incident flag page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(ArrivalDatePage, date)
-          .setValue(IsSimplifiedProcedurePage, false)
-          .setValue(IdentificationNumberPage, id)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
           .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
