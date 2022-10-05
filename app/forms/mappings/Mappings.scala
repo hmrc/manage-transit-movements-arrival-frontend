@@ -54,8 +54,8 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-  protected def mrn(requiredKey: String, invalidKey: String, invalidCharacterKey: String): FieldMapping[MovementReferenceNumber] =
-    of(mrnFormatter(requiredKey, invalidKey, invalidCharacterKey))
+  protected def mrn(requiredKey: String, lengthKey: String, invalidCharacterKey: String, invalidMRNKey: String): FieldMapping[MovementReferenceNumber] =
+    of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
     of(spacelessStringFormatter(errorKey))

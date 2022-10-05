@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import utils.identification.CheckIdentificationAnswersHelper
 import viewModels.Link
 import viewModels.sections.Section
+import controllers.identification.authorisation.routes
 
 import javax.inject.Inject
 
@@ -42,8 +43,7 @@ object CheckIdentificationAnswersViewModel {
         rows = Seq(
           Some(helper.movementReferenceNumber),
           helper.arrivalDate,
-          helper.isSimplified,
-          helper.identificationNumber
+          helper.isSimplified
         ).flatten
       )
 
@@ -57,7 +57,7 @@ object CheckIdentificationAnswersViewModel {
         addAnotherLink = Link(
           id = "add-or-remove",
           text = messages("identification.checkIdentificationAnswers.addOrRemoveAuthorisations"),
-          href = controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
+          href = routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
         )
       )
 

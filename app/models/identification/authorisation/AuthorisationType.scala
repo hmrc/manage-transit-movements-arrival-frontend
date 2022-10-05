@@ -22,13 +22,13 @@ sealed trait AuthorisationType
 
 object AuthorisationType extends RadioModel[AuthorisationType] {
 
-  case object Option1 extends WithName("option1") with AuthorisationType
-  case object Option2 extends WithName("option2") with AuthorisationType
+  case object ACT extends WithName("ACT") with AuthorisationType
+  case object ACE extends WithName("ACE") with AuthorisationType
 
   override val messageKeyPrefix: String = "identification.authorisation.authorisationType"
 
   val values: Seq[AuthorisationType] = Seq(
-    Option1,
-    Option2
+    ACT,
+    ACE
   )
 }

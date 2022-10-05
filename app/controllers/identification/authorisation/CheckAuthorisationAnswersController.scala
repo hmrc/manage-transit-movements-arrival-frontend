@@ -42,7 +42,7 @@ class CheckAuthorisationAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      Redirect(controllers.identification.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
+      Redirect(controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
   }
 
 }

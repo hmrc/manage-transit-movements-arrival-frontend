@@ -184,7 +184,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
   "mrn" - {
 
     val testForm = Form(
-      "value" -> mrn("error.required", "error.invalid", "error.invalid.character")
+      "value" -> mrn("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")
     )
 
     "must bind valid MRNs" in {
@@ -198,32 +198,32 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     "must not bind invalid MRNs" - {
 
-      "when value is invalid format" in {
-        forAll(alphaStringsWithMaxLength(MovementReferenceNumber.Constants.length)) {
-          invalidMrn =>
-            whenever(invalidMrn != "" && MovementReferenceNumber(invalidMrn).isEmpty) {
+      "must not bind when value is longer than max length" in {
 
-              val result = testForm.bind(Map("value" -> invalidMrn))
-              result.errors must contain(FormError("value", "error.invalid"))
-            }
+        forAll(stringsLongerThan(MovementReferenceNumber.Constants.length + 1)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.length"))
         }
       }
 
-      "when value contains an invalid character" in {
-
+      "must not bind when value contains an invalid character" in {
         forAll(stringsWithMaxLength(MovementReferenceNumber.Constants.length - 1)) {
           value =>
             val valueStartingWithUnderscore = s"_$value"
-            whenever(
-              MovementReferenceNumber(valueStartingWithUnderscore).isEmpty &&
-                !valueStartingWithUnderscore.matches(MovementReferenceNumber.Constants.validCharactersRegex)
-            ) {
-              val result = testForm.bind(Map("value" -> valueStartingWithUnderscore))
-              result.errors must contain(FormError("value", "error.invalid.character"))
-            }
+            val result                      = testForm.bind(Map("value" -> valueStartingWithUnderscore))
+            result.errors must contain(FormError("value", "error.invalid.invalidCharacter"))
         }
       }
 
+      "must not bind when value is not a valid MRN" in {
+
+        forAll(alphaStringWithLength(MovementReferenceNumber.Constants.length)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.invalidMRN"))
+        }
+      }
     }
 
   }

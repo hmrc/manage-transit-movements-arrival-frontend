@@ -16,6 +16,9 @@ site.movement.reference.number = Movement reference number
 site.youMust = You must
 site.section = This section is
 
+site.caption = Arrivals
+site.caption.authorisations = Arrivals - Authorisations
+
 date.day.capitalized = Day
 date.month.capitalized = Month
 date.year.capitalized = Year
@@ -48,14 +51,15 @@ concurrent.remove.error.paragraph = You will need to answer some questions again
 concurrent.remove.error.noAuthorisation.link.text = Go back to add authorisations?
 concurrent.remove.error.multipleAuthorisation.link.text = Go back to you have added authorisations
 
-movementReferenceNumber.title = What is the movement reference number (MRN)?
-movementReferenceNumber.heading = What is the movement reference number (MRN)?
-movementReferenceNumber.hintText = It is on the top right hand corner of the Transit Accompanying Document (TAD) that is with the goods. It is 18 characters, like 19GB12345678901234.
-movementReferenceNumber.checkYourAnswersLabel = Movement reference number
-movementReferenceNumber.change.hidden = movement reference number
-movementReferenceNumber.error.required = Enter the movement reference number
-movementReferenceNumber.error.invalid = Movement reference number is 2 numbers, then 2 letters followed by 14 characters
-movementReferenceNumber.error.invalidCharacter = Movement reference number must only include letters a to z and numbers 0 to 9
+movementReferenceNumber.title = What is the Movement Reference Number (MRN)?
+movementReferenceNumber.heading = What is the Movement Reference Number (MRN)?
+movementReferenceNumber.hintText = This will be 18 characters long and include both letters and numbers.
+movementReferenceNumber.checkYourAnswersLabel = Movement Reference Number (MRN)
+movementReferenceNumber.change.hidden = Movement Reference Number (MRN)
+movementReferenceNumber.error.required = Enter the Movement Reference Number
+movementReferenceNumber.error.length = The Movement Reference Number must be 18 characters long
+movementReferenceNumber.error.invalidCharacter = The Movement Reference Number must only include letters a to z and numbers 0 to 9
+movementReferenceNumber.error.invalidMRN = Enter a valid Movement Reference Number
 
 pageNotFound.title = Page not found
 pageNotFound.heading = Page not found
@@ -80,44 +84,49 @@ identification.arrivalDate.error.invalid = Enter a real date for Arrival Date
 identification.arrivalDate.error.min.date = The date must be after {0}
 identification.arrivalDate.error.max.date = The date must be before the current date
 
-identification.isSimplifiedProcedure.title = Is Simplified Procedure
-identification.isSimplifiedProcedure.heading = Is Simplified Procedure
-identification.isSimplifiedProcedure.checkYourAnswersLabel = Is Simplified Procedure
-identification.isSimplifiedProcedure.change.hidden = if it is a simplified procedure
-identification.isSimplifiedProcedure.error.required = Select yes if Is Simplified Procedure
+identification.isSimplifiedProcedure.title = What type of procedure are you using?
+identification.isSimplifiedProcedure.heading = What type of procedure are you using?
+identification.isSimplifiedProcedure.normal = Normal - customs-approved location
+identification.isSimplifiedProcedure.simplified = Simplified - authorised consignor’s location
+identification.isSimplifiedProcedure.checkYourAnswersLabel = Procedure type
+identification.isSimplifiedProcedure.change.hidden = procedure type
+identification.isSimplifiedProcedure.error.required = Select the type of procedure you’re using
 
-identification.addAnotherAuthorisation.singular.title = You have added {0} authorisation
-identification.addAnotherAuthorisation.singular.heading = You have added {0} authorisation
-identification.addAnotherAuthorisation.plural.title = You have added {0} authorisations
-identification.addAnotherAuthorisation.plural.heading = You have added {0} authorisations
-identification.addAnotherAuthorisation.error.required = Select yes if you need to add another authorisation
-identification.addAnotherAuthorisation.label = Do you need to add another authorisation?
-identification.addAnotherAuthorisation.maxLimit.label = You cannot add any more authorisations. To add another authorisation, you need to remove one first.
+identification.authorisation.addAnotherAuthorisation.singular.title = You have added {0} authorisation
+identification.authorisation.addAnotherAuthorisation.singular.heading = You have added {0} authorisation
+identification.authorisation.addAnotherAuthorisation.plural.title = You have added {0} authorisations
+identification.authorisation.addAnotherAuthorisation.plural.heading = You have added {0} authorisations
+identification.authorisation.addAnotherAuthorisation.error.required = Select yes if you need to add another authorisation
+identification.authorisation.addAnotherAuthorisation.label = Do you need to add another authorisation?
+identification.authorisation.addAnotherAuthorisation.maxLimit.label = You cannot add any more authorisations. To add another authorisation, you need to remove one first.
 
 identification.authorisation.label = Authorisation {0}
 identification.authorisation.change.hidden = authorisation {0}
 
-identification.authorisation.authorisationType.title = Authorisation Type
-identification.authorisation.authorisationType.heading = Authorisation Type
-identification.authorisation.authorisationType.option1 = Option 1
-identification.authorisation.authorisationType.option2 = Option 2
-identification.authorisation.authorisationType.checkYourAnswersLabel = Authorisation Type
+identification.authorisation.authorisationType.title = Which type of authorisation are you using?
+identification.authorisation.authorisationType.heading = Which type of authorisation are you using?
+identification.authorisation.authorisationType.ACT = ACT - authorised consignee for TIR procedures
+identification.authorisation.authorisationType.ACE = ACE - authorised consignee for common or Union transits
+identification.authorisation.authorisationType.checkYourAnswersLabel = Type
 identification.authorisation.authorisationType.change.hidden = authorisation type
-identification.authorisation.authorisationType.error.required = Select Authorisation Type
+identification.authorisation.authorisationType.error.required = Select which type of authorisation you want to add
 
-identification.authorisation.authorisationReferenceNumber.title = Authorisation Reference Number
-identification.authorisation.authorisationReferenceNumber.heading = Authorisation Reference Number
-identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Authorisation Reference Number
+identification.authorisation.authorisationReferenceNumber.title = What’s the reference number for the {0} authorisation?
+identification.authorisation.authorisationReferenceNumber.heading = What’s the reference number for the {0} authorisation?
+identification.authorisation.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Reference number
 identification.authorisation.authorisationReferenceNumber.change.hidden = authorisation reference number
-identification.authorisation.authorisationReferenceNumber.error.required = Enter Authorisation Reference Number
-identification.authorisation.authorisationReferenceNumber.error.length = Authorisation Reference Number must be 100 characters or less
+identification.authorisation.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
+identification.authorisation.authorisationReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
+identification.authorisation.authorisationReferenceNumber.error.length = The reference number must be 35 characters or less
 
 identification.authorisation.checkAuthorisationAnswers.title = Check your answers
 identification.authorisation.checkAuthorisationAnswers.heading = Check your answers
+identification.authorisation.checkAuthorisationAnswers.subHeading = Authorisations
 
-identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you want to remove the authorisation {0}?
-identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the authorisation {0}?
-identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you are sure you want to remove the authorisation {0}
+identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you want to remove the {0} authorisation {1}?
+identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the {0} authorisation {1}?
+identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you sure you want to remove the {0} authorisation {1}
 
 identification.identificationNumber.title = Identification Number
 identification.identificationNumber.heading = Identification Number

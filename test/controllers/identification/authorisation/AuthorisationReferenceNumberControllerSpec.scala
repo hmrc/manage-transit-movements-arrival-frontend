@@ -19,10 +19,11 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.NormalMode
+import models.identification.authorisation.AuthorisationType
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -33,8 +34,9 @@ import scala.concurrent.Future
 
 class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val authorisationType                      = AuthorisationType.ACT
   private val formProvider                           = new AuthorisationRefNoFormProvider()
-  private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber")
+  private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber", authorisationType.toString)
   private val mode                                   = NormalMode
   private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, index, mode).url
 
@@ -47,50 +49,58 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
 
-      val request = FakeRequest(GET, authorisationReferenceNumberRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, mrn, index, mode)(request, messages).toString
-
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(index), "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationReferenceNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val view = injector.instanceOf[AuthorisationReferenceNumberView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
+
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+        .setValue(AuthorisationReferenceNumberPage(index), "testString")
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, authorisationReferenceNumberRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "testString"))
 
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, index, mode)(request, messages).toString
+        view(filledForm, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
 
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, authorisationReferenceNumberRoute)
-          .withFormUrlEncodedBody(("value", "test string"))
+          .withFormUrlEncodedBody(("value", "testString"))
 
       val result = route(app, request).value
 
@@ -101,7 +111,10 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
@@ -115,7 +128,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, index, mode)(request, messages).toString
+        view(filledForm, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
 
     }
 
@@ -139,7 +152,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
       val request =
         FakeRequest(POST, authorisationReferenceNumberRoute)
-          .withFormUrlEncodedBody(("value", "test string"))
+          .withFormUrlEncodedBody(("value", "testString"))
 
       val result = route(app, request).value
 

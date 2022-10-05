@@ -28,7 +28,7 @@ case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: 
     extends JourneyDomainModel {
 
   //TODO: Add confirmation page
-  override def routeIfCompleted(userAnswers: UserAnswers): Option[Call] = ???
+  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] = ???
 
 }
 

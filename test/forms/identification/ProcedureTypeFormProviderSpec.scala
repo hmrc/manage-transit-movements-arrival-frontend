@@ -16,28 +16,24 @@
 
 package forms.identification
 
-import forms.behaviours.StringFieldBehaviours
-import models.MovementReferenceNumber
-import org.scalacheck.Arbitrary.arbitrary
+import forms.behaviours.OptionFieldBehaviours
+import models.identification.ProcedureType
 import play.api.data.FormError
 
-class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class ProcedureTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  val requiredKey         = "movementReferenceNumber.error.required"
-  val lengthKey           = "movementReferenceNumber.error.length"
-  val invalidCharacterKey = "movementReferenceNumber.error.invalidCharacter"
-  val invalidMRNKey       = "movementReferenceNumber.error.invalidMRN"
-
-  val form = new MovementReferenceNumberFormProvider()()
+  val form = new ProcedureTypeFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
+    val requiredKey = "identification.isSimplifiedProcedure.error.required"
 
-    behave like fieldThatBindsValidData(
+    behave like optionsField[ProcedureType](
       form,
       fieldName,
-      arbitrary[MovementReferenceNumber].map(_.toString)
+      validValues = ProcedureType.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(

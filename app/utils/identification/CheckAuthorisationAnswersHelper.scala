@@ -32,7 +32,7 @@ class CheckAuthorisationAnswersHelper(
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
     page = AuthorisationTypePage(index),
-    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "identification.authorisation.authorisationType",
     id = Some("change-authorisation-type")
   )
@@ -41,6 +41,6 @@ class CheckAuthorisationAnswersHelper(
     page = AuthorisationReferenceNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "identification.authorisation.authorisationReferenceNumber",
-    id = Some("change-authorisation-ref-no")
+    id = Some("change-authorisation-reference-number")
   )
 }

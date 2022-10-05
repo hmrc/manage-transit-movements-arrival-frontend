@@ -18,6 +18,7 @@ package views.identification.authorisation
 
 import forms.identification.AuthorisationRefNoFormProvider
 import models.NormalMode
+import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -29,20 +30,22 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   override val prefix: String = "identification.authorisation.authorisationReferenceNumber"
 
-  override def form: Form[String] = new AuthorisationRefNoFormProvider()(prefix)
+  override def form: Form[String] = new AuthorisationRefNoFormProvider()(prefix, AuthorisationType.ACT.toString)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, mrn, authorisationIndex, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[AuthorisationReferenceNumberView]
+      .apply(form, mrn, authorisationIndex, AuthorisationType.ACT.toString, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(AuthorisationType.ACT.toString)
 
   behave like pageWithBackLink
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(AuthorisationType.ACT.toString)
 
-  behave like pageWithoutHint
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

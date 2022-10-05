@@ -17,6 +17,7 @@
 package pages.identification
 
 import models.Index
+import models.identification.ProcedureType
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
@@ -25,31 +26,31 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
   "IsSimplifiedProcedurePage" - {
 
-    beRetrievable[Boolean](IsSimplifiedProcedurePage)
+    beRetrievable[ProcedureType]
 
-    beSettable[Boolean](IsSimplifiedProcedurePage)
+    beSettable[ProcedureType]
 
-    beRemovable[Boolean](IsSimplifiedProcedurePage)
+    beRemovable[ProcedureType]
 
     "cleanup" - {
-      "when NO selected" - {
+      "when normal procedure type selected" - {
         "must clean up IdentificationAuthorisationSection" in {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-              val postChange = preChange.setValue(IsSimplifiedProcedurePage, false)
+              val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
               postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
           }
         }
       }
 
-      "when YES selected" - {
+      "when simplified procedure type selected" - {
         "must do nothing" in {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-              val postChange = preChange.setValue(IsSimplifiedProcedurePage, true)
+              val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
               postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
           }

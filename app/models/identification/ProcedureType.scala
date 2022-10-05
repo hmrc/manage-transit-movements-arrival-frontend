@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package models.identification
 
-import forms.mappings.Mappings
-import models.identification.authorisation.AuthorisationType
+import models.{RadioModel, WithName}
 
-import javax.inject.Inject
-import play.api.data.Form
+sealed trait ProcedureType
 
-class ConfirmRemoveItemFormProvider @Inject() extends Mappings {
+object ProcedureType extends RadioModel[ProcedureType] {
 
-  def apply(prefix: String, referenceNumber: String, authorisationType: AuthorisationType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"$prefix.error.required", args = Seq(authorisationType.toString, referenceNumber))
-    )
+  case object Normal extends WithName("normal") with ProcedureType
+  case object Simplified extends WithName("simplified") with ProcedureType
+
+  override val messageKeyPrefix: String = "identification.isSimplifiedProcedure"
+
+  val values: Seq[ProcedureType] = Seq(
+    Normal,
+    Simplified
+  )
 }

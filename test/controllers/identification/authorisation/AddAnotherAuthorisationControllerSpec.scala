@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.identification
+package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddItemFormProvider
@@ -30,15 +30,15 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewModels.ListItem
 import viewModels.identification.AddAnotherAuthorisationViewModel
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
-import views.html.identification.AddAnotherAuthorisationView
+import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with IdentificationUserAnswersGenerator {
 
   private val formProvider                  = new AddItemFormProvider()
-  private def form(allowMoreItems: Boolean) = formProvider("identification.addAnotherAuthorisation", allowMoreItems)
+  private def form(allowMoreItems: Boolean) = formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreItems)
 
   private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
 
@@ -76,7 +76,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode).url
+          controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode).url
       }
     }
 
