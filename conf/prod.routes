@@ -1,11 +1,7 @@
 # Add all the application routes to the app.routes file
 ->         /manage-transit-movements/arrivals                  app.Routes
-->         /manage-transit-movements/arrivals                  app.identification.Routes
-->         /manage-transit-movements/arrivals                  app.locationOfGoods.Routes
-->         /manage-transit-movements/arrivals                  app.identification.authorisation.Routes
-->         /manage-transit-movements/arrivals                  app.incident.Routes
 
-->         /                          health.Routes
+->         /                                                   health.Routes
 
 
 
