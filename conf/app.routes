@@ -5,6 +5,8 @@
 ->         /                                                 app.identification.authorisation.Routes
 ->         /                                                 app.incident.Routes
 
+GET        /                                                 controllers.RedirectController.onPageLoad()
+
 GET        /assets/*file                                     controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /keep-alive                                       controllers.KeepAliveController.keepAlive(mrn: Option[String] = None)
