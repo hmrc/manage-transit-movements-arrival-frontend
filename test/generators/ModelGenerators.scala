@@ -126,7 +126,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- arbitrary[CountryCode]
-        name <- arbitrary[String]
+        name <- nonEmptyString
       } yield Country(code, name)
     }
 
