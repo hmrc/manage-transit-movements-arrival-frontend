@@ -27,15 +27,34 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
   "Identification Navigator" - {
 
-    val navigator = new IdentificationNavigator(NormalMode)
+    "in NormalMode" - {
 
-    "when answers complete" - {
-      "must redirect to check your answers" in {
-        forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
-          answers =>
-            navigator
-              .nextPage(answers)
-              .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+      val navigator = new IdentificationNavigator(NormalMode)
+
+      "when answers complete" - {
+        "must redirect to check your answers" in {
+          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+            answers =>
+              navigator
+                .nextPage(answers)
+                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+          }
+        }
+      }
+    }
+
+    "in CheckMode" - {
+
+      val navigator = new IdentificationNavigator(CheckMode)
+
+      "when answers complete" - {
+        "must redirect to check your answers" in {
+          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+            answers =>
+              navigator
+                .nextPage(answers)
+                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+          }
         }
       }
     }

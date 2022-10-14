@@ -26,7 +26,10 @@ import javax.inject.{Inject, Singleton}
 class AuthorisationNavigatorProviderImpl @Inject() () extends AuthorisationNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
-    new AuthorisationNavigator(mode, index)
+    mode match {
+      case NormalMode => new AuthorisationNavigator(mode, index)
+      case CheckMode  => new IdentificationNavigator(mode)
+    }
 }
 
 trait AuthorisationNavigatorProvider {

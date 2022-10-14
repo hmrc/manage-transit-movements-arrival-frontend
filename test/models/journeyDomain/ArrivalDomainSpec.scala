@@ -70,9 +70,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         IdentificationDomain(
           userAnswers.mrn,
           procedureType = ProcedureType.Normal,
-          authorisations = AuthorisationsDomain(
-            Seq.empty
-          )
+          authorisations = None
         ),
         LocationOfGoodsDomain(
           typeOfLocation = AuthorisedPlace,
@@ -115,9 +113,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         IdentificationDomain(
           userAnswers.mrn,
           procedureType = ProcedureType.Normal,
-          authorisations = AuthorisationsDomain(
-            Seq.empty
-          )
+          authorisations = None
         ),
         LocationOfGoodsDomain(
           typeOfLocation = AuthorisedPlace,

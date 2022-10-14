@@ -23,7 +23,7 @@ import forms.AddItemFormProvider
 import models.journeyDomain.identification.AuthorisationDomain
 import models.requests.DataRequest
 import models.{Index, MovementReferenceNumber, NormalMode}
-import navigation.LocationOfGoodsNavigatorProvider
+import navigation.{IdentificationNavigatorProvider, LocationOfGoodsNavigatorProvider}
 import pages.sections.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  navigatorProvider: LocationOfGoodsNavigatorProvider,
+  navigatorProvider: IdentificationNavigatorProvider,
   actions: Actions,
   removeInProgressAuthorisations: RemoveInProgressActionProvider,
   formProvider: AddItemFormProvider,

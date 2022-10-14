@@ -45,7 +45,8 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
     "when in CheckMode" - {
 
-      val navigator = new AuthorisationNavigator(CheckMode, authorisationIndex)
+      val navigatorProvider = new AuthorisationNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(CheckMode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to check your answers" in {

@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomainList
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
@@ -28,7 +28,7 @@ case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: 
     extends JourneyDomainModel {
 
   //TODO: Add confirmation page
-  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] = ???
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = ???
 
 }
 
