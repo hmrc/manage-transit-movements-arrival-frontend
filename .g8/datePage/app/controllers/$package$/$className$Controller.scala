@@ -4,6 +4,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.{Mode, MovementReferenceNumber}
+import navigation.{$navRoute$NavigatorProvider, Navigator}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page

@@ -13,6 +13,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$package$.$className$View
+import navigation.{$navRoute$NavigatorProvider, Navigator}
 
 import scala.concurrent.Future
 
