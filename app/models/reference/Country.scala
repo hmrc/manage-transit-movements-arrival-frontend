@@ -16,8 +16,7 @@
 
 package models.reference
 
-import play.api.libs.json.OFormat
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class Country(code: CountryCode, description: String) extends Selectable {

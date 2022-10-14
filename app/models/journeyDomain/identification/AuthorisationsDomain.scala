@@ -17,14 +17,12 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
-import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import controllers.identification.authorisation.routes
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
-import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
 import play.api.mvc.Call
-import controllers.identification.authorisation.routes
 
 case class AuthorisationsDomain(
   value: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList

@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider, UserAnswersNavigator}
+import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

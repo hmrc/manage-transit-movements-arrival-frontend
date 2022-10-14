@@ -17,9 +17,9 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.{Mode, NormalMode, UserAnswers}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
+import models.{Mode, UserAnswers}
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.mvc.Call
 
