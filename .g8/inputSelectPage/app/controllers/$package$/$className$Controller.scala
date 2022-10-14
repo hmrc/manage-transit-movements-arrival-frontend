@@ -49,7 +49,7 @@ class $className$Controller @Inject()(
           val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
           form.bindFromRequest().fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
-            value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            value => $className$Page.writeToUserAnswers(value).writeToSession().navigate()
         )
       }
   }

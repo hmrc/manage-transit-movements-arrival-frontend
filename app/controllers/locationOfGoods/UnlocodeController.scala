@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.locationOfGoods.UnLocodeFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.UnlocodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnlocodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods implicit val navigator: Navigator,
+  navigatorProvider: LocationOfGoodsNavigatorProvider,
   formProvider: UnLocodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -75,7 +74,10 @@ class UnlocodeController @Inject() (
               .bindFromRequest()
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, unLocodeList.unLocodes, mode))),
-                value => UnlocodePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  UnlocodePage.writeToUserAnswers(value).writeToSession().navigate()
+                }
               )
         }
     }

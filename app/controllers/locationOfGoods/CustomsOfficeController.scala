@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.CustomsOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsOfficeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods implicit val navigator: Navigator,
+  navigatorProvider: LocationOfGoodsNavigatorProvider,
   actions: Actions,
   formProvider: CustomsOfficeFormProvider,
   service: CustomsOfficesService,
@@ -69,7 +68,10 @@ class CustomsOfficeController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.customsOffices, mode))),
-              value => CustomsOfficePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                CustomsOfficePage.writeToUserAnswers(value).writeToSession().navigate()
+              }
             )
       }
   }

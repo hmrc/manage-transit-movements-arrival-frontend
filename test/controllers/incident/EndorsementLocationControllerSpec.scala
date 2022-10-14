@@ -21,10 +21,13 @@ import forms.incident.EndorsementLocationFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.{EndorsementCountryPage, EndorsementLocationPage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.EndorsementLocationView
@@ -38,6 +41,11 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
   private val form                          = formProvider("incident.endorsementLocation", country.description)
   private val mode                          = NormalMode
   private lazy val endorsementLocationRoute = routes.EndorsementLocationController.onPageLoad(mrn, mode, index).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
   "EndorsementLocation Controller" - {
 

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.AddEndorsementPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -62,8 +62,8 @@ class AddEndorsementController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
           value => {
-            implicit val navigator: IncidentNavigator = navigatorProvider(index)
-            AddEndorsementPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            AddEndorsementPage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

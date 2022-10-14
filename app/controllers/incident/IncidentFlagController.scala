@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.IncidentNavigatorProvider
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentFlagPage
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -58,13 +58,15 @@ class IncidentFlagController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val index                   = request.userAnswers.get(IncidentsSection).map(_.value.length - 1).getOrElse(0)
-      implicit lazy val navigator = navigatorProvider(Index(index))
+      val index = request.userAnswers.get(IncidentsSection).map(_.value.length - 1).getOrElse(0)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => IncidentFlagPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, Index(index))
+            IncidentFlagPage.writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

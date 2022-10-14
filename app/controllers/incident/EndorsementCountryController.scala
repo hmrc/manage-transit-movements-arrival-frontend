@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.EndorsementCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -69,8 +69,8 @@ class EndorsementCountryController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
               value => {
-                implicit val navigator: IncidentNavigator = navigatorProvider(index)
-                EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

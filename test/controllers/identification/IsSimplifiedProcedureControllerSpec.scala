@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
-import navigation.Navigator
+import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, Navigator}
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -44,7 +44,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
 
   "IsSimplifiedProcedure Controller" - {
 

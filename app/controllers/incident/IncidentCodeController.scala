@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.IncidentCodeFormProvider
 import models.incident.IncidentCode
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,8 +63,8 @@ class IncidentCodeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, IncidentCode.radioItems, mode, index))),
           value => {
-            implicit val navigator: IncidentNavigator = navigatorProvider(index)
-            IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

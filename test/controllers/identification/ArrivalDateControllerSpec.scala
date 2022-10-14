@@ -19,7 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
 import models.NormalMode
-import navigation.Navigator
+import navigation.{AuthorisationNavigatorProvider, AuthorisationNavigatorSpec, IdentificationNavigatorProvider, Navigator}
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -48,7 +48,7 @@ class ArrivalDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
+      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
 
   "ArrivalDate Controller" - {
 

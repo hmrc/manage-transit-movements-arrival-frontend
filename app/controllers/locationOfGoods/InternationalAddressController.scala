@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.InternationalAddressFormProvider
 import models.requests.DataRequest
 import models.{CountryList, InternationalAddress, Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.InternationalAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class InternationalAddressController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods implicit val navigator: Navigator,
+  navigatorProvider: LocationOfGoodsNavigatorProvider,
   actions: Actions,
   formProvider: InternationalAddressFormProvider,
   countriesService: CountriesService,
@@ -76,7 +75,10 @@ class InternationalAddressController @Inject() (
               .bindFromRequest()
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
-                value => InternationalAddressPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  InternationalAddressPage.writeToUserAnswers(value).writeToSession().navigate()
+                }
               )
         }
     }

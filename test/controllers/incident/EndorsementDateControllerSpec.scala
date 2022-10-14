@@ -19,9 +19,12 @@ package controllers.incident
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
 import models.NormalMode
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.EndorsementDatePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.EndorsementDateView
@@ -40,6 +43,11 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val mode                      = NormalMode
   private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, index, mode).url
   private val date                      = LocalDate.now
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
   "EndorsementDate Controller" - {
 

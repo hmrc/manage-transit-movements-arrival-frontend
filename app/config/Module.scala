@@ -28,10 +28,9 @@ class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[Navigator]).annotatedWith(classOf[IdentificationDetails]).to(classOf[IdentificationNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsNavigator])
+    bind(classOf[IdentificationNavigatorProvider]).to(classOf[IdentificationNavigatorProviderImpl])
+    bind(classOf[LocationOfGoodsNavigatorProvider]).to(classOf[LocationOfGoodsNavigatorProviderImpl])
     bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
-
     bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction

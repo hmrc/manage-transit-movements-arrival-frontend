@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.{routes => identificationRoutes}
 import generators.Generators
 import models.NormalMode
+import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -40,6 +41,7 @@ class CheckIdentificationAnswersControllerSpec extends SpecBase with AppWithDefa
     super
       .guiceApplicationBuilder()
       .overrides(bind[CheckIdentificationAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
 
   "Check Identification Answers Controller" - {
 

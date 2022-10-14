@@ -16,27 +16,27 @@
 
 package navigation
 
-import models.Index
-import models.journeyDomain.ArrivalDomain
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
+import models.{Index, Mode}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
 
-  def apply(index: Index): IncidentNavigator =
-    new IncidentNavigator(index)
+  override def apply(mode: Mode, index: Index): UserAnswersNavigator =
+    new IncidentNavigator(mode, index)
 }
 
 trait IncidentNavigatorProvider {
-
-  def apply(index: Index): IncidentNavigator
+  def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class IncidentNavigator(
-  index: Index
-) extends UserAnswersNavigator[IncidentDomain, ArrivalDomain]()(
-      IncidentDomain.userAnswersReader(index),
-      ArrivalDomain.userAnswersReader
-    )
+class IncidentNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
+
+  override type T = IncidentDomain
+
+  implicit override val reader: UserAnswersReader[IncidentDomain] =
+    IncidentDomain.userAnswersReader(index)
+}

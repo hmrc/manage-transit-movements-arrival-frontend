@@ -45,7 +45,7 @@ class $className$Controller @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $className$.radioItems, mode))),
-        value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+        value => $className$Page.writeToUserAnswers(value).writeToSession().navigate()
       )
   }
 }

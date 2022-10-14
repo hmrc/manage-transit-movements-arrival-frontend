@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CountryFormProvider
 import generators.Generators
 import models.{CountryList, NormalMode}
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.IncidentCountryPage
@@ -49,6 +50,7 @@ class IncidentCountryControllerSpec extends SpecBase with AppWithDefaultMockFixt
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
+      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
   "IncidentCountry Controller" - {
 

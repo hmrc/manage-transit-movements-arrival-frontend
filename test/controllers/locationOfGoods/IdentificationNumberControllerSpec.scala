@@ -19,9 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.IdentificationNumberPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.IdentificationNumberView
@@ -34,6 +37,11 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   private val form                           = formProvider("locationOfGoods.identificationNumber")
   private val mode                           = NormalMode
   private lazy val identificationnumberRoute = routes.IdentificationNumberController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "IdentificationNumber Controller" - {
 

@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.locationOfGoods.AdditionalIdentifierFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.AdditionalIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalIdentifierController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods implicit val navigator: Navigator,
+  navigatorProvider: LocationOfGoodsNavigatorProvider,
   formProvider: AdditionalIdentifierFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -61,7 +60,10 @@ class AdditionalIdentifierController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => AdditionalIdentifierPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            AdditionalIdentifierPage.writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider}
+import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -72,8 +72,8 @@ class AuthorisationReferenceNumberController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index: Index, request.arg.toString, mode))),
               value => {
-                implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
-                AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                AuthorisationReferenceNumberPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

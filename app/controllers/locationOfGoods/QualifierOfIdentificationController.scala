@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.locationOfGoods.QualifierOfIdentificationFormProvider
 import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class QualifierOfIdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods implicit val navigator: Navigator,
+  navigatorProvider: LocationOfGoodsNavigatorProvider,
   actions: Actions,
   formProvider: QualifierOfIdentificationFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,7 +62,10 @@ class QualifierOfIdentificationController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.radioItems, mode))),
-          value => QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

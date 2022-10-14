@@ -17,25 +17,26 @@
 package navigation
 
 import models._
-import models.journeyDomain.identification.{AuthorisationDomain, IdentificationDomain}
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.identification.AuthorisationDomain
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AuthorisationNavigatorProviderImpl @Inject() () extends AuthorisationNavigatorProvider {
 
-  def apply(index: Index): AuthorisationNavigator =
-    new AuthorisationNavigator(index)
+  override def apply(mode: Mode, index: Index): UserAnswersNavigator =
+    new AuthorisationNavigator(mode, index)
 }
 
 trait AuthorisationNavigatorProvider {
-
-  def apply(index: Index): AuthorisationNavigator
+  def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class AuthorisationNavigator(
-  index: Index
-) extends UserAnswersNavigator[AuthorisationDomain, IdentificationDomain]()(
-      AuthorisationDomain.userAnswersReader(index),
-      IdentificationDomain.userAnswersReader
-    )
+class AuthorisationNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
+
+  override type T = AuthorisationDomain
+
+  implicit override val reader: UserAnswersReader[AuthorisationDomain] =
+    AuthorisationDomain.userAnswersReader(index)
+}

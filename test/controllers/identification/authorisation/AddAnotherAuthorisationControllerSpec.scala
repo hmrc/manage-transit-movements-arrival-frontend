@@ -17,10 +17,11 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.annotations.LocationOfGoods
 import forms.AddItemFormProvider
 import generators.{Generators, IdentificationUserAnswersGenerator}
 import models.{Index, NormalMode}
-import navigation.Navigator
+import navigation.{AuthorisationNavigatorProvider, LocationOfGoodsNavigatorProvider, Navigator}
 import navigation.annotations.IdentificationDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -49,6 +50,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator))
       .overrides(bind(classOf[AddAnotherAuthorisationViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

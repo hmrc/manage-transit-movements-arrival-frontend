@@ -44,7 +44,7 @@ class $className;format="cap"$Controller @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-        value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+        value => $className$Page.writeToUserAnswers(value).writeToSession().navigate()
       )
   }
 }
