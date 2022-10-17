@@ -19,9 +19,12 @@ package controllers.incident
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.IncidentTextFormProvider
 import models.NormalMode
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.IncidentTextPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.IncidentTextView
@@ -34,6 +37,11 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val form                   = formProvider("incident.incidentText")
   private val mode                   = NormalMode
   private lazy val incidentTextRoute = routes.IncidentTextController.onPageLoad(mrn, mode, index).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
   "IncidentText Controller" - {
 

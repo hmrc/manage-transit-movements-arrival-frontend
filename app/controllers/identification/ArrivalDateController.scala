@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.ArrivalDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,14 +28,14 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.ArrivalDateView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import java.time.LocalDate
 
 class ArrivalDateController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: IdentificationNavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -45,7 +44,7 @@ class ArrivalDateController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
+  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020" // TODO move this to config
   private val form    = formProvider("identification.arrivalDate", minDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
@@ -63,7 +62,10 @@ class ArrivalDateController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          value => ArrivalDatePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            ArrivalDatePage.writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.locationOfGoods.TypeOfLocationFormProvider
 import models.NormalMode
 import models.locationOfGoods.TypeOfLocation
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.TypeOfLocationPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.TypeOfLocationView
@@ -35,6 +38,11 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val form                     = formProvider()
   private val mode                     = NormalMode
   private lazy val typeoflocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "Typeoflocation Controller" - {
 

@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.authorisation.AuthorisationTypeFormProvider
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{AuthorisationNavigator, AuthorisationNavigatorProvider}
+import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,8 +63,8 @@ class AuthorisationTypeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
           value => {
-            implicit val navigator: AuthorisationNavigator = navigatorProvider(index)
-            AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

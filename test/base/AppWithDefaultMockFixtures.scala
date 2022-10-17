@@ -16,10 +16,8 @@
 
 package base
 
-import config.annotations._
 import controllers.actions._
-import models.{Index, UserAnswers}
-import navigation.annotations.{Incident, LocationOfGoods}
+import models.{Index, Mode, UserAnswers}
 import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -65,10 +63,16 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
   protected val fakeIncidentNavigatorProvider: IncidentNavigatorProvider =
-    (index: Index) => new FakeIncidentNavigator(onwardRoute, index)
+    (mode: Mode, index: Index) => new FakeIncidentNavigator(onwardRoute, index, mode)
 
   protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
-    (index: Index) => new FakeAuthorisationNavigator(onwardRoute, index)
+    (mode: Mode, index: Index) => new FakeAuthorisationNavigator(onwardRoute, index, mode)
+
+  protected val fakeIdentificationNavigatorProvider: IdentificationNavigatorProvider =
+    (mode: Mode) => new FakeIdentificationNavigator(onwardRoute, mode)
+
+  protected val fakeLocationOfGoodsNavigatorProvider: LocationOfGoodsNavigatorProvider =
+    (mode: Mode) => new FakeLocationOfGoodsNavigator(onwardRoute, mode)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -76,14 +80,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[Navigator].toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[IdentificationDetails]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[Event]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[Container]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[Seal]).toInstance(fakeNavigator),
-        bind[Navigator].qualifiedWith(classOf[Incident]).toInstance(fakeNavigator),
-        bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider)
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
       )
 }

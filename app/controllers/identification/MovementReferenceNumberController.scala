@@ -19,8 +19,7 @@ package controllers.identification
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class MovementReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @IdentificationDetails navigator: Navigator,
+  navigatorProvider: IdentificationNavigatorProvider,
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
   userAnswersService: UserAnswersService,
@@ -61,7 +60,7 @@ class MovementReferenceNumberController @Inject() (
             for {
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
               _           <- sessionRepository.set(userAnswers)
-            } yield Redirect(navigator.nextPage(userAnswers, NormalMode))
+            } yield Redirect(navigatorProvider(NormalMode).nextPage(userAnswers))
         )
   }
 

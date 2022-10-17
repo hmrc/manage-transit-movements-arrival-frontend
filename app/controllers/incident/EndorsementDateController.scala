@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.EndorsementDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -59,12 +59,14 @@ class EndorsementDateController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode))),
-          value => EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

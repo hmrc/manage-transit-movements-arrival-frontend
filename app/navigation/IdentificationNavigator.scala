@@ -16,9 +16,27 @@
 
 package navigation
 
+import models.Mode
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.identification.IdentificationDomain
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IdentificationNavigator @Inject() () extends UserAnswersSectionNavigator[IdentificationDomain]
+class IdentificationNavigatorProviderImpl @Inject() () extends IdentificationNavigatorProvider {
+
+  override def apply(mode: Mode): UserAnswersNavigator =
+    new IdentificationNavigator(mode)
+}
+
+trait IdentificationNavigatorProvider {
+  def apply(mode: Mode): UserAnswersNavigator
+}
+
+class IdentificationNavigator(override val mode: Mode) extends UserAnswersNavigator {
+
+  override type T = IdentificationDomain
+
+  implicit override val reader: UserAnswersReader[IdentificationDomain] =
+    IdentificationDomain.userAnswersReader
+}

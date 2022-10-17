@@ -25,20 +25,18 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
-  private val navigator = new AuthorisationNavigator(authorisationIndex)
-
   "Authorisation Navigator" - {
 
     "when in NormalMode" - {
 
-      val mode = NormalMode
+      val navigator = new AuthorisationNavigator(NormalMode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to check your answers" in {
           forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex)) {
             answers =>
               navigator
-                .nextPage(answers, mode)
+                .nextPage(answers)
                 .mustBe(authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex))
           }
         }
@@ -47,14 +45,15 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
     "when in CheckMode" - {
 
-      val mode = CheckMode
+      val navigatorProvider = new AuthorisationNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(CheckMode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to check your answers" in {
           forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers, mode)
+                .nextPage(answers)
                 .mustBe(identificationRoutes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
           }
         }

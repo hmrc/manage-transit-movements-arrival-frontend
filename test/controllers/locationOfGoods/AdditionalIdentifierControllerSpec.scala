@@ -19,9 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NameFormProvider
 import models.NormalMode
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AdditionalIdentifierPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AdditionalIdentifierView
@@ -34,6 +37,11 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
   private val form                           = formProvider("locationOfGoods.additionalIdentifier")
   private val mode                           = NormalMode
   private lazy val additionalidentifierRoute = routes.AdditionalIdentifierController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "Additionalidentifier Controller" - {
 

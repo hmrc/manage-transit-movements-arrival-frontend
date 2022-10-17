@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.EndorsementAuthorityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigator, IncidentNavigatorProvider}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.EndorsementAuthorityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,12 +56,15 @@ class EndorsementAuthorityController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      implicit lazy val navigator: IncidentNavigator = navigatorProvider(index)
+      implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
-          value => EndorsementAuthorityPage(index).writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            EndorsementAuthorityPage(index).writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

@@ -16,9 +16,27 @@
 
 package navigation
 
+import models.Mode
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class LocationOfGoodsNavigator @Inject() () extends UserAnswersSectionNavigator[LocationOfGoodsDomain]
+class LocationOfGoodsNavigatorProviderImpl @Inject() () extends LocationOfGoodsNavigatorProvider {
+
+  override def apply(mode: Mode): UserAnswersNavigator =
+    new LocationOfGoodsNavigator(mode)
+}
+
+trait LocationOfGoodsNavigatorProvider {
+  def apply(mode: Mode): UserAnswersNavigator
+}
+
+class LocationOfGoodsNavigator(override val mode: Mode) extends UserAnswersNavigator {
+
+  override type T = LocationOfGoodsDomain
+
+  implicit override val reader: UserAnswersReader[LocationOfGoodsDomain] =
+    LocationOfGoodsDomain.userAnswersReader
+}

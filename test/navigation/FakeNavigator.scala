@@ -20,13 +20,21 @@ import models.{Index, Mode, UserAnswers}
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers, mode: Mode): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAuthorisationNavigator(desiredRoute: Call, index: Index) extends AuthorisationNavigator(index) {
-  override def nextPage(userAnswers: UserAnswers, mode: Mode): Call = desiredRoute
+class FakeAuthorisationNavigator(desiredRoute: Call, index: Index, mode: Mode) extends AuthorisationNavigator(mode, index) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeIncidentNavigator(desiredRoute: Call, index: Index) extends IncidentNavigator(index) {
-  override def nextPage(userAnswers: UserAnswers, mode: Mode): Call = desiredRoute
+class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode) extends IncidentNavigator(mode, index) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeIdentificationNavigator(desiredRoute: Call, mode: Mode) extends IdentificationNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeLocationOfGoodsNavigator(desiredRoute: Call, mode: Mode) extends LocationOfGoodsNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

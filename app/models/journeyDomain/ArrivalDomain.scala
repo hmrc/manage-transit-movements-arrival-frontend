@@ -17,10 +17,10 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.UserAnswers
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomainList
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
+import models.{Mode, UserAnswers}
 import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
@@ -28,7 +28,7 @@ case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: 
     extends JourneyDomainModel {
 
   //TODO: Add confirmation page
-  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] = ???
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = ???
 
 }
 

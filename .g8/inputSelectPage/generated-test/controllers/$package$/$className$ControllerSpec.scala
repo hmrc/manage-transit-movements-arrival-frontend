@@ -15,6 +15,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.$serviceName$
 import views.html.$package$.$className$View
+import navigation.{$navRoute$NavigatorProvider, Navigator}
 
 import scala.concurrent.Future
 
@@ -34,7 +35,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[$navRoute$]).toInstance(fakeNavigator))
+      .overrides(bind(classOf[$navRoute$NavigatorProvider]).toInstance(fake$navRoute$NavigatorProvider))
       .overrides(bind(classOf[$serviceName$]).toInstance(mock$serviceName$))
 
   "$className$ Controller" - {

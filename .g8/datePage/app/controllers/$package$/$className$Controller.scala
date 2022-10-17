@@ -4,6 +4,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.{Mode, MovementReferenceNumber}
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
@@ -20,7 +21,7 @@ import java.time.LocalDate
 class $className;format="cap"$Controller @Inject()(
     override val messagesApi: MessagesApi,
     implicit val sessionRepository: SessionRepository,
-    @$navRoute$ implicit val navigator: Navigator,
+    navigatorProvider: $navRoute$NavigatorProvider,
     formProvider: $formProvider$,
     actions: Actions,
     val controllerComponents: MessagesControllerComponents,
@@ -45,7 +46,10 @@ class $className;format="cap"$Controller @Inject()(
        .bindFromRequest()
        .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-        value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+        value => {
+          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+          $className$Page.writeToUserAnswers(value).writeToSession().navigate ()
+        }
       )
   }
 }

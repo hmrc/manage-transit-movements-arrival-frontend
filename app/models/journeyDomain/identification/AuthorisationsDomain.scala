@@ -17,36 +17,28 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
-import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
-import models.{Index, RichJsArray, UserAnswers}
-import pages.identification.IsSimplifiedProcedurePage
+import controllers.identification.authorisation.routes
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
 import play.api.mvc.Call
-import controllers.identification.authorisation.routes
 
 case class AuthorisationsDomain(
-  value: Seq[AuthorisationDomain]
+  value: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn))
 }
 
 object AuthorisationsDomain {
 
   implicit val userAnswersReader: UserAnswersReader[AuthorisationsDomain] =
-    IsSimplifiedProcedurePage.reader.flatMap {
-      case ProcedureType.Simplified =>
-        AuthorisationsSection.reader.flatMap {
-          case x if x.isEmpty =>
-            UserAnswersReader.fail[AuthorisationsDomain](AuthorisationTypePage(Index(0)))
-          case x =>
-            x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader).map(AuthorisationsDomain.apply)
-        }
-      case ProcedureType.Normal =>
-        UserAnswersReader(AuthorisationsDomain(Nil))
+    AuthorisationsSection.reader.flatMap {
+      case x if x.isEmpty =>
+        UserAnswersReader.fail[AuthorisationsDomain](AuthorisationTypePage(Index(0)))
+      case x =>
+        x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader).map(AuthorisationsDomain.apply)
     }
-
 }

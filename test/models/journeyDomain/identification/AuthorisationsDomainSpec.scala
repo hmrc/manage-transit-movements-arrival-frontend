@@ -32,25 +32,12 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
   "AuthorisationDomain" - {
 
     "can be parsed from UserAnswers" - {
-      "when not a simplified journey" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
-        val expectedResult = AuthorisationsDomain(
-          value = Nil
-        )
-
-        val result: EitherType[AuthorisationsDomain] = UserAnswersReader[AuthorisationsDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when a simplified journey and at least one authorisation" in {
+      "when there is at least one authorisation" in {
         val authorisationType = arbitrary[AuthorisationType].sample.value
         val referenceNumber   = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
@@ -71,11 +58,9 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from user answers" - {
 
-      "when a simplified journey and no authorisations" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+      "when there is no authorisations" in {
 
-        val result: EitherType[AuthorisationsDomain] = UserAnswersReader[AuthorisationsDomain].run(userAnswers)
+        val result: EitherType[AuthorisationsDomain] = UserAnswersReader[AuthorisationsDomain].run(emptyUserAnswers)
 
         result.left.value.page mustBe AuthorisationTypePage(Index(0))
       }

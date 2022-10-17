@@ -15,6 +15,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$package$.$className$View
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -22,7 +23,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class $className;format="cap"$Controller @Inject()(
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @$navRoute$ implicit val navigator: Navigator,
+  navigatorProvider: $navRoute$NavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: $formProvider$,
@@ -60,7 +61,10 @@ class $className;format="cap"$Controller @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, name))),
-            value => $className$Page.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              $className$Page.writeToUserAnswers(value).writeToSession().navigate()
+            }
           )
     }
 }

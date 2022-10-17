@@ -25,17 +25,36 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
 
-  private val navigator = new IdentificationNavigator
-
   "Identification Navigator" - {
 
-    "when answers complete" - {
-      "must redirect to check your answers" in {
-        forAll(arbitraryIdentificationAnswers(emptyUserAnswers), arbitrary[Mode]) {
-          (answers, mode) =>
-            navigator
-              .nextPage(answers, mode)
-              .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+    "in NormalMode" - {
+
+      val navigator = new IdentificationNavigator(NormalMode)
+
+      "when answers complete" - {
+        "must redirect to check your answers" in {
+          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+            answers =>
+              navigator
+                .nextPage(answers)
+                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+          }
+        }
+      }
+    }
+
+    "in CheckMode" - {
+
+      val navigator = new IdentificationNavigator(CheckMode)
+
+      "when answers complete" - {
+        "must redirect to check your answers" in {
+          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+            answers =>
+              navigator
+                .nextPage(answers)
+                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+          }
         }
       }
     }

@@ -19,17 +19,17 @@ package models.journeyDomain.identification
 import cats.implicits._
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.{MovementReferenceNumber, UserAnswers}
+import models.{Mode, MovementReferenceNumber, UserAnswers}
 import pages.identification._
 import play.api.mvc.Call
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
   procedureType: ProcedureType,
-  authorisations: AuthorisationsDomain
+  authorisations: Option[AuthorisationsDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
 }
 
@@ -40,10 +40,15 @@ object IdentificationDomain {
     UserAnswersReader(fn)
   }
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
-    (
-      mrn,
-      IsSimplifiedProcedurePage.reader,
-      UserAnswersReader[AuthorisationsDomain]
-    ).tupled.map((IdentificationDomain.apply _).tupled)
+  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] = {
+    for {
+      mrn          <- mrn
+      isSimplified <- IsSimplifiedProcedurePage.reader
+      authorisations <- isSimplified match {
+        case ProcedureType.Normal     => none[AuthorisationsDomain].pure[UserAnswersReader]
+        case ProcedureType.Simplified => UserAnswersReader[AuthorisationsDomain].map(Some(_))
+      }
+
+    } yield IdentificationDomain(mrn, isSimplified, authorisations)
+  }
 }

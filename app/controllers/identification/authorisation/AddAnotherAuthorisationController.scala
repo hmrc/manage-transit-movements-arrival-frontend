@@ -23,8 +23,7 @@ import forms.AddItemFormProvider
 import models.journeyDomain.identification.AuthorisationDomain
 import models.requests.DataRequest
 import models.{Index, MovementReferenceNumber, NormalMode}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import pages.sections.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +37,7 @@ import javax.inject.Inject
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  @IdentificationDetails navigator: Navigator,
+  navigatorProvider: IdentificationNavigatorProvider,
   actions: Actions,
   removeInProgressAuthorisations: RemoveInProgressActionProvider,
   formProvider: AddItemFormProvider,
@@ -72,7 +71,7 @@ class AddAnotherAuthorisationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, authorisations, allowMoreAuthorisations)),
           {
             case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), NormalMode))
-            case false => Redirect(navigator.nextPage(request.userAnswers, NormalMode))
+            case false => Redirect(navigatorProvider(NormalMode).nextPage(request.userAnswers))
           }
         )
   }

@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.locationOfGoods.QualifierOfIdentificationFormProvider
 import models.NormalMode
 import models.locationOfGoods.QualifierOfIdentification
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.QualifierOfIdentificationPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.QualifierOfIdentificationView
@@ -35,6 +38,11 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
   private val form                                = formProvider()
   private val mode                                = NormalMode
   private lazy val qualifierofidentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "Qualifierofidentification Controller" - {
 

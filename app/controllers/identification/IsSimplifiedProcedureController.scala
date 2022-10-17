@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.ProcedureTypeFormProvider
 import models.identification.ProcedureType
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.IdentificationDetails
+import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.IsSimplifiedProcedurePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IsSimplifiedProcedureController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @IdentificationDetails implicit val navigator: Navigator,
+  navigatorProvider: IdentificationNavigatorProvider,
   actions: Actions,
   formProvider: ProcedureTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,7 +62,10 @@ class IsSimplifiedProcedureController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.radioItems, mode))),
-          value => IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession().navigateWith(mode)
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession().navigate()
+          }
         )
   }
 }

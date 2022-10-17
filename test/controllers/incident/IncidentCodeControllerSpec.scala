@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.IncidentCodeFormProvider
 import models.NormalMode
 import models.incident.IncidentCode
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.IncidentCodePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.IncidentCodeView
@@ -35,6 +38,11 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val form                   = formProvider()
   private val mode                   = NormalMode
   private lazy val incidentCodeRoute = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
   "IncidentCode Controller" - {
 

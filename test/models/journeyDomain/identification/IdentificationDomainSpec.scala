@@ -39,7 +39,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           procedureType = ProcedureType.Normal,
-          authorisations = AuthorisationsDomain(Nil)
+          authorisations = None
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -59,12 +59,14 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           procedureType = ProcedureType.Simplified,
-          authorisations = AuthorisationsDomain(
-            Seq(
-              AuthorisationDomain(
-                `type` = authorisationType,
-                referenceNumber = referenceNumber
-              )(authorisationIndex)
+          authorisations = Some(
+            AuthorisationsDomain(
+              Seq(
+                AuthorisationDomain(
+                  `type` = authorisationType,
+                  referenceNumber = referenceNumber
+                )(authorisationIndex)
+              )
             )
           )
         )

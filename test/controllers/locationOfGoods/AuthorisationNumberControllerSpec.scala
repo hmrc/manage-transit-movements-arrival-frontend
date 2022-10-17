@@ -19,9 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AuthorisationNumberPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AuthorisationNumberView
@@ -34,6 +37,11 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
   private val form                          = formProvider("locationOfGoods.authorisationNumber")
   private val mode                          = NormalMode
   private lazy val authorisationNumberRoute = routes.AuthorisationNumberController.onPageLoad(mrn, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "AuthorisationNumber Controller" - {
 

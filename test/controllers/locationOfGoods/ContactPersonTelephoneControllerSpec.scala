@@ -19,9 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
+import navigation.LocationOfGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.ContactPersonTelephoneView
@@ -38,6 +41,11 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
   private val validAnswer: String              = "+123123"
 
   private val userAnswers = emptyUserAnswers.setValue(ContactPersonNamePage, contactName)
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
   "ContactPersonTelephone Controller" - {
 

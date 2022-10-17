@@ -16,11 +16,11 @@
 
 package models.journeyDomain.incident.endorsement
 
+import cats.implicits._
 import models.Index
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import pages.incident.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
-import cats.implicits._
 import models.reference.Country
+import pages.incident.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 
 import java.time.LocalDate
 
