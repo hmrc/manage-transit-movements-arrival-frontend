@@ -35,6 +35,8 @@ class CheckAuthorisationAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals")
+
   behave like pageWithHeading()
 
   behave like pageWithCheckYourAnswers()

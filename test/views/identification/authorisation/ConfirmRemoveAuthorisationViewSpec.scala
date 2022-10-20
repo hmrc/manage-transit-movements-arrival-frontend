@@ -42,6 +42,8 @@ class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals")
+
   behave like pageWithHeading(authorisationType.toString, authorisationTitle)
 
   behave like pageWithRadioItems(args = Seq(authorisationType.toString, authorisationTitle))

@@ -47,7 +47,8 @@
             field = form("value"),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("identification.destinationOffice.heading"),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("identification.destinationOffice.paragraph")}</p>""")
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("identification.destinationOffice.paragraph")}</p>"""),
+                caption = Some(messages("site.caption"))
             ),
             hint = Some(messages("identification.destinationOffice.hint")),
             selectItems = customsOfficeList.toSelectItems(form.value),
