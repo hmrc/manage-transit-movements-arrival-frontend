@@ -19,8 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.IdentificationNumberFormProvider
 import models.NormalMode
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.IdentificationNumberPage

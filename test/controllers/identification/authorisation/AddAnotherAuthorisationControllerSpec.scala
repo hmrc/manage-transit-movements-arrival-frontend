@@ -17,12 +17,11 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.annotations.LocationOfGoods
 import forms.AddItemFormProvider
 import generators.{Generators, IdentificationUserAnswersGenerator}
 import models.{Index, NormalMode}
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, LocationOfGoodsNavigatorProvider, Navigator}
 import navigation.annotations.IdentificationDetails
+import navigation.{IdentificationNavigatorProvider, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

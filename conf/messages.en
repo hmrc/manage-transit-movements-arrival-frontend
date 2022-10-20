@@ -72,6 +72,15 @@ unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
+identification.destinationOffice.title = Where is the office of destination?
+identification.destinationOffice.heading = Where is the office of destination?
+identification.destinationOffice.hint = Enter the office location or code, like Wien-Flughafen or AT330200.
+identification.destinationOffice.placeholder = Select a customs office
+identification.destinationOffice.change.hidden = office of destination
+identification.destinationOffice.paragraph = This is the customs office where the CTC transit ends.
+identification.destinationOffice.checkYourAnswersLabel = Office of destination
+identification.destinationOffice.error.required = Enter the office of destination
+
 identification.arrivalDate.title = Arrival Date
 identification.arrivalDate.heading = Arrival Date
 identification.arrivalDate.checkYourAnswersLabel = Arrival Date
@@ -365,3 +374,4 @@ incident.endorsementLocation.change.hidden = endorsement location
 incident.endorsementLocation.error.required = Enter where in {0} the endorsement was made
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+

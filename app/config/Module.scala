@@ -18,7 +18,6 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.annotations.{IdentificationDetails, LocationOfGoods}
 import navigation._
 import services.{DateTimeService, DateTimeServiceImpl}
 

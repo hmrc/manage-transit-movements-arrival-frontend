@@ -22,7 +22,7 @@ import generators.Generators
 import models.InternationalAddress
 import models.identification.ProcedureType
 import models.incident.IncidentCode
-import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
