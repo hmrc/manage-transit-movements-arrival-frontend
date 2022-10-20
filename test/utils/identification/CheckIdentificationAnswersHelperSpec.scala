@@ -178,7 +178,7 @@ class CheckIdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPrope
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Identification Number".toText),
+                  key = Key("What is the EORI number or TIN for the consignee.".toText),
                   value = Value(id.toText),
                   actions = Some(
                     Actions(

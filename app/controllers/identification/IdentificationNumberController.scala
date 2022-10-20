@@ -18,7 +18,7 @@ package controllers.identification
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.identification.IdentificationNumberFormProvider
+import forms.EoriNumberFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.IdentificationNumberPage
@@ -35,7 +35,7 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IdentificationNavigatorProvider,
-  formProvider: IdentificationNumberFormProvider,
+  formProvider: EoriNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView

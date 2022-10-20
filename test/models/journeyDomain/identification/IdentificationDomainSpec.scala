@@ -38,11 +38,13 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when not a simplified journey" in {
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         )
@@ -58,6 +60,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
@@ -65,6 +68,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Simplified,
           authorisations = Some(
             AuthorisationsDomain(
@@ -97,6 +101,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)

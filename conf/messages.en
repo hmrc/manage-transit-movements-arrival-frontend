@@ -137,12 +137,15 @@ identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you
 identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the {0} authorisation {1}?
 identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you sure you want to remove the {0} authorisation {1}
 
-identification.identificationNumber.title = Identification Number
-identification.identificationNumber.heading = Identification Number
-identification.identificationNumber.checkYourAnswersLabel = Identification Number
+identification.identificationNumber.title = What is the consignee’s EORI number or TIN?
+identification.identificationNumber.heading = What is the consignee’s EORI number or TIN?
+identification.identificationNumber.paragraph = The consignee is the person or company receiving the goods at the office of destination.
+identification.identificationNumber.hint = The EORI number or TIN can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+identification.identificationNumber.checkYourAnswersLabel = What is the EORI number or TIN for the consignee.
+identification.identificationNumber.error.required = Enter the consignee’s EORI number or TIN.
+identification.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9.
+identification.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less.
 identification.identificationNumber.change.hidden = identification number
-identification.identificationNumber.error.required = Enter Identification Number
-identification.identificationNumber.error.length = Identification Number must be 100 characters or less
 
 identification.checkIdentificationAnswers.title = Check your answers
 identification.checkIdentificationAnswers.heading = Check your answers
