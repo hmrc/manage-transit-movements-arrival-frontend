@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.Identification
+import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
 import pages.identification.DestinationOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,7 +28,6 @@ import repositories.SessionRepository
 import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.DestinationOfficeView
-import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

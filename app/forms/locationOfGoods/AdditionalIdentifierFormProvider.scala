@@ -16,7 +16,7 @@
 
 package forms.locationOfGoods
 
-import forms.Constants.addiationalIdentifierMaxLength
+import forms.Constants.additionalIdentifierMaxLength
 import forms.StopOnFirstFail
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
@@ -31,7 +31,7 @@ class AdditionalIdentifierFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(addiationalIdentifierMaxLength, s"$prefix.error.length"),
+            maxLength(additionalIdentifierMaxLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
