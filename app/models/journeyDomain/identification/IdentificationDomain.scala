@@ -19,12 +19,14 @@ package models.journeyDomain.identification
 import cats.implicits._
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.reference.CustomsOffice
 import models.{Mode, MovementReferenceNumber, UserAnswers}
 import pages.identification._
 import play.api.mvc.Call
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
+  destinationOffice: CustomsOffice,
   procedureType: ProcedureType,
   authorisations: Option[AuthorisationsDomain]
 ) extends JourneyDomainModel {
@@ -42,13 +44,14 @@ object IdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] = {
     for {
-      mrn          <- mrn
-      isSimplified <- IsSimplifiedProcedurePage.reader
+      mrn               <- mrn
+      destinationOffice <- DestinationOfficePage.reader
+      isSimplified      <- IsSimplifiedProcedurePage.reader
       authorisations <- isSimplified match {
         case ProcedureType.Normal     => none[AuthorisationsDomain].pure[UserAnswersReader]
         case ProcedureType.Simplified => UserAnswersReader[AuthorisationsDomain].map(Some(_))
       }
 
-    } yield IdentificationDomain(mrn, isSimplified, authorisations)
+    } yield IdentificationDomain(mrn, destinationOffice, isSimplified, authorisations)
   }
 }

@@ -20,8 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.ProcedureTypeFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

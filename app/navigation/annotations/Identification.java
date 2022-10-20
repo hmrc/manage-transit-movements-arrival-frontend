@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package navigation.annotations;
 
-object Constants {
-  lazy val additionalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int   = 12
-  lazy val maxEoriNumberLength: Int           = 17
-  lazy val minEoriNumberLength: Int           = 14
-  lazy val maxNameLength: Int                 = 70
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val authorisationNumberLength: Int     = 35
-  lazy val maxIncidentTextLength: Int         = 512
+import com.google.inject.BindingAnnotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Identification {
 }

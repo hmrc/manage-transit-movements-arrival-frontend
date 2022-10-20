@@ -43,6 +43,8 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals - Authorisations")
+
   behave like pageWithHeading(AuthorisationType.ACT.toString)
 
   behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")

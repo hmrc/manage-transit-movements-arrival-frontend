@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.identification.routes
 import generators.{Generators, IdentificationUserAnswersGenerator}
 import models._
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {

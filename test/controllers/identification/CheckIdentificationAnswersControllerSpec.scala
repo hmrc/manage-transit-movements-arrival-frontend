@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.{routes => identificationRoutes}
 import generators.Generators
 import models.NormalMode
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider}
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
