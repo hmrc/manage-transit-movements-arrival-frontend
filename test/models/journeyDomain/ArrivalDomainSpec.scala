@@ -31,7 +31,7 @@ import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.{DestinationOfficePage, IsSimplifiedProcedurePage}
+import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
@@ -53,6 +53,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(DestinationOfficePage, destinationOffice)
+        .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -72,6 +73,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         IdentificationDomain(
           userAnswers.mrn,
           destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         ),
@@ -106,6 +108,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(DestinationOfficePage, destinationOffice)
+        .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -117,6 +120,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
         IdentificationDomain(
           userAnswers.mrn,
           destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         ),
@@ -142,6 +146,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)

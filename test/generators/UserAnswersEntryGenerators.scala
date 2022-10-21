@@ -37,9 +37,9 @@ trait UserAnswersEntryGenerators {
     import pages.identification._
     generateAuthorisationAnswer orElse {
       case DestinationOfficePage     => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
       case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
       case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
-      case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
     }
   }
 
