@@ -16,11 +16,11 @@
 
 package forms.incident
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.incident.IncidentCode
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class IncidentCodeFormProvider @Inject() extends Mappings {
 
