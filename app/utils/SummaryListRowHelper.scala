@@ -17,7 +17,7 @@
 package utils
 
 import models.reference.CountryCode
-import models.{Address, CountryList}
+import models.{Address, CountryList, PostalCodeAddress}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -37,6 +37,9 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsAddress(address: Address): Content =
     HtmlContent(Seq(address.line1, address.line2, address.postalCode).mkString("<br>"))
+
+  def formatAsPostalCodeAddress(address: PostalCodeAddress): Content =
+    HtmlContent(Seq(address.streetNumber, address.postalCode, address.country).mkString("<br>"))
 
   def formatAsText[T](answer: T): Content = s"$answer".toText
 

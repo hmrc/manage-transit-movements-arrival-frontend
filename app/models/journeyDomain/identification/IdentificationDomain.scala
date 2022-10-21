@@ -20,7 +20,7 @@ import cats.implicits._
 import models.identification.ProcedureType
 import models.journeyDomain.{ArrivalDomain, EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.CustomsOffice
-import models.{EoriNumber, Mode, MovementReferenceNumber, UserAnswers}
+import models.{Mode, MovementReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.identification._
 import play.api.mvc.Call

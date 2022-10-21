@@ -72,6 +72,13 @@ unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
+arrivals.checkYourAnswers.title = Check your answers
+arrivals.checkYourAnswers.heading = Check your answers
+arrivals.checkYourAnswers.authorisations.subheading = Authorisations
+arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
+arrivals.checkYourAnswers.identification.subheading = Identification
+arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
+
 identification.destinationOffice.title = Where is the office of destination?
 identification.destinationOffice.heading = Where is the office of destination?
 identification.destinationOffice.hint = Enter the office location or code, like Wien-Flughafen or AT330200.
@@ -372,4 +379,7 @@ incident.endorsementLocation.change.hidden = endorsement location
 incident.endorsementLocation.error.required = Enter where in {0} the endorsement was made
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+
+
 
