@@ -31,31 +31,32 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       val navigator = new IdentificationNavigator(NormalMode)
 
       "when answers complete" - {
-        "must redirect to check your answers" in {
+        "must redirect to location of goods type page" in {
           forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
+                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, NormalMode))
           }
         }
       }
     }
+// TODO: Add final check your answers page (CTCP-702)
 
-    "in CheckMode" - {
-
-      val navigator = new IdentificationNavigator(CheckMode)
-
-      "when answers complete" - {
-        "must redirect to check your answers" in {
-          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
-            answers =>
-              navigator
-                .nextPage(answers)
-                .mustBe(routes.CheckIdentificationAnswersController.onPageLoad(answers.mrn))
-          }
-        }
-      }
-    }
+//    "in CheckMode" - {
+//
+//      val navigator = new IdentificationNavigator(CheckMode)
+//
+//      "when answers complete" - {
+//        "must redirect to check your answers" in {
+//          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+//            answers =>
+//              navigator
+//                .nextPage(answers)
+//                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, CheckMode))
+//          }
+//        }
+//      }
+//    }
   }
 }

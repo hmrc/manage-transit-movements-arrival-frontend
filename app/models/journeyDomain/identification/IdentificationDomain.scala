@@ -33,7 +33,7 @@ case class IdentificationDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
+    Some(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(userAnswers.mrn, mode))
 }
 
 object IdentificationDomain {
