@@ -19,9 +19,9 @@ package pages.identification
 import controllers.identification.routes
 import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
 import pages.QuestionPage
 import pages.sections.{AuthorisationsSection, IdentificationSection}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try

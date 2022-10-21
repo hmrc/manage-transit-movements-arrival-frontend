@@ -18,9 +18,10 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{ArrivalDomain, EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{EoriNumber, Mode, MovementReferenceNumber, UserAnswers}
+import navigation.UserAnswersNavigator
 import pages.identification._
 import play.api.mvc.Call
 
@@ -33,7 +34,7 @@ case class IdentificationDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
+    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
 }
 
 object IdentificationDomain {

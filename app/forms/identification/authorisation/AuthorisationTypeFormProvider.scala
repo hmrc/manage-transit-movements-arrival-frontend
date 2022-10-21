@@ -16,11 +16,11 @@
 
 package forms.identification.authorisation
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.identification.authorisation.AuthorisationType
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class AuthorisationTypeFormProvider @Inject() extends Mappings {
 
