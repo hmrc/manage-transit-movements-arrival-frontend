@@ -147,11 +147,6 @@ identification.identificationNumber.error.invalidCharacters = The EORI number or
 identification.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less.
 identification.identificationNumber.change.hidden = identification number
 
-identification.checkIdentificationAnswers.title = Check your answers
-identification.checkIdentificationAnswers.heading = Check your answers
-identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
-identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
-
 #location of goods
 
 locationOfGoods.caption = Arrivals - Location of goods
