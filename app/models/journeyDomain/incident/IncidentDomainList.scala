@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.sections.incident.IncidentsSection
 

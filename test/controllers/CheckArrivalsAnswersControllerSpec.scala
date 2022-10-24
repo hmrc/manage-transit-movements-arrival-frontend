@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import viewModels.CheckArrivalsAnswersViewModel
 import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
 import viewModels.sections.Section
-import views.html.identification.CheckArrivalsAnswersView
+import views.html.CheckArrivalsAnswersView
 
 class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 

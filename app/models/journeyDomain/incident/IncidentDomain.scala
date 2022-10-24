@@ -17,25 +17,19 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import config.FrontendAppConfig
+import models.Index
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
-import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
-import play.api.mvc.Call
 
 case class IncidentDomain(
   incidentCountry: Country,
   incidentCode: IncidentCode,
   incidentText: String,
   endorsement: Option[EndorsementDomain]
-) extends JourneyDomainModel {
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
-    Some(???) // TODO link to next journey
-}
+) extends JourneyDomainModel
 
 object IncidentDomain {
 

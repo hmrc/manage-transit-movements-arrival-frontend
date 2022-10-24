@@ -33,7 +33,7 @@ class AuthorisationAnswersHelper(
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
     page = AuthorisationTypePage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
     prefix = "identification.authorisation.authorisationType",
     id = Some("change-authorisation-type")
   )

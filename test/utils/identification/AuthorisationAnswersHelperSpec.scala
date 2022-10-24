@@ -44,15 +44,17 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
 
       "must return Some(Row)" - {
         "when AuthorisationTypePage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
+          forAll(arbitrary[AuthorisationType], arbitrary[Mode]) {
+            (authorisationType, mode) =>
+              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
 
               val helper = new AuthorisationAnswersHelper(answers, mode, authorisationIndex)
               val result = helper.authorisationType.get
 
               result.key.value mustBe "Type"
-              result.value.value mustBe "ACT"
+              val key = s"identification.authorisation.authorisationType.$authorisationType"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

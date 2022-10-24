@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package views.identification.authorisation
+package views
 
-import controllers.identification.authorisation.routes
+import controllers.routes
 import play.twirl.api.HtmlFormat
 import viewModels.sections.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
-import views.html.identification.authorisation.CheckAuthorisationAnswersView
+import views.html.CheckArrivalsAnswersView
 
-class CheckAuthorisationAnswersViewSpec extends CheckYourAnswersViewBehaviours {
+class CheckArrivalAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val prefix: String = "identification.authorisation.checkAuthorisationAnswers"
+  override val prefix: String = "arrivals.checkYourAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[CheckAuthorisationAnswersView].apply(mrn, eventIndex, sections)(fakeRequest, messages)
+    injector.instanceOf[CheckArrivalsAnswersView].apply(mrn, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink
 
-  behave like pageWithSectionCaption("Arrivals - Authorisations")
+  behave like pageWithSectionCaption("Arrivals")
 
   behave like pageWithHeading()
 
   behave like pageWithCheckYourAnswers()
 
-  behave like pageWithFormAction(routes.CheckAuthorisationAnswersController.onSubmit(mrn, eventIndex).url)
+  behave like pageWithFormAction(routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
 
   behave like pageWithSubmitButton("Continue")
 

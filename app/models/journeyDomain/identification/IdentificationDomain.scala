@@ -17,14 +17,11 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
-import config.FrontendAppConfig
 import models.identification.ProcedureType
-import models.journeyDomain.{ArrivalDomain, EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.CustomsOffice
-import models.{Mode, MovementReferenceNumber, UserAnswers}
-import navigation.UserAnswersNavigator
+import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification._
-import play.api.mvc.Call
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
@@ -32,11 +29,7 @@ case class IdentificationDomain(
   identificationNumber: String,
   procedureType: ProcedureType,
   authorisations: Option[AuthorisationsDomain]
-) extends JourneyDomainModel {
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
-    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
-}
+) extends JourneyDomainModel
 
 object IdentificationDomain {
 
