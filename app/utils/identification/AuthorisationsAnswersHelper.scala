@@ -24,12 +24,19 @@ import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 import viewModels.ListItem
 
-class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
+
+  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
+    formatAnswer = formatAsText,
+    prefix = "identification.authorisation",
+    id = Some(s"change-authorisation-${index.display}"),
+    args = index.display
+  )(AuthorisationDomain.userAnswersReader(index))
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
@@ -40,6 +47,12 @@ class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           formatJourneyDomainModel = _.toString,
           formatType = _.toString,
           removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index))
-        )(AuthorisationDomain.userAnswersReader(index), implicitly[Reads[AuthorisationType]])
+        )(AuthorisationDomain.userAnswersReader(index), implicitly)
     }
+}
+
+object AuthorisationsAnswersHelper {
+
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) =
+    new AuthorisationsAnswersHelper(userAnswers, mode)
 }

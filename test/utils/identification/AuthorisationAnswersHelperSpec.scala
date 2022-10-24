@@ -25,10 +25,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "CheckAuthorisationAnswersHelper" - {
 
@@ -37,7 +35,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AuthorisationTypePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new CheckAuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
               val result = helper.authorisationType
               result mustBe None
           }
@@ -50,27 +48,18 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), AuthorisationType.ACT)
 
-              val helper = new CheckAuthorisationAnswersHelper(answers, mode, authorisationIndex)
-              val result = helper.authorisationType
+              val helper = new AuthorisationAnswersHelper(answers, mode, authorisationIndex)
+              val result = helper.authorisationType.get
 
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Type".toText),
-                  value = Value("ACT".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = routes.AuthorisationTypeController.onPageLoad(answers.mrn, authorisationIndex, mode).url,
-                          visuallyHiddenText = Some("authorisation type"),
-                          attributes = Map("id" -> "change-authorisation-type")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
+              result.key.value mustBe "Type"
+              result.value.value mustBe "ACT"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.AuthorisationTypeController.onPageLoad(answers.mrn, authorisationIndex, mode).url
+              action.visuallyHiddenText.get mustBe "authorisation type"
+              action.id mustBe "change-authorisation-type"
           }
         }
       }
@@ -81,7 +70,7 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AuthorisationReferenceNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new CheckAuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
               val result = helper.authorisationReferenceNumber
               result mustBe None
           }
@@ -94,27 +83,18 @@ class CheckAuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckProper
             (mode, ref) =>
               val answers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
 
-              val helper = new CheckAuthorisationAnswersHelper(answers, mode, authorisationIndex)
-              val result = helper.authorisationReferenceNumber
+              val helper = new AuthorisationAnswersHelper(answers, mode, authorisationIndex)
+              val result = helper.authorisationReferenceNumber.get
 
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Reference number".toText),
-                  value = Value(ref.toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, authorisationIndex, mode).url,
-                          visuallyHiddenText = Some("authorisation reference number"),
-                          attributes = Map("id" -> "change-authorisation-reference-number")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
+              result.key.value mustBe "Reference number"
+              result.value.value mustBe ref
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, authorisationIndex, mode).url
+              action.visuallyHiddenText.get mustBe "authorisation reference number"
+              action.id mustBe "change-authorisation-reference-number"
           }
         }
       }

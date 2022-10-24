@@ -43,6 +43,12 @@ object ArrivalDomain {
     }
 }
 
+case class ArrivalPostTransitionDomain(
+  identification: IdentificationDomain,
+  locationOfGoods: LocationOfGoodsDomain,
+  incidents: Option[IncidentDomainList]
+) extends ArrivalDomain
+
 object ArrivalPostTransitionDomain {
 
   implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalPostTransitionDomain] = {
@@ -54,8 +60,10 @@ object ArrivalPostTransitionDomain {
   }
 }
 
-case class ArrivalPostTransitionDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain, incidents: Option[IncidentDomainList])
-    extends ArrivalDomain
+case class ArrivalTransitionDomain(
+  identification: IdentificationDomain,
+  locationOfGoods: LocationOfGoodsDomain
+) extends ArrivalDomain
 
 object ArrivalTransitionDomain {
 
@@ -66,4 +74,3 @@ object ArrivalTransitionDomain {
     } yield ArrivalTransitionDomain(identification, locationOfGoods)
   }
 }
-case class ArrivalTransitionDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain) extends ArrivalDomain

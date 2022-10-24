@@ -43,7 +43,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return OK and the correct view for a GET" in {
       val sampleSections = listWithMaxLength[Section]().sample.value
 
-      when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(CheckArrivalsAnswersViewModel(sampleSections))
+      when(mockViewModelProvider.apply(any())(any())).thenReturn(CheckArrivalsAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 

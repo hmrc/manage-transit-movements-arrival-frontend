@@ -19,16 +19,16 @@ package viewModels.identification
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
-import utils.identification.CheckAuthorisationAnswersHelper
+import utils.identification.AuthorisationAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class CheckAuthorisationAnswersViewModel(section: Section)
+case class AuthorisationAnswersViewModel(section: Section)
 
-object CheckAuthorisationAnswersViewModel {
+object AuthorisationAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): CheckAuthorisationAnswersViewModel =
+  def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): AuthorisationAnswersViewModel =
     new CheckAuthorisationAnswersViewModelProvider().apply(userAnswers, index, mode)
 
   class CheckAuthorisationAnswersViewModelProvider @Inject() () {
@@ -36,9 +36,9 @@ object CheckAuthorisationAnswersViewModel {
     def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit
       messages: Messages,
       config: FrontendAppConfig
-    ): CheckAuthorisationAnswersViewModel = {
+    ): AuthorisationAnswersViewModel = {
 
-      val helper = new CheckAuthorisationAnswersHelper(userAnswers, mode, index)
+      val helper = new AuthorisationAnswersHelper(userAnswers, mode, index)
 
       val section = Section(
         rows = Seq(
@@ -47,7 +47,7 @@ object CheckAuthorisationAnswersViewModel {
         ).flatten
       )
 
-      new CheckAuthorisationAnswersViewModel(section)
+      new AuthorisationAnswersViewModel(section)
     }
   }
 }

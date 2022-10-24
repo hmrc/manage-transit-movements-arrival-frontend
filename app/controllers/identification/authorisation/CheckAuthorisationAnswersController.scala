@@ -23,7 +23,7 @@ import models.{CheckMode, Index, MovementReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.identification.CheckAuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
+import viewModels.identification.AuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersController @Inject() (

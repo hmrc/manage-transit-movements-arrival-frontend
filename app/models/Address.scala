@@ -29,7 +29,9 @@ case class UkAddress(
   line1: String,
   line2: String,
   postalCode: String
-) extends Address
+) extends Address {
+  override def toString: String = Seq(line1, line2, postalCode).mkString("<br>")
+}
 
 object UkAddress {
   implicit val format: OFormat[UkAddress] = Json.format[UkAddress]
@@ -39,7 +41,9 @@ case class PostalCodeAddress(
   streetNumber: String,
   postalCode: String,
   country: Country
-)
+) {
+  override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
+}
 
 object PostalCodeAddress {
   implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
@@ -50,7 +54,9 @@ case class InternationalAddress(
   line2: String,
   postalCode: String,
   country: Country
-) extends Address
+) extends Address {
+  override def toString: String = Seq(line1, line2, postalCode, country.description).mkString("<br>")
+}
 
 object InternationalAddress {
   implicit val format: OFormat[InternationalAddress] = Json.format[InternationalAddress]

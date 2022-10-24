@@ -18,18 +18,18 @@ package navigation
 
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authorisationRoutes}
-import controllers.identification.{routes => identificationRoutes}
-import generators.{Generators, IdentificationUserAnswersGenerator}
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
+class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
   "Authorisation Navigator" - {
 
     "when in NormalMode" - {
 
-      val navigator = new AuthorisationNavigator(NormalMode, authorisationIndex)
+      val navigatorProvider = new AuthorisationNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(NormalMode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to check your answers" in {

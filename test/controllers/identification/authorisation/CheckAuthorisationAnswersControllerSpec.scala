@@ -26,8 +26,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.identification.CheckAuthorisationAnswersViewModel
-import viewModels.identification.CheckAuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
+import viewModels.identification.AuthorisationAnswersViewModel
+import viewModels.identification.AuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
 import viewModels.sections.Section
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
@@ -47,7 +47,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       val sampleSection = arbitrary[Section].sample.value
 
       when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
-        .thenReturn(CheckAuthorisationAnswersViewModel(sampleSection))
+        .thenReturn(AuthorisationAnswersViewModel(sampleSection))
 
       setExistingUserAnswers(emptyUserAnswers)
 

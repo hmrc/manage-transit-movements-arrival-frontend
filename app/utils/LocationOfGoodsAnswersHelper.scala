@@ -17,56 +17,18 @@
 package utils
 
 import config.FrontendAppConfig
-import models.identification.ProcedureType
-import models.journeyDomain.identification.AuthorisationDomain
 import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, Index, InternationalAddress, Mode, PostalCodeAddress, UserAnswers}
-import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
+import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class CheckArrivalsHelper(
+class LocationOfGoodsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
 )(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
-
-  def movementReferenceNumber: SummaryListRow = buildRow(
-    prefix = "movementReferenceNumber",
-    answer = formatAsText(mrn),
-    id = None,
-    call = controllers.identification.routes.MovementReferenceNumberController.onPageLoad()
-  )
-
-  def destinationOffice: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOffice](
-    page = DestinationOfficePage,
-    formatAnswer = formatAsText,
-    prefix = "identification.destinationOffice",
-    id = Some("change-destination-office")
-  )
-
-  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = IdentificationNumberPage,
-    formatAnswer = formatAsText,
-    prefix = "identification.identificationNumber",
-    id = Some("change-identification-number")
-  )
-
-  def isSimplified: Option[SummaryListRow] = getAnswerAndBuildRow[ProcedureType](
-    page = IsSimplifiedProcedurePage,
-    formatAnswer = formatEnumAsText(ProcedureType.messageKeyPrefix),
-    prefix = "identification.isSimplifiedProcedure",
-    id = Some("change-is-simplified-procedure")
-  )
-
-  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
-    formatAnswer = formatAsText,
-    prefix = "identification.authorisation",
-    id = Some(s"change-authorisation-${index.display}"),
-    args = index.display
-  )(AuthorisationDomain.userAnswersReader(index))
 
   def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[TypeOfLocation](
     page = TypeOfLocationPage,
@@ -89,7 +51,7 @@ class CheckArrivalsHelper(
     id = Some("customs-office")
   )
 
-  def locationOfGoodsIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage,
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.identificationNumber",
@@ -113,7 +75,7 @@ class CheckArrivalsHelper(
   def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[UnLocode](
     page = UnlocodePage,
     formatAnswer = formatAsText,
-    prefix = "locationOfGoods.unLocode",
+    prefix = "locationOfGoods.unlocode",
     id = Some("un-locode")
   )
 
@@ -166,4 +128,13 @@ class CheckArrivalsHelper(
     id = Some("contact-person-telephone")
   )
 
+}
+
+object LocationOfGoodsAnswersHelper {
+
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode
+  )(implicit messages: Messages, config: FrontendAppConfig): LocationOfGoodsAnswersHelper =
+    new LocationOfGoodsAnswersHelper(userAnswers, mode)
 }

@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.{CheckMode, MovementReferenceNumber}
+import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,7 +36,7 @@ class CheckArrivalsAnswersController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val sections = viewModelProvider(request.userAnswers, CheckMode).sections
+      val sections = viewModelProvider(request.userAnswers).sections
       Ok(view(mrn, sections))
   }
 

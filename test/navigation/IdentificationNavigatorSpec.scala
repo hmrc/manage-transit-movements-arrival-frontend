@@ -28,7 +28,8 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
     "in NormalMode" - {
 
-      val navigator = new IdentificationNavigator(NormalMode)
+      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigator         = navigatorProvider.apply(NormalMode)
 
       "when answers complete" - {
         "must redirect to location of goods type page" in {

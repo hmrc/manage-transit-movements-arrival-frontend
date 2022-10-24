@@ -45,8 +45,6 @@ object IncidentDomain {
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
       AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)))
-    ).mapN {
-      (country, code, text, endorsement) => IncidentDomain(country, code, text, endorsement)
-    }
+    ).tupled.map((IncidentDomain.apply _).tupled)
 
 }

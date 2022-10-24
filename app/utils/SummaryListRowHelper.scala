@@ -36,10 +36,10 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     }
 
   def formatAsAddress(address: Address): Content =
-    HtmlContent(Seq(address.line1, address.line2, address.postalCode).mkString("<br>"))
+    HtmlContent(address.toString)
 
   def formatAsPostalCodeAddress(address: PostalCodeAddress): Content =
-    HtmlContent(Seq(address.streetNumber, address.postalCode, address.country).mkString("<br>"))
+    HtmlContent(address.toString)
 
   def formatAsText[T](answer: T): Content = s"$answer".toText
 

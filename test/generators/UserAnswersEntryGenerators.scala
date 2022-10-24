@@ -27,7 +27,6 @@ import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import queries.Gettable
 
 trait UserAnswersEntryGenerators {
-
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
@@ -54,7 +53,6 @@ trait UserAnswersEntryGenerators {
   private def generateLocationOfGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
-
       val log: PartialFunction[Gettable[_], Gen[JsValue]] = {
         case TypeOfLocationPage            => arbitrary[TypeOfLocation].map(Json.toJson(_))
         case QualifierOfIdentificationPage => arbitrary[QualifierOfIdentification].map(Json.toJson(_))

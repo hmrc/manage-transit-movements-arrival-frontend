@@ -16,11 +16,11 @@
 
 package viewModels
 
-import config.FrontendAppConfig
-import models.{Index, Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.AuthorisationsSection
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import utils.CheckArrivalsHelper
+import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
+import viewModels.identification.AuthorisationsAnswersViewModel.AuthorisationsAnswersViewModelProvider
+import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -29,60 +29,20 @@ case class CheckArrivalsAnswersViewModel(sections: Seq[Section])
 
 object CheckArrivalsAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): CheckArrivalsAnswersViewModel =
-    new CheckArrivalsAnswersViewModelProvider().apply(userAnswers, mode)
+  class CheckArrivalsAnswersViewModelProvider @Inject() (
+    identificationAnswersViewModelProvider: IdentificationAnswersViewModelProvider,
+    authorisationsAnswersViewModelProvider: AuthorisationsAnswersViewModelProvider,
+    locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider
+  ) {
 
-  class CheckArrivalsAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
-
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckArrivalsAnswersViewModel = {
-
-      val helper = new CheckArrivalsHelper(userAnswers, mode)
-
-      val identificationSection = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.identification.subheading"),
-        rows = Seq(
-          Some(helper.movementReferenceNumber),
-          helper.destinationOffice,
-          helper.identificationNumber,
-          helper.isSimplified
-        ).flatten
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckArrivalsAnswersViewModel = {
+      val mode = CheckMode
+      new CheckArrivalsAnswersViewModel(
+        identificationAnswersViewModelProvider.apply(userAnswers, mode).section ::
+          authorisationsAnswersViewModelProvider.apply(userAnswers, mode).section ::
+          locationOfGoodsAnswersViewModelProvider.apply(userAnswers, mode).section ::
+          Nil
       )
-
-      val authorisationsSection = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
-        rows = userAnswers
-          .get(AuthorisationsSection)
-          .mapWithIndex {
-            (_, index) => helper.authorisation(Index(index))
-          },
-        addAnotherLink = Link(
-          id = "add-or-remove",
-          text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
-          href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
-        )
-      )
-
-      val locationOfGoodsSection = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.locationOfGoods.subheading"),
-        rows = Seq(
-          helper.locationType,
-          helper.qualifierOfIdentification,
-          helper.customsOfficeIdentifier,
-          helper.locationOfGoodsIdentificationNumber,
-          helper.authorisationNumber,
-          helper.coordinates,
-          helper.unLocode,
-          helper.address,
-          helper.postalCode,
-          helper.additionalIdentifierYesNo,
-          helper.additionalIdentifier,
-          helper.contactYesNo,
-          helper.contactName,
-          helper.contactPhoneNumber
-        ).flatten
-      )
-
-      new CheckArrivalsAnswersViewModel(Seq(identificationSection, authorisationsSection, locationOfGoodsSection))
     }
   }
 }
