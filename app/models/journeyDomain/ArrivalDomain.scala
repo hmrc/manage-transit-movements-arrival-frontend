@@ -29,8 +29,7 @@ case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: 
 
   //TODO: Add confirmation page
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    None
-
+    Some(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(userAnswers.mrn))
 }
 
 object ArrivalDomain {

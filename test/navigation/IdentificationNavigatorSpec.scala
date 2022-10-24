@@ -17,16 +17,12 @@
 package navigation
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators, IdentificationUserAnswersGenerator}
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.IncidentFlagPage
 
-class IdentificationNavigatorSpec
-    extends SpecBase
-    with ScalaCheckPropertyChecks
-    with Generators
-    with IdentificationUserAnswersGenerator
-    with ArrivalUserAnswersGenerator {
+class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
   "Identification Navigator" - {
 
@@ -48,15 +44,17 @@ class IdentificationNavigatorSpec
     // TODO: Add final check your answers page (CTCP-702)
     "in CheckMode" - {
 
-      val navigator = new IdentificationNavigator(CheckMode)
-
       "when answers complete" - {
-        "must redirect to check your answers" ignore {
-          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
-            answers =>
+        "must redirect to check your answers" in {
+          val ua = emptyUserAnswers.setValue(IncidentFlagPage, false)
+          forAll(arbitraryArrivalAnswers(ua), CheckMode) {
+            (answers, mode) =>
+              val navigatorProvider = new IdentificationNavigatorProviderImpl()
+              val navigator         = navigatorProvider.apply(mode)
+
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, CheckMode))
+                .mustBe(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

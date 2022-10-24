@@ -16,14 +16,22 @@
 
 package generators
 
+import models.UserAnswers
 import models.journeyDomain.ArrivalDomain
-import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain, IdentificationDomain}
-import models.{Index, UserAnswers}
+import models.journeyDomain.identification.IdentificationDomain
+import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import org.scalacheck.Gen
 
 trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
   self: Generators =>
 
+  def arbitraryIdentificationAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+    buildUserAnswers[IdentificationDomain](userAnswers)
+
+  def arbitraryLocationOfGoodsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+    buildUserAnswers[LocationOfGoodsDomain](userAnswers)
+
   def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[ArrivalDomain](userAnswers)
+
 }
