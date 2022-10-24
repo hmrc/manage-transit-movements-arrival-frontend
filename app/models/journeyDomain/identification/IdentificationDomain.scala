@@ -34,7 +34,7 @@ case class IdentificationDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
+    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode)(ArrivalDomain.userAnswersReader(true)))
 }
 
 object IdentificationDomain {

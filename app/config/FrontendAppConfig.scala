@@ -81,4 +81,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Int]("dates.endorsementDateMin.month"),
     configuration.get[Int]("dates.endorsementDateMin.day")
   )
+
+  val isPostTransition = false
 }

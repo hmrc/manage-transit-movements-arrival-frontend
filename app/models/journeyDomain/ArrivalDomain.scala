@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.FrontendAppConfig
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentDomainList
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
@@ -24,20 +25,45 @@ import models.{Mode, UserAnswers}
 import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
-case class ArrivalDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain, incidents: Option[IncidentDomainList])
-    extends JourneyDomainModel {
+sealed trait ArrivalDomain extends JourneyDomainModel {
+  val identification: IdentificationDomain
+  val locationOfGoods: LocationOfGoodsDomain
 
-  //TODO: Add confirmation page
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(userAnswers.mrn))
 }
 
 object ArrivalDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[ArrivalDomain] =
+  implicit def userAnswersReader(isTransition: Boolean): UserAnswersReader[ArrivalDomain] =
+    if (isTransition) {
+      UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
+    } else {
+      UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
+    }
+}
+
+object ArrivalPostTransitionDomain {
+
+  implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalPostTransitionDomain] = {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
       incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentDomainList])
-    } yield ArrivalDomain(identification, locationOfGoods, incidents)
+    } yield ArrivalPostTransitionDomain(identification, locationOfGoods, incidents)
+  }
 }
+
+case class ArrivalPostTransitionDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain, incidents: Option[IncidentDomainList])
+    extends ArrivalDomain
+
+object ArrivalTransitionDomain {
+
+  implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
+    for {
+      identification  <- UserAnswersReader[IdentificationDomain]
+      locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
+    } yield ArrivalTransitionDomain(identification, locationOfGoods)
+  }
+}
+case class ArrivalTransitionDomain(identification: IdentificationDomain, locationOfGoods: LocationOfGoodsDomain) extends ArrivalDomain

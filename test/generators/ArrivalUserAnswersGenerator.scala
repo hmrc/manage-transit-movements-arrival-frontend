@@ -32,6 +32,6 @@ trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
     buildUserAnswers[LocationOfGoodsDomain](userAnswers)
 
   def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[ArrivalDomain](userAnswers)
+    buildUserAnswers[ArrivalDomain](userAnswers)(ArrivalDomain.userAnswersReader(true))
 
 }
