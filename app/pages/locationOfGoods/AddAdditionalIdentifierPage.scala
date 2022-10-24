@@ -23,6 +23,8 @@ import pages.sections.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object AddAdditionalIdentifierPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
@@ -31,4 +33,10 @@ case object AddAdditionalIdentifierPage extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAdditionalIdentifierController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(AdditionalIdentifierPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

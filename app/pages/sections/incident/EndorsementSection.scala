@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.sections.incident
 
-import controllers.incident.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.incident.EndorsementSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class EndorsementLocationPage(index: Index) extends QuestionPage[String] {
+case class EndorsementSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = EndorsementSection(index).path \ toString
+  override def path: JsPath = IncidentSection(index).path \ "endorsements"
 
-  override def toString: String = "location"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.EndorsementLocationController.onPageLoad(userAnswers.mrn, mode, index))
 }

@@ -23,12 +23,20 @@ import pages.sections.incident.IncidentsAndEndorsementsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object IncidentFlagPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = IncidentsAndEndorsementsSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "incidentFlag"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IncidentFlagController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(IncidentsAndEndorsementsSection)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

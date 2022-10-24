@@ -39,3 +39,7 @@ class FakeIdentificationNavigator(desiredRoute: Call, mode: Mode)(implicit confi
 class FakeLocationOfGoodsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends LocationOfGoodsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
+
+class FakeArrivalNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends ArrivalNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}

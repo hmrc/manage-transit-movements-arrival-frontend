@@ -17,30 +17,26 @@
 package navigation
 
 import config.FrontendAppConfig
-import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
+import models.journeyDomain.{ArrivalDomain, UserAnswersReader}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class LocationOfGoodsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends LocationOfGoodsNavigatorProvider {
+class ArrivalNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends ArrivalNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
-    mode match {
-      case NormalMode => new LocationOfGoodsNavigator(mode)
-      case CheckMode  => new ArrivalNavigator(mode)
-    }
+    new ArrivalNavigator(mode)
 }
 
-trait LocationOfGoodsNavigatorProvider {
+trait ArrivalNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class LocationOfGoodsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
+class ArrivalNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
-  override type T = LocationOfGoodsDomain
+  override type T = ArrivalDomain
 
-  implicit override val reader: UserAnswersReader[LocationOfGoodsDomain] =
-    LocationOfGoodsDomain.userAnswersReader
+  implicit override val reader: UserAnswersReader[ArrivalDomain] =
+    ArrivalDomain.userAnswersReader
 }

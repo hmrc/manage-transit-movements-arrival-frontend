@@ -49,15 +49,9 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val differentQualifierOfIdentification = QualifierOfIdentification.values.filterNot(_ == qualifierOfIdentification).head
 
             val result = sampleUa
-              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .success
-              .value
-              .set(FakePage, "fakeValue")
-              .success
-              .value
-              .set(QualifierOfIdentificationPage, differentQualifierOfIdentification)
-              .success
-              .value
+              .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
+              .setValue(FakePage, "fakeValue")
+              .setValue(QualifierOfIdentificationPage, differentQualifierOfIdentification)
 
             result.get(FakePage) must not be defined
         }
@@ -70,15 +64,9 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
         QualifierOfIdentification.values.foreach {
           qualifierOfIdentification =>
             val result = sampleUa
-              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .success
-              .value
-              .set(FakePage, "fakeValue")
-              .success
-              .value
-              .set(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .success
-              .value
+              .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
+              .setValue(FakePage, "fakeValue")
+              .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
 
             result.get(FakePage) mustBe defined
         }

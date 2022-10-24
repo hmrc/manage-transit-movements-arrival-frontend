@@ -20,38 +20,37 @@ import base.SpecBase
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.IncidentFlagPage
 
-class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class ArrivalNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "Identification Navigator" - {
+  "Arrival Navigator" - {
 
     "in NormalMode" - {
 
-      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigatorProvider = new ArrivalNavigatorProviderImpl()
       val navigator         = navigatorProvider.apply(NormalMode)
 
       "when answers complete" - {
-        "must redirect to location of goods type page" in {
-          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+        "must redirect to check your answers" in {
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, NormalMode))
+                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }
     }
 
     "in CheckMode" - {
+
+      val navigatorProvider = new ArrivalNavigatorProviderImpl()
+      val navigator         = navigatorProvider.apply(CheckMode)
+
       "when answers complete" - {
         "must redirect to check your answers" in {
-          val ua = emptyUserAnswers.setValue(IncidentFlagPage, false)
-          forAll(arbitraryArrivalAnswers(ua), CheckMode) {
-            (answers, mode) =>
-              val navigatorProvider = new IdentificationNavigatorProviderImpl()
-              val navigator         = navigatorProvider.apply(mode)
-
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
+            answers =>
               navigator
                 .nextPage(answers)
                 .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))

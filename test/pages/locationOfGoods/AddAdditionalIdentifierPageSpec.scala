@@ -16,6 +16,7 @@
 
 package pages.locationOfGoods
 
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 class AddAdditionalIdentifierPageSpec extends PageBehaviours {
@@ -27,5 +28,19 @@ class AddAdditionalIdentifierPageSpec extends PageBehaviours {
     beSettable[Boolean](AddAdditionalIdentifierPage)
 
     beRemovable[Boolean](AddAdditionalIdentifierPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove additional identifier" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAdditionalIdentifierPage, true)
+            .setValue(AdditionalIdentifierPage, Gen.alphaNumStr.sample.value)
+
+          val result = userAnswers.setValue(AddAdditionalIdentifierPage, false)
+
+          result.get(AdditionalIdentifierPage) must not be defined
+        }
+      }
+    }
   }
 }

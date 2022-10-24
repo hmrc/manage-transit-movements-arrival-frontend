@@ -18,20 +18,24 @@ package generators
 
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
+import models.incident.IncidentCode
 import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
-import models.reference.{CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, InternationalAddress, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import queries.Gettable
 
+import java.time.LocalDate
+
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
     generateIdentificationAnswer orElse
-      generateLocationOfGoodsAnswer
+      generateLocationOfGoodsAnswer orElse
+      generateIncidentAnswer
 
   private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification._
@@ -85,6 +89,21 @@ trait UserAnswersEntryGenerators {
     {
       case ContactPersonNamePage      => Gen.alphaNumStr.map(JsString)
       case ContactPersonTelephonePage => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateIncidentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident._
+    {
+      case IncidentFlagPage            => arbitrary[Boolean].map(JsBoolean)
+      case IncidentCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
+      case IncidentCodePage(_)         => arbitrary[IncidentCode].map(Json.toJson(_))
+      case IncidentTextPage(_)         => Gen.alphaNumStr.map(JsString)
+      case AddEndorsementPage(_)       => arbitrary[Boolean].map(JsBoolean)
+      case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
+      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
+      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
+      case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
     }
   }
 }
