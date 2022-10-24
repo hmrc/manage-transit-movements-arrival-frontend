@@ -22,16 +22,16 @@ import generators.Generators
 import models.InternationalAddress
 import models.identification.ProcedureType
 import models.incident.IncidentCode
-import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CountryCode}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.IsSimplifiedProcedurePage
+import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
@@ -39,18 +39,21 @@ import java.time.LocalDate
 
 class ArrivalDomainSpec extends SpecBase with Generators {
 
-  private val country      = arbitrary[Country].sample.value
-  private val incidentCode = arbitrary[IncidentCode].sample.value
-  private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val localDate    = LocalDate.now()
-  private val authority    = Gen.alphaNumStr.sample.value
-  private val location     = Gen.alphaNumStr.sample.value
+  private val country           = arbitrary[Country].sample.value
+  private val incidentCode      = arbitrary[IncidentCode].sample.value
+  private val incidentText      = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
+  private val localDate         = LocalDate.now()
+  private val authority         = Gen.alphaNumStr.sample.value
+  private val location          = Gen.alphaNumStr.sample.value
+  private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
   "ArrivalDomain" - {
 
     "can be parsed from UserAnswers with Incidents" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(DestinationOfficePage, destinationOffice)
+        .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -69,6 +72,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
+          destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         ),
@@ -102,6 +107,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with no Incidents" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(DestinationOfficePage, destinationOffice)
+        .setValue(IdentificationNumberPage, "identificationNumber")
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(TypeOfLocationPage, AuthorisedPlace)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
@@ -112,6 +119,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       val expectedResult = ArrivalDomain(
         IdentificationDomain(
           userAnswers.mrn,
+          destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         ),
@@ -136,6 +145,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       "when a incident flag page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)

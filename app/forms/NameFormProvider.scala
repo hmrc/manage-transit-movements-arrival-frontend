@@ -18,9 +18,10 @@ package forms
 
 import forms.Constants.maxNameLength
 import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
 import models.domain.StringFieldRegex._
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class NameFormProvider @Inject() extends Mappings {
 

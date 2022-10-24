@@ -17,8 +17,8 @@
 package pages.incident
 
 import controllers.incident.routes
-import models.{Index, Mode, UserAnswers}
 import models.reference.Country
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
 import play.api.libs.json.JsPath

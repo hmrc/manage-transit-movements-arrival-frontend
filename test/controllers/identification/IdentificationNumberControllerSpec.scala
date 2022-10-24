@@ -17,10 +17,9 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.identification.IdentificationNumberFormProvider
+import forms.EoriNumberFormProvider
 import models.NormalMode
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.IdentificationNumberPage
@@ -34,7 +33,7 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                   = new IdentificationNumberFormProvider()
+  private val formProvider                   = new EoriNumberFormProvider()
   private val form                           = formProvider("identification.identificationNumber")
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(mrn, mode).url

@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms.identification
+package pages.identification
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.reference.CustomsOffice
+import pages.behaviours.PageBehaviours
 
-class IdentificationNumberFormProvider @Inject() extends Mappings {
+class DestinationOfficePageSpec extends PageBehaviours {
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(100, s"$prefix.error.length"))
-    )
+  "DestinationOfficePage" - {
+
+    beRetrievable[CustomsOffice](DestinationOfficePage)
+
+    beSettable[CustomsOffice](DestinationOfficePage)
+
+    beRemovable[CustomsOffice](DestinationOfficePage)
+  }
 }

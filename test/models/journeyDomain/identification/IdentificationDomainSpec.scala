@@ -22,6 +22,7 @@ import models.Index
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification._
@@ -29,15 +30,21 @@ import pages.identification.authorisation._
 
 class IdentificationDomainSpec extends SpecBase with Generators {
 
+  private val destinationOffice = arbitrary[CustomsOffice].sample.value
+
   "AuthorisationDomain" - {
 
     "can be parsed from UserAnswers" - {
       "when not a simplified journey" in {
         val userAnswers = emptyUserAnswers
+          .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
+          destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
           authorisations = None
         )
@@ -52,12 +59,16 @@ class IdentificationDomainSpec extends SpecBase with Generators {
         val referenceNumber   = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
+          .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
+          destinationOffice = destinationOffice,
+          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Simplified,
           authorisations = Some(
             AuthorisationsDomain(
@@ -83,12 +94,14 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(emptyUserAnswers)
 
-        result.left.value.page mustBe IsSimplifiedProcedurePage
+        result.left.value.page mustBe DestinationOfficePage
       }
 
       "when a simplified journey and no authorisations" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)

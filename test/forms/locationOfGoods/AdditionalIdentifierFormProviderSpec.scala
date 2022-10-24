@@ -16,7 +16,7 @@
 
 package forms.locationOfGoods
 
-import forms.Constants.addiationalIdentifierMaxLength
+import forms.Constants.additionalIdentifierMaxLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -59,7 +59,7 @@ class AdditionalIdentifierFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      addiationalIdentifierMaxLength
+      additionalIdentifierMaxLength
     )
   }
 }

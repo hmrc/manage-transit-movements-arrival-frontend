@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package generators
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.journeyDomain.ArrivalDomain
+import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain, IdentificationDomain}
+import models.{Index, UserAnswers}
+import org.scalacheck.Gen
 
-import javax.inject.Inject
+trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
+  self: Generators =>
 
-class AddItemFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String, allowMoreItems: Boolean): Form[Boolean] =
-    Form(
-      "value" -> mandatoryIfBoolean(allowMoreItems, s"$prefix.error.required", false)
-    )
+  def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+    buildUserAnswers[ArrivalDomain](userAnswers)
 }

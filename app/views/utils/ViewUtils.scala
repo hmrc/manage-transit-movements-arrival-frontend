@@ -16,8 +16,6 @@
 
 package views.utils
 
-import java.time.LocalDate
-
 import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -26,6 +24,8 @@ import uk.gov.hmrc.govukfrontend.views.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
 import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport
+
+import java.time.LocalDate
 
 object ViewUtils {
 

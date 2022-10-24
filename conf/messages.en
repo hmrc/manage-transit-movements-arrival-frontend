@@ -72,6 +72,15 @@ unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
+identification.destinationOffice.title = Where is the office of destination?
+identification.destinationOffice.heading = Where is the office of destination?
+identification.destinationOffice.hint = Enter the office location or code, like Wien-Flughafen or AT330200.
+identification.destinationOffice.placeholder = Select a customs office
+identification.destinationOffice.change.hidden = office of destination
+identification.destinationOffice.paragraph = This is the customs office where the CTC transit ends.
+identification.destinationOffice.checkYourAnswersLabel = Office of destination
+identification.destinationOffice.error.required = Enter the office of destination
+
 identification.arrivalDate.title = Arrival Date
 identification.arrivalDate.heading = Arrival Date
 identification.arrivalDate.checkYourAnswersLabel = Arrival Date
@@ -128,17 +137,15 @@ identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you
 identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the {0} authorisation {1}?
 identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you sure you want to remove the {0} authorisation {1}
 
-identification.identificationNumber.title = Identification Number
-identification.identificationNumber.heading = Identification Number
-identification.identificationNumber.checkYourAnswersLabel = Identification Number
+identification.identificationNumber.title = What is the consignee’s EORI number or TIN?
+identification.identificationNumber.heading = What is the consignee’s EORI number or TIN?
+identification.identificationNumber.paragraph = The consignee is the person or company receiving the goods at the office of destination.
+identification.identificationNumber.hint = The EORI number or TIN can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+identification.identificationNumber.checkYourAnswersLabel = What is the EORI number or TIN for the consignee.
+identification.identificationNumber.error.required = Enter the consignee’s EORI number or TIN.
+identification.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9.
+identification.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less.
 identification.identificationNumber.change.hidden = identification number
-identification.identificationNumber.error.required = Enter Identification Number
-identification.identificationNumber.error.length = Identification Number must be 100 characters or less
-
-identification.checkIdentificationAnswers.title = Check your answers
-identification.checkIdentificationAnswers.heading = Check your answers
-identification.checkIdentificationAnswers.authorisations.subheading = Authorisations
-identification.checkIdentificationAnswers.addOrRemoveAuthorisations = Add or remove authorisations
 
 #location of goods
 
@@ -365,3 +372,4 @@ incident.endorsementLocation.change.hidden = endorsement location
 incident.endorsementLocation.error.required = Enter where in {0} the endorsement was made
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+

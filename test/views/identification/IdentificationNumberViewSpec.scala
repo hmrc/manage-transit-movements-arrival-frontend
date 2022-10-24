@@ -16,20 +16,20 @@
 
 package views.identification
 
-import forms.identification.IdentificationNumberFormProvider
+import forms.EoriNumberFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.identification.IdentificationNumberView
-import org.scalacheck.{Arbitrary, Gen}
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "identification.identificationNumber"
 
-  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
+  override def form: Form[String] = new EoriNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationNumberView].apply(form, mrn, NormalMode)(fakeRequest, messages)
@@ -40,9 +40,13 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithContent("p", "The consignee is the person or company receiving the goods at the office of destination.")
+
+  behave like pageWithHint("The EORI number or TIN can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

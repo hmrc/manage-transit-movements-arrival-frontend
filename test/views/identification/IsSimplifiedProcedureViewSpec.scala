@@ -43,6 +43,8 @@ class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()

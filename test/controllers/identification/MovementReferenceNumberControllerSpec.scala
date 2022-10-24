@@ -19,8 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, UserAnswers}
-import navigation.{AuthorisationNavigatorProvider, IdentificationNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

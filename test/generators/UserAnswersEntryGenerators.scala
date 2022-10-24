@@ -18,6 +18,7 @@ package generators
 
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
+import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.{JsString, JsValue, Json}
@@ -35,9 +36,10 @@ trait UserAnswersEntryGenerators {
   private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification._
     generateAuthorisationAnswer orElse {
-      case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
-      case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
+      case DestinationOfficePage     => arbitrary[CustomsOffice].map(Json.toJson(_))
       case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
+      case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
+      case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 

@@ -56,7 +56,6 @@ class EndorsementAuthorityController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
       form
         .bindFromRequest()
         .fold(

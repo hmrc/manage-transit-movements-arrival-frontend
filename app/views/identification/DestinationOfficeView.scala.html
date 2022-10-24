@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.incident.routes
+@import controllers.identification.routes
 @import models.MovementReferenceNumber
-@import models.reference.Country
+@import models.reference.CustomsOffice
+@import models.reference.Selectable
 @import models.reference.Selectable._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 
@@ -29,27 +31,28 @@
     button: Button
 )
 
-@(form: Form[Country], mrn: MovementReferenceNumber, countryList: Seq[Country], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], mrn: MovementReferenceNumber, customsOfficeList: Seq[CustomsOffice], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.incidentCountry.title"),
+    title = messages("identification.destinationOffice.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.IncidentCountryController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.DestinationOfficeController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("incident.incidentCountry.heading"),
-                caption = Some(messages("incident.caption"))
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("identification.destinationOffice.heading"),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("identification.destinationOffice.paragraph")}</p>"""),
+                caption = Some(messages("site.caption"))
             ),
-            hint = Some(messages("incident.incidentCountry.hintText")),
-            selectItems = countryList.toSelectItems(form.value),
-            placeholder = messages("incident.incidentCountry.placeholder")
+            hint = Some(messages("identification.destinationOffice.hint")),
+            selectItems = customsOfficeList.toSelectItems(form.value),
+            placeholder = messages("identification.destinationOffice.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

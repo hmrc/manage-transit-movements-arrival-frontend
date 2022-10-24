@@ -18,19 +18,23 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.{Mode, MovementReferenceNumber, UserAnswers}
+import models.journeyDomain.{ArrivalDomain, EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.reference.CustomsOffice
+import models.{EoriNumber, Mode, MovementReferenceNumber, UserAnswers}
+import navigation.UserAnswersNavigator
 import pages.identification._
 import play.api.mvc.Call
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
+  destinationOffice: CustomsOffice,
+  identificationNumber: String,
   procedureType: ProcedureType,
   authorisations: Option[AuthorisationsDomain]
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.identification.routes.CheckIdentificationAnswersController.onPageLoad(userAnswers.mrn))
+    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
 }
 
 object IdentificationDomain {
@@ -42,13 +46,15 @@ object IdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] = {
     for {
-      mrn          <- mrn
-      isSimplified <- IsSimplifiedProcedurePage.reader
+      mrn                  <- mrn
+      destinationOffice    <- DestinationOfficePage.reader
+      identificationNumber <- IdentificationNumberPage.reader
+      isSimplified         <- IsSimplifiedProcedurePage.reader
       authorisations <- isSimplified match {
         case ProcedureType.Normal     => none[AuthorisationsDomain].pure[UserAnswersReader]
         case ProcedureType.Simplified => UserAnswersReader[AuthorisationsDomain].map(Some(_))
       }
 
-    } yield IdentificationDomain(mrn, isSimplified, authorisations)
+    } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisations)
   }
 }

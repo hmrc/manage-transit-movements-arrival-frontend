@@ -44,6 +44,8 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithSectionCaption("Arrivals")
+
   behave like pageWithMoreItemsAllowed()
 
   behave like pageWithItemsMaxedOut()

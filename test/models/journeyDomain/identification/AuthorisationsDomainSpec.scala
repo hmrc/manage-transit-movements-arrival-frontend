@@ -19,12 +19,10 @@ package models.journeyDomain.identification
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 
 class AuthorisationsDomainSpec extends SpecBase with Generators {

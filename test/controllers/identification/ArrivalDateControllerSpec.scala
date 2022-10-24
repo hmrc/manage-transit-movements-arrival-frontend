@@ -19,8 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
 import models.NormalMode
-import navigation.{AuthorisationNavigatorProvider, AuthorisationNavigatorSpec, IdentificationNavigatorProvider, Navigator}
-import navigation.annotations.IdentificationDetails
+import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.ArrivalDatePage
