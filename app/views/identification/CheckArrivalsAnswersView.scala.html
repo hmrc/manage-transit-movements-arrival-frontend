@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{AnswerSections, Button, Heading}
-@import viewModels.sections.Section
 @import models.MovementReferenceNumber
+@import viewModels.sections.Section
+@import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
     mainTemplate: MainTemplate,
@@ -41,7 +41,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = controllers.routes.CheckTransitionArrivalsAnswersController.onSubmit(mrn), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.CheckArrivalsAnswersController.onSubmit(mrn), 'autoComplete -> "off") {
         @button(
             messageKey = "site.continue",
             preventDoubleClick = true,

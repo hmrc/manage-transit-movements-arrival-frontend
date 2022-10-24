@@ -17,6 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
+import config.FrontendAppConfig
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
@@ -32,7 +33,7 @@ case class IncidentDomain(
   endorsement: Option[EndorsementDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
     Some(???) // TODO link to next journey
 }
 

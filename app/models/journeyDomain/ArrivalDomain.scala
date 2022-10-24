@@ -29,17 +29,17 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
   val identification: IdentificationDomain
   val locationOfGoods: LocationOfGoodsDomain
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(userAnswers.mrn))
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
+    Some(controllers.routes.CheckArrivalsAnswersController.onPageLoad(userAnswers.mrn))
 }
 
 object ArrivalDomain {
 
-  implicit def userAnswersReader(isTransition: Boolean): UserAnswersReader[ArrivalDomain] =
-    if (isTransition) {
-      UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
-    } else {
+  implicit def userAnswersReader(implicit config: FrontendAppConfig): UserAnswersReader[ArrivalDomain] =
+    if (config.isPostTransitionEnabled) {
       UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
+    } else {
+      UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
     }
 }
 

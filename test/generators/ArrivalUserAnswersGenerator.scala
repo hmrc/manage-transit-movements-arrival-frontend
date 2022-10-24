@@ -16,6 +16,7 @@
 
 package generators
 
+import base.SpecBase
 import models.UserAnswers
 import models.journeyDomain.ArrivalDomain
 import models.journeyDomain.identification.IdentificationDomain
@@ -23,7 +24,7 @@ import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import org.scalacheck.Gen
 
 trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
-  self: Generators =>
+  self: Generators with SpecBase =>
 
   def arbitraryIdentificationAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[IdentificationDomain](userAnswers)
@@ -32,6 +33,6 @@ trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
     buildUserAnswers[LocationOfGoodsDomain](userAnswers)
 
   def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[ArrivalDomain](userAnswers)(ArrivalDomain.userAnswersReader(true))
+    buildUserAnswers[ArrivalDomain](userAnswers)(ArrivalDomain.userAnswersReader)
 
 }

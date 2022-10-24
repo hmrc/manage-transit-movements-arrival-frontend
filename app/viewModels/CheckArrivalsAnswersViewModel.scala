@@ -16,26 +16,27 @@
 
 package viewModels
 
+import config.FrontendAppConfig
 import models.{Index, Mode, RichOptionJsArray, UserAnswers}
 import pages.sections.AuthorisationsSection
 import play.api.i18n.Messages
-import utils.CheckTransitionArrivalsHelper
+import utils.CheckArrivalsHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class CheckTransitionArrivalsAnswersViewModel(sections: Seq[Section])
+case class CheckArrivalsAnswersViewModel(sections: Seq[Section])
 
-object CheckTransitionArrivalsAnswersViewModel {
+object CheckArrivalsAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckTransitionArrivalsAnswersViewModel =
-    new CheckTransitionArrivalsAnswersViewModelProvider().apply(userAnswers, mode)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): CheckArrivalsAnswersViewModel =
+    new CheckArrivalsAnswersViewModelProvider().apply(userAnswers, mode)
 
-  class CheckTransitionArrivalsAnswersViewModelProvider @Inject() () {
+  class CheckArrivalsAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckTransitionArrivalsAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): CheckArrivalsAnswersViewModel = {
 
-      val helper = new CheckTransitionArrivalsHelper(userAnswers, mode)
+      val helper = new CheckArrivalsHelper(userAnswers, mode)
 
       val identificationSection = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.identification.subheading"),
@@ -81,7 +82,7 @@ object CheckTransitionArrivalsAnswersViewModel {
         ).flatten
       )
 
-      new CheckTransitionArrivalsAnswersViewModel(Seq(identificationSection, authorisationsSection, locationOfGoodsSection))
+      new CheckArrivalsAnswersViewModel(Seq(identificationSection, authorisationsSection, locationOfGoodsSection))
     }
   }
 }

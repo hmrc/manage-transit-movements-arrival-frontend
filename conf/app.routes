@@ -20,8 +20,8 @@ GET        /not-found                                        controllers.ErrorCo
 GET        /technical-difficulties                           controllers.ErrorController.technicalDifficulties()
 GET        /internal-server-error                            controllers.ErrorController.internalServerError()
 
-GET        /:mrn/check-answers                               controllers.CheckTransitionArrivalsAnswersController.onPageLoad(mrn: MovementReferenceNumber)
-POST       /:mrn/check-answers                               controllers.CheckTransitionArrivalsAnswersController.onSubmit(mrn: MovementReferenceNumber)
+GET        /:mrn/check-answers                               controllers.CheckArrivalsAnswersController.onPageLoad(mrn: MovementReferenceNumber)
+POST       /:mrn/check-answers                               controllers.CheckArrivalsAnswersController.onSubmit(mrn: MovementReferenceNumber)
 
 
 ->         /hmrc-frontend                                    hmrcfrontend.Routes

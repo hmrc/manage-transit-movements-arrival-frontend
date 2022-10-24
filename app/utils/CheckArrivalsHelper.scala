@@ -16,6 +16,7 @@
 
 package utils
 
+import config.FrontendAppConfig
 import models.identification.ProcedureType
 import models.journeyDomain.identification.AuthorisationDomain
 import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
@@ -26,10 +27,10 @@ import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class CheckTransitionArrivalsHelper(
+class CheckArrivalsHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages)
+)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def movementReferenceNumber: SummaryListRow = buildRow(

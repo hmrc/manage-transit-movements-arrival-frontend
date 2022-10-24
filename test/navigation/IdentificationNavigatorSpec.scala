@@ -54,7 +54,7 @@ class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(answers.mrn))
+                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

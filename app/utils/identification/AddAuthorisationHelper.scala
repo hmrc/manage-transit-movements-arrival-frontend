@@ -16,6 +16,7 @@
 
 package utils.identification
 
+import config.FrontendAppConfig
 import controllers.identification.authorisation.{routes => authorisationRoutes}
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.identification.AuthorisationDomain
@@ -27,7 +28,8 @@ import play.api.libs.json.Reads
 import utils.AnswersHelper
 import viewModels.ListItem
 
-class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers, mode) {
+class AddAuthorisationHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {

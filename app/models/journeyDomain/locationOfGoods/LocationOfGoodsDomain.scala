@@ -17,9 +17,11 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import config.FrontendAppConfig
+import models.journeyDomain.{ArrivalDomain, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, UserAnswers}
+import navigation.UserAnswersNavigator
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.mvc.Call
 
@@ -28,8 +30,8 @@ case class LocationOfGoodsDomain(
   qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.routes.CheckTransitionArrivalsAnswersController.onPageLoad(userAnswers.mrn))
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
+    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
 }
 
 object LocationOfGoodsDomain {

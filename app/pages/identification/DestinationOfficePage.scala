@@ -17,8 +17,8 @@
 package pages.identification
 
 import controllers.identification.routes
-import models.{Mode, UserAnswers}
 import models.reference.CustomsOffice
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.IdentificationSection
 import play.api.libs.json.JsPath

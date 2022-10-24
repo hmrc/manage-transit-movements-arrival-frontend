@@ -16,6 +16,7 @@
 
 package utils.identification
 
+import config.FrontendAppConfig
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -27,7 +28,7 @@ class CheckAuthorisationAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
-)(implicit messages: Messages)
+)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](

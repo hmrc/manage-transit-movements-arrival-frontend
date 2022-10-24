@@ -16,6 +16,7 @@
 
 package viewModels.identification
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.CheckAuthorisationAnswersHelper
@@ -27,12 +28,15 @@ case class CheckAuthorisationAnswersViewModel(section: Section)
 
 object CheckAuthorisationAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages): CheckAuthorisationAnswersViewModel =
+  def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): CheckAuthorisationAnswersViewModel =
     new CheckAuthorisationAnswersViewModelProvider().apply(userAnswers, index, mode)
 
   class CheckAuthorisationAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages): CheckAuthorisationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit
+      messages: Messages,
+      config: FrontendAppConfig
+    ): CheckAuthorisationAnswersViewModel = {
 
       val helper = new CheckAuthorisationAnswersHelper(userAnswers, mode, index)
 

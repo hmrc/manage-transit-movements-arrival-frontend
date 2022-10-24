@@ -17,6 +17,7 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
+import config.FrontendAppConfig
 import models.identification.ProcedureType
 import models.journeyDomain.{ArrivalDomain, EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.CustomsOffice
@@ -33,8 +34,8 @@ case class IdentificationDomain(
   authorisations: Option[AuthorisationsDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode)(ArrivalDomain.userAnswersReader(true)))
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
+    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
 }
 
 object IdentificationDomain {

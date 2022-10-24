@@ -17,6 +17,7 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
+import config.FrontendAppConfig
 import controllers.identification.authorisation.routes
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
@@ -28,7 +29,7 @@ case class AuthorisationsDomain(
   value: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
     Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn))
 }
 

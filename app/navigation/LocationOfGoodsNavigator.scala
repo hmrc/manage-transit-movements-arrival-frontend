@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.Mode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
@@ -23,7 +24,7 @@ import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class LocationOfGoodsNavigatorProviderImpl @Inject() () extends LocationOfGoodsNavigatorProvider {
+class LocationOfGoodsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends LocationOfGoodsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     new LocationOfGoodsNavigator(mode)
@@ -33,7 +34,7 @@ trait LocationOfGoodsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class LocationOfGoodsNavigator(override val mode: Mode) extends UserAnswersNavigator {
+class LocationOfGoodsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = LocationOfGoodsDomain
 

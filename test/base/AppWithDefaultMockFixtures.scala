@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
 import navigation._
@@ -59,6 +60,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(None)
 
   protected val onwardRoute: Call = Call("GET", "/foo")
+
+  implicit private def frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 

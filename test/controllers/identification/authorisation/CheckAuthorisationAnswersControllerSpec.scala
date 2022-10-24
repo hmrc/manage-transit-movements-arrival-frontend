@@ -46,7 +46,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       val sampleSection = arbitrary[Section].sample.value
 
-      when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
         .thenReturn(CheckAuthorisationAnswersViewModel(sampleSection))
 
       setExistingUserAnswers(emptyUserAnswers)

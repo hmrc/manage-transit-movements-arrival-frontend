@@ -18,8 +18,8 @@ package services
 
 import com.google.inject.Singleton
 import utils.Format
-import java.time.{Clock, LocalDateTime}
 
+import java.time.{Clock, LocalDateTime}
 import javax.inject.Inject
 
 @Singleton

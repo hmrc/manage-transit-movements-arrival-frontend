@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.Mode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.identification.IdentificationDomain
@@ -23,7 +24,7 @@ import models.journeyDomain.identification.IdentificationDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IdentificationNavigatorProviderImpl @Inject() () extends IdentificationNavigatorProvider {
+class IdentificationNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends IdentificationNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     new IdentificationNavigator(mode)
@@ -33,7 +34,7 @@ trait IdentificationNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class IdentificationNavigator(override val mode: Mode) extends UserAnswersNavigator {
+class IdentificationNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = IdentificationDomain
 

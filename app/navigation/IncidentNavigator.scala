@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
 import models.{Index, Mode}
@@ -23,7 +24,7 @@ import models.{Index, Mode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
+class IncidentNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends IncidentNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     new IncidentNavigator(mode, index)
@@ -33,7 +34,7 @@ trait IncidentNavigatorProvider {
   def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class IncidentNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
+class IncidentNavigator(override val mode: Mode, index: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = IncidentDomain
 

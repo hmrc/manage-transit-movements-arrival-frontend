@@ -17,6 +17,7 @@
 package controllers.identification.authorisation
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.{CheckMode, Index, MovementReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,7 +32,8 @@ class CheckAuthorisationAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckAuthorisationAnswersView,
   viewModelProvider: CheckAuthorisationAnswersViewModelProvider
-) extends FrontendBaseController
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(mrn) {

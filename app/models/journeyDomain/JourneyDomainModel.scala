@@ -16,11 +16,12 @@
 
 package models.journeyDomain
 
+import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.mvc.Call
 
 trait JourneyDomainModel {
 
-  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = None
+  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] = None
 
 }

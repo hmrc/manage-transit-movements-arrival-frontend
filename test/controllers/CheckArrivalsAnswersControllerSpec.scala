@@ -24,34 +24,34 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.CheckTransitionArrivalsAnswersViewModel
-import viewModels.CheckTransitionArrivalsAnswersViewModel.CheckTransitionArrivalsAnswersViewModelProvider
+import viewModels.CheckArrivalsAnswersViewModel
+import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
 import viewModels.sections.Section
-import views.html.identification.CheckTransitionArrivalsAnswersView
+import views.html.identification.CheckArrivalsAnswersView
 
-class CheckTransitionArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[CheckTransitionArrivalsAnswersViewModelProvider]
+  private lazy val mockViewModelProvider = mock[CheckArrivalsAnswersViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckTransitionArrivalsAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[CheckArrivalsAnswersViewModelProvider].toInstance(mockViewModelProvider))
 
   "Check your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
       val sampleSections = listWithMaxLength[Section]().sample.value
 
-      when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(CheckTransitionArrivalsAnswersViewModel(sampleSections))
+      when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(CheckArrivalsAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.CheckTransitionArrivalsAnswersController.onPageLoad(mrn).url)
+      val request = FakeRequest(GET, routes.CheckArrivalsAnswersController.onPageLoad(mrn).url)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CheckTransitionArrivalsAnswersView]
+      val view = injector.instanceOf[CheckArrivalsAnswersView]
 
       status(result) mustEqual OK
 
@@ -62,7 +62,7 @@ class CheckTransitionArrivalsAnswersControllerSpec extends SpecBase with AppWith
     "must redirect to Session Expired for a GET if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, routes.CheckTransitionArrivalsAnswersController.onPageLoad(mrn).url)
+      val request = FakeRequest(GET, routes.CheckArrivalsAnswersController.onPageLoad(mrn).url)
 
       val result = route(app, request).value
 
@@ -71,11 +71,11 @@ class CheckTransitionArrivalsAnswersControllerSpec extends SpecBase with AppWith
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    // TODO: mustEqual onSubmit of CHeckTransitionArrivalsAnswersController
+    // TODO: mustEqual onSubmit of CheckArrivalsAnswersController
     "must redirect to task list" ignore {
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, routes.CheckTransitionArrivalsAnswersController.onSubmit(mrn).url)
+      val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
 
       val result = route(app, request).value
 

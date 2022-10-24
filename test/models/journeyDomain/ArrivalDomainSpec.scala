@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.FrontendAppConfig
 import forms.Constants
 import generators.Generators
 import models.InternationalAddress
@@ -34,22 +35,31 @@ import org.scalacheck.Gen
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import play.api.Configuration
 
 import java.time.LocalDate
 
 class ArrivalDomainSpec extends SpecBase with Generators {
 
-  private val country = arbitrary[Country].sample.value
-  private val incidentCode = arbitrary[IncidentCode].sample.value
-  private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val localDate = LocalDate.now()
-  private val authority = Gen.alphaNumStr.sample.value
-  private val location = Gen.alphaNumStr.sample.value
+  val configuration = app.injector.instanceOf[Configuration]
+
+  class FakeConfig(isPostTransition: Boolean) extends FrontendAppConfig(configuration) {
+    override val isPostTransitionEnabled: Boolean = isPostTransition
+  }
+
+  private val country           = arbitrary[Country].sample.value
+  private val incidentCode      = arbitrary[IncidentCode].sample.value
+  private val incidentText      = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
+  private val localDate         = LocalDate.now()
+  private val authority         = Gen.alphaNumStr.sample.value
+  private val location          = Gen.alphaNumStr.sample.value
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
   "ArrivalDomain" - {
 
     "when post transition" - {
+
+      implicit val config = new FakeConfig(true)
 
       "can be parsed from UserAnswers with Incidents" in {
 
@@ -100,7 +110,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
           )
         )
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain](ArrivalDomain.userAnswersReader(false)).run(userAnswers)
+        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 
         result.value mustBe expectedResult
 
@@ -136,7 +146,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
           None
         )
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain](ArrivalDomain.userAnswersReader(false)).run(userAnswers)
+        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 
         result.value mustBe expectedResult
 
@@ -158,7 +168,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
             .setValue(IncidentCodePage(index), incidentCode)
             .setValue(IncidentTextPage(index), incidentText)
 
-          val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain](ArrivalDomain.userAnswersReader(false)).run(userAnswers)
+          val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 
           result.left.value.page mustBe IncidentFlagPage
 
@@ -167,6 +177,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
     }
 
     "when pre transition" - {
+
+      implicit val config = new FakeConfig(false)
 
       "can be parsed from UserAnswers" in {
 
@@ -196,7 +208,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
           )
         )
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain](ArrivalDomain.userAnswersReader(true)).run(userAnswers)
+        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 
         result.value mustBe expectedResult
 

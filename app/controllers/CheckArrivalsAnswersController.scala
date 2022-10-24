@@ -22,15 +22,15 @@ import models.{CheckMode, MovementReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.CheckTransitionArrivalsAnswersViewModel.CheckTransitionArrivalsAnswersViewModelProvider
-import views.html.identification.CheckTransitionArrivalsAnswersView
+import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
+import views.html.identification.CheckArrivalsAnswersView
 
-class CheckTransitionArrivalsAnswersController @Inject() (
+class CheckArrivalsAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: CheckTransitionArrivalsAnswersView,
-  viewModelProvider: CheckTransitionArrivalsAnswersViewModelProvider
+  view: CheckArrivalsAnswersView,
+  viewModelProvider: CheckArrivalsAnswersViewModelProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
