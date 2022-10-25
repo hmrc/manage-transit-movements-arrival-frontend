@@ -28,7 +28,7 @@ import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import pages.sections.{identification, Section}
+import pages.sections.Section
 import pages.sections.identification.{AuthorisationSection, AuthorisationsSection}
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.mvc.Result
@@ -115,8 +115,8 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         val futureResult = action.callRefine(request)
 
         val expectedAnswers = userAnswers
-          .removeValue(identification.AuthorisationSection(Index(3)))
-          .removeValue(identification.AuthorisationSection(Index(1)))
+          .removeValue(AuthorisationSection(Index(3)))
+          .removeValue(AuthorisationSection(Index(1)))
 
         whenReady(futureResult) {
           r =>

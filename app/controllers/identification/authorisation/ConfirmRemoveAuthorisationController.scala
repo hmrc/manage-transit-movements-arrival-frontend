@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ConfirmRemoveItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.identification.authorisation._
-import pages.sections.identification
+import pages.sections.identification.AuthorisationSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -67,8 +67,7 @@ class ConfirmRemoveAuthorisationController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode, request.arg._1, request.arg._2.toString))),
             {
               case true =>
-                identification
-                  .AuthorisationSection(index)
+                AuthorisationSection(index)
                   .removeFromUserAnswers()
                   .writeToSession()
                   .navigateTo(routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode))
