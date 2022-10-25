@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.identification
 
 import config.FrontendAppConfig
 import models.identification.ProcedureType
@@ -23,6 +23,7 @@ import models.{Mode, UserAnswers}
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.AnswersHelper
 
 class IdentificationAnswersHelper(
   userAnswers: UserAnswers,
@@ -34,7 +35,7 @@ class IdentificationAnswersHelper(
     prefix = "movementReferenceNumber",
     answer = formatAsText(mrn),
     id = None,
-    call = controllers.identification.routes.MovementReferenceNumberController.onPageLoad()
+    call = controllers.identification.routes.MovementReferenceNumberController.onPageLoad(mode)
   )
 
   def destinationOffice: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOffice](

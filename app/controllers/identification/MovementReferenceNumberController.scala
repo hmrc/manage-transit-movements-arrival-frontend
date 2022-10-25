@@ -18,7 +18,7 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import models.NormalMode
+import models.Mode
 import navigation.IdentificationNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,22 +45,22 @@ class MovementReferenceNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = identify {
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(form))
+      Ok(view(form, mode))
   }
 
-  def onSubmit(): Action[AnyContent] = identify.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = identify.async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
           value =>
             for {
               userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
               _           <- sessionRepository.set(userAnswers)
-            } yield Redirect(navigatorProvider(NormalMode).nextPage(userAnswers))
+            } yield Redirect(navigatorProvider(mode).nextPage(userAnswers))
         )
   }
 

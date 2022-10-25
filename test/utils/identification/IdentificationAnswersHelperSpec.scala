@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.identification
 
 import base.SpecBase
 import controllers.identification.routes
@@ -46,7 +46,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             actions.size mustBe 1
             val action = actions.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.MovementReferenceNumberController.onPageLoad().url
+            action.href mustBe routes.MovementReferenceNumberController.onPageLoad(mode).url
             action.visuallyHiddenText.get mustBe "Movement Reference Number (MRN)"
         }
       }

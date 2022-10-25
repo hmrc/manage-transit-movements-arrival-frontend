@@ -18,7 +18,7 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{MovementReferenceNumber, UserAnswers}
+import models.{MovementReferenceNumber, NormalMode, UserAnswers}
 import navigation.IdentificationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +38,9 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   val formProvider                        = new MovementReferenceNumberFormProvider()
   val form: Form[MovementReferenceNumber] = formProvider()
 
-  private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad().url
+  private val mode = NormalMode
+
+  private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad(mode).url
 
   private lazy val mockUserAnswersService = mock[UserAnswersService]
 
@@ -68,7 +70,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted and sessionRepository returns UserAnswers value as Some(_)" in {
@@ -111,7 +113,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(filledForm)(request, messages).toString
+        view(filledForm, mode)(request, messages).toString
     }
   }
 }

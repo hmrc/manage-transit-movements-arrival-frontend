@@ -19,7 +19,7 @@ package viewModels.identification
 import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import utils.IdentificationAnswersHelper
+import utils.identification.IdentificationAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
