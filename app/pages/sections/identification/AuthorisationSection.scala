@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.identification
 
+import models.Index
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case object LocationOfGoodsSection extends Section[JsObject] {
+final case class AuthorisationSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = AuthorisationsSection.path \ index.position
 
-  override def toString: String = "locationOfGoods"
 }

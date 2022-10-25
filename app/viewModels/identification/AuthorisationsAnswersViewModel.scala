@@ -18,7 +18,7 @@ package viewModels.identification
 
 import config.FrontendAppConfig
 import models.{Index, Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.AuthorisationsSection
+import pages.sections.identification.AuthorisationsSection
 import play.api.i18n.Messages
 import utils.identification.AuthorisationsAnswersHelper
 import viewModels.Link

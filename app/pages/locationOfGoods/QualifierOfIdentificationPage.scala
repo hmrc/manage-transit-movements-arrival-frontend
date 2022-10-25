@@ -20,7 +20,7 @@ import controllers.locationOfGoods.routes
 import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
+import pages.sections.locationOfGoods.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

@@ -17,40 +17,41 @@
 package navigation
 
 import base.SpecBase
+import controllers.identification.authorisation.{routes => authorisationRoutes}
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class AuthorisationsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "Identification Navigator" - {
+  "Authorisations Navigator" - {
 
-    "in NormalMode" - {
+    "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigatorProvider = new AuthorisationsNavigatorProviderImpl
       val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
-        "must redirect to location of goods type page" in {
-          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+        "must redirect to add another" in {
+          forAll(arbitraryAuthorisationsAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, mode))
+                .mustBe(authorisationRoutes.AddAnotherAuthorisationController.onPageLoad(answers.mrn, mode))
           }
         }
       }
     }
 
-    "in CheckMode" - {
+    "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigatorProvider = new AuthorisationsNavigatorProviderImpl
       val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
-        "must redirect to check your answers" in {
+        "must redirect to arrival answers" in {
           forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator

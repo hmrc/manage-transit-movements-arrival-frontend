@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
 import org.scalacheck.Gen
 import pages.identification.authorisation._
-import pages.sections.AuthorisationSection
+import pages.sections.identification
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
@@ -98,7 +98,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(AuthorisationSection(authorisationIndex)) mustNot be(defined)
+      userAnswersCaptor.getValue.get(identification.AuthorisationSection(authorisationIndex)) mustNot be(defined)
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation is false" in {

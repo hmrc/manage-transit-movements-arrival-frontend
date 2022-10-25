@@ -21,7 +21,7 @@ import models.locationOfGoods.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
 import pages.behaviours.PageBehaviours
-import pages.sections.QualifierOfIdentificationDetailsSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {

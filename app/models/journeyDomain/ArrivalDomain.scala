@@ -19,7 +19,7 @@ package models.journeyDomain
 import cats.implicits._
 import config.FrontendAppConfig
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.IncidentDomainList
+import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.{Mode, UserAnswers}
 import pages.incident.IncidentFlagPage
@@ -46,7 +46,7 @@ object ArrivalDomain {
 case class ArrivalPostTransitionDomain(
   identification: IdentificationDomain,
   locationOfGoods: LocationOfGoodsDomain,
-  incidents: Option[IncidentDomainList]
+  incidents: Option[IncidentsDomain]
 ) extends ArrivalDomain
 
 object ArrivalPostTransitionDomain {
@@ -55,7 +55,7 @@ object ArrivalPostTransitionDomain {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentDomainList])
+      incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
     } yield ArrivalPostTransitionDomain(identification, locationOfGoods, incidents)
   }
 }

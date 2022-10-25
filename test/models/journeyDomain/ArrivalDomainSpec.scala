@@ -25,7 +25,7 @@ import models.identification.ProcedureType
 import models.incident.IncidentCode
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.endorsement.EndorsementDomain
-import models.journeyDomain.incident.{IncidentDomain, IncidentDomainList}
+import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
@@ -35,17 +35,10 @@ import org.scalacheck.Gen
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
-import play.api.Configuration
 
 import java.time.LocalDate
 
 class ArrivalDomainSpec extends SpecBase with Generators {
-
-  val configuration = app.injector.instanceOf[Configuration]
-
-  class FakeConfig(isPostTransition: Boolean) extends FrontendAppConfig(configuration) {
-    override val isPostTransitionEnabled: Boolean = isPostTransition
-  }
 
   private val country           = arbitrary[Country].sample.value
   private val incidentCode      = arbitrary[IncidentCode].sample.value
@@ -59,7 +52,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
     "when post transition" - {
 
-      implicit val config = new FakeConfig(true)
+      val config: FrontendAppConfig                         = new FakeConfig(true)
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader(config)
 
       "can be parsed from UserAnswers with Incidents" in {
 
@@ -97,7 +91,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
             )
           ),
           Some(
-            IncidentDomainList(
+            IncidentsDomain(
               Seq(
                 IncidentDomain(
                   incidentCountry = country,
@@ -178,7 +172,8 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
     "when pre transition" - {
 
-      implicit val config = new FakeConfig(false)
+      val config: FrontendAppConfig                         = new FakeConfig(false)
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader(config)
 
       "can be parsed from UserAnswers" in {
 

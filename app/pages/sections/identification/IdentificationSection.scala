@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.identification
 
-import play.api.libs.json.{JsArray, JsPath}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object AuthorisationsSection extends Section[JsArray] {
+case object IdentificationSection extends Section[JsObject] {
 
-  override def path: JsPath = IdentificationSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "authorisation"
+  override def toString: String = "identification"
 }

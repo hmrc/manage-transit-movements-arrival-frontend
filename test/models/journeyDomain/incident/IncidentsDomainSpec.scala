@@ -31,7 +31,7 @@ import pages.incident._
 
 import java.time.LocalDate
 
-class IncidentDomainListSpec extends SpecBase with Generators {
+class IncidentsDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
@@ -64,7 +64,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         .setValue(EndorsementCountryPage(index2), country)
         .setValue(EndorsementLocationPage(index2), location)
 
-      val expectedResult = IncidentDomainList(
+      val expectedResult = IncidentsDomain(
         Seq(
           IncidentDomain(
             incidentCountry = country,
@@ -81,7 +81,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
         )
       )
 
-      val result: EitherType[IncidentDomainList] = UserAnswersReader[IncidentDomainList].run(userAnswers)
+      val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(userAnswers)
 
       result.value mustBe expectedResult
 
@@ -112,7 +112,7 @@ class IncidentDomainListSpec extends SpecBase with Generators {
           mandatoryPage =>
             val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[IncidentDomainList] = UserAnswersReader[IncidentDomainList].run(updatedUserAnswers)
+            val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(updatedUserAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }

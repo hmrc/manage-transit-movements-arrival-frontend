@@ -20,7 +20,7 @@ import controllers.identification.routes
 import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.IdentificationSection
+import pages.sections.identification.IdentificationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

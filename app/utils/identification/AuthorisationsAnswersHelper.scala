@@ -22,7 +22,7 @@ import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.identification.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.AuthorisationTypePage
-import pages.sections.AuthorisationsSection
+import pages.sections.identification.AuthorisationsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper

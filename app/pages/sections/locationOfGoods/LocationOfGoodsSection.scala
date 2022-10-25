@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.locationOfGoods
 
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case object QualifierOfIdentificationDetailsSection extends Section[JsObject] {
+case object LocationOfGoodsSection extends Section[JsObject] {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qualifierOfIdentificationDetails"
+  override def toString: String = "locationOfGoods"
 }
