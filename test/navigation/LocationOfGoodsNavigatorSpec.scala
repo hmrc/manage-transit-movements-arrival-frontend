@@ -17,7 +17,6 @@
 package navigation
 
 import base.SpecBase
-import config.FrontendAppConfig
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,11 +30,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       val mode = NormalMode
 
       "when answers complete" - {
-        "when pre-transition" - {
+        "when pre-transition" ignore {
 
-          val config: FrontendAppConfig = new FakeConfig(false)
-          val navigatorProvider         = new LocationOfGoodsNavigatorProviderImpl()(config)
-          val navigator                 = navigatorProvider.apply(mode)
+          val navigatorProvider = new LocationOfGoodsNavigatorProviderImpl()
+          val navigator         = navigatorProvider.apply(mode)
 
           "must redirect to arrival answers" in {
             forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
@@ -52,9 +50,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         "when post-transition" - {
 
-          val config: FrontendAppConfig = new FakeConfig(true)
-          val navigatorProvider         = new LocationOfGoodsNavigatorProviderImpl()(config)
-          val navigator                 = navigatorProvider.apply(mode)
+          val navigatorProvider = new LocationOfGoodsNavigatorProviderImpl()
+          val navigator         = navigatorProvider.apply(mode)
 
           "must redirect to incident flag page" in {
             forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {

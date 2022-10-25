@@ -26,7 +26,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import play.api.Configuration
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
@@ -103,9 +102,5 @@ trait SpecBase
 
   implicit class RichAction(ai: ActionItem) {
     def id: String = ai.attributes.get("id").value
-  }
-
-  class FakeConfig(isPostTransition: Boolean) extends FrontendAppConfig(app.injector.instanceOf[Configuration]) {
-    override val isPostTransitionEnabled: Boolean = isPostTransition
   }
 }

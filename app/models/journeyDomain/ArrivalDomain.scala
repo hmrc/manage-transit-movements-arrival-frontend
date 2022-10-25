@@ -36,11 +36,7 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 object ArrivalDomain {
 
   implicit def userAnswersReader(implicit config: FrontendAppConfig): UserAnswersReader[ArrivalDomain] =
-    if (config.isPostTransitionEnabled) {
-      UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
-    } else {
-      UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
-    }
+    UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
 }
 
 case class ArrivalPostTransitionDomain(

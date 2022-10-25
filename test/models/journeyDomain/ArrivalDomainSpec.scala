@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.FrontendAppConfig
 import forms.Constants
 import generators.Generators
 import models.InternationalAddress
@@ -52,8 +51,7 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
     "when post transition" - {
 
-      val config: FrontendAppConfig                         = new FakeConfig(true)
-      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader(config)
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
 
       "can be parsed from UserAnswers with Incidents" in {
 
@@ -170,10 +168,9 @@ class ArrivalDomainSpec extends SpecBase with Generators {
       }
     }
 
-    "when pre transition" - {
+    "when pre-transition" ignore {
 
-      val config: FrontendAppConfig                         = new FakeConfig(false)
-      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader(config)
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
 
       "can be parsed from UserAnswers" in {
 
