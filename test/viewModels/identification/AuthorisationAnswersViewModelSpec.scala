@@ -28,8 +28,8 @@ class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
 
   "must return section" in {
     val userAnswers = emptyUserAnswers
-      .setValue(AuthorisationTypePage(eventIndex), arbitrary[AuthorisationType].sample.value)
-      .setValue(AuthorisationReferenceNumberPage(eventIndex), Gen.alphaNumStr.sample.value)
+      .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
+      .setValue(AuthorisationReferenceNumberPage(authorisationIndex), Gen.alphaNumStr.sample.value)
 
     val section = AuthorisationAnswersViewModel.apply(userAnswers, authorisationIndex, NormalMode).section
 

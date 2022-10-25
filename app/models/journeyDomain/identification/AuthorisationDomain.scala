@@ -33,7 +33,7 @@ case class AuthorisationDomain(
   override def toString: String = s"${`type`.toString} - $referenceNumber"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
-    Some(controllers.identification.authorisation.routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index))
+    Some(controllers.identification.authorisation.routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index, mode))
 }
 
 object AuthorisationDomain {

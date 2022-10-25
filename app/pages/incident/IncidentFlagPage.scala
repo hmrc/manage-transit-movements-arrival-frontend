@@ -19,7 +19,7 @@ package pages.incident
 import controllers.incident.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.IncidentsAndEndorsementsSection
+import pages.sections.incident.IncidentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -36,7 +36,7 @@ case object IncidentFlagPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(IncidentsAndEndorsementsSection)
+      case Some(false) => userAnswers.remove(IncidentsSection)
       case _           => super.cleanup(value, userAnswers)
     }
 }

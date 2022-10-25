@@ -17,6 +17,7 @@
 package views.identification.authorisation
 
 import forms.ConfirmRemoveItemFormProvider
+import models.NormalMode
 import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
 import play.api.data.Form
@@ -34,7 +35,7 @@ class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[ConfirmRemoveAuthorisationView]
-      .apply(form, mrn, authorisationIndex, authorisationTitle, authorisationType.toString)(fakeRequest, messages)
+      .apply(form, mrn, authorisationIndex, NormalMode, authorisationTitle, authorisationType.toString)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.confirmRemoveAuthorisation"
 
@@ -42,7 +43,7 @@ class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
-  behave like pageWithSectionCaption("Arrivals")
+  behave like pageWithSectionCaption("Arrivals - Authorisations")
 
   behave like pageWithHeading(authorisationType.toString, authorisationTitle)
 

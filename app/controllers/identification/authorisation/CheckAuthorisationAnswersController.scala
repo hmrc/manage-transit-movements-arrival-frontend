@@ -19,7 +19,8 @@ package controllers.identification.authorisation
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.Actions
-import models.{CheckMode, Index, MovementReferenceNumber}
+import models.{CheckMode, Index, Mode, MovementReferenceNumber}
+import navigation.AuthorisationsNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -28,6 +29,7 @@ import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersController @Inject() (
   override val messagesApi: MessagesApi,
+  navigatorProvider: AuthorisationsNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckAuthorisationAnswersView,
@@ -36,15 +38,15 @@ class CheckAuthorisationAnswersController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val section = viewModelProvider(request.userAnswers, index, CheckMode).section
-      Ok(view(mrn, index, Seq(section)))
+      Ok(view(mrn, index, mode, Seq(section)))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(mrn) {
-    _ =>
-      Redirect(controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(mrn))
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
   }
 
 }

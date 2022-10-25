@@ -46,7 +46,7 @@ class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
           page = AuthorisationTypePage(Index(position)),
           formatJourneyDomainModel = _.toString,
           formatType = _.toString,
-          removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index))
+          removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
         )(AuthorisationDomain.userAnswersReader(index), implicitly)
     }
 }

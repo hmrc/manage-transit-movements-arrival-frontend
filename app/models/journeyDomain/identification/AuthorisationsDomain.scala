@@ -30,7 +30,7 @@ case class AuthorisationsDomain(
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
-    Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn))
+    Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode))
 }
 
 object AuthorisationsDomain {

@@ -9,11 +9,17 @@ POST       /:mrn/authorisations/:index/type                                   co
 GET        /:mrn/authorisations/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:mrn/authorisations/:index/change-type                            controllers.identification.authorisation.AuthorisationTypeController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
-POST       /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index)
+GET        /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:mrn/authorisations/:index/check-answers                          controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:mrn/authorisations/:index/change-check-answers                   controllers.identification.authorisation.CheckAuthorisationAnswersController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:mrn/authorisations/:index/change-check-answers                   controllers.identification.authorisation.CheckAuthorisationAnswersController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, index: Index)
-POST       /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onSubmit(mrn: MovementReferenceNumber, index: Index)
+GET        /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:mrn/authorisations/:index/confirm-remove-authorisation           controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:mrn/authorisations/:index/change-confirm-remove-authorisation    controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:mrn/authorisations/:index/change-confirm-remove-authorisation    controllers.identification.authorisation.ConfirmRemoveAuthorisationController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber)
-POST       /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber)
+GET        /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/authorisations/add-another                                   controllers.identification.authorisation.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/authorisations/change-add-another                            controllers.identification.authorisation.AddAnotherAuthorisationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/authorisations/change-add-another                            controllers.identification.authorisation.AddAnotherAuthorisationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

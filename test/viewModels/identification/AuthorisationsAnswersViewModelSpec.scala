@@ -47,7 +47,7 @@ class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
         section.addAnotherLink.get mustBe Link(
           "add-or-remove-authorisations",
           "Add or remove authorisations",
-          controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
+          controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
         )
     }
   }

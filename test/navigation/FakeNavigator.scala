@@ -28,6 +28,10 @@ class FakeAuthorisationNavigator(desiredRoute: Call, index: Index, mode: Mode)(i
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeAuthorisationsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends AuthorisationsNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit config: FrontendAppConfig) extends IncidentNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

@@ -19,6 +19,8 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.authorisation.{routes => authorisationRoutes}
 import generators.Generators
+import models.NormalMode
+import navigation.AuthorisationsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -35,10 +37,13 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
   private lazy val mockViewModelProvider = mock[CheckAuthorisationAnswersViewModelProvider]
 
+  private val mode = NormalMode
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[CheckAuthorisationAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[AuthorisationsNavigatorProvider]).toInstance(fakeAuthorisationsNavigatorProvider))
 
   "Check Authorisation Answers Controller" - {
 
@@ -51,7 +56,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url)
+      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex, mode).url)
 
       val result = route(app, request).value
 
@@ -60,14 +65,14 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mrn, authorisationIndex, Seq(sampleSection))(request, messages).toString
+        view(mrn, authorisationIndex, mode, Seq(sampleSection))(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex).url)
+      val request = FakeRequest(GET, authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(mrn, authorisationIndex, mode).url)
 
       val result = route(app, request).value
 
@@ -76,17 +81,17 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Add authorisation page" in {
+    "must redirect to next page" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, authorisationRoutes.CheckAuthorisationAnswersController.onSubmit(mrn, authorisationIndex).url)
+      val request = FakeRequest(POST, authorisationRoutes.CheckAuthorisationAnswersController.onSubmit(mrn, authorisationIndex, mode).url)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
   }
 }

@@ -22,7 +22,7 @@ import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.IsSimplifiedProcedurePage
@@ -62,7 +62,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators with Arri
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, index).url
+              action.href mustBe routes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, index, mode).url
               action.visuallyHiddenText.get mustBe "authorisation 1"
               action.id mustBe "change-authorisation-1"
           }
@@ -74,31 +74,36 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators with Arri
 
       "when empty user answers" - {
         "must return empty list of list items" in {
-          val userAnswers = emptyUserAnswers
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val userAnswers = emptyUserAnswers
 
-          val helper = AuthorisationsAnswersHelper(userAnswers, NormalMode)
-          helper.listItems mustBe Nil
+              val helper = AuthorisationsAnswersHelper(userAnswers, mode)
+              helper.listItems mustBe Nil
+          }
         }
       }
 
       "when user answers populated with a complete authorisation" - {
         "must return one list item" in {
-          val ref = Gen.alphaNumStr.sample.value
-          val userAnswers = emptyUserAnswers
-            .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-            .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACE)
-            .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
+          forAll(arbitrary[Mode], arbitrary[AuthorisationType], Gen.alphaNumStr) {
+            (mode, authorisationType, ref) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                .setValue(AuthorisationTypePage(Index(0)), authorisationType)
+                .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
 
-          val helper = AuthorisationsAnswersHelper(userAnswers, NormalMode)
-          helper.listItems mustBe Seq(
-            Right(
-              ListItem(
-                name = s"ACE - $ref",
-                changeUrl = routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0)).url,
-                removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0)).url)
+              val helper = AuthorisationsAnswersHelper(userAnswers, mode)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = s"$authorisationType - $ref",
+                    changeUrl = routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
+                    removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
+                  )
+                )
               )
-            )
-          )
+          }
         }
       }
     }

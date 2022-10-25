@@ -49,7 +49,7 @@ object AuthorisationsAnswersViewModel {
         addAnotherLink = Link(
           id = "add-or-remove-authorisations",
           text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
-          href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn).url
+          href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
         )
       )
 

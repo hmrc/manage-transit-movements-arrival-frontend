@@ -22,7 +22,7 @@ import controllers.identification.authorisation.{routes => authRoutes}
 import forms.AddItemFormProvider
 import models.journeyDomain.identification.AuthorisationDomain
 import models.requests.DataRequest
-import models.{Index, MovementReferenceNumber, NormalMode}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.IdentificationNavigatorProvider
 import pages.sections.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
@@ -51,27 +51,27 @@ class AddAnotherAuthorisationController @Inject() (
   private def form(allowMoreAuthorisations: Boolean): Form[Boolean] =
     formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreAuthorisations)
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
     .andThen(removeInProgressAuthorisations[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)) {
       implicit request =>
         val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
         numberOfAuthorisations match {
-          case 0 => Redirect(controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode))
-          case _ => Ok(view(form(allowMoreAuthorisations), mrn, authorisations, allowMoreAuthorisations))
+          case 0 => Redirect(controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode))
+          case _ => Ok(view(form(allowMoreAuthorisations), mrn, mode, authorisations, allowMoreAuthorisations))
         }
     }
 
-  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       lazy val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
       form(allowMoreAuthorisations)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, mrn, authorisations, allowMoreAuthorisations)),
+          formWithErrors => BadRequest(view(formWithErrors, mrn, mode, authorisations, allowMoreAuthorisations)),
           {
-            case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), NormalMode))
-            case false => Redirect(navigatorProvider(NormalMode).nextPage(request.userAnswers))
+            case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), mode))
+            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
           }
         )
   }

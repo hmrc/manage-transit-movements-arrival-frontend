@@ -17,8 +17,8 @@
 package pages.incident
 
 import pages.behaviours.PageBehaviours
-import pages.sections.incident.IncidentsAndEndorsementsSection
-import play.api.libs.json.Json
+import pages.sections.incident.IncidentsSection
+import play.api.libs.json.{JsArray, JsString}
 
 class IncidentFlagPageSpec extends PageBehaviours {
 
@@ -35,11 +35,11 @@ class IncidentFlagPageSpec extends PageBehaviours {
         "must remove incidents and endorsements" in {
           val userAnswers = emptyUserAnswers
             .setValue(IncidentFlagPage, true)
-            .setValue(IncidentsAndEndorsementsSection, Json.obj("foo" -> "bar"))
+            .setValue(IncidentsSection, JsArray(Seq(JsString("foo"), JsString("bar"))))
 
           val result = userAnswers.setValue(IncidentFlagPage, false)
 
-          result.get(IncidentsAndEndorsementsSection) must not be defined
+          result.get(IncidentsSection) must not be defined
         }
       }
     }

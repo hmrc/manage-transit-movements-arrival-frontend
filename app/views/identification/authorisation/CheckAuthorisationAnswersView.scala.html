@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, eventIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, index: Index, mode: Mode, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.authorisation.checkAuthorisationAnswers.title"),
@@ -42,7 +42,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = routes.CheckAuthorisationAnswersController.onSubmit(mrn, eventIndex), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckAuthorisationAnswersController.onSubmit(mrn, index, mode), 'autoComplete -> "off") {
         @button(
             messageKey = "site.continue",
             preventDoubleClick = true,
