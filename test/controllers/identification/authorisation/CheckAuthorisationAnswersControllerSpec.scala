@@ -29,20 +29,20 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.identification.AuthorisationAnswersViewModel
-import viewModels.identification.AuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
+import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 import viewModels.sections.Section
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[CheckAuthorisationAnswersViewModelProvider]
+  private lazy val mockViewModelProvider = mock[AuthorisationAnswersViewModelProvider]
 
   private val mode = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckAuthorisationAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[AuthorisationAnswersViewModelProvider].toInstance(mockViewModelProvider))
       .overrides(bind(classOf[AuthorisationsNavigatorProvider]).toInstance(fakeAuthorisationsNavigatorProvider))
 
   "Check Authorisation Answers Controller" - {
@@ -51,7 +51,7 @@ class CheckAuthorisationAnswersControllerSpec extends SpecBase with AppWithDefau
 
       val sampleSection = arbitrary[Section].sample.value
 
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(AuthorisationAnswersViewModel(sampleSection))
 
       setExistingUserAnswers(emptyUserAnswers)

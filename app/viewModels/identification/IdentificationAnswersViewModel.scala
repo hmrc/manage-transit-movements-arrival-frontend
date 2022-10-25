@@ -16,7 +16,6 @@
 
 package viewModels.identification
 
-import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.IdentificationAnswersHelper
@@ -28,7 +27,7 @@ case class IdentificationAnswersViewModel(section: Section)
 
 object IdentificationAnswersViewModel {
 
-  class IdentificationAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class IdentificationAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): IdentificationAnswersViewModel = {
 

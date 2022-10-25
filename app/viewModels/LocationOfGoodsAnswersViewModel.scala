@@ -16,7 +16,6 @@
 
 package viewModels
 
-import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.LocationOfGoodsAnswersHelper
@@ -28,7 +27,7 @@ case class LocationOfGoodsAnswersViewModel(section: Section)
 
 object LocationOfGoodsAnswersViewModel {
 
-  class LocationOfGoodsAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class LocationOfGoodsAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): LocationOfGoodsAnswersViewModel = {
 

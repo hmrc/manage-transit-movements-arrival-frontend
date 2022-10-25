@@ -17,14 +17,13 @@
 package controllers.identification.authorisation
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.{CheckMode, Index, Mode, MovementReferenceNumber}
 import navigation.AuthorisationsNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.identification.AuthorisationAnswersViewModel.CheckAuthorisationAnswersViewModelProvider
+import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersController @Inject() (
@@ -33,9 +32,8 @@ class CheckAuthorisationAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckAuthorisationAnswersView,
-  viewModelProvider: CheckAuthorisationAnswersViewModelProvider
-)(implicit config: FrontendAppConfig)
-    extends FrontendBaseController
+  viewModelProvider: AuthorisationAnswersViewModelProvider
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {

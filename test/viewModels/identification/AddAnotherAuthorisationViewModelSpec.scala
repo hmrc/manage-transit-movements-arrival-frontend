@@ -22,6 +22,7 @@ import models.Index
 import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
 import pages.identification.authorisation._
+import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 
 class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators {
 
@@ -33,7 +34,7 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators {
       .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.ACE)
       .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 2")
 
-    val result = AddAnotherAuthorisationViewModel(userAnswers)
+    val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers)
     result.listItems.length mustBe 2
   }
 

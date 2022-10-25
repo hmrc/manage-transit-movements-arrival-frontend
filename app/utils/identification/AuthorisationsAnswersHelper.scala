@@ -16,7 +16,6 @@
 
 package utils.identification
 
-import config.FrontendAppConfig
 import controllers.identification.authorisation.{routes => authorisationRoutes}
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.identification.AuthorisationDomain
@@ -28,7 +27,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 import viewModels.ListItem
 
-class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+class AuthorisationsAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
@@ -53,6 +55,6 @@ class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
 
 object AuthorisationsAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) =
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) =
     new AuthorisationsAnswersHelper(userAnswers, mode)
 }

@@ -16,7 +16,6 @@
 
 package utils.identification
 
-import config.FrontendAppConfig
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -28,7 +27,7 @@ class AuthorisationAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
@@ -52,6 +51,6 @@ object AuthorisationAnswersHelper {
     userAnswers: UserAnswers,
     mode: Mode,
     index: Index
-  )(implicit messages: Messages, config: FrontendAppConfig) =
+  )(implicit messages: Messages) =
     new AuthorisationAnswersHelper(userAnswers, mode, index)
 }

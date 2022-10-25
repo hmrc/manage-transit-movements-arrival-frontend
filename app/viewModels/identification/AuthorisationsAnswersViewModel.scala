@@ -16,7 +16,6 @@
 
 package viewModels.identification
 
-import config.FrontendAppConfig
 import models.{Index, Mode, RichOptionJsArray, UserAnswers}
 import pages.sections.identification.AuthorisationsSection
 import play.api.i18n.Messages
@@ -30,10 +29,7 @@ case class AuthorisationsAnswersViewModel(section: Section)
 
 object AuthorisationsAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig): AuthorisationsAnswersViewModel =
-    new AuthorisationsAnswersViewModelProvider().apply(userAnswers, mode)
-
-  class AuthorisationsAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AuthorisationsAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AuthorisationsAnswersViewModel = {
 

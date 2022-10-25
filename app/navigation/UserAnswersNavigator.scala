@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, Stage, UserAnswersReader}
 import models.{Mode, UserAnswers}
@@ -31,8 +30,6 @@ trait UserAnswersNavigator extends Navigator {
 
   val mode: Mode
 
-  implicit val config: FrontendAppConfig
-
   override def nextPage(userAnswers: UserAnswers): Call =
     UserAnswersNavigator.nextPage[T](userAnswers, mode)
 }
@@ -43,7 +40,7 @@ object UserAnswersNavigator extends Logging {
     userAnswers: UserAnswers,
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
+  )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
     lazy val errorCall = controllers.routes.ErrorController.notFound()
 
     UserAnswersReader[T].run(userAnswers) match {

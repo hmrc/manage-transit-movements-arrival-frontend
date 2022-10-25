@@ -16,7 +16,6 @@
 
 package viewModels.identification
 
-import config.FrontendAppConfig
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.AuthorisationsAnswersHelper
@@ -28,10 +27,7 @@ case class AddAnotherAuthorisationViewModel(listItems: Seq[ListItem])
 
 object AddAnotherAuthorisationViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherAuthorisationViewModel =
-    new AddAnotherAuthorisationViewModelProvider().apply(userAnswers)
-
-  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AddAnotherAuthorisationViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
       val helper = new AuthorisationsAnswersHelper(userAnswers, NormalMode)

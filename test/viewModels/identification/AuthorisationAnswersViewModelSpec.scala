@@ -23,6 +23,7 @@ import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 
 class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
 
@@ -31,7 +32,7 @@ class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
       .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
       .setValue(AuthorisationReferenceNumberPage(authorisationIndex), Gen.alphaNumStr.sample.value)
 
-    val section = AuthorisationAnswersViewModel.apply(userAnswers, authorisationIndex, NormalMode).section
+    val section = new AuthorisationAnswersViewModelProvider().apply(userAnswers, authorisationIndex, NormalMode).section
 
     section.sectionTitle mustNot be(defined)
     section.rows.size mustBe 2

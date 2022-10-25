@@ -16,7 +16,6 @@
 
 package utils
 
-import config.FrontendAppConfig
 import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
 import models.reference.{CustomsOffice, UnLocode}
 import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, UserAnswers}
@@ -27,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class LocationOfGoodsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[TypeOfLocation](
@@ -135,6 +134,6 @@ object LocationOfGoodsAnswersHelper {
   def apply(
     userAnswers: UserAnswers,
     mode: Mode
-  )(implicit messages: Messages, config: FrontendAppConfig): LocationOfGoodsAnswersHelper =
+  )(implicit messages: Messages): LocationOfGoodsAnswersHelper =
     new LocationOfGoodsAnswersHelper(userAnswers, mode)
 }

@@ -42,7 +42,7 @@ class CheckArrivalsAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      ???
+      ??? // TODO - redirect to submission page once built
   }
 
 }

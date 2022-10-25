@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import cats.implicits._
-import config.FrontendAppConfig
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
@@ -29,13 +28,13 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
   val identification: IdentificationDomain
   val locationOfGoods: LocationOfGoodsDomain
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage)(implicit config: FrontendAppConfig): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.routes.CheckArrivalsAnswersController.onPageLoad(userAnswers.mrn))
 }
 
 object ArrivalDomain {
 
-  implicit def userAnswersReader(implicit config: FrontendAppConfig): UserAnswersReader[ArrivalDomain] =
+  implicit val userAnswersReader: UserAnswersReader[ArrivalDomain] =
     UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
 }
 
