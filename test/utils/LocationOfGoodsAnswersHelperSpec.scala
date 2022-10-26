@@ -336,14 +336,14 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.postalCode.get
 
-              result.key.value mustBe "Address"
+              result.key.value mustBe "Postal code"
               result.value.value mustBe address.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "address for the location of goods"
+              action.visuallyHiddenText.get mustBe "postal code for the location of goods"
               action.id mustBe "address"
           }
         }
