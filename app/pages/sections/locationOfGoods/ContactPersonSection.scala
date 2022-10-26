@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.sections.locationOfGoods
 
-import controllers.locationOfGoods.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.ContactPersonSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object ContactPersonTelephonePage extends QuestionPage[String] {
+case object ContactPersonSection extends Section[JsObject] {
 
-  override def path: JsPath = ContactPersonSection.path \ toString
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  override def toString: String = "telephoneNumber"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ContactPersonTelephoneController.onPageLoad(userAnswers.mrn, mode))
+  override def toString: String = "contactPerson"
 }

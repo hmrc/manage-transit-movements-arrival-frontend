@@ -19,15 +19,15 @@ package pages.locationOfGoods
 import controllers.locationOfGoods.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
+import pages.sections.locationOfGoods.ContactPersonSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object ContactPersonNamePage extends QuestionPage[String] {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+  override def path: JsPath = ContactPersonSection.path \ toString
 
-  override def toString: String = "contactPersonName"
+  override def toString: String = "name"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.ContactPersonNameController.onPageLoad(userAnswers.mrn, mode))
