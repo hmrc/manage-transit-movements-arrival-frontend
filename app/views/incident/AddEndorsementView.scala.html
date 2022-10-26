@@ -40,7 +40,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.AddEndorsementController.onSubmit(mrn, mode, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddEndorsementController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

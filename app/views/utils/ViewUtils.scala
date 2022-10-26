@@ -91,10 +91,7 @@ object ViewUtils {
 
     def withDateErrorMapping(form: Form[LocalDate], fieldName: String): ErrorSummary = {
       val args = Seq("day", "month", "year")
-      val arg = form.errors.flatMap(_.args).filter(args.contains) match {
-        case Nil       => args.head
-        case head :: _ => head.toString
-      }
+      val arg  = form.errors.flatMap(_.args).find(args.contains).getOrElse(args.head)
       errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s"${fieldName}_$arg"))
     }
   }
@@ -105,7 +102,7 @@ object ViewUtils {
 
     def withHeadingAndCaption(heading: Content, caption: Content): Fieldset =
       withHeadingLegend(fieldset, heading, Some(caption))(
-        (ip, ul) => ip.copy(legend = Some(ul))
+        (fs, l) => fs.copy(legend = Some(l))
       )
   }
 

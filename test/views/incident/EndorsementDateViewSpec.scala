@@ -40,7 +40,7 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
@@ -48,7 +48,7 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithHint("For example, 15 08 2022.")
 
-  behave like pageWithDateInput
+  behave like pageWithDateInput()
 
   behave like pageWithSubmitButton("Continue")
 }

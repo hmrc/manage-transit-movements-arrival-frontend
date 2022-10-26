@@ -38,13 +38,13 @@ class EndorsementAuthorityViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithoutHint()
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

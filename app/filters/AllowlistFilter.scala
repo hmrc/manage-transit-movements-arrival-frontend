@@ -21,6 +21,7 @@ import com.google.inject.Inject
 import play.api.Configuration
 import play.api.mvc.Call
 import uk.gov.hmrc.allowlist.AkamaiAllowlistFilter
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 class AllowlistFilter @Inject() (config: Configuration, override val mat: Materializer) extends AkamaiAllowlistFilter {
 
@@ -30,15 +31,18 @@ class AllowlistFilter @Inject() (config: Configuration, override val mat: Materi
       .split(",")
       .map(_.trim)
       .filter(_.nonEmpty)
+      .toSeq
 
   override val destination: Call = {
     val path = config.underlying.getString("filters.allowlist.destination")
-    Call("GET", path)
+    Call(GET, path)
   }
 
   override val excludedPaths: Seq[Call] =
-    config.underlying.getString("filters.allowlist.excluded").split(",").map {
-      path =>
-        Call("GET", path.trim)
-    }
+    config.underlying
+      .getString("filters.allowlist.excluded")
+      .split(",")
+      .map(_.trim)
+      .map(Call(GET, _))
+      .toSeq
 }

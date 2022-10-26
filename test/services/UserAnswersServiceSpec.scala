@@ -31,7 +31,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
   val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockReferenceDataConnector)
   }

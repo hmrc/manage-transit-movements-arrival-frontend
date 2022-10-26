@@ -46,7 +46,7 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   override val prefix: String = "identification.authorisation.addAnotherAuthorisation"
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 

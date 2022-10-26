@@ -43,7 +43,7 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals")
 

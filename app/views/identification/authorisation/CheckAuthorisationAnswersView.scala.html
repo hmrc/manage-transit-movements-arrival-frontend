@@ -42,7 +42,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = routes.CheckAuthorisationAnswersController.onSubmit(mrn, index, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckAuthorisationAnswersController.onSubmit(mrn, index, mode), Symbol("autoComplete") -> "off") {
         @button(
             messageKey = "site.continue",
             preventDoubleClick = true,

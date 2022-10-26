@@ -47,7 +47,7 @@ class EndorsementCountryController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTransitCountries.map {
+      service.getTransitCountries().map {
         countryList =>
           val form = formProvider("incident.endorsementCountry", countryList)
           val preparedForm = request.userAnswers.get(EndorsementCountryPage(index)) match {
@@ -61,7 +61,7 @@ class EndorsementCountryController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTransitCountries.flatMap {
+      service.getTransitCountries().flatMap {
         countryList =>
           val form = formProvider("incident.endorsementCountry", countryList)
           form

@@ -41,7 +41,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   behave like pageWithTitle(AuthorisationType.ACT.toString)
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 

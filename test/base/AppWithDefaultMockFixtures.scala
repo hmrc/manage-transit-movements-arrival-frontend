@@ -16,13 +16,11 @@
 
 package base
 
-import config.FrontendAppConfig
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
 import navigation._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
@@ -38,10 +36,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   self: TestSuite =>
 
   override def beforeEach(): Unit = {
-    Mockito.reset(
-      mockSessionRepository,
-      mockDataRetrievalActionProvider
-    )
+    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
 
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
   }
@@ -60,8 +55,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(None)
 
   protected val onwardRoute: Call = Call("GET", "/foo")
-
-  implicit private def frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
