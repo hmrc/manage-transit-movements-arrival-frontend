@@ -19,9 +19,11 @@ package pages.locationOfGoods
 import controllers.locationOfGoods.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.QualifierOfIdentificationDetailsSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object AddContactPersonPage extends QuestionPage[Boolean] {
 
@@ -31,4 +33,10 @@ case object AddContactPersonPage extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddContactPersonController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(ContactPersonNamePage).flatMap(_.remove(ContactPersonTelephonePage))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

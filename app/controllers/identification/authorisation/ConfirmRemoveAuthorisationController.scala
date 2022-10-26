@@ -19,9 +19,9 @@ package controllers.identification.authorisation
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ConfirmRemoveItemFormProvider
-import models.{Index, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber}
 import pages.identification.authorisation._
-import pages.sections.AuthorisationSection
+import pages.sections.identification.AuthorisationSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,17 +43,17 @@ class ConfirmRemoveAuthorisationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
+  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
     .andThen(getMandatoryPage.getFirst(AuthorisationReferenceNumberPage(index)))
     .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index))) {
       implicit request =>
         val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2)
 
-        Ok(view(form, mrn, index, request.arg._1, request.arg._2.toString))
+        Ok(view(form, mrn, index, mode, request.arg._1, request.arg._2.toString))
     }
 
-  def onSubmit(mrn: MovementReferenceNumber, index: Index): Action[AnyContent] = actions
+  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
     .andThen(getMandatoryPage.getFirst(AuthorisationReferenceNumberPage(index)))
     .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index)))
@@ -64,15 +64,15 @@ class ConfirmRemoveAuthorisationController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, request.arg._1, request.arg._2.toString))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode, request.arg._1, request.arg._2.toString))),
             {
               case true =>
                 AuthorisationSection(index)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(routes.AddAnotherAuthorisationController.onPageLoad(mrn))
+                  .navigateTo(routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode))
               case false =>
-                Future.successful(Redirect(routes.AddAnotherAuthorisationController.onPageLoad(mrn)))
+                Future.successful(Redirect(routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode)))
             }
           )
     }

@@ -19,15 +19,15 @@ package pages.incident
 import controllers.incident.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.IncidentSection
+import pages.sections.incident.EndorsementSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class EndorsementAuthorityPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = IncidentSection(index).path \ toString
+  override def path: JsPath = EndorsementSection(index).path \ toString
 
-  override def toString: String = "endorsementAuthority"
+  override def toString: String = "authority"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.EndorsementAuthorityController.onPageLoad(userAnswers.mrn, mode, index))

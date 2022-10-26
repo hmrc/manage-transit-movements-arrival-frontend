@@ -27,14 +27,14 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, index: Index, authorisationTitle: String, authorisationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, index: Index, mode: Mode, authorisationTitle: String, authorisationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.authorisation.confirmRemoveAuthorisation.title", authorisationType, authorisationTitle),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
-    @formHelper(action = routes.ConfirmRemoveAuthorisationController.onSubmit(mrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConfirmRemoveAuthorisationController.onSubmit(mrn, index, mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

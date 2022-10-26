@@ -28,7 +28,8 @@ import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import pages.sections.{AuthorisationSection, AuthorisationsSection, Section}
+import pages.sections.Section
+import pages.sections.identification.{AuthorisationSection, AuthorisationsSection}
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.mvc.Result
 import repositories.SessionRepository

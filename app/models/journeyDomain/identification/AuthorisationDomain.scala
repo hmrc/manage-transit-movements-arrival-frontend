@@ -17,6 +17,7 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
+import controllers.identification.authorisation.routes
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, UserAnswers}
@@ -32,7 +33,7 @@ case class AuthorisationDomain(
   override def toString: String = s"${`type`.toString} - $referenceNumber"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.identification.authorisation.routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index))
+    Some(routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index, mode))
 }
 
 object AuthorisationDomain {

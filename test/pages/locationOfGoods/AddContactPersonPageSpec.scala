@@ -16,16 +16,33 @@
 
 package pages.locationOfGoods
 
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 class AddContactPersonPageSpec extends PageBehaviours {
 
-  "AddcontactpersonPage" - {
+  "AddContactPersonPage" - {
 
     beRetrievable[Boolean](AddContactPersonPage)
 
     beSettable[Boolean](AddContactPersonPage)
 
     beRemovable[Boolean](AddContactPersonPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove name and phone number" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddContactPersonPage, true)
+            .setValue(ContactPersonNamePage, Gen.alphaNumStr.sample.value)
+            .setValue(ContactPersonTelephonePage, Gen.alphaNumStr.sample.value)
+
+          val result = userAnswers.setValue(AddContactPersonPage, false)
+
+          result.get(ContactPersonNamePage) must not be defined
+          result.get(ContactPersonTelephonePage) must not be defined
+        }
+      }
+    }
   }
 }

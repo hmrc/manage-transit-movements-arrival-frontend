@@ -20,7 +20,7 @@ import controllers.identification.routes
 import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.{AuthorisationsSection, IdentificationSection}
+import pages.sections.identification.{AuthorisationsSection, IdentificationSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

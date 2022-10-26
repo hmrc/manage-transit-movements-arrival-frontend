@@ -16,10 +16,10 @@
 
 package services
 
-import javax.inject.Inject
 import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import repositories.SessionRepository
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersService @Inject() (

@@ -27,14 +27,14 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[MovementReferenceNumber])(implicit request: Request[_], messages: Messages)
+@(form: Form[MovementReferenceNumber], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("movementReferenceNumber.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.MovementReferenceNumberController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = routes.MovementReferenceNumberController.onSubmit(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

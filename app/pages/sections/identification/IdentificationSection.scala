@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package pages.identification
+package pages.sections.identification
 
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import java.time.LocalDate
+case object IdentificationSection extends Section[JsObject] {
 
-class ArrivalDatePageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath \ toString
 
-  "ArrivalDatePage" - {
-
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
-    }
-
-    beRetrievable[LocalDate](ArrivalDatePage)
-
-    beSettable[LocalDate](ArrivalDatePage)
-
-    beRemovable[LocalDate](ArrivalDatePage)
-  }
+  override def toString: String = "identification"
 }

@@ -17,23 +17,20 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.Generators
-import models.NormalMode
-import models.identification.authorisation.AuthorisationType
+import generators.{ArrivalUserAnswersGenerator, Generators}
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 
-class CheckAuthorisationAnswersViewModelSpec extends SpecBase with Generators {
+class IdentificationAnswersViewModelSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
 
   "must return section" in {
-    val userAnswers = emptyUserAnswers
-      .setValue(AuthorisationTypePage(eventIndex), arbitrary[AuthorisationType].sample.value)
-      .setValue(AuthorisationReferenceNumberPage(eventIndex), Gen.alphaNumStr.sample.value)
+    forAll(arbitrary[Mode], arbitraryIdentificationAnswers(emptyUserAnswers)) {
+      (mode, answers) =>
+        val section = new IdentificationAnswersViewModelProvider().apply(answers, mode).section
 
-    val section = CheckAuthorisationAnswersViewModel.apply(userAnswers, authorisationIndex, NormalMode).section
-
-    section.sectionTitle mustNot be(defined)
-    section.rows.size mustBe 2
+        section.sectionTitle.get mustBe "Identification"
+        section.rows.size mustBe 4
+    }
   }
 }

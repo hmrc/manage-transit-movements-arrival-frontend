@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddItemFormProvider
-import generators.{Generators, IdentificationUserAnswersGenerator}
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.{Index, NormalMode}
 import navigation.annotations.IdentificationDetails
 import navigation.{IdentificationNavigatorProvider, Navigator}
@@ -35,12 +35,14 @@ import viewModels.identification.AddAnotherAuthorisationViewModel
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.identification.authorisation.AddAnotherAuthorisationView
 
-class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with IdentificationUserAnswersGenerator {
+class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
 
   private val formProvider                  = new AddItemFormProvider()
   private def form(allowMoreItems: Boolean) = formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreItems)
 
-  private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn).url
+  private val mode = NormalMode
+
+  private lazy val addAnotherAuthorisationRoute = routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode).url
 
   private val mockViewModelProvider = mock[AddAnotherAuthorisationViewModelProvider]
 
@@ -77,7 +79,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, NormalMode).url
+          controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode).url
       }
     }
 
@@ -99,7 +101,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMore), mrn, listItems, allowMore)(request, messages).toString
+          view(form(allowMore), mrn, mode, listItems, allowMore)(request, messages).toString
       }
 
       "when max limit reached" in {
@@ -121,7 +123,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMore), mrn, listItems, allowMore)(request, messages).toString
+          view(form(allowMore), mrn, mode, listItems, allowMore)(request, messages).toString
       }
     }
 
@@ -203,7 +205,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, listItems, allowMore)(request, messages).toString
+          view(boundForm, mrn, mode, listItems, allowMore)(request, messages).toString
       }
     }
 

@@ -17,15 +17,15 @@
 @import controllers.identification.authorisation.routes
 @import models.MovementReferenceNumber
 @import models.identification.authorisation.AuthorisationType
-@import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel.Radio
+@import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputRadio: InputRadio,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputRadio: InputRadio,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[AuthorisationType], mrn: MovementReferenceNumber, index: Index, radios: (String, Option[AuthorisationType]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)

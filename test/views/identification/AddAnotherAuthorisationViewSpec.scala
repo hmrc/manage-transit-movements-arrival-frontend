@@ -17,12 +17,16 @@
 package views.identification
 
 import forms.AddItemFormProvider
+import models.Mode
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
+
+  private val mode: Mode = arbitrary[Mode].sample.value
 
   override def maxNumber: Int = frontendAppConfig.maxIdentificationAuthorisations
 
@@ -33,18 +37,18 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAuthorisationView]
-      .apply(form, mrn, listItems, allowMoreItems = true)(fakeRequest, messages)
+      .apply(form, mrn, mode, listItems, allowMoreItems = true)(fakeRequest, messages)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAuthorisationView]
-      .apply(formProvider(prefix, allowMoreItems = false), mrn, maxedOutListItems, allowMoreItems = false)(fakeRequest, messages)
+      .apply(formProvider(prefix, allowMoreItems = false), mrn, mode, maxedOutListItems, allowMoreItems = false)(fakeRequest, messages)
 
   override val prefix: String = "identification.authorisation.addAnotherAuthorisation"
 
   behave like pageWithBackLink
 
-  behave like pageWithSectionCaption("Arrivals")
+  behave like pageWithSectionCaption("Arrivals - Authorisations")
 
   behave like pageWithMoreItemsAllowed()
 

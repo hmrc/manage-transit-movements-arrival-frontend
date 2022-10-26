@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages.sections
+import viewModels.sections.Section
 
-import play.api.libs.json.{JsObject, JsPath}
+package object viewModels {
 
-case object QualifierOfIdentificationDetailsSection extends Section[JsObject] {
+  implicit class RichSection(section: Section) {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
-
-  override def toString: String = "qualifierOfIdentificationDetails"
+    def toSeq: Seq[Section] = Seq(section)
+  }
 }

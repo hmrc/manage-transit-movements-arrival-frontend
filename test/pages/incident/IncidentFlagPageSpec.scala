@@ -17,6 +17,8 @@
 package pages.incident
 
 import pages.behaviours.PageBehaviours
+import pages.sections.incident.IncidentsSection
+import play.api.libs.json.{JsArray, JsString}
 
 class IncidentFlagPageSpec extends PageBehaviours {
 
@@ -27,5 +29,19 @@ class IncidentFlagPageSpec extends PageBehaviours {
     beSettable[Boolean](IncidentFlagPage)
 
     beRemovable[Boolean](IncidentFlagPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove incidents and endorsements" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(IncidentFlagPage, true)
+            .setValue(IncidentsSection, JsArray(Seq(JsString("foo"), JsString("bar"))))
+
+          val result = userAnswers.setValue(IncidentFlagPage, false)
+
+          result.get(IncidentsSection) must not be defined
+        }
+      }
+    }
   }
 }

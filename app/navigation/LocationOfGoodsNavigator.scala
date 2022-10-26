@@ -16,9 +16,9 @@
 
 package navigation
 
-import models.Mode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
+import models.{CheckMode, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
 
@@ -26,7 +26,10 @@ import javax.inject.{Inject, Singleton}
 class LocationOfGoodsNavigatorProviderImpl @Inject() () extends LocationOfGoodsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
-    new LocationOfGoodsNavigator(mode)
+    mode match {
+      case NormalMode => new LocationOfGoodsNavigator(mode)
+      case CheckMode  => new ArrivalNavigator(mode)
+    }
 }
 
 trait LocationOfGoodsNavigatorProvider {

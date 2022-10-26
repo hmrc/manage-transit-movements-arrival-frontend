@@ -19,7 +19,7 @@ package pages.identification.authorisation
 import controllers.identification.authorisation.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.AuthorisationSection
+import pages.sections.identification.AuthorisationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

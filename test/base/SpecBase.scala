@@ -31,6 +31,7 @@ import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait SpecBase
@@ -73,7 +74,7 @@ trait SpecBase
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 
@@ -85,5 +86,21 @@ trait SpecBase
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
+  }
+
+  implicit class RichContent(c: Content) {
+    def value: String = c.asHtml.toString()
+  }
+
+  implicit class RichKey(k: Key) {
+    def value: String = k.content.value
+  }
+
+  implicit class RichValue(v: Value) {
+    def value: String = v.content.value
+  }
+
+  implicit class RichAction(ai: ActionItem) {
+    def id: String = ai.attributes.get("id").value
   }
 }

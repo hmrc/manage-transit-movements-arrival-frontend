@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package pages.identification
+package pages.sections.locationOfGoods
 
-import controllers.identification.routes
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.IdentificationSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import java.time.LocalDate
+case object LocationOfGoodsSection extends Section[JsObject] {
 
-case object ArrivalDatePage extends QuestionPage[LocalDate] {
+  override def path: JsPath = JsPath \ toString
 
-  override def path: JsPath = IdentificationSection.path \ toString
-
-  override def toString: String = "arrivalDate"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ArrivalDateController.onPageLoad(userAnswers.mrn, mode))
+  override def toString: String = "locationOfGoods"
 }

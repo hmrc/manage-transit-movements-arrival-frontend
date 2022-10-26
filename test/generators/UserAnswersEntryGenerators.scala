@@ -18,20 +18,24 @@ package generators
 
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
-import models.reference.CustomsOffice
+import models.incident.IncidentCode
+import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{Coordinates, InternationalAddress, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import play.api.libs.json.{JsString, JsValue, Json}
+import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import queries.Gettable
 
 import java.time.LocalDate
 
 trait UserAnswersEntryGenerators {
-
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateIdentificationAnswer
+    generateIdentificationAnswer orElse
+      generateLocationOfGoodsAnswer orElse
+      generateIncidentAnswer
 
   private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification._
@@ -39,7 +43,6 @@ trait UserAnswersEntryGenerators {
       case DestinationOfficePage     => arbitrary[CustomsOffice].map(Json.toJson(_))
       case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
       case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
-      case ArrivalDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 
@@ -48,6 +51,59 @@ trait UserAnswersEntryGenerators {
     {
       case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateLocationOfGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.locationOfGoods._
+    {
+      val log: PartialFunction[Gettable[_], Gen[JsValue]] = {
+        case TypeOfLocationPage            => arbitrary[TypeOfLocation].map(Json.toJson(_))
+        case QualifierOfIdentificationPage => arbitrary[QualifierOfIdentification].map(Json.toJson(_))
+        case AddContactPersonPage          => arbitrary[Boolean].map(JsBoolean)
+      }
+
+      log orElse
+        generateLocationOfGoodsIdentifierAnswer orElse
+        generateLocationOfGoodsContactAnswer
+    }
+  }
+
+  private def generateLocationOfGoodsIdentifierAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.locationOfGoods._
+    {
+      case AddAdditionalIdentifierPage => arbitrary[Boolean].map(JsBoolean)
+      case AdditionalIdentifierPage    => Gen.alphaNumStr.map(JsString)
+      case AddressPage                 => arbitrary[PostalCodeAddress].map(Json.toJson(_))
+      case AuthorisationNumberPage     => Gen.alphaNumStr.map(JsString)
+      case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
+      case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case IdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
+      case InternationalAddressPage    => arbitrary[InternationalAddress].map(Json.toJson(_))
+      case UnlocodePage                => arbitrary[UnLocode].map(Json.toJson(_))
+    }
+  }
+
+  private def generateLocationOfGoodsContactAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.locationOfGoods._
+    {
+      case ContactPersonNamePage      => Gen.alphaNumStr.map(JsString)
+      case ContactPersonTelephonePage => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateIncidentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident._
+    {
+      case IncidentFlagPage            => arbitrary[Boolean].map(JsBoolean)
+      case IncidentCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
+      case IncidentCodePage(_)         => arbitrary[IncidentCode].map(Json.toJson(_))
+      case IncidentTextPage(_)         => Gen.alphaNumStr.map(JsString)
+      case AddEndorsementPage(_)       => arbitrary[Boolean].map(JsBoolean)
+      case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
+      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
+      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
+      case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
     }
   }
 }

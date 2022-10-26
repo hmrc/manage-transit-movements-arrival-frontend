@@ -17,15 +17,15 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.sections.incident.IncidentsSection
 
-case class IncidentDomainList(incidentsDomain: Seq[IncidentDomain])
+case class IncidentsDomain(incidentsDomain: Seq[IncidentDomain])
 
-object IncidentDomainList {
+object IncidentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[IncidentDomainList] = {
+  implicit val userAnswersReader: UserAnswersReader[IncidentsDomain] = {
 
     val incidentsReader: UserAnswersReader[Seq[IncidentDomain]] =
       IncidentsSection.reader.flatMap {
@@ -40,7 +40,7 @@ object IncidentDomainList {
           ).map(_.toSeq)
       }
 
-    UserAnswersReader[Seq[IncidentDomain]](incidentsReader).map(IncidentDomainList(_))
+    UserAnswersReader[Seq[IncidentDomain]](incidentsReader).map(IncidentsDomain(_))
   }
 
 }

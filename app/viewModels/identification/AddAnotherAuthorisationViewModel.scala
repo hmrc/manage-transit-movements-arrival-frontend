@@ -18,7 +18,7 @@ package viewModels.identification
 
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
-import utils.identification.AddAuthorisationHelper
+import utils.identification.AuthorisationsAnswersHelper
 import viewModels.ListItem
 
 import javax.inject.Inject
@@ -27,13 +27,10 @@ case class AddAnotherAuthorisationViewModel(listItems: Seq[ListItem])
 
 object AddAnotherAuthorisationViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): AddAnotherAuthorisationViewModel =
-    new AddAnotherAuthorisationViewModelProvider()(userAnswers)
-
   class AddAnotherAuthorisationViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
-      val helper = new AddAuthorisationHelper(userAnswers, NormalMode)
+      val helper = new AuthorisationsAnswersHelper(userAnswers, NormalMode)
 
       // TODO - decide what to do with in progress authorisations (Lefts). Currently lumping them together with the completed ones (Rights).
       val listItems = helper.listItems.collect {

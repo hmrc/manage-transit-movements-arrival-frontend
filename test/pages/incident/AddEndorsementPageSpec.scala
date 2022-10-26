@@ -17,6 +17,8 @@
 package pages.incident
 
 import pages.behaviours.PageBehaviours
+import pages.sections.incident.EndorsementSection
+import play.api.libs.json.Json
 
 class AddEndorsementPageSpec extends PageBehaviours {
 
@@ -27,5 +29,19 @@ class AddEndorsementPageSpec extends PageBehaviours {
     beSettable[Boolean](AddEndorsementPage(index))
 
     beRemovable[Boolean](AddEndorsementPage(index))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove endorsement at index" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddEndorsementPage(index), true)
+            .setValue(EndorsementSection(index), Json.obj("foo" -> "bar"))
+
+          val result = userAnswers.setValue(AddEndorsementPage(index), false)
+
+          result.get(EndorsementSection(index)) must not be defined
+        }
+      }
+    }
   }
 }

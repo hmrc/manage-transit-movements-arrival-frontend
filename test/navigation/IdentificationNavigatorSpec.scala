@@ -17,22 +17,19 @@
 package navigation
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators, IdentificationUserAnswersGenerator}
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class IdentificationNavigatorSpec
-    extends SpecBase
-    with ScalaCheckPropertyChecks
-    with Generators
-    with IdentificationUserAnswersGenerator
-    with ArrivalUserAnswersGenerator {
+class IdentificationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
   "Identification Navigator" - {
 
     "in NormalMode" - {
 
-      val navigator = new IdentificationNavigator(NormalMode)
+      val mode              = NormalMode
+      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
         "must redirect to location of goods type page" in {
@@ -40,23 +37,25 @@ class IdentificationNavigatorSpec
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, NormalMode))
+                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, mode))
           }
         }
       }
     }
-    // TODO: Add final check your answers page (CTCP-702)
+
     "in CheckMode" - {
 
-      val navigator = new IdentificationNavigator(CheckMode)
+      val mode              = CheckMode
+      val navigatorProvider = new IdentificationNavigatorProviderImpl()
+      val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
-        "must redirect to check your answers" ignore {
+        "must redirect to check your answers" in {
           forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, CheckMode))
+                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
 import navigation._
@@ -60,6 +61,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
+  implicit private def frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
   protected val fakeIncidentNavigatorProvider: IncidentNavigatorProvider =
@@ -68,11 +71,17 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
     (mode: Mode, index: Index) => new FakeAuthorisationNavigator(onwardRoute, index, mode)
 
+  protected val fakeAuthorisationsNavigatorProvider: AuthorisationsNavigatorProvider =
+    (mode: Mode) => new FakeAuthorisationsNavigator(onwardRoute, mode)
+
   protected val fakeIdentificationNavigatorProvider: IdentificationNavigatorProvider =
     (mode: Mode) => new FakeIdentificationNavigator(onwardRoute, mode)
 
   protected val fakeLocationOfGoodsNavigatorProvider: LocationOfGoodsNavigatorProvider =
     (mode: Mode) => new FakeLocationOfGoodsNavigator(onwardRoute, mode)
+
+  protected val fakeArrivalNavigatorProvider: ArrivalNavigatorProvider =
+    (mode: Mode) => new FakeArrivalNavigator(onwardRoute, mode)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

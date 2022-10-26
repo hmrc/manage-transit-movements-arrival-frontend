@@ -18,18 +18,19 @@ package navigation
 
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authorisationRoutes}
-import controllers.identification.{routes => identificationRoutes}
-import generators.{Generators, IdentificationUserAnswersGenerator}
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with IdentificationUserAnswersGenerator {
+class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
   "Authorisation Navigator" - {
 
     "when in NormalMode" - {
 
-      val navigator = new AuthorisationNavigator(NormalMode, authorisationIndex)
+      val mode              = NormalMode
+      val navigatorProvider = new AuthorisationNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to check your answers" in {
@@ -37,7 +38,7 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex))
+                .mustBe(authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex, mode))
           }
         }
       }
@@ -45,8 +46,9 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
     "when in CheckMode" - {
 
+      val mode              = CheckMode
       val navigatorProvider = new AuthorisationNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(CheckMode, authorisationIndex)
+      val navigator         = navigatorProvider.apply(mode, authorisationIndex)
 
       "when answers complete" - {
         "must redirect to location of goods type page" in {
@@ -54,7 +56,7 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, CheckMode))
+                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, mode))
           }
         }
       }

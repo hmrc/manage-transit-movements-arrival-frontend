@@ -16,9 +16,9 @@
 
 @import controllers.identification.authorisation.routes
 @import models.MovementReferenceNumber
+@import viewModels.ListItem
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
-@import viewModels.ListItem
 
 @this(
     mainTemplate: MainTemplate,
@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
 
 @singularOrPlural = @{
     if (authorisations.length == 1) "singular" else "plural"
@@ -51,7 +51,7 @@
 
     @listWithActions(authorisations)
 
-    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn, mode), 'autoComplete -> "off") {
 
         @if(allowMoreItems) {
             @inputYesNo(

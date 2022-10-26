@@ -19,9 +19,11 @@ package pages.incident
 import controllers.incident.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.IncidentSection
+import pages.sections.incident.{EndorsementSection, IncidentSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddEndorsementPage(index: Index) extends QuestionPage[Boolean] {
 
@@ -31,4 +33,10 @@ case class AddEndorsementPage(index: Index) extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddEndorsementController.onPageLoad(userAnswers.mrn, mode, index))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(EndorsementSection(index))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

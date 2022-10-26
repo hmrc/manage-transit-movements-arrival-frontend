@@ -16,9 +16,9 @@
 
 package navigation
 
-import models.Mode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.identification.IdentificationDomain
+import models.{CheckMode, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
 
@@ -26,7 +26,10 @@ import javax.inject.{Inject, Singleton}
 class IdentificationNavigatorProviderImpl @Inject() () extends IdentificationNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
-    new IdentificationNavigator(mode)
+    mode match {
+      case NormalMode => new IdentificationNavigator(mode)
+      case CheckMode  => new ArrivalNavigator(mode)
+    }
 }
 
 trait IdentificationNavigatorProvider {

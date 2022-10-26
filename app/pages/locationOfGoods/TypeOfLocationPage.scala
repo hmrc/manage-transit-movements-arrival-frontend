@@ -20,7 +20,7 @@ import controllers.locationOfGoods.routes
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

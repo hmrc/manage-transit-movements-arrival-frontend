@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
-class CheckAuthorisationAnswersHelper(
+class AuthorisationAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
@@ -32,7 +32,7 @@ class CheckAuthorisationAnswersHelper(
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
     page = AuthorisationTypePage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
     prefix = "identification.authorisation.authorisationType",
     id = Some("change-authorisation-type")
   )
@@ -43,4 +43,14 @@ class CheckAuthorisationAnswersHelper(
     prefix = "identification.authorisation.authorisationReferenceNumber",
     id = Some("change-authorisation-reference-number")
   )
+}
+
+object AuthorisationAnswersHelper {
+
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode,
+    index: Index
+  )(implicit messages: Messages) =
+    new AuthorisationAnswersHelper(userAnswers, mode, index)
 }

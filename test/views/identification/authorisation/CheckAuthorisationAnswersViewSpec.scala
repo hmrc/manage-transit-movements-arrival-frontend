@@ -17,6 +17,8 @@
 package views.identification.authorisation
 
 import controllers.identification.authorisation.routes
+import models.Mode
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.sections.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
@@ -24,24 +26,26 @@ import views.html.identification.authorisation.CheckAuthorisationAnswersView
 
 class CheckAuthorisationAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
+  private val mode: Mode = arbitrary[Mode].sample.value
+
   override val prefix: String = "identification.authorisation.checkAuthorisationAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[CheckAuthorisationAnswersView].apply(mrn, eventIndex, sections)(fakeRequest, messages)
+    injector.instanceOf[CheckAuthorisationAnswersView].apply(mrn, authorisationIndex, mode, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink
 
-  behave like pageWithSectionCaption("Arrivals")
+  behave like pageWithSectionCaption("Arrivals - Authorisations")
 
   behave like pageWithHeading()
 
   behave like pageWithCheckYourAnswers()
 
-  behave like pageWithFormAction(routes.CheckAuthorisationAnswersController.onSubmit(mrn, eventIndex).url)
+  behave like pageWithFormAction(routes.CheckAuthorisationAnswersController.onSubmit(mrn, authorisationIndex, mode).url)
 
   behave like pageWithSubmitButton("Continue")
 
