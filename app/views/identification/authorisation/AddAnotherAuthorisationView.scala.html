@@ -51,7 +51,7 @@
 
     @listWithActions(authorisations)
 
-    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
 
         @if(allowMoreItems) {
             @inputYesNo(

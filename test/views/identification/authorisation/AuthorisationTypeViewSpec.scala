@@ -41,7 +41,7 @@ class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 

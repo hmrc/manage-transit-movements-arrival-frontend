@@ -41,7 +41,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = controllers.routes.CheckArrivalsAnswersController.onSubmit(mrn), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.CheckArrivalsAnswersController.onSubmit(mrn), Symbol("autoComplete") -> "off") {
         @button(
             messageKey = "site.continue",
             preventDoubleClick = true,

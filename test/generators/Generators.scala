@@ -61,13 +61,13 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnsw
     )
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat (_.nonEmpty)
+    Gen.nonEmptyListOf[Char](Gen.alphaChar).map(_.mkString)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
       .suchThat(_.abs < Int.MaxValue)
       .suchThat(!_.isValidInt)
-      .map(_.formatted("%f"))
+      .map("%f".format(_))
 
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)
@@ -93,10 +93,7 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnsw
       .retryUntil(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    for {
-      length <- choose(1, stringMaxLength)
-      chars  <- listOfN(length, Gen.alphaNumChar)
-    } yield chars.mkString
+    Gen.nonEmptyListOf[Char](Gen.alphaNumChar).map(_.mkString)
 
   def stringsWithMaxLength(maxLength: Int, charGen: Gen[Char] = arbitrary[Char]): Gen[String] =
     for {
@@ -152,7 +149,7 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnsw
     } yield seq
 
   def nonEmptyListOf[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
-    listWithMaxLength[A](maxLength).map(NonEmptyList.fromListUnsafe _)
+    listWithMaxLength[A](maxLength).map(NonEmptyList.fromListUnsafe)
 
   def listWithMaxLength[A](maxLength: Int = maxListLength)(implicit a: Arbitrary[A]): Gen[List[A]] =
     for {

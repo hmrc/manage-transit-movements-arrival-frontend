@@ -49,7 +49,7 @@ class AddressController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      countriesService.getAddressPostcodeBasedCountries.map {
+      countriesService.getAddressPostcodeBasedCountries().map {
         countryList =>
           val form = formProvider(prefix, countryList)
           val preparedForm = request.userAnswers.get(AddressPage) match {
@@ -63,7 +63,7 @@ class AddressController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      countriesService.getAddressPostcodeBasedCountries.flatMap {
+      countriesService.getAddressPostcodeBasedCountries().flatMap {
         countryList =>
           val form = formProvider(prefix, countryList)
           form

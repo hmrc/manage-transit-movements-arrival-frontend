@@ -65,8 +65,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         whenReady(futureResult) {
           r =>
-            val result = r.right.get
-            result mustBe request
+            r.value mustBe request
         }
       }
     }
@@ -87,8 +86,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         whenReady(futureResult) {
           r =>
-            val result = r.right.get
-            result mustBe request
+            r.value mustBe request
             verify(mockSessionRepository).set(eqTo(userAnswers))
         }
       }
@@ -120,8 +118,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         whenReady(futureResult) {
           r =>
-            val result = r.right.get
-            result.userAnswers mustBe expectedAnswers
+            r.value.userAnswers mustBe expectedAnswers
             verify(mockSessionRepository).set(eqTo(expectedAnswers))
         }
       }

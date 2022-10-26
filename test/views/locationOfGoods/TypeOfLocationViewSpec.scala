@@ -41,7 +41,7 @@ class TypeOfLocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Location of goods")
 

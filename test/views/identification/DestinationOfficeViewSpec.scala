@@ -39,7 +39,7 @@ class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice]
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals")
 
@@ -47,7 +47,7 @@ class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice]
 
   behave like pageWithContent("p", "This is the customs office where the CTC transit ends.")
 
-  behave like pageWithSelect
+  behave like pageWithSelect()
 
   behave like pageWithHint("Enter the office location or code, like Wien-Flughafen or AT330200.")
 

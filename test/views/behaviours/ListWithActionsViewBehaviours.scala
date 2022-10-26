@@ -21,9 +21,8 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
+import play.twirl.api.TwirlHelperImports._
 import viewModels.ListItem
-
-import scala.collection.JavaConverters._
 
 trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators {
 
@@ -75,7 +74,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
         descriptionLists.size mustBe 1
       }
 
-      val renderedItems = doc.getElementsByClass("govuk-summary-list__row").asScala
+      val renderedItems = doc.getElementsByClass("govuk-summary-list__row").toList
 
       listItems.zipWithIndex.foreach {
         case (listItem, index) =>
@@ -106,7 +105,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
             def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =
               s"must contain a $linkType link" in {
                 val link = actions
-                  .asScala(index)
+                  .toList(index)
                   .getElementsByClass("govuk-link")
                   .first()
 

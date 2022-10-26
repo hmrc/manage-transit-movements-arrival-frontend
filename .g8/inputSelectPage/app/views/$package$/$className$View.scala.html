@@ -39,7 +39,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

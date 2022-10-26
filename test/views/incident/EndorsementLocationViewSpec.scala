@@ -40,7 +40,7 @@ class EndorsementLocationViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithTitle(countryName)
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 

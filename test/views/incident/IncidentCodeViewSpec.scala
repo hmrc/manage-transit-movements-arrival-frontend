@@ -41,7 +41,7 @@ class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 

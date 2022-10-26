@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.mvc.Call
 
@@ -24,26 +23,26 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAuthorisationNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit config: FrontendAppConfig) extends AuthorisationNavigator(mode, index) {
+class FakeAuthorisationNavigator(desiredRoute: Call, index: Index, mode: Mode) extends AuthorisationNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAuthorisationsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends AuthorisationsNavigator(mode) {
+class FakeAuthorisationsNavigator(desiredRoute: Call, mode: Mode) extends AuthorisationsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit config: FrontendAppConfig) extends IncidentNavigator(mode, index) {
+class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode) extends IncidentNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeIdentificationNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends IdentificationNavigator(mode) {
+class FakeIdentificationNavigator(desiredRoute: Call, mode: Mode) extends IdentificationNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeLocationOfGoodsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends LocationOfGoodsNavigator(mode) {
+class FakeLocationOfGoodsNavigator(desiredRoute: Call, mode: Mode) extends LocationOfGoodsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeArrivalNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends ArrivalNavigator(mode) {
+class FakeArrivalNavigator(desiredRoute: Call, mode: Mode) extends ArrivalNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

@@ -41,7 +41,7 @@ class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithTitle(authorisationType.toString, authorisationTitle)
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 

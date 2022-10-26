@@ -40,7 +40,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.InternationalAddressController.onSubmit(mrn, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.InternationalAddressController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
