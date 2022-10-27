@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.actions.Actions
 import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
 import views.html.CheckArrivalsAnswersView
@@ -42,7 +42,7 @@ class CheckArrivalsAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     _ =>
-      Redirect(Call("GET", "#")) // TODO - redirect to submission page once built
+      Redirect(routes.CheckArrivalsAnswersController.onPageLoad(mrn)) // TODO - redirect to submission page once built
   }
 
 }
