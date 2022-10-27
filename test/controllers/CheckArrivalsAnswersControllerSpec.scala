@@ -22,7 +22,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.CheckArrivalsAnswersViewModel
@@ -81,7 +80,10 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual Call("GET", "#").url
+      redirectLocation(result).value mustEqual
+        routes.CheckArrivalsAnswersController.onPageLoad(mrn).url
+
     }
+
   }
 }
