@@ -71,8 +71,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    // TODO: mustEqual onSubmit of CheckArrivalsAnswersController
-    "must redirect to task list" ignore {
+    "must redirect to itself until the next page has been built" in {
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
@@ -81,7 +80,8 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual
+        routes.CheckArrivalsAnswersController.onPageLoad(mrn).url
 
     }
 

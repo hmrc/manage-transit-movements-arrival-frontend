@@ -19,10 +19,9 @@ package pages.locationOfGoods
 import models.UserAnswers
 import models.locationOfGoods.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary
-import pages.QuestionPage
 import pages.behaviours.PageBehaviours
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
+import pages.sections.locationOfGoods.{ContactPersonSection, QualifierOfIdentificationDetailsSection}
+import play.api.libs.json.Json
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
@@ -36,10 +35,6 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
     "cleanup" - {
 
-      case object FakePage extends QuestionPage[String] {
-        override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ "fakeRoute"
-      }
-
       "must remove previous answers when given a new answer" in {
 
         val sampleUa = arbitrary[UserAnswers].sample.value
@@ -50,10 +45,25 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
             val result = sampleUa
               .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .setValue(FakePage, "fakeValue")
+              .setValue(QualifierOfIdentificationDetailsSection, Json.obj("foo" -> "bar"))
               .setValue(QualifierOfIdentificationPage, differentQualifierOfIdentification)
 
-            result.get(FakePage) must not be defined
+            result.get(QualifierOfIdentificationDetailsSection) must not be defined
+        }
+      }
+
+      "must remove contact person when answer is customs office" in {
+        forAll(arbitrary[String], arbitrary[String]) {
+          (name, telephoneNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddContactPersonPage, true)
+              .setValue(ContactPersonNamePage, name)
+              .setValue(ContactPersonTelephonePage, telephoneNumber)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
+
+            result.get(AddContactPersonPage) must not be defined
+            result.get(ContactPersonSection) must not be defined
         }
       }
 
@@ -65,10 +75,10 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
           qualifierOfIdentification =>
             val result = sampleUa
               .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .setValue(FakePage, "fakeValue")
+              .setValue(QualifierOfIdentificationDetailsSection, Json.obj("foo" -> "bar"))
               .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
 
-            result.get(FakePage) mustBe defined
+            result.get(QualifierOfIdentificationDetailsSection) mustBe defined
         }
       }
 
