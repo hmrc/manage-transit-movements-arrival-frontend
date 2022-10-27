@@ -108,14 +108,14 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = IdentificationAnswersHelper(answers, mode)
               val result = helper.identificationNumber.get
 
-              result.key.value mustBe "What is the EORI number or TIN for the consignee?"
+              result.key.value mustBe "Consignee EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe identificationNumber
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "identification number"
+              action.visuallyHiddenText.get mustBe "consignee EORI number or Trader Identification Number (TIN)"
               action.id mustBe "change-identification-number"
           }
         }
