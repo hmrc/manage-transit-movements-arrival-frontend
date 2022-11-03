@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import controllers.locationOfGoods.routes
+@import controllers.incident.location.routes
 @import models.MovementReferenceNumber
 @import models.locationOfGoods.QualifierOfIdentification
-@import viewModels.components.InputRadioViewModel.RadioWithAdditionalHtml
+@import viewModels.components.InputRadioViewModel.Radio
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
@@ -29,25 +29,24 @@
     button: Button
 )
 
-@(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.qualifierOfIdentification.title"),
+    title = messages("incident.location.qualifierOfIdentification.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.QualifierOfIdentificationController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QualifierOfIdentificationController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
             radioItems = fieldId => radios(fieldId, form.value),
-            radioType = RadioWithAdditionalHtml(
-                heading = messages("locationOfGoods.qualifierOfIdentification.heading"),
-                caption = Some(messages("locationOfGoods.caption")),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("locationOfGoods.qualifierOfIdentification.paragraph1")}</p>""".stripMargin)
+            radioType = Radio(
+                heading = messages("incident.location.qualifierOfIdentification.heading"),
+                caption = Some(messages("incident.caption"))
             )
         )
 
