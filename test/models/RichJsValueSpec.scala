@@ -345,36 +345,4 @@ class RichJsValueSpec extends SpecBase with Generators {
       )
     )
   }
-
-  "pickValuesByPath" - {
-
-    "must extract values in JsArray at a given path as a list of options" in {
-
-      val json = Json
-        .parse("""
-          |[
-          |  {
-          |     "field1": "value1_1",
-          |     "field2": "value2_1"
-          |  },
-          |  {
-          |     "field1": "value1_2"
-          |  },
-          |  {
-          |     "field2": "value2_2"
-          |  }
-          |]
-
-          |""".stripMargin)
-        .as[JsArray]
-
-      val result1 = json.pickValuesByPath[String](__ \ "field1")
-      val result2 = json.pickValuesByPath[String](__ \ "field2")
-
-      result1 mustBe Seq(Some("value1_1"), Some("value1_2"), None)
-
-      result2 mustBe Seq(Some("value2_1"), None, Some("value2_2"))
-    }
-
-  }
 }

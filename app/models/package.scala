@@ -60,9 +60,6 @@ package object models {
     def filterNot(f: JsValue => Boolean): JsArray =
       JsArray(arr.value.filterNot(f))
 
-    def pickValuesByPath[T](path: JsPath)(implicit reads: Reads[T]): Seq[Option[T]] =
-      arr.value.map(_.transform(path.json.pick).flatMap(_.validate[T]).asOpt).toSeq
-
     def filterNulls: JsArray =
       map {
         case v: JsObject => v.filterNulls
@@ -98,13 +95,8 @@ package object models {
           }
         }
         .getOrElse(Nil)
-  }
 
-  implicit class RichJsPath(path: JsPath) {
-
-    def drop(pathToDrop: JsPath): JsPath = JsPath {
-      path.path diff pathToDrop.path
-    }
+    def length: Int = arr.getOrElse(JsArray()).value.length
   }
 
   implicit class RichJsValue(jsValue: JsValue) {

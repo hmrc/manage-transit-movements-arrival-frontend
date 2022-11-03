@@ -20,10 +20,10 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.ContainerIdentificationFormProvider
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichJsPath}
+import models.{Index, Mode, MovementReferenceNumber, RichOptionJsArray}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
-import pages.sections.incident.{IncidentSection, IncidentsSection}
+import pages.sections.incident.IncidentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,16 +50,12 @@ class ContainerIdentificationNumberController @Inject() (
     formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(index))
 
   private def otherContainerIdentificationNumbers(index: Index)(implicit request: DataRequest[_]): Seq[String] = {
-    val path = ContainerIdentificationNumberPage(index).path.drop(IncidentSection(index).path)
-    request.userAnswers
-      .get(IncidentsSection)
-      .map(_.pickValuesByPath[String](path))
-      .getOrElse(Nil)
-      .zipWithIndex
-      .filterNot {
-        case (_, i) => i == index.position
-      }
-      .flatMap(_._1)
+    val numberOfIncidents = request.userAnswers.get(IncidentsSection).length
+    (0 until numberOfIncidents)
+      .map(Index(_))
+      .filterNot(_ == index)
+      .map(ContainerIdentificationNumberPage)
+      .flatMap(request.userAnswers.get(_))
   }
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
