@@ -387,6 +387,4 @@ incident.location.unLocode.placeholder = Select a UN/LOCODE.
 incident.location.unLocode.change.hidden = UN/LOCODE for the incident
 incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
 incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
-incident.location.unLocode.error.invalid = The UN/LOCODE must only include letters a to z
-incident.location.unLocode.error.length = The UN/LOCODE must be 5 characters long
 
