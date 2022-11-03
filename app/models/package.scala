@@ -185,7 +185,6 @@ package object models {
     }
 
     @nowarn("msg=Exhaustivity analysis reached max recursion depth, not all missing cases are reported.")
-    @nowarn("msg=match may not be exhaustive")
     // scalastyle:off cyclomatic.complexity
     def remove(path: JsPath): JsResult[JsValue] =
       (path.path, jsValue) match {
