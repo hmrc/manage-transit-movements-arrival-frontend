@@ -27,6 +27,9 @@ trait RadioModel[T] extends Enumerable.Implicits {
   val values: Seq[T]
 
   def radioItems(formKey: String = "value", checkedValue: Option[T] = None)(implicit messages: Messages): Seq[RadioItem] =
+    radioItems(values, formKey, checkedValue)
+
+  private def radioItems(values: Seq[T], formKey: String, checkedValue: Option[T])(implicit messages: Messages): Seq[RadioItem] =
     values.zipWithIndex.map {
       case (value, index) =>
         RadioItem(
@@ -43,4 +46,10 @@ trait RadioModel[T] extends Enumerable.Implicits {
         v => v.toString -> v
       ): _*
     )
+
+  implicit class RichTs(ts: Seq[T]) {
+
+    def asRadioItems()(implicit messages: Messages): (String, Option[T]) => Seq[RadioItem] =
+      (formKey, checkedValue) => radioItems(ts, formKey, checkedValue)
+  }
 }
