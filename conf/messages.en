@@ -382,3 +382,12 @@ incident.endorsementLocation.error.invalid = The endorsement location must only 
 
 
 
+
+incident.location.unLocode.title = What is the UN/LOCODE for the incident
+incident.location.unLocode.heading = What is the UN/LOCODE for the incident
+incident.location.unLocode.hintText = What is the UN/LOCODE for the incident hint
+incident.location.unLocode.label = What is the UN/LOCODE for the incident label
+incident.location.unLocode.placeholder = Select a unLocode
+incident.location.unLocode.change.hidden = What is the UN/LOCODE for the incident
+incident.location.unLocode.checkYourAnswersLabel = What is the UN/LOCODE for the incident
+incident.location.unLocode.error.required = Select the unLocode

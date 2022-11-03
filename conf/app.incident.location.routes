@@ -1,0 +1,5 @@
+
+GET        /:mrn/incident/location/what-is-the-un/locode-for-the-incident                        controllers.incident.location.UnLocodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/incident/location/what-is-the-un/locode-for-the-incident                        controllers.incident.location.UnLocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/incident/location/change-what-is-the-un/locode-for-the-incident                 controllers.incident.location.UnLocodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/incident/location/change-what-is-the-un/locode-for-the-incident                 controllers.incident.location.UnLocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
