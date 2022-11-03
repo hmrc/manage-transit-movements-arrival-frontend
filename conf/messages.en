@@ -379,15 +379,14 @@ incident.endorsementLocation.error.required = Enter where in {0} the endorsement
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
+incident.location.unLocode.title = What is the UN/LOCODE for the incident?
+incident.location.unLocode.heading = What is the UN/LOCODE for the incident?
+incident.location.unLocode.hintText = Enter the location or code, like Berlin or DE BER.
+incident.location.unlocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+incident.location.unLocode.placeholder = Select a UN/LOCODE.
+incident.location.unLocode.change.hidden = UN/LOCODE for the incident
+incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
+incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
+incident.location.unLocode.error.invalid = The UN/LOCODE must only include letters a to z
+incident.location.unLocode.error.length = The UN/LOCODE must be 5 characters long
 
-
-
-
-incident.location.unLocode.title = What is the UN/LOCODE for the incident
-incident.location.unLocode.heading = What is the UN/LOCODE for the incident
-incident.location.unLocode.hintText = What is the UN/LOCODE for the incident hint
-incident.location.unLocode.label = What is the UN/LOCODE for the incident label
-incident.location.unLocode.placeholder = Select a unLocode
-incident.location.unLocode.change.hidden = What is the UN/LOCODE for the incident
-incident.location.unLocode.checkYourAnswersLabel = What is the UN/LOCODE for the incident
-incident.location.unLocode.error.required = Select the unLocode

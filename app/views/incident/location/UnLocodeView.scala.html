@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[UnLocode], mrn: MovementReferenceNumber, unLocodes: Seq[UnLocode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[UnLocode], mrn: MovementReferenceNumber, unLocodes: Seq[UnLocode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.location.unLocode.title"),
@@ -39,14 +39,16 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.UnLocodeController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.UnLocodeController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("incident.location.unLocode.heading")
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("incident.location.unLocode.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.location.unlocode.paragraph")}</p>""")
             ),
             hint = Some(messages("incident.location.unLocode.hintText")),
             selectItems = unLocodes.toSelectItems(form.value),
