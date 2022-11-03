@@ -387,6 +387,17 @@ incident.equipment.containerIndicatorYesNo.heading = Did the incident involve a 
 incident.equipment.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
 incident.equipment.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
 
+incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
+
+incident.equipment.addTransportEquipment.title = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.heading = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
+incident.equipment.addTransportEquipment.paragraph = This includes any containers or seals.
+
 incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
 incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
 incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = What’s the container identification number?
