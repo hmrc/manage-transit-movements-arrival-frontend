@@ -386,3 +386,8 @@ incident.equipment.containerIndicatorYesNo.title = Did the incident involve a co
 incident.equipment.containerIndicatorYesNo.heading = Did the incident involve a container?
 incident.equipment.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
 incident.equipment.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
+
+incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number

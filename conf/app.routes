@@ -4,8 +4,6 @@
 ->         /                                                 app.locationOfGoods.Routes
 ->         /                                                 app.identification.authorisation.Routes
 ->         /                                                 app.incident.Routes
-->         /                                                 app.incident.equipment.Routes
-
 
 GET        /                                                 controllers.RedirectController.onPageLoad()
 
