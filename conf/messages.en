@@ -392,8 +392,8 @@ incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to a
 incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
-incident.addTransportEquipment.title = Do you need to add any transport equipment?
-incident.addTransportEquipment.heading = Do you need to add any transport equipment?
-incident.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
-incident.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
-incident.addTransportEquipment.paragraph = This includes any containers or seals.
+incident.equipment.addTransportEquipment.title = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.heading = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
+incident.equipment.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
+incident.equipment.addTransportEquipment.paragraph = This includes any containers or seals.

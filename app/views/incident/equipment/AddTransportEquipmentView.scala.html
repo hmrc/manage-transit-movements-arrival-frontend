@@ -30,7 +30,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.addTransportEquipment.title"),
+    title = messages("incident.equipment.addTransportEquipment.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,9 +42,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("incident.addTransportEquipment.heading"),
+                heading = messages("incident.equipment.addTransportEquipment.heading"),
                 caption = Some(messages("incident.caption")),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.addTransportEquipment.paragraph")}</p>""")
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.equipment.addTransportEquipment.paragraph")}</p>""")
             )
         )
 
