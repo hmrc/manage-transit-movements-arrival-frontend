@@ -19,13 +19,13 @@ package pages.incident.equipment
 import controllers.incident.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.TransportEquipmentSection
+import pages.sections.incident.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportEquipmentSection(index).path \ toString
+  override def path: JsPath = EquipmentSection(index).path \ toString
 
   override def toString: String = "containerIndicatorYesNo"
 

@@ -20,8 +20,8 @@ import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class TransportEquipmentSection(index: Index) extends Section[JsObject] {
+case class EquipmentSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = IncidentSection(index).path \ "transportEquipment"
+  override def path: JsPath = IncidentSection(index).path \ "equipment"
 
 }
