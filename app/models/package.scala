@@ -60,6 +60,9 @@ package object models {
     def filterNot(f: JsValue => Boolean): JsArray =
       JsArray(arr.value.filterNot(f))
 
+    def pickValuesByPath[T](path: JsPath)(implicit reads: Reads[T]): Seq[Option[T]] =
+      arr.value.map(_.transform(path.json.pick).flatMap(_.validate[T]).asOpt).toSeq
+
     def filterNulls: JsArray =
       map {
         case v: JsObject => v.filterNulls

@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package forms.incident
+package pages.incident.equipment
 
-import forms.StopOnFirstFail
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class ContainerIdentificationNumberPageSpec extends PageBehaviours {
 
-class EndorsementAuthorityFormProvider @Inject() extends Mappings {
+  "ContainerIdentificationNumberPage" - {
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(17, s"$prefix.error.length"),
-            regexp(stringFieldRegex, s"$prefix.error.invalid")
-          )
-        )
-    )
+    beRetrievable[String](ContainerIdentificationNumberPage(index))
+
+    beSettable[String](ContainerIdentificationNumberPage(index))
+
+    beRemovable[String](ContainerIdentificationNumberPage(index))
+  }
 }
