@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class ContainerIdentificationFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, otherContainerIdentificationNumbers: Seq[String]): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(

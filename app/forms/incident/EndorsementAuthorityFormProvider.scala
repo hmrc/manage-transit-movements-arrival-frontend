@@ -30,7 +30,7 @@ class EndorsementAuthorityFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(17, s"$prefix.error.length"),
+            maxLength(35, s"$prefix.error.length"),
             regexp(stringFieldRegex, s"$prefix.error.invalid")
           )
         )

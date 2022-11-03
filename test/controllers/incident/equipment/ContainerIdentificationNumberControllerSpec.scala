@@ -34,8 +34,9 @@ import scala.concurrent.Future
 class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                            = new ContainerIdentificationFormProvider()
-  private val form                                    = formProvider("incident.equipment.containerIdentificationNumber")
+  private val form                                    = formProvider("incident.equipment.containerIdentificationNumber", Nil)
   private val mode                                    = NormalMode
+  private val validAnswer                             = "testString"
   private lazy val containerIdentificationNumberRoute = routes.ContainerIdentificationNumberController.onPageLoad(mrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -63,14 +64,14 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), "test string")
+      val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerIdentificationNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[ContainerIdentificationNumberView]
 
@@ -87,7 +88,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, containerIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -102,7 +103,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, containerIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, containerIdentificationNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -133,7 +134,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, containerIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

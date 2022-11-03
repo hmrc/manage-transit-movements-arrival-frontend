@@ -28,7 +28,7 @@ class ContainerIdentificationFormProviderSpec extends StringFieldBehaviours {
   val lengthKey      = s"$prefix.error.length"
   val maxLength      = 17
 
-  val form = new ContainerIdentificationFormProvider()(prefix)
+  val form = new ContainerIdentificationFormProvider()(prefix, Nil)
 
   ".value" - {
 

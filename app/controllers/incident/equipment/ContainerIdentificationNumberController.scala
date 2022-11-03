@@ -19,12 +19,13 @@ package controllers.incident.equipment
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.ContainerIdentificationFormProvider
+import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber, RichJsArray}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.sections.incident.IncidentsSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsPath.\
 import play.api.libs.json.__
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,29 +47,32 @@ class ContainerIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("incident.equipment.containerIdentificationNumber")
+  private def form(index: Index)(implicit request: DataRequest[_]): Form[String] =
+    formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(index))
 
-  private def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+  private def otherContainerIdentificationNumbers(index: Index)(implicit request: DataRequest[_]): Seq[String] =
+    request.userAnswers
+      .get(IncidentsSection)
+      .map(_.pickValuesByPath[String](__ \ "equipment" \ "containerIdentificationNumber")) // TODO: Find a better approach to get the associated path
+      .getOrElse(Nil)
+      .zipWithIndex
+      .filterNot {
+        case (_, i) => i == index.position
+      }
+      .flatMap(_._1)
+
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val containerIdentificationNumbers = request.userAnswers.get(IncidentsSection)
-      .map(_.pickValuesByPath[String]( __ \ "equipment" \ "containerIdentificationNumber"))
-        .getOrElse(Nil)
-        .zipWithIndex
-        .filterNot {
-          case (_,i) => i == index.position
-        }.flatMap(_._1)
-
-
       val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(index)
+        case Some(value) => form(index).fill(value)
       }
       Ok(view(preparedForm, mrn, mode, index))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
+      form(index)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),

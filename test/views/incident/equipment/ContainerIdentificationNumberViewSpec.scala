@@ -29,7 +29,7 @@ class ContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[Stri
 
   override val prefix: String = "incident.equipment.containerIdentificationNumber"
 
-  override def form: Form[String] = new ContainerIdentificationFormProvider()(prefix)
+  override def form: Form[String] = new ContainerIdentificationFormProvider()(prefix, Nil)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[ContainerIdentificationNumberView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
