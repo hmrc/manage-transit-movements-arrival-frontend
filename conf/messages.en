@@ -392,3 +392,15 @@ incident.location.unLocode.change.hidden = UN/LOCODE for the incident
 incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
 incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
 
+incident.location.coordinates.title = What are the coordinates for the incident?
+incident.location.coordinates.heading = What are the coordinates for the incident?
+incident.location.coordinates.latitude = Latitude
+incident.location.coordinates.longitude = Longitude
+incident.location.coordinates.hintText = These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.
+incident.location.coordinates.checkYourAnswersLabel = Coordinates
+incident.location.coordinates.change.hidden = coordinates for the incident
+incident.location.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal place and a plus or minus sign
+incident.location.coordinates.error.latitude.maximum = The latitude coordinates must be between -90 and 90
+incident.location.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
+incident.location.coordinates.error.required = Enter the {0} coordinates for the incident
+incident.location.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
