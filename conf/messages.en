@@ -382,3 +382,16 @@ incident.endorsementLocation.error.invalid = The endorsement location must only 
 
 
 
+
+incident.location.address.title = What is the address for the incident
+incident.location.address.heading = What is the address for the incident
+incident.location.address.addressLine1 = Address line 1
+incident.location.address.addressLine2 = Address line 2
+incident.location.address.postalCode = Postal code
+incident.location.address.country = Country
+incident.location.address.checkYourAnswersLabel = What is the address for the incident
+incident.location.address.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z, numbers 0 to 9 and spaces
+incident.location.address.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+incident.location.address.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+incident.location.address.error.required = Enter the {0} of {1}’s address
+incident.location.address.error.length = The {0} of {1}’s address must be 35 characters or less
