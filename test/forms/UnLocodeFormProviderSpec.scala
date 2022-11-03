@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package forms
 
-import forms.UnLocodeFormProvider
 import forms.behaviours.StringFieldBehaviours
 import models.UnLocodeList
+import play.api.data.FormError
+import generators.Generators
 import models.reference.UnLocode
 import org.scalacheck.Gen
-import play.api.data.FormError
 
-class UnLocodeFormProviderSpec extends StringFieldBehaviours {
+class UnLocodeFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
@@ -54,15 +54,13 @@ class UnLocodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if unLocode unLocodeExtendedCode does not exist in the unLocode list" in {
-
+    "not bind if customs office id does not exist in the unLocodeList" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind an unLocode id which is in the list" in {
-
+    "bind a unLocode id which is in the list" in {
       val boundForm = form.bind(Map("value" -> "ADALV"))
       val field     = boundForm("value")
       field.errors must be(empty)

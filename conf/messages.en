@@ -379,6 +379,19 @@ incident.endorsementLocation.error.required = Enter where in {0} the endorsement
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
+incident.location.qualifierOfIdentification.title = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.heading = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.error.required = Select how you want to identify where the incident happened
+
+incident.location.unLocode.title = What is the UN/LOCODE for the incident?
+incident.location.unLocode.heading = What is the UN/LOCODE for the incident?
+incident.location.unLocode.hintText = Enter the location or code, like Berlin or DE BER.
+incident.location.unlocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+incident.location.unLocode.placeholder = Select a UN/LOCODE.
+incident.location.unLocode.change.hidden = UN/LOCODE for the incident
+incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
+incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
+
 incident.location.coordinates.title = What are the coordinates for the incident?
 incident.location.coordinates.heading = What are the coordinates for the incident?
 incident.location.coordinates.latitude = Latitude

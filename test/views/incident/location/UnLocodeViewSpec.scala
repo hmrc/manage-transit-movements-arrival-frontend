@@ -14,41 +14,42 @@
  * limitations under the License.
  */
 
-package views.locationOfGoods
+package views.incident.location
 
 import forms.UnLocodeFormProvider
+import views.behaviours.InputSelectViewBehaviours
+import models.NormalMode
 import models.reference.UnLocode
-import models.{NormalMode, UnLocodeList}
+import models.UnLocodeList
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputSelectViewBehaviours
-import views.html.locationOfGoods.UnlocodeView
+import views.html.incident.location.UnLocodeView
 
-class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
-
-  override val prefix: String = "locationOfGoods.unlocode"
+class UnLocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
 
   override def form: Form[UnLocode] = new UnLocodeFormProvider()(prefix, UnLocodeList(values))
 
   override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
-    injector.instanceOf[UnlocodeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[UnLocodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[UnLocode] = arbitraryUnLocode
+
+  override val prefix: String = "incident.location.unLocode"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Arrivals - Location of goods")
+  behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading()
 
-  behave like pageWithSelect()
-
-  behave like pageWithHint("Enter the location or code, like Berlin or DEBER.")
+  behave like pageWithHint("Enter the location or code, like Berlin or DE BER.")
 
   behave like pageWithContent("p", "This is a 5-character code used to identify a transit-related location, like a port or clearance depot.")
+
+  behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Continue")
 }
