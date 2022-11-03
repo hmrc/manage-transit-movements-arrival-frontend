@@ -39,7 +39,9 @@ class AddressViewSpec extends DynamicAddressViewBehaviours with Generators {
 
   behave like pageWithHeading()
 
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
   behave like pageWithAddressInput()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
