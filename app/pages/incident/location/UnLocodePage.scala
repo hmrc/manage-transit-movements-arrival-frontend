@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package pages.incident.location
 
-import forms.mappings.Mappings
-import models.UnLocodeList
+import controllers.incident.location.routes
+import models.{Index, Mode, UserAnswers}
 import models.reference.UnLocode
-import play.api.data.Form
+import pages.QuestionPage
+import pages.sections.incident
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case class UnLocodePage(index: Index) extends QuestionPage[UnLocode] {
 
-class UnLocodeFormProvider @Inject() extends Mappings {
+  override def path: JsPath = incident.IncidentSection(index).path \ toString
 
-  def apply(prefix: String, unLocodeList: UnLocodeList): Form[UnLocode] =
-    Form(
-      "value" -> unLocode(unLocodeList, s"$prefix.error.required")
-    )
+  override def toString: String = "unLocode"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.UnLocodeController.onPageLoad(userAnswers.mrn, mode, index))
 }
