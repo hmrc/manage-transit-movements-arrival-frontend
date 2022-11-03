@@ -20,13 +20,12 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.ContainerIdentificationFormProvider
 import models.requests.DataRequest
-import models.{Index, Mode, MovementReferenceNumber, RichJsArray}
+import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichJsPath}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
-import pages.sections.incident.IncidentsSection
+import pages.sections.incident.{IncidentSection, IncidentsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.__
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,16 +49,18 @@ class ContainerIdentificationNumberController @Inject() (
   private def form(index: Index)(implicit request: DataRequest[_]): Form[String] =
     formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(index))
 
-  private def otherContainerIdentificationNumbers(index: Index)(implicit request: DataRequest[_]): Seq[String] =
+  private def otherContainerIdentificationNumbers(index: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val path = ContainerIdentificationNumberPage(index).path.drop(IncidentSection(index).path)
     request.userAnswers
       .get(IncidentsSection)
-      .map(_.pickValuesByPath[String](__ \ "equipment" \ "containerIdentificationNumber")) // TODO: Find a better approach to get the associated path
+      .map(_.pickValuesByPath[String](path))
       .getOrElse(Nil)
       .zipWithIndex
       .filterNot {
         case (_, i) => i == index.position
       }
       .flatMap(_._1)
+  }
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

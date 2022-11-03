@@ -100,6 +100,13 @@ package object models {
         .getOrElse(Nil)
   }
 
+  implicit class RichJsPath(path: JsPath) {
+
+    def drop(pathToDrop: JsPath): JsPath = JsPath {
+      path.path diff pathToDrop.path
+    }
+  }
+
   implicit class RichJsValue(jsValue: JsValue) {
 
     def set(path: JsPath, value: JsValue): JsResult[JsValue] =
