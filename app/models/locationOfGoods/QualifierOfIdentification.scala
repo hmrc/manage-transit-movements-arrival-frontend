@@ -41,4 +41,10 @@ object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
     Address,
     PostalCode
   )
+
+  val locationValues: Seq[QualifierOfIdentification] = Seq(
+    Coordinates,
+    Unlocode,
+    Address
+  )
 }
