@@ -28,7 +28,8 @@ case class IncidentDomain(
   incidentCountry: Country,
   incidentCode: IncidentCode,
   incidentText: String,
-  endorsement: Option[EndorsementDomain]
+  endorsement: Option[EndorsementDomain],
+  location: IncidentLocationDomain
 ) extends JourneyDomainModel
 
 object IncidentDomain {
@@ -38,7 +39,8 @@ object IncidentDomain {
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
-      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)))
+      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
+      UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index))
     ).tupled.map((IncidentDomain.apply _).tupled)
 
 }

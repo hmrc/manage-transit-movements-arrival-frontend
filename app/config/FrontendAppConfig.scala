@@ -73,6 +73,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val maxIdentificationAuthorisations: Int = configuration.get[Int]("limits.maxIdentificationAuthorisations")
+  lazy val maxIncidents: Int                    = configuration.get[Int]("limits.maxIncidents")
 
   lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
