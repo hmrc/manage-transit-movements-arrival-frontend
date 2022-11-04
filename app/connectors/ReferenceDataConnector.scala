@@ -65,4 +65,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     "Accept" -> "application/vnd.hmrc.2.0+json"
   )
 
+  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/country-without-zip"
+    http.GET[Seq[CountryCode]](serviceUrl, headers = version2Header)
+  }
+
 }
