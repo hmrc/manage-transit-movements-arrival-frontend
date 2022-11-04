@@ -23,6 +23,12 @@ date.day.capitalized = Day
 date.month.capitalized = Month
 date.year.capitalized = Year
 
+address.postalCode = postal code
+address.country = country
+address.numberAndStreet = number and street name
+address.city = town or city
+address.streetNumber = street number
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -404,3 +410,14 @@ incident.location.coordinates.error.latitude.maximum = The latitude coordinates 
 incident.location.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
 incident.location.coordinates.error.required = Enter the {0} coordinates for the incident
 incident.location.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
+incident.location.address.title = What is the address for the incident
+incident.location.address.heading = What is the address for the incident
+incident.location.address.numberAndStreet = Number and street name
+incident.location.address.city = Town or City
+incident.location.address.postalCode = Postal code
+incident.location.address.postalCode.optional = Postal code (optional)
+incident.location.address.checkYourAnswersLabel = What is the address for the incident
+incident.location.address.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
+incident.location.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+incident.location.address.error.required = Enter the {0} for the incident
+incident.location.address.error.length = The {0} must be {1} characters or less
