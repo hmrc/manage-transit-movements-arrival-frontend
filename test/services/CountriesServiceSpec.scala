@@ -18,16 +18,18 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import generators.Generators
 import models.CountryList
 import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
 
   private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                           = new CountriesService(mockRefDataConnector)
@@ -84,5 +86,49 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach {
         verify(mockRefDataConnector).getAddressPostcodeBasedCountries()(any(), any())
       }
     }
+
+    "getCountriesWithoutZip" - {
+      "must return a list of countries without ZIP codes" in {
+
+        when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+          .thenReturn(Future.successful(countries.map(_.code)))
+
+        service.getCountriesWithoutZip().futureValue mustBe
+          Seq(country1.code, country2.code, country3.code)
+
+        verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
+      }
+    }
+
+    "doesCountryRequireZip" - {
+      "must return true" - {
+        "when countries without zip doesn't contain this country" in {
+          when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+            .thenReturn(Future.successful(countries.map(_.code)))
+
+          val country = Arbitrary.arbitrary[Country].retryUntil(!countries.contains(_)).sample.value
+
+          val result = service.doesCountryRequireZip(country).futureValue
+
+          result mustBe true
+
+        }
+      }
+
+      "must return false" - {
+        "when countries without zip does contain this country" in {
+          when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+            .thenReturn(Future.successful(countries.map(_.code)))
+
+          val country = countries.head
+
+          val result = service.doesCountryRequireZip(country).futureValue
+
+          result mustBe false
+
+        }
+      }
+    }
+
   }
 }
