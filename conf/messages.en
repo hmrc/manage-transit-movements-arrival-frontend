@@ -379,16 +379,12 @@ incident.endorsementLocation.error.required = Enter where in {0} the endorsement
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
-
-
-
-
 incident.location.address.title = What is the address for the incident
 incident.location.address.heading = What is the address for the incident
-incident.location.address.addressLine1 = Address line 1
-incident.location.address.addressLine2 = Address line 2
+incident.location.address.numberAndStreet = Number and street name
+incident.location.address.city = Town or City
 incident.location.address.postalCode = Postal code
-incident.location.address.country = Country
+incident.location.address.postalCode.optional = Postal code (optional)
 incident.location.address.checkYourAnswersLabel = What is the address for the incident
 incident.location.address.error.postcode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
 incident.location.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
