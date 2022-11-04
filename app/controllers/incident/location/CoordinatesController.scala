@@ -18,7 +18,7 @@ package controllers.incident.location
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.CoordinatesFormProvider
+import forms.CoordinatesFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.incident.location.CoordinatesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

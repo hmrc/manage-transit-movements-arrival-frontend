@@ -17,7 +17,7 @@
 package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.CoordinatesFormProvider
+import forms.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.IncidentNavigatorProvider

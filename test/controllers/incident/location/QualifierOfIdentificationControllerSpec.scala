@@ -17,7 +17,7 @@
 package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.QualifierOfIdentificationFormProvider
+import forms.QualifierOfIdentificationFormProvider
 import models.NormalMode
 import models.locationOfGoods.QualifierOfIdentification
 import navigation.IncidentNavigatorProvider

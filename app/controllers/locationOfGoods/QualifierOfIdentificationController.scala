@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.QualifierOfIdentificationFormProvider
+import forms.QualifierOfIdentificationFormProvider
 import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, MovementReferenceNumber}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}

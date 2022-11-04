@@ -16,7 +16,7 @@
 
 package views.incident.location
 
-import forms.locationOfGoods.QualifierOfIdentificationFormProvider
+import forms.QualifierOfIdentificationFormProvider
 import models.NormalMode
 import models.locationOfGoods.QualifierOfIdentification
 import play.api.data.Form

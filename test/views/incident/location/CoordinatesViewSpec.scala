@@ -16,7 +16,7 @@
 
 package views.incident.location
 
-import forms.locationOfGoods.CoordinatesFormProvider
+import forms.CoordinatesFormProvider
 import generators.Generators
 import models.{Coordinates, NormalMode}
 import play.api.data.Form
