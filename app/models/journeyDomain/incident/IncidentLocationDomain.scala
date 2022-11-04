@@ -17,9 +17,8 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.{Coordinates, DynamicAddress, Index}
+import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference.UnLocode
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 

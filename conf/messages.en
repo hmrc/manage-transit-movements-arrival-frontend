@@ -29,6 +29,14 @@ address.numberAndStreet = number and street name
 address.city = town or city
 address.streetNumber = street number
 
+qualifierOfIdentification.customsOffice = Customs office identifier
+qualifierOfIdentification.eoriNumber = EORI number
+qualifierOfIdentification.authorisationNumber = Authorisation number
+qualifierOfIdentification.coordinates = Coordinates
+qualifierOfIdentification.unlocode = UN/LOCODE
+qualifierOfIdentification.address = Address
+qualifierOfIdentification.postalCode = Postal code
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -253,13 +261,6 @@ locationOfGoods.internationalAddress.error.country.required = Enter the country 
 locationOfGoods.qualifierOfIdentification.title = How do you want to identify the location of goods?
 locationOfGoods.qualifierOfIdentification.heading = How do you want to identify the location of goods?
 locationOfGoods.qualifierOfIdentification.paragraph1 = This needs to be precise enough for Customs to locate the goods and carry out their checks.
-locationOfGoods.qualifierOfIdentification.customsOffice = Customs office identifier
-locationOfGoods.qualifierOfIdentification.eoriNumber = EORI number
-locationOfGoods.qualifierOfIdentification.authorisationNumber = Authorisation number
-locationOfGoods.qualifierOfIdentification.coordinates = Coordinates
-locationOfGoods.qualifierOfIdentification.unlocode = UN/LOCODE
-locationOfGoods.qualifierOfIdentification.address = Address
-locationOfGoods.qualifierOfIdentification.postalCode = Postal code
 locationOfGoods.qualifierOfIdentification.checkYourAnswersLabel = Identifier type
 locationOfGoods.qualifierOfIdentification.change.hidden = identifier type for the location of goods
 locationOfGoods.qualifierOfIdentification.error.required = Select how you want to identify the location of goods

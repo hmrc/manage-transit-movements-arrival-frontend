@@ -18,11 +18,10 @@ package models.journeyDomain
 
 import base.SpecBase
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.InternationalAddress
+import models.{InternationalAddress, QualifierOfIdentification}
 import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
-import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary

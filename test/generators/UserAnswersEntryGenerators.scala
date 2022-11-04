@@ -19,9 +19,9 @@ package generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.incident.IncidentCode
-import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.locationOfGoods.TypeOfLocation
 import models.reference.{Country, CustomsOffice, UnLocode}
-import models.{Coordinates, DynamicAddress, InternationalAddress, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}

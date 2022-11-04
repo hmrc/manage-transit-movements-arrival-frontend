@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.locationOfGoods.QualifierOfIdentification
+import models.QualifierOfIdentification
 import play.api.data.FormError
 
 class QualifierOfIdentificationFormProviderSpec extends OptionFieldBehaviours {

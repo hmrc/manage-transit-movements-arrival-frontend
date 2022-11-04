@@ -19,9 +19,8 @@ package models.journeyDomain.incident
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference.UnLocode
-import models.{Coordinates, DynamicAddress}
+import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.location._

@@ -17,9 +17,8 @@
 package generators
 
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
-import models._
+import models.{QualifierOfIdentification, _}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -81,12 +80,12 @@ trait ModelGenerators {
       Gen.oneOf(models.locationOfGoods.TypeOfLocation.values)
     }
 
-  implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[models.locationOfGoods.QualifierOfIdentification] =
+  implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
       Gen.oneOf(QualifierOfIdentification.values)
     }
 
-  lazy val arbitraryNonLocationQualifierOfIdentification: Arbitrary[models.locationOfGoods.QualifierOfIdentification] =
+  lazy val arbitraryNonLocationQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
       Gen.oneOf(QualifierOfIdentification.values diff QualifierOfIdentification.locationValues)
     }

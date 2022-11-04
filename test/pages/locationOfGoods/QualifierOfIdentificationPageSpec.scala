@@ -16,8 +16,7 @@
 
 package pages.locationOfGoods
 
-import models.UserAnswers
-import models.locationOfGoods.QualifierOfIdentification
+import models.{QualifierOfIdentification, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.locationOfGoods.{ContactPersonSection, QualifierOfIdentificationDetailsSection}

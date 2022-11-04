@@ -17,8 +17,7 @@
 package pages.incident.location
 
 import controllers.incident.location.routes
-import models.locationOfGoods.QualifierOfIdentification
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
 import play.api.libs.json.JsPath

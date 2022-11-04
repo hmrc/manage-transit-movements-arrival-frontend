@@ -18,8 +18,8 @@ package viewModels
 
 import base.SpecBase
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.Mode
-import models.locationOfGoods.QualifierOfIdentification._
+import models.QualifierOfIdentification._
+import models.{Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods._
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
@@ -28,7 +28,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
 
   "must return section" - {
     "when CustomsOffice qualifier" in {
-      val initialAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage, CustomsOffice)
+      val initialAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
 
       forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
         (mode, answers) =>
@@ -40,7 +40,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when EoriNumber qualifier" - {
-      val qualifier = EoriNumber
+      val qualifier = QualifierOfIdentification.EoriNumber
 
       "with neither additional identifier nor contact person" in {
         val initialAnswers = emptyUserAnswers
@@ -104,7 +104,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when AuthorisationNumber qualifier" - {
-      val qualifier = AuthorisationNumber
+      val qualifier = QualifierOfIdentification.AuthorisationNumber
 
       "with neither additional identifier nor contact person" in {
         val initialAnswers = emptyUserAnswers
@@ -168,7 +168,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when Coordinates qualifier" - {
-      val qualifier = Coordinates
+      val qualifier = QualifierOfIdentification.Coordinates
 
       "with no contact person" in {
         val initialAnswers = emptyUserAnswers
@@ -200,7 +200,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when Unlocode qualifier" - {
-      val qualifier = Unlocode
+      val qualifier = QualifierOfIdentification.Unlocode
 
       "with no contact person" in {
         val initialAnswers = emptyUserAnswers
@@ -232,7 +232,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when Address qualifier" - {
-      val qualifier = Address
+      val qualifier = QualifierOfIdentification.Address
 
       "with no contact person" in {
         val initialAnswers = emptyUserAnswers
@@ -264,7 +264,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with 
     }
 
     "when PostalCode qualifier" - {
-      val qualifier = PostalCode
+      val qualifier = QualifierOfIdentification.PostalCode
 
       "with no contact person" in {
         val initialAnswers = emptyUserAnswers

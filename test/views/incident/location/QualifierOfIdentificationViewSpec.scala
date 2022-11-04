@@ -17,8 +17,7 @@
 package views.incident.location
 
 import forms.QualifierOfIdentificationFormProvider
-import models.NormalMode
-import models.locationOfGoods.QualifierOfIdentification
+import models.{NormalMode, QualifierOfIdentification}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem

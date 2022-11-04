@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package models.locationOfGoods
-
-import models.{RadioModel, WithName}
+package models
 
 sealed trait QualifierOfIdentification
 
@@ -30,7 +28,7 @@ object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
   case object Address extends WithName("address") with QualifierOfIdentification
   case object PostalCode extends WithName("postalCode") with QualifierOfIdentification
 
-  override val messageKeyPrefix: String = "locationOfGoods.qualifierOfIdentification"
+  override val messageKeyPrefix: String = "qualifierOfIdentification"
 
   val values: Seq[QualifierOfIdentification] = Seq(
     CustomsOffice,

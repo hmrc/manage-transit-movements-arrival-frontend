@@ -16,7 +16,7 @@
 
 package pages.incident.location
 
-import models.locationOfGoods.QualifierOfIdentification
+import models.QualifierOfIdentification
 import pages.behaviours.PageBehaviours
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {

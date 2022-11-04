@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.locationOfGoods.QualifierOfIdentification
+import models.QualifierOfIdentification
 import play.api.data.Form
 
 import javax.inject.Inject

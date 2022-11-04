@@ -19,9 +19,7 @@ package controllers.incident.location
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.QualifierOfIdentificationFormProvider
-import models.locationOfGoods.QualifierOfIdentification
-import models.locationOfGoods.QualifierOfIdentification._
-import models.{Index, Mode, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.QualifierOfIdentificationPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}

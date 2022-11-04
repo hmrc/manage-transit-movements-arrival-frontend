@@ -17,9 +17,8 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.locationOfGoods.QualifierOfIdentification
-import models.locationOfGoods.QualifierOfIdentification.CustomsOffice
-import models.{Mode, UserAnswers}
+import models.QualifierOfIdentification.CustomsOffice
+import models.{Mode, QualifierOfIdentification, UserAnswers}
 import pages.QuestionPage
 import pages.sections.locationOfGoods.{ContactPersonSection, LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath

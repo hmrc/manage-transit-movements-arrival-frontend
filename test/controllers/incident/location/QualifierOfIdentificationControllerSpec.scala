@@ -18,8 +18,7 @@ package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.QualifierOfIdentificationFormProvider
-import models.NormalMode
-import models.locationOfGoods.QualifierOfIdentification
+import models.{NormalMode, QualifierOfIdentification}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
