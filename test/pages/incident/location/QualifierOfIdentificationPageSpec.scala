@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package pages.incident.location
 
-import forms.mappings.Mappings
-import models.UnLocodeList
-import models.reference.UnLocode
-import play.api.data.Form
+import models.locationOfGoods.QualifierOfIdentification
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
-class UnLocodeFormProvider @Inject() extends Mappings {
+  "QualifierOfIdentificationPage" - {
 
-  def apply(prefix: String, unLocodeList: UnLocodeList): Form[UnLocode] =
-    Form(
-      "value" -> unLocode(unLocodeList, s"$prefix.error.required")
-    )
+    beRetrievable[QualifierOfIdentification](QualifierOfIdentificationPage(index))
+
+    beSettable[QualifierOfIdentification](QualifierOfIdentificationPage(index))
+
+    beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage(index))
+  }
 }
