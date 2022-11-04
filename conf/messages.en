@@ -404,3 +404,4 @@ incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = What’
 incident.equipment.containerIdentificationNumber.error.required = Enter the container identification number
 incident.equipment.containerIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 incident.equipment.containerIdentificationNumber.error.length = The identification number must be 17 characters or less
+incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique container identification number

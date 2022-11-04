@@ -31,7 +31,8 @@ class ContainerIdentificationFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(17, s"$prefix.error.length"),
-            regexp(alphaNumericRegex, s"$prefix.error.invalid")
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            valueIsNotInList(otherContainerIdentificationNumbers, s"$prefix.error.alreadySubmitted")
           )
         )
     )

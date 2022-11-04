@@ -23,10 +23,11 @@ import play.api.data.FormError
 
 class ContainerIdentificationFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix = Gen.alphaNumStr.sample.value
-  val requiredKey    = s"$prefix.error.required"
-  val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 17
+  private val prefix      = Gen.alphaNumStr.sample.value
+  val requiredKey         = s"$prefix.error.required"
+  val alreadySubmittedKey = s"$prefix.error.alreadySubmitted"
+  val lengthKey           = s"$prefix.error.length"
+  val maxLength           = 17
 
   val form = new ContainerIdentificationFormProvider()(prefix, Nil)
 
@@ -52,5 +53,13 @@ class ContainerIdentificationFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind if value exists in the list of other ids" in {
+      val otherIds  = Seq("foo", "bar")
+      val form      = new ContainerIdentificationFormProvider()(prefix, otherIds)
+      val boundForm = form.bind(Map("value" -> "foo"))
+      val field     = boundForm("value")
+      field.errors mustEqual Seq(FormError(fieldName, alreadySubmittedKey))
+    }
   }
 }
