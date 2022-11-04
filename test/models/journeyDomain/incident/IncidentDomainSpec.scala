@@ -19,17 +19,14 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
-import models.Coordinates
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
 import pages.incident._
-import pages.incident.location._
 
 import java.time.LocalDate
 
@@ -37,7 +34,6 @@ class IncidentDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
-  private val coordinates  = arbitrary[Coordinates].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
   private val localDate    = LocalDate.now()
   private val authority    = Gen.alphaNumStr.sample.value

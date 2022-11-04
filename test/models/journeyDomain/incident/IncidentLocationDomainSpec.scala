@@ -28,9 +28,9 @@ import pages.incident.location._
 
 class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  private val address      = arbitrary[DynamicAddress].sample.value
-  private val unLocode     = arbitrary[UnLocode].sample.value
-  private val coordinates  = arbitrary[Coordinates].sample.value
+  private val address     = arbitrary[DynamicAddress].sample.value
+  private val unLocode    = arbitrary[UnLocode].sample.value
+  private val coordinates = arbitrary[Coordinates].sample.value
 
   "IncidentLocationDomain" - {
 
