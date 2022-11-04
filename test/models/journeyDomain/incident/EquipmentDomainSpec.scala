@@ -42,11 +42,14 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(ContainerIdentificationNumberYesNoPage(index), true)
                 .setValue(ContainerIdentificationNumberPage(index), containerId)
 
-              val expectedResult = EquipmentDomain(
-                containerId = Some(containerId)
+              val expectedResult = Some(
+                EquipmentDomain(
+                  containerId = Some(containerId)
+                )
               )
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.value mustBe expectedResult
           }
@@ -62,11 +65,14 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(ContainerIndicatorYesNoPage(index), true)
                 .setValue(ContainerIdentificationNumberPage(index), containerId)
 
-              val expectedResult = EquipmentDomain(
-                containerId = Some(containerId)
+              val expectedResult = Some(
+                EquipmentDomain(
+                  containerId = Some(containerId)
+                )
               )
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.value mustBe expectedResult
           }
@@ -81,11 +87,14 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                   .setValue(ContainerIndicatorYesNoPage(index), false)
                   .setValue(AddTransportEquipmentPage(index), false)
 
-                val expectedResult = EquipmentDomain(
-                  containerId = None
+                val expectedResult = Some(
+                  EquipmentDomain(
+                    containerId = None
+                  )
                 )
 
-                val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+                val result: EitherType[Option[EquipmentDomain]] =
+                  UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
                 result.value mustBe expectedResult
             }
@@ -102,11 +111,14 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                     .setValue(ContainerIdentificationNumberYesNoPage(index), true)
                     .setValue(ContainerIdentificationNumberPage(index), containerId)
 
-                  val expectedResult = EquipmentDomain(
-                    containerId = Some(containerId)
+                  val expectedResult = Some(
+                    EquipmentDomain(
+                      containerId = Some(containerId)
+                    )
                   )
 
-                  val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+                  val result: EitherType[Option[EquipmentDomain]] =
+                    UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
                   result.value mustBe expectedResult
               }
@@ -121,11 +133,10 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             val userAnswers = emptyUserAnswers
               .setValue(IncidentCodePage(index), incidentCode)
 
-            val expectedResult = EquipmentDomain(
-              containerId = None
-            )
+            val expectedResult = None
 
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+            val result: EitherType[Option[EquipmentDomain]] =
+              UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
             result.value mustBe expectedResult
         }
@@ -139,7 +150,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             incidentCode =>
               val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(index), incidentCode)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(index)
           }
@@ -152,7 +164,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(IncidentCodePage(index), incidentCode)
                 .setValue(ContainerIdentificationNumberYesNoPage(index), true)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberPage(index)
           }
@@ -166,7 +179,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(index), incidentCode)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe ContainerIndicatorYesNoPage(index)
           }
@@ -179,7 +193,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(IncidentCodePage(index), incidentCode)
                 .setValue(ContainerIndicatorYesNoPage(index), true)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberPage(index)
           }
@@ -192,7 +207,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(IncidentCodePage(index), incidentCode)
                 .setValue(ContainerIndicatorYesNoPage(index), false)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe AddTransportEquipmentPage(index)
           }
@@ -206,7 +222,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(ContainerIndicatorYesNoPage(index), false)
                 .setValue(AddTransportEquipmentPage(index), true)
 
-              val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[Option[EquipmentDomain]] =
+                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(index)
           }

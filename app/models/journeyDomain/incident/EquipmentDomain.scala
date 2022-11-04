@@ -26,16 +26,17 @@ case class EquipmentDomain(containerId: Option[String])
 
 object EquipmentDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[EquipmentDomain] =
+  def userAnswersReader(index: Index): UserAnswersReader[Option[EquipmentDomain]] =
     IncidentCodePage(index).reader.flatMap {
       case SealsBrokenOrTampered | PartiallyOrFullyUnloaded =>
         ContainerIdentificationNumberYesNoPage(index)
           .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(index).reader)
           .map(EquipmentDomain(_))
+          .map(Some(_))
       case TransferredToAnotherTransport | UnexpectedlyChanged =>
         ContainerIndicatorYesNoPage(index).reader.flatMap {
           case true =>
-            ContainerIdentificationNumberPage(index).reader.map(Some(_)).map(EquipmentDomain(_))
+            ContainerIdentificationNumberPage(index).reader.map(Some(_)).map(EquipmentDomain(_)).map(Some(_))
           case false =>
             AddTransportEquipmentPage(index)
               .filterOptionalDependent(identity) {
@@ -45,8 +46,9 @@ object EquipmentDomain {
               }
               .map(_.flatten)
               .map(EquipmentDomain(_))
+              .map(Some(_))
         }
       case DeviatedFromItinerary | CarrierUnableToComply =>
-        UserAnswersReader.apply(EquipmentDomain(None))
+        UserAnswersReader.apply(None)
     }
 }

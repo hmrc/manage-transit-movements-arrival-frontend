@@ -19,83 +19,21 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
-import models.Coordinates
 import models.incident.IncidentCode
-import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
 import pages.incident._
-import pages.incident.location.{CoordinatesPage, QualifierOfIdentificationPage}
-
-import java.time.LocalDate
 
 class IncidentDomainSpec extends SpecBase with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val localDate    = LocalDate.now()
-  private val authority    = Gen.alphaNumStr.sample.value
-  private val location     = Gen.alphaNumStr.sample.value
-  private val coordinates  = arbitrary[Coordinates].sample.value
 
   "IncidentDomain" - {
-
-    "can be parsed from UserAnswers " - {
-
-      "when addEndorsement is true and coordinates is selected" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(IncidentCountryPage(index), country)
-          .setValue(IncidentCodePage(index), incidentCode)
-          .setValue(IncidentTextPage(index), incidentText)
-          .setValue(AddEndorsementPage(index), true)
-          .setValue(EndorsementDatePage(index), localDate)
-          .setValue(EndorsementAuthorityPage(index), authority)
-          .setValue(EndorsementCountryPage(index), country)
-          .setValue(EndorsementLocationPage(index), location)
-          .setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
-          .setValue(CoordinatesPage(index), coordinates)
-
-        val expectedResult = IncidentDomain(
-          incidentCountry = country,
-          incidentCode = incidentCode,
-          incidentText = incidentText,
-          endorsement = Some(EndorsementDomain(localDate, authority, country, location)),
-          location = IncidentCoordinatesLocationDomain(coordinates)
-        )
-
-        val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when addEndorsement is false" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(IncidentCountryPage(index), country)
-          .setValue(IncidentCodePage(index), incidentCode)
-          .setValue(IncidentTextPage(index), incidentText)
-          .setValue(AddEndorsementPage(index), false)
-          .setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
-          .setValue(CoordinatesPage(index), coordinates)
-
-        val expectedResult = IncidentDomain(
-          incidentCountry = country,
-          incidentCode = incidentCode,
-          incidentText = incidentText,
-          endorsement = None,
-          location = IncidentCoordinatesLocationDomain(coordinates)
-        )
-
-        val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-    }
 
     "cannot be parsed from UserAnswer" - {
 
