@@ -16,8 +16,10 @@
 
 package pages.incident.location
 
-import models.QualifierOfIdentification
+import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
+import models.reference.UnLocode
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
@@ -29,4 +31,83 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
     beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage(index))
   }
+  "cleanup" - {
+    "when Coordinates is selected" - {
+      "must remove Unlocode page" in {
+        forAll(arbitrary[UnLocode]) {
+          unlocode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(UnLocodePage(index), unlocode)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+
+            result.get(UnLocodePage(index)) mustNot be(defined)
+        }
+      }
+
+      "must remove Address page" in {
+        forAll(arbitrary[DynamicAddress]) {
+          address =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddressPage(index), address)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+
+            result.get(AddressPage(index)) mustNot be(defined)
+        }
+      }
+    }
+    "when UnLocode is selected" - {
+      "must remove Coordinates page" in {
+        forAll(arbitrary[Coordinates]) {
+          coordinates =>
+            val userAnswers = emptyUserAnswers
+              .setValue(CoordinatesPage(index), coordinates)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+
+            result.get(CoordinatesPage(index)) mustNot be(defined)
+        }
+      }
+
+      "must remove Address page" in {
+        forAll(arbitrary[DynamicAddress]) {
+          address =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddressPage(index), address)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Unlocode)
+
+            result.get(AddressPage(index)) mustNot be(defined)
+        }
+      }
+    }
+    "when Address is selected" - {
+      "must remove Coordinates page" in {
+        forAll(arbitrary[Coordinates]) {
+          coordinates =>
+            val userAnswers = emptyUserAnswers
+              .setValue(CoordinatesPage(index), coordinates)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+
+            result.get(CoordinatesPage(index)) mustNot be(defined)
+        }
+      }
+
+      "must remove Unlocode page" in {
+        forAll(arbitrary[UnLocode]) {
+          unLocode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(UnLocodePage(index), unLocode)
+
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+
+            result.get(UnLocodePage(index)) mustNot be(defined)
+        }
+      }
+    }
+
+  }
+
 }
