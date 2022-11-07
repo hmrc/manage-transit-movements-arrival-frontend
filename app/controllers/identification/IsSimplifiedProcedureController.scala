@@ -18,7 +18,7 @@ package controllers.identification
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.identification.ProcedureTypeFormProvider
+import forms.EnumerableFormProvider
 import models.identification.ProcedureType
 import models.{Mode, MovementReferenceNumber}
 import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
@@ -37,14 +37,14 @@ class IsSimplifiedProcedureController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IdentificationNavigatorProvider,
   actions: Actions,
-  formProvider: ProcedureTypeFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IsSimplifiedProcedureView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider[ProcedureType]("identification.isSimplifiedProcedure")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

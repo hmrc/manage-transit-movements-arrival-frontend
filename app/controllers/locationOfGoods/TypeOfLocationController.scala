@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.TypeOfLocationFormProvider
+import forms.EnumerableFormProvider
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
@@ -37,14 +37,14 @@ class TypeOfLocationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: LocationOfGoodsNavigatorProvider,
   actions: Actions,
-  formProvider: TypeOfLocationFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TypeOfLocationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

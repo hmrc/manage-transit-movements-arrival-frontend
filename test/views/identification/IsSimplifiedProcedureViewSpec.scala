@@ -16,7 +16,7 @@
 
 package views.identification
 
-import forms.identification.ProcedureTypeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
 import play.api.data.Form
@@ -27,7 +27,7 @@ import views.html.identification.IsSimplifiedProcedureView
 
 class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {
 
-  override def form: Form[ProcedureType] = new ProcedureTypeFormProvider()()
+  override def form: Form[ProcedureType] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[ProcedureType]): HtmlFormat.Appendable =
     injector.instanceOf[IsSimplifiedProcedureView].apply(form, mrn, ProcedureType.radioItems, NormalMode)(fakeRequest, messages)

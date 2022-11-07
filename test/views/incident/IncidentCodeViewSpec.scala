@@ -16,7 +16,7 @@
 
 package views.incident
 
-import forms.incident.IncidentCodeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.incident.IncidentCode
 import play.api.data.Form
@@ -27,7 +27,7 @@ import views.html.incident.IncidentCodeView
 
 class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
-  override def form: Form[IncidentCode] = new IncidentCodeFormProvider()()
+  override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
     injector.instanceOf[IncidentCodeView].apply(form, mrn, IncidentCode.radioItems, NormalMode, index)(fakeRequest, messages)

@@ -18,7 +18,7 @@ package controllers.incident.location
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.QualifierOfIdentificationFormProvider
+import forms.EnumerableFormProvider
 import models.{Index, Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.QualifierOfIdentificationPage
@@ -37,14 +37,14 @@ class QualifierOfIdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: QualifierOfIdentificationFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QualifierOfIdentificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("incident.location.qualifierOfIdentification")
+  private val form = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
 
   private def radioItems(implicit messages: Messages): (String, Option[QualifierOfIdentification]) => Seq[RadioItem] =
     QualifierOfIdentification.locationValues.asRadioItems()

@@ -17,7 +17,7 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.identification.ProcedureTypeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.identification.ProcedureType
 import navigation.IdentificationNavigatorProvider
@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                    = new ProcedureTypeFormProvider()
-  private val form                            = formProvider()
+  private val formProvider                    = new EnumerableFormProvider()
+  private val form                            = formProvider[ProcedureType]("identification.isSimplifiedProcedure")
   private val mode                            = NormalMode
   private lazy val isSimplifiedProcedureRoute = routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode).url
 

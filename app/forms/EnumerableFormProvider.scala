@@ -17,15 +17,15 @@
 package forms
 
 import forms.mappings.Mappings
-import models.QualifierOfIdentification
+import models.Enumerable
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class QualifierOfIdentificationFormProvider @Inject() extends Mappings {
+class EnumerableFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[QualifierOfIdentification] =
+  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
     Form(
-      "value" -> enumerable[QualifierOfIdentification](s"$prefix.error.required")
+      "value" -> enumerable[T](s"$prefix.error.required")
     )
 }

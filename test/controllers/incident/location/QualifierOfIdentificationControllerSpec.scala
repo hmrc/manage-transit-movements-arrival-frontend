@@ -17,7 +17,7 @@
 package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.QualifierOfIdentificationFormProvider
+import forms.EnumerableFormProvider
 import models.{NormalMode, QualifierOfIdentification}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                        = new QualifierOfIdentificationFormProvider()
-  private val form                                = formProvider("incident.location.qualifierOfIdentification")
+  private val formProvider                        = new EnumerableFormProvider()
+  private val form                                = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
   private val mode                                = NormalMode
   private lazy val qualifierOfIdentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode, index).url
 
