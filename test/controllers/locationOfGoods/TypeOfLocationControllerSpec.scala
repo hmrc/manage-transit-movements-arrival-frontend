@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.TypeOfLocationFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.locationOfGoods.TypeOfLocation
 import navigation.LocationOfGoodsNavigatorProvider
@@ -34,23 +34,23 @@ import scala.concurrent.Future
 
 class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider             = new TypeOfLocationFormProvider()
-  private val form                     = formProvider()
+  private val formProvider             = new EnumerableFormProvider()
+  private val form                     = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation")
   private val mode                     = NormalMode
-  private lazy val typeoflocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
+  private lazy val typeOfLocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
 
-  "Typeoflocation Controller" - {
+  "TypeOfLocation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, typeoflocationRoute)
+      val request = FakeRequest(GET, typeOfLocationRoute)
 
       val result = route(app, request).value
 
@@ -67,7 +67,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val userAnswers = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation.values.head)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, typeoflocationRoute)
+      val request = FakeRequest(GET, typeOfLocationRoute)
 
       val result = route(app, request).value
 
@@ -87,7 +87,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, typeoflocationRoute)
+      val request = FakeRequest(POST, typeOfLocationRoute)
         .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
 
       val result = route(app, request).value
@@ -101,7 +101,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, typeoflocationRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, typeOfLocationRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
@@ -118,7 +118,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, typeoflocationRoute)
+      val request = FakeRequest(GET, typeOfLocationRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, typeoflocationRoute)
+      val request = FakeRequest(POST, typeOfLocationRoute)
         .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
 
       val result = route(app, request).value

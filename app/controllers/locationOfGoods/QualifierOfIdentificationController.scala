@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.QualifierOfIdentificationFormProvider
+import forms.EnumerableFormProvider
 import models.locationOfGoods.QualifierOfIdentification
 import models.{Mode, MovementReferenceNumber}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
@@ -37,14 +37,14 @@ class QualifierOfIdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: LocationOfGoodsNavigatorProvider,
   actions: Actions,
-  formProvider: QualifierOfIdentificationFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QualifierOfIdentificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

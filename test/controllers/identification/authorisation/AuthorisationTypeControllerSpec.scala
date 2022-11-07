@@ -17,7 +17,7 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.identification.authorisation.AuthorisationTypeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.identification.authorisation.AuthorisationType
 import navigation.AuthorisationNavigatorProvider
@@ -34,8 +34,8 @@ import scala.concurrent.Future
 
 class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                = new AuthorisationTypeFormProvider()
-  private val form                        = formProvider()
+  private val formProvider                = new EnumerableFormProvider()
+  private val form                        = formProvider[AuthorisationType]("identification.authorisation.authorisationType")
   private val mode                        = NormalMode
   private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(mrn, index, mode).url
 

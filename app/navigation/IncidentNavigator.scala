@@ -18,7 +18,7 @@ package navigation
 
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
 
@@ -26,7 +26,10 @@ import javax.inject.{Inject, Singleton}
 class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
-    new IncidentNavigator(mode, index)
+    mode match {
+      case NormalMode => new IncidentNavigator(mode, index)
+      case CheckMode  => new ArrivalNavigator(mode)
+    }
 }
 
 trait IncidentNavigatorProvider {

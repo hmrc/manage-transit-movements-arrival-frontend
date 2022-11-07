@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms.incident
+package forms
 
 import forms.mappings.Mappings
-import models.incident.IncidentCode
+import models.Enumerable
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class IncidentCodeFormProvider @Inject() extends Mappings {
+class EnumerableFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[IncidentCode] =
+  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
     Form(
-      "value" -> enumerable[IncidentCode]("incident.incidentCode.error.required")
+      "value" -> enumerable[T](s"$prefix.error.required")
     )
 }
