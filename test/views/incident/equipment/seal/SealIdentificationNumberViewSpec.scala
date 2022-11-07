@@ -27,20 +27,22 @@ import org.scalacheck.{Arbitrary, Gen}
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "incident.equipment.seal.sealIdentificationNumber"
-
-  override def form: Form[String] = new SealIdentificationFormProvider()(prefix)
+  override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber"
+  val number: String              = Gen.alphaNumStr.sample.value
+  override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil, number)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, NormalMode, index, sealIndex, number)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(args = number)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption("Arrivals - Incidents")
+
+  behave like pageWithHeading(args = number)
 
   behave like pageWithoutHint()
 

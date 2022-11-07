@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.SealIdentificationFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, Mode, MovementReferenceNumber, RichOptionJsArray}
-import navigation.{IdentificationNavigatorProvider, UserAnswersNavigator}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: IdentificationNavigatorProvider,
+  navigatorProvider: IncidentNavigatorProvider,
   formProvider: SealIdentificationFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
@@ -85,7 +85,7 @@ class SealIdentificationNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, sealIndex, containerIdentificationNumber))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
               SealIdentificationNumberPage(incidentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
             }
           )

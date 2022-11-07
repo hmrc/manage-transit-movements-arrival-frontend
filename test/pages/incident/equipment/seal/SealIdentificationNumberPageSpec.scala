@@ -22,10 +22,10 @@ class SealIdentificationNumberPageSpec extends PageBehaviours {
 
   "SealIdentificationNumberPage" - {
 
-    beRetrievable[String](SealIdentificationNumberPage)
+    beRetrievable[String](SealIdentificationNumberPage(index, sealIndex))
 
-    beSettable[String](SealIdentificationNumberPage)
+    beSettable[String](SealIdentificationNumberPage(index, sealIndex))
 
-    beRemovable[String](SealIdentificationNumberPage)
+    beRemovable[String](SealIdentificationNumberPage(index, sealIndex))
   }
 }
