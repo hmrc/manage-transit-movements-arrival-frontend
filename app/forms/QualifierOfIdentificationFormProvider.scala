@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 class QualifierOfIdentificationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[QualifierOfIdentification] =
+  def apply(prefix: String): Form[QualifierOfIdentification] =
     Form(
-      "value" -> enumerable[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification.error.required")
+      "value" -> enumerable[QualifierOfIdentification](s"$prefix.error.required")
     )
 }

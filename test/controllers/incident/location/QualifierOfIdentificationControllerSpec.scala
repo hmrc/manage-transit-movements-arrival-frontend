@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                        = new QualifierOfIdentificationFormProvider()
-  private val form                                = formProvider()
+  private val form                                = formProvider("incident.location.qualifierOfIdentification")
   private val mode                                = NormalMode
   private lazy val qualifierOfIdentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode, index).url
 

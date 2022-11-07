@@ -44,7 +44,7 @@ class QualifierOfIdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider("incident.location.qualifierOfIdentification")
 
   private def radioItems(implicit messages: Messages): (String, Option[QualifierOfIdentification]) => Seq[RadioItem] =
     QualifierOfIdentification.locationValues.asRadioItems()

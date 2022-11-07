@@ -43,7 +43,7 @@ class QualifierOfIdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider("locationOfGoods.qualifierOfIdentification")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

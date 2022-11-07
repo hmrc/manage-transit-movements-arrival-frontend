@@ -18,16 +18,18 @@ package forms
 
 import forms.behaviours.OptionFieldBehaviours
 import models.QualifierOfIdentification
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class QualifierOfIdentificationFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new QualifierOfIdentificationFormProvider()()
+  private val prefix = Gen.alphaNumStr.sample.value
+  val form           = new QualifierOfIdentificationFormProvider()(prefix)
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "locationOfGoods.qualifierOfIdentification.error.required"
+    val requiredKey = s"$prefix.error.required"
 
     behave like optionsField[QualifierOfIdentification](
       form,
