@@ -49,7 +49,7 @@ class AddSealsYesNoController @Inject() (
 
   private def containerIdentificationNumber(implicit request: Request): String = request.arg
 
-  private def form(containerIdentificationNumber: String) =
+  private def form(implicit request: Request) =
     formProvider("incident.equipment.addSealsYesNo", containerIdentificationNumber)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] =
@@ -58,8 +58,8 @@ class AddSealsYesNoController @Inject() (
       .andThen(getMandatoryPage(ContainerIdentificationNumberPage(index))) {
         implicit request =>
           val preparedForm = request.userAnswers.get(AddSealsYesNoPage(index)) match {
-            case None        => form(containerIdentificationNumber)
-            case Some(value) => form(containerIdentificationNumber).fill(value)
+            case None        => form
+            case Some(value) => form.fill(value)
           }
 
           Ok(view(preparedForm, containerIdentificationNumber, mrn, mode, index))
@@ -70,7 +70,7 @@ class AddSealsYesNoController @Inject() (
     .andThen(getMandatoryPage(ContainerIdentificationNumberPage(index)))
     .async {
       implicit request =>
-        form(containerIdentificationNumber)
+        form
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, containerIdentificationNumber, mrn, mode, index))),

@@ -456,3 +456,9 @@ incident.equipment.addSealsYesNo.title = Do you want to add a seal for container
 incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
+
+incident.equipment.seal.sealIdentificationNumber.title = What’s the seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.heading = What’s the seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.checkYourAnswersLabel = What’s the seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.error.required = Enter What’s the seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.error.length = What’s the seal identification number for container {0} must be 20 characters or less
