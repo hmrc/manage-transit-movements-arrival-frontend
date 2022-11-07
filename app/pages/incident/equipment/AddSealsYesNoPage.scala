@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident.equipment
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import controllers.incident.equipment.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.EquipmentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case class AddSealsYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
-class YesNoFormProvider @Inject() extends Mappings {
+  override def path: JsPath = EquipmentSection(index).path \ toString
 
-  def apply(prefix: String, args: String*): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"$prefix.error.required", args = args)
-    )
+  override def toString: String = "addSealsYesNo"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddSealsYesNoController.onPageLoad(userAnswers.mrn, mode, index))
 }

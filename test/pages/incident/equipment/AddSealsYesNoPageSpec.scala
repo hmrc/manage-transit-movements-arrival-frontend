@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident.equipment
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class AddSealsYesNoPageSpec extends PageBehaviours {
 
-class YesNoFormProvider @Inject() extends Mappings {
+  "AddSealsYesNoPage" - {
 
-  def apply(prefix: String, args: String*): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"$prefix.error.required", args = args)
-    )
+    beRetrievable[Boolean](AddSealsYesNoPage(index))
+
+    beSettable[Boolean](AddSealsYesNoPage(index))
+
+    beRemovable[Boolean](AddSealsYesNoPage(index))
+  }
 }
