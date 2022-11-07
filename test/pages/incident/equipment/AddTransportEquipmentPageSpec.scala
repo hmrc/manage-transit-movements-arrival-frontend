@@ -17,6 +17,7 @@
 package pages.incident.equipment
 
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
 
 class AddTransportEquipmentPageSpec extends PageBehaviours {
 
@@ -27,5 +28,23 @@ class AddTransportEquipmentPageSpec extends PageBehaviours {
     beSettable[Boolean](AddTransportEquipmentPage(index))
 
     beRemovable[Boolean](AddTransportEquipmentPage(index))
+  }
+
+  "cleanup" - {
+    "when no is selected" - {
+      "must remove ContainerIdentificationYesNoPage and ContainerIdentificationNumberPage" in {
+        forAll(arbitrary[String]) {
+          str =>
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIdentificationNumberYesNoPage(index), true)
+              .setValue(ContainerIdentificationNumberPage(index), str)
+
+            val result = userAnswers.setValue(AddTransportEquipmentPage(index), false)
+
+            result.get(ContainerIdentificationNumberYesNoPage(index)) mustNot be(defined)
+            result.get(ContainerIdentificationNumberPage(index)) mustNot be(defined)
+        }
+      }
+    }
   }
 }

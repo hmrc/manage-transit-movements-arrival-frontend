@@ -46,13 +46,18 @@ class ContainerIndicatorYesNoPageSpec extends PageBehaviours {
     }
 
     "when yes is selected" - {
-      "must do nothing" in {
+      "must do remove Add transport equipment page and add container identification number page" in {
         forAll(arbitrary[String]) {
           str =>
-            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), str)
+            val preChange = emptyUserAnswers
+              .setValue(AddTransportEquipmentPage(index), true)
+              .setValue(ContainerIdentificationNumberYesNoPage(index), true)
+              .setValue(ContainerIdentificationNumberPage(index), str)
 
             val postChange = preChange.setValue(ContainerIndicatorYesNoPage(index), true)
 
+            postChange.get(AddTransportEquipmentPage(index)) mustNot be(defined)
+            postChange.get(ContainerIdentificationNumberYesNoPage(index)) mustNot be(defined)
             postChange.get(ContainerIdentificationNumberPage(index)) must be(defined)
         }
       }

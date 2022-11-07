@@ -37,6 +37,10 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) => userAnswers.remove(ContainerIdentificationNumberPage(index))
-      case _           => super.cleanup(value, userAnswers)
+      case Some(true) =>
+        userAnswers
+          .remove(AddTransportEquipmentPage(index))
+          .flatMap(_.remove(ContainerIdentificationNumberYesNoPage(index)))
+      case _ => super.cleanup(value, userAnswers)
     }
 }

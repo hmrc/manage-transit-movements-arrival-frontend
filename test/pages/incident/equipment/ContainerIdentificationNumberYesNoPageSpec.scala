@@ -16,6 +16,7 @@
 
 package pages.incident.equipment
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class ContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,33 @@ class ContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](ContainerIdentificationNumberYesNoPage(index))
 
     beRemovable[Boolean](ContainerIdentificationNumberYesNoPage(index))
+  }
+
+  "cleanup" - {
+    "when no is selected" - {
+      "must clean up ContainerIdentificationNumberPage" in {
+        forAll(arbitrary[String]) {
+          str =>
+            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), str)
+
+            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(index), false)
+
+            postChange.get(ContainerIdentificationNumberPage(index)) mustNot be(defined)
+        }
+      }
+    }
+
+    "when yes is selected" - {
+      "must do nothing" in {
+        forAll(arbitrary[String]) {
+          str =>
+            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), str)
+
+            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(index), true)
+
+            postChange.get(ContainerIdentificationNumberPage(index)) must be(defined)
+        }
+      }
+    }
   }
 }
