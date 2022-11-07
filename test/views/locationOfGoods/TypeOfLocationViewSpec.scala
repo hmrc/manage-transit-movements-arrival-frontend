@@ -16,7 +16,7 @@
 
 package views.locationOfGoods
 
-import forms.locationOfGoods.TypeOfLocationFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.locationOfGoods.TypeOfLocation
 import play.api.data.Form
@@ -27,7 +27,7 @@ import views.html.locationOfGoods.TypeOfLocationView
 
 class TypeOfLocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
 
-  override def form: Form[TypeOfLocation] = new TypeOfLocationFormProvider()()
+  override def form: Form[TypeOfLocation] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[TypeOfLocation]): HtmlFormat.Appendable =
     injector.instanceOf[TypeOfLocationView].apply(form, mrn, TypeOfLocation.radioItems, NormalMode)(fakeRequest, messages)

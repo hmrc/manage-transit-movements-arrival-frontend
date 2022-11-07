@@ -17,7 +17,7 @@
 package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.QualifierOfIdentificationFormProvider
+import forms.EnumerableFormProvider
 import models.{NormalMode, QualifierOfIdentification}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                        = new QualifierOfIdentificationFormProvider()
-  private val form                                = formProvider()
+  private val formProvider                        = new EnumerableFormProvider()
+  private val form                                = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
   private val mode                                = NormalMode
   private lazy val qualifierOfIdentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode, index).url
 
@@ -50,8 +50,8 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
     "must return OK and the correct view for a GET" in {
 
       val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "Coordinates".toText, id = Some("value"), value = Some("coordinates"), checked = false),
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value_1"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = false),
         RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
       )
 
@@ -75,8 +75,8 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(userAnswers)
 
       val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "Coordinates".toText, id = Some("value"), value = Some("coordinates"), checked = true),
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value_1"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = true),
         RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
       )
 
@@ -113,8 +113,8 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "Coordinates".toText, id = Some("value"), value = Some("coordinates"), checked = false),
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value_1"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
+        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = false),
         RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
       )
 

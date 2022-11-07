@@ -18,24 +18,29 @@ package viewModels.identification
 
 import base.SpecBase
 import generators.Generators
-import models.Index
 import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
+import models.{Index, Mode}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.authorisation._
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 
-class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators {
+class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" in {
 
-    val userAnswers = emptyUserAnswers
-      .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACT)
-      .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 1")
-      .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.ACE)
-      .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 2")
+    forAll(arbitrary[Mode]) {
+      mode =>
+        val userAnswers = emptyUserAnswers
+          .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACT)
+          .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 1")
+          .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.ACE)
+          .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 2")
 
-    val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers)
-    result.listItems.length mustBe 2
+        val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers, mode)
+        result.listItems.length mustBe 2
+    }
   }
 
 }

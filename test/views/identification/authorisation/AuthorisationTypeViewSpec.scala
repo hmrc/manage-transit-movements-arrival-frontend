@@ -16,7 +16,7 @@
 
 package views.identification.authorisation
 
-import forms.identification.authorisation.AuthorisationTypeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.identification.authorisation.AuthorisationType
 import play.api.data.Form
@@ -27,7 +27,7 @@ import views.html.identification.authorisation.AuthorisationTypeView
 
 class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
 
-  override def form: Form[AuthorisationType] = new AuthorisationTypeFormProvider()()
+  override def form: Form[AuthorisationType] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[AuthorisationType]): HtmlFormat.Appendable =
     injector.instanceOf[AuthorisationTypeView].apply(form, mrn, authorisationIndex, AuthorisationType.radioItems, NormalMode)(fakeRequest, messages)

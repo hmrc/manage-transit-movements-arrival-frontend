@@ -41,8 +41,8 @@ object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
   )
 
   val locationValues: Seq[QualifierOfIdentification] = Seq(
-    Coordinates,
     Unlocode,
+    Coordinates,
     Address
   )
 }

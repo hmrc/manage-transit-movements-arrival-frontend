@@ -2,7 +2,7 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.$package$.$formProvider$
+import forms.EnumerableFormProvider
 import models.{Mode, MovementReferenceNumber}
 import models.$package$.$className$
 import navigation.Navigator
@@ -23,12 +23,12 @@ class $className$Controller @Inject()(
    implicit val sessionRepository: SessionRepository,
    navigatorProvider: $navRoute$NavigatorProvider,
    actions: Actions,
-   formProvider: $formProvider$,
+   formProvider: EnumerableFormProvider,
    val controllerComponents: MessagesControllerComponents,
    view: $className$View
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider[$className$]("$package$.$className;format="decap"$")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

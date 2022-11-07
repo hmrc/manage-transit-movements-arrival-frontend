@@ -66,7 +66,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
     "redirect to add guarantee yes/no page" - {
       "when 0 guarantees" in {
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(Nil))
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -87,7 +87,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       "when max limit not reached" in {
         val allowMore = true
 
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -109,7 +109,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
         val listItems = maxedOutListItems
 
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -130,7 +130,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to authorisation type page at next index" in {
-          when(mockViewModelProvider.apply(any())(any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -149,7 +149,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any())(any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -168,7 +168,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -186,7 +186,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(listItems))
 
         val allowMore = true
