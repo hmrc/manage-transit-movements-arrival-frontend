@@ -23,6 +23,8 @@ import pages.sections.incident.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = EquipmentSection(index).path \ toString
@@ -31,4 +33,10 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.ContainerIndicatorYesNoController.onPageLoad(userAnswers.mrn, mode, index))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(ContainerIdentificationNumberPage(index))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
