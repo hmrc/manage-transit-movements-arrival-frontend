@@ -21,12 +21,12 @@
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputRadio: InputRadio,
-        inputRadioWithHeading: InputRadio,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputRadio: InputRadio,
+    inputRadioWithHeading: InputRadio,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)

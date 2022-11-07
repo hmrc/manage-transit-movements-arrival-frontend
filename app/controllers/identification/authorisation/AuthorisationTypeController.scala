@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.identification.authorisation.AuthorisationTypeFormProvider
+import forms.EnumerableFormProvider
 import models.identification.authorisation.AuthorisationType
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
@@ -37,14 +37,14 @@ class AuthorisationTypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: AuthorisationNavigatorProvider,
   actions: Actions,
-  formProvider: AuthorisationTypeFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AuthorisationTypeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider[AuthorisationType]("identification.authorisation.authorisationType")
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

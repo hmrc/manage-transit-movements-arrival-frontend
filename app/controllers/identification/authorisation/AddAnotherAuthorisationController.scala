@@ -55,7 +55,7 @@ class AddAnotherAuthorisationController @Inject() (
     .requireData(mrn)
     .andThen(removeInProgressAuthorisations[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)) {
       implicit request =>
-        val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
+        val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData(mode)
         numberOfAuthorisations match {
           case 0 => Redirect(controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode))
           case _ => Ok(view(form(allowMoreAuthorisations), mrn, mode, authorisations, allowMoreAuthorisations))
@@ -64,7 +64,7 @@ class AddAnotherAuthorisationController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      lazy val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData
+      lazy val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData(mode)
       form(allowMoreAuthorisations)
         .bindFromRequest()
         .fold(
@@ -76,8 +76,8 @@ class AddAnotherAuthorisationController @Inject() (
         )
   }
 
-  private def viewData(implicit request: DataRequest[_]): (Seq[ListItem], Int, Boolean) = {
-    val authorisations         = viewModelProvider.apply(request.userAnswers).listItems
+  private def viewData(mode: Mode)(implicit request: DataRequest[_]): (Seq[ListItem], Int, Boolean) = {
+    val authorisations         = viewModelProvider.apply(request.userAnswers, mode).listItems
     val numberOfAuthorisations = authorisations.length
     (authorisations, numberOfAuthorisations, numberOfAuthorisations < config.maxIdentificationAuthorisations)
   }

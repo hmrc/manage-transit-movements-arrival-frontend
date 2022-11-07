@@ -17,7 +17,7 @@
 package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.incident.IncidentCodeFormProvider
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.incident.IncidentCode
 import navigation.IncidentNavigatorProvider
@@ -34,8 +34,8 @@ import scala.concurrent.Future
 
 class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider           = new IncidentCodeFormProvider()
-  private val form                   = formProvider()
+  private val formProvider           = new EnumerableFormProvider()
+  private val form                   = formProvider[IncidentCode]("incident.incidentCode")
   private val mode                   = NormalMode
   private lazy val incidentCodeRoute = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
 
