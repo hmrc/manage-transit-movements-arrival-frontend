@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package forms.incident
+package pages.sections.incident
 
-import forms.mappings.Mappings
-import models.incident.IncidentCode
-import play.api.data.Form
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-import javax.inject.Inject
+case class EquipmentsSection(index: Index) extends Section[JsArray] {
 
-class IncidentCodeFormProvider @Inject() extends Mappings {
+  override def path: JsPath = IncidentSection(index).path \ "equipments"
 
-  def apply(): Form[IncidentCode] =
-    Form(
-      "value" -> enumerable[IncidentCode]("incident.incidentCode.error.required")
-    )
 }

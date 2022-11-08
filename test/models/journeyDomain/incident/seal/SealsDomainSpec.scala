@@ -27,18 +27,18 @@ class SealsDomainSpec extends SpecBase {
     "can be read from user answers" - {
       "when there are seals" in {
         val userAnswers = emptyUserAnswers
-          .setValue(SealIdentificationNumberPage(incidentIndex, Index(0)), "foo")
-          .setValue(SealIdentificationNumberPage(incidentIndex, Index(1)), "bar")
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), "foo")
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(1)), "bar")
 
         val expectedResult = SealsDomain(
           Seq(
-            SealDomain("foo")(incidentIndex, Index(0)),
-            SealDomain("bar")(incidentIndex, Index(1))
+            SealDomain("foo")(incidentIndex, equipmentIndex, Index(0)),
+            SealDomain("bar")(incidentIndex, equipmentIndex, Index(1))
           )
         )
 
         val result: EitherType[SealsDomain] =
-          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
         result.value mustBe expectedResult
       }
@@ -47,9 +47,9 @@ class SealsDomainSpec extends SpecBase {
     "cannot be read from user answers" - {
       "when there are no seals" in {
         val result: EitherType[SealsDomain] =
-          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex)).run(emptyUserAnswers)
+          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, Index(0))
+        result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
       }
     }
   }

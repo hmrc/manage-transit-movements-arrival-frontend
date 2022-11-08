@@ -25,6 +25,7 @@ import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: IncidentNavigatorProvider,
+  navigatorProvider: IncidentNavigatorProvider, // TODO - create new nav.
   formProvider: SealIdentificationFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
@@ -51,42 +52,47 @@ class SealIdentificationNumberController @Inject() (
 
   private def containerIdentificationNumber(implicit request: Request): String = request.arg
 
-  private def form(incidentIndex: Index, sealIndex: Index, containerIdentificationNumber: String)(implicit request: Request) =
-    formProvider("incident.equipment.seal.sealIdentificationNumber", otherSealIdentificationNumbers(incidentIndex, sealIndex), containerIdentificationNumber)
+  private def form(incidentIndex: Index, sealIndex: Index, equipmentIndex: Index)(implicit request: Request): Form[String] =
+    formProvider(
+      "incident.equipment.seal.sealIdentificationNumber",
+      otherSealIdentificationNumbers(incidentIndex, equipmentIndex, sealIndex),
+      containerIdentificationNumber
+    )
 
-  private def otherSealIdentificationNumbers(incidentIndex: Index, sealIndex: Index)(implicit request: Request): Seq[String] = {
-    val numberOfSeals = request.userAnswers.get(SealsSection(incidentIndex)).length
+  private def otherSealIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit request: Request): Seq[String] = {
+    val numberOfSeals = request.userAnswers.get(SealsSection(incidentIndex, equipmentIndex)).length
     (0 until numberOfSeals)
       .map(Index(_))
       .filterNot(_ == sealIndex)
-      .map(SealIdentificationNumberPage(incidentIndex, _))
+      .map(SealIdentificationNumberPage(incidentIndex, equipmentIndex, _))
       .flatMap(request.userAnswers.get(_))
   }
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, sealIndex: Index): Action[AnyContent] =
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex))) { // TODO - we need default content for the case where this question hasn't been answered
+      .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))) { // TODO - we need default content for the case where this question hasn't been answered
         implicit request =>
-          val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(incidentIndex, sealIndex)) match {
-            case None        => form(incidentIndex, sealIndex, containerIdentificationNumber)
-            case Some(value) => form(incidentIndex, sealIndex, containerIdentificationNumber).fill(value)
+          val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)) match {
+            case None        => form(incidentIndex, equipmentIndex, sealIndex)
+            case Some(value) => form(incidentIndex, equipmentIndex, sealIndex).fill(value)
           }
-          Ok(view(preparedForm, mrn, mode, incidentIndex, sealIndex, containerIdentificationNumber))
+          Ok(view(preparedForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, containerIdentificationNumber))
       }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex)))
+    .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)))
     .async {
       implicit request =>
-        form(incidentIndex, sealIndex, containerIdentificationNumber)
+        form(incidentIndex, equipmentIndex, sealIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, sealIndex, containerIdentificationNumber))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, sealIndex, containerIdentificationNumber))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
-              SealIdentificationNumberPage(incidentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
+              SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
             }
           )
     }

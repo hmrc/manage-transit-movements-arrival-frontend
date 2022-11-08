@@ -16,7 +16,7 @@
 
 package views.incident.location
 
-import forms.QualifierOfIdentificationFormProvider
+import forms.EnumerableFormProvider
 import models.{NormalMode, QualifierOfIdentification}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,7 +26,7 @@ import views.html.incident.location.QualifierOfIdentificationView
 
 class QualifierOfIdentificationViewSpec extends RadioViewBehaviours[QualifierOfIdentification] {
 
-  override def form: Form[QualifierOfIdentification] = new QualifierOfIdentificationFormProvider()()
+  override def form: Form[QualifierOfIdentification] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[QualifierOfIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[QualifierOfIdentificationView].apply(form, mrn, QualifierOfIdentification.radioItems, NormalMode, index)(fakeRequest, messages)

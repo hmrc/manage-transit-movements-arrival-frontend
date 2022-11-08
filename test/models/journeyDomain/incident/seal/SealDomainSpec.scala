@@ -30,12 +30,12 @@ class SealDomainSpec extends SpecBase {
         val idNumber = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(SealIdentificationNumberPage(incidentIndex, sealIndex), idNumber)
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), idNumber)
 
-        val expectedResult = SealDomain(idNumber)(incidentIndex, sealIndex)
+        val expectedResult = SealDomain(idNumber)(incidentIndex, equipmentIndex, sealIndex)
 
         val result: EitherType[SealDomain] =
-          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(incidentIndex, sealIndex)).run(userAnswers)
+          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex)).run(userAnswers)
 
         result.value mustBe expectedResult
       }
@@ -44,9 +44,9 @@ class SealDomainSpec extends SpecBase {
     "can not be read from user answers" - {
       "when seal identification page is unanswered" in {
         val result: EitherType[SealDomain] =
-          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(incidentIndex, sealIndex)).run(emptyUserAnswers)
+          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex)).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, sealIndex)
+        result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
       }
     }
   }

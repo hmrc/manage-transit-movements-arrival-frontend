@@ -25,7 +25,7 @@ import views.html.incident.equipment.ContainerIdentificationNumberYesNoView
 class ContainerIdentificationNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ContainerIdentificationNumberYesNoView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[ContainerIdentificationNumberYesNoView].apply(form, mrn, NormalMode, incidentIndex, equipmentIndex)(fakeRequest, messages)
 
   override val prefix: String = "incident.equipment.containerIdentificationNumberYesNo"
 

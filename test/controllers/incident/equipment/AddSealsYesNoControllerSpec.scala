@@ -19,7 +19,7 @@ package controllers.incident.equipment
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.IncidentNavigatorProvider
+import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
@@ -39,19 +39,19 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val number: String          = Gen.alphaNumStr.sample.value
   private val form                    = formProvider("incident.equipment.addSealsYesNo", number)
   private val mode                    = NormalMode
-  private lazy val addSealsYesNoRoute = routes.AddSealsYesNoController.onPageLoad(mrn, mode, index).url
+  private lazy val addSealsYesNoRoute = routes.AddSealsYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
+      .overrides(bind(classOf[EquipmentNavigatorProvider]).toInstance(fakeEquipmentNavigatorProvider))
 
   "AddSealsYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -63,14 +63,14 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, number, mrn, mode, index)(request, messages).toString
+        view(form, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
-        .setValue(AddSealsYesNoPage(index), true)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
+        .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
 
       setExistingUserAnswers(userAnswers)
 
@@ -85,7 +85,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, number, mrn, mode, index)(request, messages).toString
+        view(filledForm, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -93,7 +93,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -111,7 +111,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -125,7 +125,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[AddSealsYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, number, mrn, mode, index)(request, messages).toString
+        view(boundForm, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

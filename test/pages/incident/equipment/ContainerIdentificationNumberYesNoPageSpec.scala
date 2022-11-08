@@ -23,11 +23,11 @@ class ContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
 
   "ContainerIdentificationNumberYesNoPage" - {
 
-    beRetrievable[Boolean](ContainerIdentificationNumberYesNoPage(index))
+    beRetrievable[Boolean](ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex))
 
-    beSettable[Boolean](ContainerIdentificationNumberYesNoPage(index))
+    beSettable[Boolean](ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex))
 
-    beRemovable[Boolean](ContainerIdentificationNumberYesNoPage(index))
+    beRemovable[Boolean](ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex))
   }
 
   "cleanup" - {
@@ -35,11 +35,11 @@ class ContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
       "must clean up ContainerIdentificationNumberPage" in {
         forAll(arbitrary[String]) {
           str =>
-            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), str)
+            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), str)
 
-            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(index), false)
+            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
-            postChange.get(ContainerIdentificationNumberPage(index)) mustNot be(defined)
+            postChange.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)) mustNot be(defined)
         }
       }
     }
@@ -48,11 +48,11 @@ class ContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
       "must do nothing" in {
         forAll(arbitrary[String]) {
           str =>
-            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), str)
+            val preChange = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), str)
 
-            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(index), true)
+            val postChange = preChange.setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
-            postChange.get(ContainerIdentificationNumberPage(index)) must be(defined)
+            postChange.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)) must be(defined)
         }
       }
     }

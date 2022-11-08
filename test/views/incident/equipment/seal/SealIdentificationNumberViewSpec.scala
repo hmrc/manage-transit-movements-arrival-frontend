@@ -18,12 +18,12 @@ package views.incident.equipment.seal
 
 import forms.incident.SealIdentificationFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.incident.equipment.seal.SealIdentificationNumberView
-import org.scalacheck.{Arbitrary, Gen}
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
@@ -32,7 +32,7 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil, number)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, NormalMode, index, sealIndex, number)(fakeRequest, messages)
+    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, number)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

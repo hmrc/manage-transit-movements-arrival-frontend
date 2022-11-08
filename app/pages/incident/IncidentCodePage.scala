@@ -21,9 +21,8 @@ import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.incident.equipment.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage}
 import pages.sections.incident
-import pages.sections.incident.EquipmentSection
+import pages.sections.incident.EquipmentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -45,7 +44,7 @@ case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
           .remove(ContainerIndicatorYesNoPage(index))
           .flatMap(_.remove(AddTransportEquipmentPage(index)))
       case Some(DeviatedFromItinerary | CarrierUnableToComply) =>
-        userAnswers.remove(EquipmentSection(index))
+        userAnswers.remove(EquipmentsSection(index))
       case _ => super.cleanup(value, userAnswers)
     }
 }

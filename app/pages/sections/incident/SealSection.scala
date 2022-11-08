@@ -20,7 +20,7 @@ import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class SealSection(incidentIndex: Index, sealIndex: Index) extends Section[JsObject] {
+case class SealSection(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = SealsSection(incidentIndex).path \ sealIndex.position
+  override def path: JsPath = SealsSection(incidentIndex, equipmentIndex).path \ sealIndex.position
 }

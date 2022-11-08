@@ -22,10 +22,10 @@ class AddSealsYesNoPageSpec extends PageBehaviours {
 
   "AddSealsYesNoPage" - {
 
-    beRetrievable[Boolean](AddSealsYesNoPage(index))
+    beRetrievable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
 
-    beSettable[Boolean](AddSealsYesNoPage(index))
+    beSettable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
 
-    beRemovable[Boolean](AddSealsYesNoPage(index))
+    beRemovable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
   }
 }

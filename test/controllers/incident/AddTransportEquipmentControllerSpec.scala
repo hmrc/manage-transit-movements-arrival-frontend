@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.incident.equipment
+package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.incident.equipment.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.incident.equipment.AddTransportEquipmentPage
+import pages.incident
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.equipment.AddTransportEquipmentView
+import views.html.incident.AddTransportEquipmentView
 
 import scala.concurrent.Future
 
 class AddTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                    = new YesNoFormProvider()
-  private val form                            = formProvider("incident.equipment.addTransportEquipment")
+  private val form                            = formProvider("incident.addTransportEquipment")
   private val mode                            = NormalMode
   private lazy val addTransportEquipmentRoute = routes.AddTransportEquipmentController.onPageLoad(mrn, mode, index).url
 
@@ -64,7 +63,7 @@ class AddTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddTransportEquipmentPage(index), true)
+      val userAnswers = emptyUserAnswers.setValue(incident.AddTransportEquipmentPage(index), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addTransportEquipmentRoute)

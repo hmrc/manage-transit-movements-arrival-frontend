@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package pages.incident.equipment
+package pages.incident
 
 import pages.behaviours.PageBehaviours
-import org.scalacheck.Arbitrary.arbitrary
+import pages.incident
+import pages.sections.incident.EquipmentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddTransportEquipmentPageSpec extends PageBehaviours {
 
@@ -25,25 +27,20 @@ class AddTransportEquipmentPageSpec extends PageBehaviours {
 
     beRetrievable[Boolean](AddTransportEquipmentPage(index))
 
-    beSettable[Boolean](AddTransportEquipmentPage(index))
+    beSettable[Boolean](incident.AddTransportEquipmentPage(index))
 
-    beRemovable[Boolean](AddTransportEquipmentPage(index))
+    beRemovable[Boolean](incident.AddTransportEquipmentPage(index))
   }
 
   "cleanup" - {
     "when no is selected" - {
-      "must remove ContainerIdentificationYesNoPage and ContainerIdentificationNumberPage" in {
-        forAll(arbitrary[String]) {
-          str =>
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIdentificationNumberYesNoPage(index), true)
-              .setValue(ContainerIdentificationNumberPage(index), str)
+      "must remove equipments section" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(EquipmentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
-            val result = userAnswers.setValue(AddTransportEquipmentPage(index), false)
+        val result = userAnswers.setValue(incident.AddTransportEquipmentPage(index), false)
 
-            result.get(ContainerIdentificationNumberYesNoPage(index)) mustNot be(defined)
-            result.get(ContainerIdentificationNumberPage(index)) mustNot be(defined)
-        }
+        result.get(EquipmentsSection(index)) mustNot be(defined)
       }
     }
   }

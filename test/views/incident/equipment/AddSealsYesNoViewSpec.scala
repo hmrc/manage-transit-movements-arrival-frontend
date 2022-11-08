@@ -28,7 +28,7 @@ class AddSealsYesNoViewSpec extends YesNoViewBehaviours {
   val number: String = Gen.alphaNumStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddSealsYesNoView].apply(form, number, mrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[AddSealsYesNoView].apply(form, number, mrn, NormalMode, incidentIndex, equipmentIndex)(fakeRequest, messages)
 
   override val prefix: String = "incident.equipment.addSealsYesNo"
 

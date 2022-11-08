@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.incident.equipment.routes
+@import controllers.incident.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
@@ -30,20 +30,21 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.equipment.containerIndicatorYesNo.title"),
+    title = messages("incident.addTransportEquipment.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.ContainerIndicatorYesNoController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddTransportEquipmentController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("incident.equipment.containerIndicatorYesNo.heading"),
-                caption = Some(messages("incident.caption"))
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("incident.addTransportEquipment.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.addTransportEquipment.paragraph")}</p>""")
             )
         )
 

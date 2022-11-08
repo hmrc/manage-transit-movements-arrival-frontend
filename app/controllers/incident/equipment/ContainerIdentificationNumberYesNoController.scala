@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContainerIdentificationNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: IncidentNavigatorProvider,
+  navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -45,25 +45,25 @@ class ContainerIdentificationNumberYesNoController @Inject() (
 
   private val form = formProvider("incident.equipment.containerIdentificationNumberYesNo")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, mode, index))
+      Ok(view(preparedForm, mrn, mode, incidentIndex, equipmentIndex))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            ContainerIdentificationNumberYesNoPage(index).writeToUserAnswers(value).writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex)
+            ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

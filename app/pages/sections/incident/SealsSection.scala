@@ -20,9 +20,9 @@ import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
 
-case class SealsSection(index: Index) extends Section[JsArray] {
+case class SealsSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
   override def toString: String = "seals"
 }

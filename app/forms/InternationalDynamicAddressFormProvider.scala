@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package forms
 
-import forms.mappings.Mappings
-import models.locationOfGoods.TypeOfLocation
+import models.DynamicAddress
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-class TypeOfLocationFormProvider @Inject() extends Mappings {
+class InternationalDynamicAddressFormProvider @Inject() extends DynamicAddressFormProviderBase {
+  override val postalCodeLength: Int = 17
+}
 
-  def apply(): Form[TypeOfLocation] =
-    Form(
-      "value" -> enumerable[TypeOfLocation]("locationOfGoods.typeOfLocation.error.required")
-    )
+object InternationalDynamicAddressFormProvider {
+
+  def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
+    new InternationalDynamicAddressFormProvider()(prefix, isPostalCodeRequired, args: _*)
 }

@@ -17,29 +17,29 @@
 package navigation
 
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.incident.IncidentDomain
+import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentNavigatorProviderImpl @Inject() () extends IncidentNavigatorProvider {
+class EquipmentNavigatorProviderImpl @Inject() () extends EquipmentNavigatorProvider {
 
-  override def apply(mode: Mode, index: Index): UserAnswersNavigator =
+  override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index): UserAnswersNavigator =
     mode match {
-      case NormalMode => new IncidentNavigator(mode, index)
+      case NormalMode => new EquipmentNavigator(mode, incidentIndex, equipmentIndex)
       case CheckMode  => new ArrivalNavigator(mode)
     }
 }
 
-trait IncidentNavigatorProvider {
-  def apply(mode: Mode, index: Index): UserAnswersNavigator
+trait EquipmentNavigatorProvider {
+  def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index): UserAnswersNavigator
 }
 
-class IncidentNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
+class EquipmentNavigator(override val mode: Mode, incidentIndex: Index, equipmentIndex: Index) extends UserAnswersNavigator {
 
-  override type T = IncidentDomain
+  override type T = EquipmentDomain
 
-  implicit override val reader: UserAnswersReader[IncidentDomain] =
-    IncidentDomain.userAnswersReader(index)
+  implicit override val reader: UserAnswersReader[EquipmentDomain] =
+    EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)
 }

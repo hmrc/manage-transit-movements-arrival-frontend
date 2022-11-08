@@ -39,7 +39,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
   private val number: String                     = Gen.alphaNumStr.sample.value
   private def form(otherIds: Seq[String] = Nil)  = formProvider("incident.equipment.seal.sealIdentificationNumber", otherIds, number)
   private val mode                               = NormalMode
-  private lazy val sealIdentificationNumberRoute = routes.SealIdentificationNumberController.onPageLoad(mrn, mode, index, sealIndex).url
+  private lazy val sealIdentificationNumberRoute = routes.SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -51,7 +51,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
     "must return OK and the correct view for a GET" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -64,14 +64,14 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(), mrn, mode, index, sealIndex, number)(request, messages).toString
+        view(form(), mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
-        .setValue(SealIdentificationNumberPage(index, sealIndex), "test")
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
+        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), "test")
 
       setExistingUserAnswers(userAnswers)
 
@@ -86,13 +86,13 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index, sealIndex, number)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -111,7 +111,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(index), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
 
       setExistingUserAnswers(userAnswer)
 
@@ -127,7 +127,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[SealIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index, sealIndex, number)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

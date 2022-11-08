@@ -17,13 +17,13 @@
 package models.journeyDomain.incident.seal
 
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 
-case class SealDomain(identificationNumber: String)(incidentIndex: Index, sealIndex: Index)
+case class SealDomain(identificationNumber: String)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) extends JourneyDomainModel
 
 object SealDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, sealIndex: Index): UserAnswersReader[SealDomain] =
-    SealIdentificationNumberPage(incidentIndex, sealIndex).reader.map(SealDomain(_)(incidentIndex, sealIndex))
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersReader[SealDomain] =
+    SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).reader.map(SealDomain(_)(incidentIndex, equipmentIndex, sealIndex))
 }

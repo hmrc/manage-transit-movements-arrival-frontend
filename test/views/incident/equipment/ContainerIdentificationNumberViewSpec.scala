@@ -32,7 +32,7 @@ class ContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[Stri
   override def form: Form[String] = new ContainerIdentificationFormProvider()(prefix, Nil)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ContainerIdentificationNumberView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[ContainerIdentificationNumberView].apply(form, mrn, NormalMode, incidentIndex, equipmentIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
