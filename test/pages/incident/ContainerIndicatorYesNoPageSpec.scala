@@ -18,6 +18,7 @@ package pages.incident
 
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 import pages.incident
 import pages.incident.equipment._
@@ -51,18 +52,20 @@ class ContainerIndicatorYesNoPageSpec extends PageBehaviours {
     }
 
     "when yes is selected" - {
-      "must remove Add transport equipment page and add container identification number page at index 0" in {
+      "must remove Add transport equipment page and container identification number yes no page at all indexes" in {
         forAll(arbitrary[String]) {
           str =>
             val preChange = emptyUserAnswers
               .setValue(AddTransportEquipmentPage(incidentIndex), true)
               .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0)), true)
               .setValue(ContainerIdentificationNumberPage(incidentIndex, Index(0)), str)
+              .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(1)), true)
 
             val postChange = preChange.setValue(incident.ContainerIndicatorYesNoPage(index), true)
 
             postChange.get(incident.AddTransportEquipmentPage(incidentIndex)) mustNot be(defined)
             postChange.get(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))) mustNot be(defined)
+            postChange.get(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(1))) mustNot be(defined)
             postChange.get(ContainerIdentificationNumberPage(incidentIndex, Index(0))) must be(defined)
         }
       }

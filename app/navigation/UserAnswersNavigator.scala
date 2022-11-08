@@ -50,6 +50,7 @@ object UserAnswersNavigator extends Logging {
           errorCall
         }
       case Right(x) =>
+        println("\n\n\n****" + x)
         x.routeIfCompleted(userAnswers, mode, stage).getOrElse {
           logger.debug(s"Completed route not defined for model $x")
           errorCall

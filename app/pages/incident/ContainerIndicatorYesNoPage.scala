@@ -38,7 +38,7 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     lazy val numberOfEquipments = userAnswers.get(EquipmentsSection(index)).length
 
-    def removeEquipmentPage[T](page: (Index, Index) => QuestionPage[T]): Try[UserAnswers] =
+    def removeEquipmentPage[T](page: (Index, Index) => QuestionPage[T], userAnswers: UserAnswers): Try[UserAnswers] =
       (0 until numberOfEquipments).foldLeft[Try[UserAnswers]](Success(userAnswers)) {
         (acc, i) =>
           acc match {
@@ -49,13 +49,11 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
 
     value match {
       case Some(false) =>
-        removeEquipmentPage(ContainerIdentificationNumberPage)
+        removeEquipmentPage(ContainerIdentificationNumberPage, userAnswers)
       case Some(true) =>
         userAnswers
           .remove(AddTransportEquipmentPage(index))
-          .flatMap(
-            _ => removeEquipmentPage(ContainerIdentificationNumberYesNoPage)
-          )
+          .flatMap(removeEquipmentPage(ContainerIdentificationNumberYesNoPage, _))
       case _ =>
         super.cleanup(value, userAnswers)
     }
