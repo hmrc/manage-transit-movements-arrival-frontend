@@ -3,8 +3,4 @@
 
 ->         /                                                   health.Routes
 
-->         /                                                   app.incident.Routes
-
-->         /manage-transit-movements/arrivals                  app.incident.equipment.seal.Routes
-
 GET        /admin/metrics             @com.kenshoo.play.metrics.MetricsController.metrics
