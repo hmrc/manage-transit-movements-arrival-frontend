@@ -37,10 +37,10 @@ trait UserAnswersNavigator extends Navigator {
 object UserAnswersNavigator extends Logging {
 
   def nextPage[T <: JourneyDomainModel](
-                                         userAnswers: UserAnswers,
-                                         mode: Mode,
-                                         stage: Stage = CompletingJourney
-                                       )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
+    userAnswers: UserAnswers,
+    mode: Mode,
+    stage: Stage = CompletingJourney
+  )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
     lazy val errorCall = controllers.routes.ErrorController.notFound()
 
     UserAnswersReader[T].run(userAnswers) match {
