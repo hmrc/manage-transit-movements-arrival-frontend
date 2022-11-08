@@ -18,7 +18,7 @@ package controllers.incident.location
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DynamicAddressFormProvider
+import forms.InternationalDynamicAddressFormProvider
 import models.reference.Country
 import models.requests.SpecificDataRequestProvider1
 import models.{DynamicAddress, Index, Mode, MovementReferenceNumber}
@@ -42,7 +42,7 @@ class AddressController @Inject() (
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: DynamicAddressFormProvider,
+  formProvider: InternationalDynamicAddressFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: AddressView
