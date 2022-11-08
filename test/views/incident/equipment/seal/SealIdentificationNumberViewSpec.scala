@@ -28,7 +28,7 @@ import views.html.incident.equipment.seal.SealIdentificationNumberView
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber"
-  val number: String              = Gen.alphaNumStr.sample.value
+  val number: String              = nonEmptyString.sample.value
   override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil, number)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =

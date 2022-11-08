@@ -19,7 +19,7 @@ package controllers.incident.equipment.seal
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.SealIdentificationFormProvider
 import models.NormalMode
-import navigation.IncidentNavigatorProvider
+import navigation.SealNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
@@ -44,7 +44,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
+      .overrides(bind(classOf[SealNavigatorProvider]).toInstance(fakeSealNavigatorProvider))
 
   "SealIdentificationNumber Controller" - {
 
