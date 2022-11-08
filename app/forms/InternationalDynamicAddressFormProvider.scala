@@ -16,22 +16,18 @@
 
 package forms
 
-import forms.mappings.Mappings
-import models.AddressLine._
 import models.DynamicAddress
 import play.api.data.Form
-import play.api.data.Forms.{mapping, optional}
 import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-class DynamicAddressFormProvider @Inject() extends DynamicAddressFormProviderBase {
-
-  override val postalCodeLength: Int = PostalCode.length
+class InternationalDynamicAddressFormProvider @Inject() extends DynamicAddressFormProviderBase {
+  override val postalCodeLength: Int = 17
 }
 
-object DynamicAddressFormProvider {
+object InternationalDynamicAddressFormProvider {
 
   def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
-    new DynamicAddressFormProvider()(prefix, isPostalCodeRequired, args: _*)
+    new InternationalDynamicAddressFormProvider()(prefix, isPostalCodeRequired, args: _*)
 }
