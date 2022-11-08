@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package pages.incident.equipment
+package forms
 
-import pages.behaviours.PageBehaviours
+import models.DynamicAddress
+import play.api.data.Form
+import play.api.i18n.Messages
 
-class AddSealsYesNoPageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "AddSealsYesNoPage" - {
+class InternationalDynamicAddressFormProvider @Inject() extends DynamicAddressFormProviderBase {
+  override val postalCodeLength: Int = 17
+}
 
-    beRetrievable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
+object InternationalDynamicAddressFormProvider {
 
-    beSettable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
-
-    beRemovable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
-  }
+  def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
+    new InternationalDynamicAddressFormProvider()(prefix, isPostalCodeRequired, args: _*)
 }

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages.incident.equipment
+package pages.sections.incident
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-class AddSealsYesNoPageSpec extends PageBehaviours {
+case class EquipmentsSection(index: Index) extends Section[JsArray] {
 
-  "AddSealsYesNoPage" - {
+  override def path: JsPath = IncidentSection(index).path \ "equipments"
 
-    beRetrievable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
-
-    beSettable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
-
-    beRemovable[Boolean](AddSealsYesNoPage(incidentIndex, equipmentIndex))
-  }
 }

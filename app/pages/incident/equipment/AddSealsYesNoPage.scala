@@ -23,12 +23,12 @@ import pages.sections.incident.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddSealsYesNoPage(index: Index) extends QuestionPage[Boolean] {
+case class AddSealsYesNoPage(incidentIndex: Index, equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
   override def toString: String = "addSealsYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddSealsYesNoController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.AddSealsYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }

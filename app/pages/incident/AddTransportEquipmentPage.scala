@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pages.incident.equipment
+package pages.incident
 
-import controllers.incident.equipment.routes
+import controllers.incident.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.EquipmentSection
+import pages.sections.incident.{EquipmentsSection, IncidentSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ import scala.util.Try
 
 case class AddTransportEquipmentPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = IncidentSection(index).path \ toString
 
   override def toString: String = "addTransportEquipment"
 
@@ -36,12 +36,8 @@ case class AddTransportEquipmentPage(index: Index) extends QuestionPage[Boolean]
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) =>
-        userAnswers
-          .remove(ContainerIdentificationNumberYesNoPage(index))
-          .flatMap(_.remove(ContainerIdentificationNumberPage(index)))
-
-      case _ => super.cleanup(value, userAnswers)
+      case Some(false) => userAnswers.remove(EquipmentsSection(index))
+      case _           => super.cleanup(value, userAnswers)
     }
 
 }

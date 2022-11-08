@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.equipment.containerIdentificationNumberYesNo.title"),
@@ -35,7 +35,7 @@
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.ContainerIdentificationNumberYesNoController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ContainerIdentificationNumberYesNoController.onSubmit(mrn, mode, incidentIndex, equipmentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

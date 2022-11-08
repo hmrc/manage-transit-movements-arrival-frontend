@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.incident.equipment
+package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.incident.equipment.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.incident.equipment
+import pages.incident.ContainerIndicatorYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.equipment.ContainerIndicatorYesNoView
+import views.html.incident.ContainerIndicatorYesNoView
 
 import scala.concurrent.Future
 
 class ContainerIndicatorYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                      = new YesNoFormProvider()
-  private val form                              = formProvider("incident.equipment.containerIndicatorYesNo")
+  private val form                              = formProvider("incident.containerIndicatorYesNo")
   private val mode                              = NormalMode
   private lazy val containerIndicatorYesNoRoute = routes.ContainerIndicatorYesNoController.onPageLoad(mrn, mode, index).url
 
@@ -64,7 +63,7 @@ class ContainerIndicatorYesNoControllerSpec extends SpecBase with AppWithDefault
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(equipment.ContainerIndicatorYesNoPage(index), true)
+      val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorYesNoPage(index), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerIndicatorYesNoRoute)
