@@ -28,7 +28,6 @@ case class EquipmentsDomain(equipments: Seq[EquipmentDomain])(incidentIndex: Ind
 
 object EquipmentsDomain {
 
-  // scalastyle:off cyclomatic.complexity
   implicit def userAnswersReader(incidentIndex: Index): UserAnswersReader[EquipmentsDomain] = {
     def readEquipmentsOrRedirectToPage[T](page: (Index, Index) => QuestionPage[T]): UserAnswersReader[EquipmentsDomain] =
       EquipmentsSection(incidentIndex).reader.flatMap {
@@ -50,5 +49,4 @@ object EquipmentsDomain {
       case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
     }
   }
-  // scalastyle:on cyclomatic.complexity
 }

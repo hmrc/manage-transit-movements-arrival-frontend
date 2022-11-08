@@ -17,38 +17,27 @@
 package models.journeyDomain.incident.equipment
 
 import models.Index
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import pages.incident.ContainerIndicatorYesNoPage
+import pages.incident.equipment._
 
-case class EquipmentDomain(containerId: Option[String]) extends JourneyDomainModel
+case class EquipmentDomain(
+  containerId: Option[String]
+)(incidentIndex: Index, equipmentIndex: Index)
+    extends JourneyDomainModel
 
 object EquipmentDomain {
 
   def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =
-    UserAnswersReader.apply(EquipmentDomain(None))
-
-  /*def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[Option[EquipmentDomain]] =
-    IncidentCodePage(incidentIndex).reader.flatMap {
-      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded =>
-        ContainerIdentificationNumberYesNoPage(incidentIndex)
-          .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(incidentIndex).reader)
-          .map(EquipmentDomain(_))
-          .map(Some(_))
-      case TransferredToAnotherTransport | UnexpectedlyChanged =>
-        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true =>
-            ContainerIdentificationNumberPage(incidentIndex).reader.map(Some(_)).map(EquipmentDomain(_)).map(Some(_))
-          case false =>
-            AddTransportEquipmentPage(incidentIndex)
-              .filterOptionalDependent(identity) {
-                ContainerIdentificationNumberYesNoPage(incidentIndex).filterOptionalDependent(identity) {
-                  ContainerIdentificationNumberPage(incidentIndex).reader
-                }
-              }
-              .map(_.flatten)
-              .map(EquipmentDomain(_))
-              .map(Some(_))
-        }
-      case DeviatedFromItinerary | CarrierUnableToComply =>
-        UserAnswersReader.apply(None)
-    }*/
+    ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+      case true if equipmentIndex.position == 0 =>
+        ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(
+          x => EquipmentDomain(Some(x))(incidentIndex, equipmentIndex)
+        )
+      case true => ??? // TODO - update when seals section built
+      case false =>
+        ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex)
+          .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader)
+          .map(EquipmentDomain(_)(incidentIndex, equipmentIndex))
+    }
 }

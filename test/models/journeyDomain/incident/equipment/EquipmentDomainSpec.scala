@@ -18,8 +18,12 @@ package models.journeyDomain.incident.equipment
 
 import base.SpecBase
 import generators.Generators
+import models.Index
+import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.ContainerIndicatorYesNoPage
+import pages.incident.equipment._
 
 class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -29,202 +33,80 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
     "can be parsed from user answers" - {
 
-      /*"when incident code is 2 or 4" - {
+      "when container indicator is true" - {
         "and container id is answered" in {
-          forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(ContainerIdentificationNumberYesNoPage(index), true)
-                .setValue(ContainerIdentificationNumberPage(index), containerId)
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
-              val expectedResult = Some(
-                EquipmentDomain(
-                  containerId = Some(containerId)
-                )
-              )
+          val expectedResult = EquipmentDomain(Some(containerId))(incidentIndex, equipmentIndex)
 
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+          val result: EitherType[EquipmentDomain] =
+            UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
-              result.value mustBe expectedResult
-          }
+          result.value mustBe expectedResult
         }
       }
 
-      "when incident code is 3 or 6" - {
-        "and container indicator is true" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(ContainerIndicatorYesNoPage(index), true)
-                .setValue(ContainerIdentificationNumberPage(index), containerId)
-
-              val expectedResult = Some(
-                EquipmentDomain(
-                  containerId = Some(containerId)
-                )
-              )
-
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-              result.value mustBe expectedResult
-          }
-        }
-
-        "and container indicator is false" - {
-          "and not adding transport equipment" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-              incidentCode =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(index), incidentCode)
-                  .setValue(incident.ContainerIndicatorYesNoPage(index), false)
-                  .setValue(AddTransportEquipmentPage(index), false)
-
-                val expectedResult = Some(
-                  EquipmentDomain(
-                    containerId = None
-                  )
-                )
-
-                val result: EitherType[Option[EquipmentDomain]] =
-                  UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-                result.value mustBe expectedResult
-            }
-          }
-
-          "and adding transport equipment" - {
-            "and adding container id" in {
-              forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-                incidentCode =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(IncidentCodePage(index), incidentCode)
-                    .setValue(incident.ContainerIndicatorYesNoPage(index), false)
-                    .setValue(incident.AddTransportEquipmentPage(index), true)
-                    .setValue(ContainerIdentificationNumberYesNoPage(index), true)
-                    .setValue(ContainerIdentificationNumberPage(index), containerId)
-
-                  val expectedResult = Some(
-                    EquipmentDomain(
-                      containerId = Some(containerId)
-                    )
-                  )
-
-                  val result: EitherType[Option[EquipmentDomain]] =
-                    UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-                  result.value mustBe expectedResult
-              }
-            }
-          }
-        }
-      }
-
-      "when incident code is 1 or 5" in {
-        forAll(Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)) {
-          incidentCode =>
+      "when container indicator is false" - {
+        "and index is 0" - {
+          "and container id is answered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(IncidentCodePage(index), incidentCode)
+              .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+              .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
-            val expectedResult = None
+            val expectedResult = EquipmentDomain(Some(containerId))(incidentIndex, equipmentIndex)
 
-            val result: EitherType[Option[EquipmentDomain]] =
-              UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+            val result: EitherType[EquipmentDomain] =
+              UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
             result.value mustBe expectedResult
+          }
+
+          "and container id is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+              .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+
+            val expectedResult = EquipmentDomain(None)(incidentIndex, equipmentIndex)
+
+            val result: EitherType[EquipmentDomain] =
+              UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
         }
-      }*/
+
+        "and indicator is not 0" ignore {}
+      }
     }
 
     "cannot be parsed from user answers" - {
-      /*"when incident code is 2 or 4" - {
-        "and add container id yes/no is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(index), incidentCode)
 
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+      "when container indicator is true" - {
+        "and container id number is unanswered" in {
+          val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
 
-              result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(index)
-          }
-        }
+          val result: EitherType[EquipmentDomain] =
+            UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
-        "and add container id yes/no is yes and container id is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(ContainerIdentificationNumberYesNoPage(index), true)
-
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-              result.left.value.page mustBe ContainerIdentificationNumberPage(index)
-          }
+          result.left.value.page mustBe ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)
         }
       }
 
-      "when incident code is 3 or 6" - {
-        "and container indicator is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
+      "when container indicator is false" - {
+        "and index is 0" - {
+          "and add container id number is unanswered" in {
+            val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
 
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
+            val result: EitherType[EquipmentDomain] =
+              UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).run(userAnswers)
 
-              result.left.value.page mustBe incident.ContainerIndicatorYesNoPage(index)
+            result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
           }
         }
-
-        "and container indicator is true and container id is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(incident.ContainerIndicatorYesNoPage(index), true)
-
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-              result.left.value.page mustBe ContainerIdentificationNumberPage(index)
-          }
-        }
-
-        "and container indicator is false and add equipment yes/no is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(incident.ContainerIndicatorYesNoPage(index), false)
-
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-              result.left.value.page mustBe incident.AddTransportEquipmentPage(index)
-          }
-        }
-
-        "and container indicator is false, equipment yes/no is true and add container id yes/no is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
-            incidentCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(index), incidentCode)
-                .setValue(incident.ContainerIndicatorYesNoPage(index), false)
-                .setValue(incident.AddTransportEquipmentPage(index), true)
-
-              val result: EitherType[Option[EquipmentDomain]] =
-                UserAnswersReader[Option[EquipmentDomain]](EquipmentDomain.userAnswersReader(index)).run(userAnswers)
-
-              result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(index)
-          }
-        }
-      }*/
+      }
     }
   }
 
