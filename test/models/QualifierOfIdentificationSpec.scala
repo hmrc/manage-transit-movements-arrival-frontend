@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.locationOfGoods
+package models
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

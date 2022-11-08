@@ -17,7 +17,12 @@
 package pages.incident
 
 import models.incident.IncidentCode
+import models.incident.IncidentCode._
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
+import pages.incident
+import pages.sections.incident.EquipmentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class IncidentCodePageSpec extends PageBehaviours {
 
@@ -28,5 +33,36 @@ class IncidentCodePageSpec extends PageBehaviours {
     beSettable[IncidentCode](IncidentCodePage(index))
 
     beRemovable[IncidentCode](IncidentCodePage(index))
+  }
+
+  "cleanup" - {
+    "when code is changed" - {
+      "to option 2 or 4 " in {
+        forAll(Gen.oneOf(SealsBrokenOrTampered, PartiallyOrFullyUnloaded)) {
+          incidentCode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(incident.ContainerIndicatorYesNoPage(index), false)
+              .setValue(incident.AddTransportEquipmentPage(index), false)
+
+            val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
+
+            result.get(incident.ContainerIndicatorYesNoPage(index)) mustNot be(defined)
+            result.get(incident.AddTransportEquipmentPage(index)) mustNot be(defined)
+        }
+      }
+
+      "to option 1 or 5 " in {
+        forAll(Gen.oneOf(DeviatedFromItinerary, CarrierUnableToComply)) {
+          incidentCode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(EquipmentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+            val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
+
+            result.get(EquipmentsSection(index)) mustNot be(defined)
+        }
+      }
+
+    }
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours

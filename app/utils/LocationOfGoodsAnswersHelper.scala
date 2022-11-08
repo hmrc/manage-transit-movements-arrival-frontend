@@ -16,9 +16,9 @@
 
 package utils
 
-import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.locationOfGoods.TypeOfLocation
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, UserAnswers}
+import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

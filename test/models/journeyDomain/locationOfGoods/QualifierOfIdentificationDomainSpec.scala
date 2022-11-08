@@ -19,9 +19,8 @@ package models.journeyDomain.locationOfGoods
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
 import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress}
+import models.{Coordinates, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.QuestionPage
 import pages.locationOfGoods._
 

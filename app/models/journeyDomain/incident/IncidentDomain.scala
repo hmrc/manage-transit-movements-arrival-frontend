@@ -20,6 +20,7 @@ import cats.implicits._
 import models.Index
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
+import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
@@ -28,7 +29,9 @@ case class IncidentDomain(
   incidentCountry: Country,
   incidentCode: IncidentCode,
   incidentText: String,
-  endorsement: Option[EndorsementDomain]
+  endorsement: Option[EndorsementDomain],
+  location: IncidentLocationDomain,
+  equipments: EquipmentsDomain
 ) extends JourneyDomainModel
 
 object IncidentDomain {
@@ -38,7 +41,9 @@ object IncidentDomain {
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
-      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)))
+      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
+      UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
+      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index))
     ).tupled.map((IncidentDomain.apply _).tupled)
 
 }

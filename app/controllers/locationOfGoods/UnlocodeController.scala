@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.UnLocodeFormProvider
+import forms.UnLocodeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.UnlocodePage

@@ -28,6 +28,11 @@ sealed trait AddressLine {
 
 object AddressLine {
 
+  sealed trait AddressLineWithValidation extends AddressLine {
+    val length: Int
+    val regex: Regex
+  }
+
   case object AddressLine1 extends AddressLine {
     override val field: String = "addressLine1"
     val length: Int            = 35
@@ -60,5 +65,17 @@ object AddressLine {
 
   case object Country extends AddressLine {
     override val field: String = "country"
+  }
+
+  case object NumberAndStreet extends AddressLineWithValidation {
+    override val field: String = "numberAndStreet"
+    override val length: Int   = 70
+    override val regex: Regex  = stringFieldRegex
+  }
+
+  case object City extends AddressLineWithValidation {
+    override val field: String = "city"
+    override val length: Int   = 35
+    override val regex: Regex  = stringFieldRegex
   }
 }

@@ -16,7 +16,7 @@
 
 package views.locationOfGoods
 
-import forms.locationOfGoods.UnLocodeFormProvider
+import forms.UnLocodeFormProvider
 import models.reference.UnLocode
 import models.{NormalMode, UnLocodeList}
 import org.scalacheck.Arbitrary

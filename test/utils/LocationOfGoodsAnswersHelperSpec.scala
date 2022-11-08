@@ -19,9 +19,9 @@ package utils
 import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
-import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.locationOfGoods.TypeOfLocation
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress}
+import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -90,7 +90,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
-              val key = s"locationOfGoods.qualifierOfIdentification.$qualifierOfIdentification"
+              val key = s"qualifierOfIdentification.$qualifierOfIdentification"
               messages.isDefinedAt(key) mustBe true
               result.value.value mustBe messages(key)
               val actions = result.actions.get.items

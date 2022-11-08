@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package forms
 
-import forms.StopOnFirstFail
 import forms.mappings.Mappings
 import models.Coordinates
 import models.domain.StringFieldRegex.{coordinateFormatRegex, coordinatesCharacterRegex, coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}

@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.UnLocodeFormProvider
+import forms.UnLocodeFormProvider
 import generators.Generators
 import models.{NormalMode, UnLocodeList}
 import navigation.LocationOfGoodsNavigatorProvider

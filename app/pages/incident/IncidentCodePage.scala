@@ -18,11 +18,15 @@ package pages.incident
 
 import controllers.incident.routes
 import models.incident.IncidentCode
+import models.incident.IncidentCode._
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
+import pages.sections.incident.EquipmentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
@@ -32,4 +36,15 @@ case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
+
+  override def cleanup(value: Option[IncidentCode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(SealsBrokenOrTampered | PartiallyOrFullyUnloaded) =>
+        userAnswers
+          .remove(ContainerIndicatorYesNoPage(index))
+          .flatMap(_.remove(AddTransportEquipmentPage(index)))
+      case Some(DeviatedFromItinerary | CarrierUnableToComply) =>
+        userAnswers.remove(EquipmentsSection(index))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

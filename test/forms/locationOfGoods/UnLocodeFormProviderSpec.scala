@@ -16,6 +16,7 @@
 
 package forms.locationOfGoods
 
+import forms.UnLocodeFormProvider
 import forms.behaviours.StringFieldBehaviours
 import models.UnLocodeList
 import models.reference.UnLocode

@@ -16,8 +16,8 @@
 
 package generators
 
-import models.AddressLine.{PostalCode, StreetNumber}
-import models._
+import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
+import models.{QualifierOfIdentification, _}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -26,6 +26,24 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
+    Arbitrary {
+      for {
+        numberAndStreet <- stringsWithMaxLength(NumberAndStreet.length, Gen.alphaNumChar)
+        city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
+        postalCode      <- Gen.option(stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar))
+      } yield DynamicAddress(numberAndStreet, city, postalCode)
+    }
+
+  lazy val arbitraryDynamicAddressWithRequiredPostalCode: Arbitrary[DynamicAddress] =
+    Arbitrary {
+      for {
+        numberAndStreet <- stringsWithMaxLength(NumberAndStreet.length, Gen.alphaNumChar)
+        city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
+        postalCode      <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
+      } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
+    }
 
   implicit lazy val arbitraryIncidentCode: Arbitrary[models.incident.IncidentCode] =
     Arbitrary {
@@ -57,14 +75,19 @@ trait ModelGenerators {
       } yield models.Coordinates(latitude, longitude)
     }
 
-  implicit lazy val arbitraryTypeoflocation: Arbitrary[models.locationOfGoods.TypeOfLocation] =
+  implicit lazy val arbitraryTypeOfLocation: Arbitrary[models.locationOfGoods.TypeOfLocation] =
     Arbitrary {
       Gen.oneOf(models.locationOfGoods.TypeOfLocation.values)
     }
 
-  implicit lazy val arbitraryQualifierofidentification: Arbitrary[models.locationOfGoods.QualifierOfIdentification] =
+  implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
-      Gen.oneOf(models.locationOfGoods.QualifierOfIdentification.values)
+      Gen.oneOf(QualifierOfIdentification.values)
+    }
+
+  lazy val arbitraryNonLocationQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
+    Arbitrary {
+      Gen.oneOf(QualifierOfIdentification.values diff QualifierOfIdentification.locationValues)
     }
 
   implicit lazy val arbitraryAuthorisationType: Arbitrary[models.identification.authorisation.AuthorisationType] =

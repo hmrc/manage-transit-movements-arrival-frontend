@@ -1,4 +1,7 @@
 
+->         /                                                          app.incident.location.Routes
+->         /                                                          app.incident.equipment.Routes
+
 GET        /:mrn/incidents/add                                        controllers.incident.IncidentFlagController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/incidents/add                                        controllers.incident.IncidentFlagController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 GET        /:mrn/incidents/change-add                                 controllers.incident.IncidentFlagController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
@@ -44,3 +47,12 @@ POST       /:mrn/incidents/:index/endorsement-country                 controller
 GET        /:mrn/incidents/:index/change-endorsement-country          controllers.incident.EndorsementCountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 POST       /:mrn/incidents/:index/change-endorsement-country          controllers.incident.EndorsementCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 
+GET        /:mrn/incidents/:index/container-indicator                              controllers.incident.ContainerIndicatorYesNoController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:mrn/incidents/:index/container-indicator                              controllers.incident.ContainerIndicatorYesNoController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:mrn/incidents/:index/change-container-indicator                       controllers.incident.ContainerIndicatorYesNoController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:mrn/incidents/:index/change-container-indicator                       controllers.incident.ContainerIndicatorYesNoController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
+
+GET        /:mrn/incidents/:index/add-transport-equipment                          controllers.incident.AddTransportEquipmentController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:mrn/incidents/:index/add-transport-equipment                          controllers.incident.AddTransportEquipmentController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:mrn/incidents/:index/change-add-transport-equipment                   controllers.incident.AddTransportEquipmentController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:mrn/incidents/:index/change-add-transport-equipment                   controllers.incident.AddTransportEquipmentController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)

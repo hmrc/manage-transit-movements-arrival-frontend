@@ -17,11 +17,10 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
+import models.QualifierOfIdentification._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.locationOfGoods.QualifierOfIdentification
-import models.locationOfGoods.QualifierOfIdentification._
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress}
+import models.{Coordinates, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain

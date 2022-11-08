@@ -19,8 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.locationOfGoods.QualifierOfIdentification
-import models.{Mode, MovementReferenceNumber}
+import models.{Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}

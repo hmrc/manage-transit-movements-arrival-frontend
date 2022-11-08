@@ -23,6 +23,20 @@ date.day.capitalized = Day
 date.month.capitalized = Month
 date.year.capitalized = Year
 
+address.postalCode = postal code
+address.country = country
+address.numberAndStreet = number and street name
+address.city = town or city
+address.streetNumber = street number
+
+qualifierOfIdentification.customsOffice = Customs office identifier
+qualifierOfIdentification.eoriNumber = EORI number
+qualifierOfIdentification.authorisationNumber = Authorisation number
+qualifierOfIdentification.coordinates = Coordinates
+qualifierOfIdentification.unlocode = UN/LOCODE
+qualifierOfIdentification.address = Address
+qualifierOfIdentification.postalCode = Postal code
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -247,13 +261,6 @@ locationOfGoods.internationalAddress.error.country.required = Enter the country 
 locationOfGoods.qualifierOfIdentification.title = How do you want to identify the location of goods?
 locationOfGoods.qualifierOfIdentification.heading = How do you want to identify the location of goods?
 locationOfGoods.qualifierOfIdentification.paragraph1 = This needs to be precise enough for Customs to locate the goods and carry out their checks.
-locationOfGoods.qualifierOfIdentification.customsOffice = Customs office identifier
-locationOfGoods.qualifierOfIdentification.eoriNumber = EORI number
-locationOfGoods.qualifierOfIdentification.authorisationNumber = Authorisation number
-locationOfGoods.qualifierOfIdentification.coordinates = Coordinates
-locationOfGoods.qualifierOfIdentification.unlocode = UN/LOCODE
-locationOfGoods.qualifierOfIdentification.address = Address
-locationOfGoods.qualifierOfIdentification.postalCode = Postal code
 locationOfGoods.qualifierOfIdentification.checkYourAnswersLabel = Identifier type
 locationOfGoods.qualifierOfIdentification.change.hidden = identifier type for the location of goods
 locationOfGoods.qualifierOfIdentification.error.required = Select how you want to identify the location of goods
@@ -325,6 +332,36 @@ incident.incidentCode.checkYourAnswersLabel = Incident code
 incident.incidentCode.change.hidden = incident code
 incident.incidentCode.error.required = Select the type of incident
 
+incident.incidentText.title = What happened during the incident?
+incident.incidentText.heading = What happened during the incident?
+incident.incidentText.hintText = Describe the incident in detail. This can be up to 512 characters long.
+incident.incidentText.checkYourAnswersLabel = Description
+incident.incidentText.change.hidden = incident description
+incident.incidentText.error.required = Describe what happened during the incident
+incident.incidentText.error.maxLength = The description of the incident must be 512 characters or less
+incident.incidentText.error.invalidCharacters = The description of the incident must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+incident.containerIndicatorYesNo.title = Did the incident involve a container?
+incident.containerIndicatorYesNo.heading = Did the incident involve a container?
+incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
+incident.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
+
+incident.addTransportEquipment.title = Do you need to add any transport equipment?
+incident.addTransportEquipment.heading = Do you need to add any transport equipment?
+incident.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
+incident.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
+incident.addTransportEquipment.paragraph = This includes any containers or seals.
+
+# Incident - Endorsement
+
+incident.addEndorsement.title = Do you need to add an endorsement for the incident?
+incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
+incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.
+incident.addEndorsement.paragraph2 = An endorsement can only be provided by customs, Border Force or the police.
+incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsement for the incident?
+incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
+incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
+
 incident.endorsementDate.title = When was the endorsement made?
 incident.endorsementDate.heading = When was the endorsement made?
 incident.endorsementDate.checkYourAnswersLabel = Endorsement date
@@ -337,15 +374,6 @@ incident.endorsementDate.error.invalid = The endorsement date must only include 
 incident.endorsementDate.error.min.date = The endorsement date must be after {0}
 incident.endorsementDate.error.max.date = The endorsement date must be before today’s date
 
-incident.incidentText.title = What happened during the incident?
-incident.incidentText.heading = What happened during the incident?
-incident.incidentText.hintText = Describe the incident in detail. This can be up to 512 characters long.
-incident.incidentText.checkYourAnswersLabel = Description
-incident.incidentText.change.hidden = incident description
-incident.incidentText.error.required = Describe what happened during the incident
-incident.incidentText.error.maxLength = The description of the incident must be 512 characters or less
-incident.incidentText.error.invalidCharacters = The description of the incident must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
-
 incident.endorsementAuthority.title = What authority made the endorsement?
 incident.endorsementAuthority.heading = What authority made the endorsement?
 incident.endorsementAuthority.checkYourAnswersLabel = authority
@@ -353,14 +381,6 @@ incident.endorsementAuthority.change.hidden = endorsement authority
 incident.endorsementAuthority.error.required = Enter the name of the authority that made the endorsement
 incident.endorsementAuthority.error.length = The name of the authority must be 35 characters or less
 incident.endorsementAuthority.error.invalid = The name of the authority must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
-
-incident.addEndorsement.title = Do you need to add an endorsement for the incident?
-incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
-incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.
-incident.addEndorsement.paragraph2 = An endorsement can only be provided by customs, Border Force or the police.
-incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsement for the incident?
-incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
-incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
 
 incident.endorsementCountry.title = In which country was the endorsement made?
 incident.endorsementCountry.heading = In which country was the endorsement made?
@@ -379,6 +399,57 @@ incident.endorsementLocation.error.required = Enter where in {0} the endorsement
 incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
 incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
+# Incident - Location
 
+incident.location.qualifierOfIdentification.title = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.heading = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.error.required = Select how you want to identify where the incident happened
 
+incident.location.unLocode.title = What is the UN/LOCODE for the incident?
+incident.location.unLocode.heading = What is the UN/LOCODE for the incident?
+incident.location.unLocode.hintText = Enter the location or code, like Berlin or DE BER.
+incident.location.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+incident.location.unLocode.placeholder = Select a UN/LOCODE.
+incident.location.unLocode.change.hidden = UN/LOCODE for the incident
+incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
+incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
 
+incident.location.coordinates.title = What are the coordinates for the incident?
+incident.location.coordinates.heading = What are the coordinates for the incident?
+incident.location.coordinates.latitude = Latitude
+incident.location.coordinates.longitude = Longitude
+incident.location.coordinates.hintText = These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.
+incident.location.coordinates.checkYourAnswersLabel = Coordinates
+incident.location.coordinates.change.hidden = coordinates for the incident
+incident.location.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal place and a plus or minus sign
+incident.location.coordinates.error.latitude.maximum = The latitude coordinates must be between -90 and 90
+incident.location.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
+incident.location.coordinates.error.required = Enter the {0} coordinates for the incident
+incident.location.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
+
+incident.location.address.title = What is the address for the incident?
+incident.location.address.heading = What is the address for the incident?
+incident.location.address.numberAndStreet = Number and street name
+incident.location.address.city = Town or City
+incident.location.address.postalCode = Postal code
+incident.location.address.postalCode.optional = Postal code (optional)
+incident.location.address.checkYourAnswersLabel = What is the address for the incident
+incident.location.address.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
+incident.location.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+incident.location.address.error.required = Enter the {0} for the incident
+incident.location.address.error.length = The {0} must be {1} characters or less
+
+# Incident - Equipment
+
+incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
+
+incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.error.required = Enter the container identification number
+incident.equipment.containerIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+incident.equipment.containerIdentificationNumber.error.length = The identification number must be 17 characters or less
+incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique container identification number

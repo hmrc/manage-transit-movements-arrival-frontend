@@ -17,34 +17,21 @@
 package models.journeyDomain
 
 import base.SpecBase
-import forms.Constants
-import generators.Generators
-import models.InternationalAddress
+import generators.{ArrivalUserAnswersGenerator, Generators}
+import models.{InternationalAddress, QualifierOfIdentification}
 import models.identification.ProcedureType
-import models.incident.IncidentCode
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.endorsement.EndorsementDomain
-import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
-import models.locationOfGoods.QualifierOfIdentification
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
-import java.time.LocalDate
+class ArrivalDomainSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator with ScalaCheckPropertyChecks {
 
-class ArrivalDomainSpec extends SpecBase with Generators {
-
-  private val country           = arbitrary[Country].sample.value
-  private val incidentCode      = arbitrary[IncidentCode].sample.value
-  private val incidentText      = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
-  private val localDate         = LocalDate.now()
-  private val authority         = Gen.alphaNumStr.sample.value
-  private val location          = Gen.alphaNumStr.sample.value
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
   "ArrivalDomain" - {
@@ -55,92 +42,31 @@ class ArrivalDomainSpec extends SpecBase with Generators {
 
       "can be parsed from UserAnswers with Incidents" in {
 
-        val userAnswers = emptyUserAnswers
-          .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(TypeOfLocationPage, AuthorisedPlace)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
-          .setValue(AddContactPersonPage, false)
+        val initialAnswers = emptyUserAnswers
           .setValue(IncidentFlagPage, true)
-          .setValue(IncidentCountryPage(index), country)
-          .setValue(IncidentCodePage(index), incidentCode)
-          .setValue(IncidentTextPage(index), incidentText)
-          .setValue(AddEndorsementPage(index), true)
-          .setValue(EndorsementDatePage(index), localDate)
-          .setValue(EndorsementAuthorityPage(index), authority)
-          .setValue(EndorsementCountryPage(index), country)
-          .setValue(EndorsementLocationPage(index), location)
 
-        val expectedResult = ArrivalPostTransitionDomain(
-          IdentificationDomain(
-            userAnswers.mrn,
-            destinationOffice = destinationOffice,
-            identificationNumber = "identificationNumber",
-            procedureType = ProcedureType.Normal,
-            authorisations = None
-          ),
-          LocationOfGoodsDomain(
-            typeOfLocation = AuthorisedPlace,
-            qualifierOfIdentificationDetails = AddressDomain(
-              address = InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
-              contactPerson = None
-            )
-          ),
-          Some(
-            IncidentsDomain(
-              Seq(
-                IncidentDomain(
-                  incidentCountry = country,
-                  incidentCode = incidentCode,
-                  incidentText = incidentText,
-                  endorsement = Some(EndorsementDomain(localDate, authority, country, location))
-                )
-              )
-            )
-          )
-        )
+        forAll(arbitraryArrivalAnswers(initialAnswers)) {
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+          userAnswers =>
+            val result: EitherType[ArrivalPostTransitionDomain] = UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
 
-        result.value mustBe expectedResult
+            result.value.incidents must not be empty
+        }
 
       }
 
       "can be parsed from UserAnswers with no Incidents" in {
 
-        val userAnswers = emptyUserAnswers
-          .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(TypeOfLocationPage, AuthorisedPlace)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
-          .setValue(AddContactPersonPage, false)
+        val initialAnswers = emptyUserAnswers
           .setValue(IncidentFlagPage, false)
 
-        val expectedResult = ArrivalPostTransitionDomain(
-          IdentificationDomain(
-            userAnswers.mrn,
-            destinationOffice,
-            identificationNumber = "identificationNumber",
-            procedureType = ProcedureType.Normal,
-            authorisations = None
-          ),
-          LocationOfGoodsDomain(
-            typeOfLocation = AuthorisedPlace,
-            qualifierOfIdentificationDetails = AddressDomain(
-              address = InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
-              contactPerson = None
-            )
-          ),
-          None
-        )
+        forAll(arbitraryArrivalAnswers(initialAnswers)) {
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+          userAnswers =>
+            val result: EitherType[ArrivalPostTransitionDomain] = UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
 
-        result.value mustBe expectedResult
+            result.value.incidents must be(empty)
+        }
 
       }
 
@@ -156,9 +82,6 @@ class ArrivalDomainSpec extends SpecBase with Generators {
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
             .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
             .setValue(AddContactPersonPage, false)
-            .setValue(IncidentCountryPage(index), country)
-            .setValue(IncidentCodePage(index), incidentCode)
-            .setValue(IncidentTextPage(index), incidentText)
 
           val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
 

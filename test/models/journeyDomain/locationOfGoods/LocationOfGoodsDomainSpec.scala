@@ -18,13 +18,13 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
-import models.InternationalAddress
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.locationOfGoods.TypeOfLocation
 import models.reference.{Country, CountryCode}
+import models.{InternationalAddress, QualifierOfIdentification}
 import org.scalacheck.Gen
-import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 import pages.QuestionPage
+import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 

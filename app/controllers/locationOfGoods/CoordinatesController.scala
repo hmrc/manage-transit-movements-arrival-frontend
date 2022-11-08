@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.locationOfGoods.CoordinatesFormProvider
+import forms.CoordinatesFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.CoordinatesPage

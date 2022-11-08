@@ -19,9 +19,9 @@ package generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.incident.IncidentCode
-import models.locationOfGoods.{QualifierOfIdentification, TypeOfLocation}
+import models.locationOfGoods.TypeOfLocation
 import models.reference.{Country, CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
@@ -94,16 +94,41 @@ trait UserAnswersEntryGenerators {
 
   private def generateIncidentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.incident._
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case IncidentFlagPage               => arbitrary[Boolean].map(JsBoolean)
+      case IncidentCountryPage(_)         => arbitrary[Country].map(Json.toJson(_))
+      case IncidentCodePage(_)            => arbitrary[IncidentCode].map(Json.toJson(_))
+      case IncidentTextPage(_)            => Gen.alphaNumStr.map(JsString)
+      case AddEndorsementPage(_)          => arbitrary[Boolean].map(JsBoolean)
+      case EndorsementDatePage(_)         => arbitrary[LocalDate].map(Json.toJson(_))
+      case EndorsementAuthorityPage(_)    => Gen.alphaNumStr.map(JsString)
+      case EndorsementLocationPage(_)     => Gen.alphaNumStr.map(JsString)
+      case EndorsementCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
+      case ContainerIndicatorYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AddTransportEquipmentPage(_)   => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse
+      generateIncidentLocationAnswer orElse
+      generateIncidentEquipmentAnswer
+  }
+
+  private def generateIncidentLocationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident.location._
     {
-      case IncidentFlagPage            => arbitrary[Boolean].map(JsBoolean)
-      case IncidentCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
-      case IncidentCodePage(_)         => arbitrary[IncidentCode].map(Json.toJson(_))
-      case IncidentTextPage(_)         => Gen.alphaNumStr.map(JsString)
-      case AddEndorsementPage(_)       => arbitrary[Boolean].map(JsBoolean)
-      case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
-      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
-      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
-      case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
+      case QualifierOfIdentificationPage(_) => arbitrary[QualifierOfIdentification].map(Json.toJson(_))
+      case CoordinatesPage(_)               => arbitrary[Coordinates].map(Json.toJson(_))
+      case UnLocodePage(_)                  => arbitrary[UnLocode].map(Json.toJson(_))
+      case AddressPage(_)                   => arbitrary[DynamicAddress].map(Json.toJson(_))
     }
   }
+
+  private def generateIncidentEquipmentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident.equipment._
+    {
+      case ContainerIdentificationNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
+      case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
 }

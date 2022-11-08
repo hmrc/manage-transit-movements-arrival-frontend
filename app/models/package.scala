@@ -95,6 +95,8 @@ package object models {
           }
         }
         .getOrElse(Nil)
+
+    def length: Int = arr.getOrElse(JsArray()).value.length
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
