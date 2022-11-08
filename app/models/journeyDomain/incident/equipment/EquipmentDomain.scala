@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident
+package models.journeyDomain.incident.equipment
 
 import models.Index
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}

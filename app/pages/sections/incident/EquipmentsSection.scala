@@ -22,6 +22,6 @@ import play.api.libs.json.{JsArray, JsPath}
 
 case class EquipmentsSection(index: Index) extends Section[JsArray] {
 
-  override def path: JsPath = IncidentSection(index).path \ "equipment"
+  override def path: JsPath = IncidentSection(index).path \ "equipments"
 
 }

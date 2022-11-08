@@ -35,21 +35,29 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.ContainerIndicatorYesNoController.onPageLoad(userAnswers.mrn, mode, index))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    lazy val numberOfEquipments = userAnswers.get(EquipmentsSection(index)).length
+
+    def removeEquipmentPage[T](page: (Index, Index) => QuestionPage[T]): Try[UserAnswers] =
+      (0 until numberOfEquipments).foldLeft[Try[UserAnswers]](Success(userAnswers)) {
+        (acc, i) =>
+          acc match {
+            case Success(value) => value.remove(page(index, Index(i)))
+            case _              => acc
+          }
+      }
+
     value match {
       case Some(false) =>
-        val numberOfEquipments = userAnswers.get(EquipmentsSection(index)).length
-        (0 until numberOfEquipments).foldLeft[Try[UserAnswers]](Success(userAnswers)) {
-          (acc, i) =>
-            acc match {
-              case Success(value) => value.remove(ContainerIdentificationNumberPage(index, Index(i)))
-              case _              => acc
-            }
-        }
+        removeEquipmentPage(ContainerIdentificationNumberPage)
       case Some(true) =>
         userAnswers
           .remove(AddTransportEquipmentPage(index))
-          .flatMap(_.remove(ContainerIdentificationNumberYesNoPage(index, Index(0))))
-      case _ => super.cleanup(value, userAnswers)
+          .flatMap(
+            _ => removeEquipmentPage(ContainerIdentificationNumberYesNoPage)
+          )
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
+  }
 }

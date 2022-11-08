@@ -17,7 +17,7 @@
 package navigation
 
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.incident.EquipmentDomain
+import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
