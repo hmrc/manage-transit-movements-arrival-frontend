@@ -71,7 +71,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       val userAnswers = emptyUserAnswers
         .setValue(ContainerIdentificationNumberPage(index), number)
-        .setValue(SealIdentificationNumberPage(index, sealIndex), "test string")
+        .setValue(SealIdentificationNumberPage(index, sealIndex), "test")
 
       setExistingUserAnswers(userAnswers)
 
@@ -79,7 +79,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       val result = route(app, request).value
 
-      val filledForm = form().bind(Map("value" -> "test string"))
+      val filledForm = form().bind(Map("value" -> "test"))
 
       val view = injector.instanceOf[SealIdentificationNumberView]
 
@@ -99,7 +99,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, sealIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
 
