@@ -4,8 +4,6 @@
 ->         /                                                 app.locationOfGoods.Routes
 ->         /                                                 app.identification.authorisation.Routes
 
-->         /                                                 app.incident.equipment.seal.Routes
-
 GET        /                                                 controllers.RedirectController.onPageLoad()
 
 GET        /assets/*file                                     controllers.Assets.versioned(path="/public", file: Asset)
