@@ -66,7 +66,7 @@ class SealIdentificationNumberController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex))) {
+      .andThen(getMandatoryPage(ContainerIdentificationNumberPage(incidentIndex))) { // TODO - we need default content for the case where this question hasn't been answered
         implicit request =>
           val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(incidentIndex, sealIndex)) match {
             case None        => form(incidentIndex, sealIndex, containerIdentificationNumber)
