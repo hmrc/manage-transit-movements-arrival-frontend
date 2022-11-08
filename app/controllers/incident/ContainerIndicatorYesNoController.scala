@@ -14,40 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.incident.equipment
+package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.equipment.AddTransportEquipmentPage
+import pages.incident
+import pages.incident.ContainerIndicatorYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.equipment.AddTransportEquipmentView
+import views.html.incident.ContainerIndicatorYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTransportEquipmentController @Inject() (
+class ContainerIndicatorYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddTransportEquipmentView
+  view: ContainerIndicatorYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("incident.equipment.addTransportEquipment")
+  private val form = formProvider("incident.containerIndicatorYesNo")
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTransportEquipmentPage(index)) match {
+      val preparedForm = request.userAnswers.get(ContainerIndicatorYesNoPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +64,7 @@ class AddTransportEquipmentController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            AddTransportEquipmentPage(index).writeToUserAnswers(value).writeToSession().navigate()
+            incident.ContainerIndicatorYesNoPage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

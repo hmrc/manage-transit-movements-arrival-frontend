@@ -25,18 +25,18 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case class ContainerIdentificationNumberYesNoPage(index: Index) extends QuestionPage[Boolean] {
+case class ContainerIdentificationNumberYesNoPage(incidentIndex: Index, equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
   override def toString: String = "containerIdentificationNumberYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ContainerIdentificationNumberYesNoController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.ContainerIdentificationNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(ContainerIdentificationNumberPage(index))
+      case Some(false) => userAnswers.remove(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
       case _           => super.cleanup(value, userAnswers)
     }
 }

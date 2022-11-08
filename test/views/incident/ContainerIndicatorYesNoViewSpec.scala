@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.incident.equipment
+package views.incident
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.incident.equipment.AddTransportEquipmentView
+import views.html.incident.ContainerIndicatorYesNoView
 
-class AddTransportEquipmentViewSpec extends YesNoViewBehaviours {
+class ContainerIndicatorYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddTransportEquipmentView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[ContainerIndicatorYesNoView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "incident.equipment.addTransportEquipment"
+  override val prefix: String = "incident.containerIndicatorYesNo"
 
   behave like pageWithTitle()
 
@@ -36,8 +36,6 @@ class AddTransportEquipmentViewSpec extends YesNoViewBehaviours {
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading()
-
-  behave like pageWithContent("p", "This includes any containers or seals.")
 
   behave like pageWithRadioItems()
 

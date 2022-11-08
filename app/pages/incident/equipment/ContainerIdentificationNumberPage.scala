@@ -23,12 +23,12 @@ import pages.sections.incident.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ContainerIdentificationNumberPage(index: Index) extends QuestionPage[String] {
+case class ContainerIdentificationNumberPage(incidentIndex: Index, equipmentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
   override def toString: String = "containerIdentificationNumber"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }

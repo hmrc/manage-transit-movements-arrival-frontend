@@ -19,7 +19,7 @@ package controllers.incident.equipment
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.incident.ContainerIdentificationFormProvider
 import models.{Index, NormalMode}
-import navigation.IncidentNavigatorProvider
+import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.equipment.ContainerIdentificationNumberPage
@@ -37,12 +37,12 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
   private def form(otherIds: Seq[String] = Nil)                = formProvider("incident.equipment.containerIdentificationNumber", otherIds)
   private val mode                                             = NormalMode
   private val validAnswer                                      = "testString"
-  private def containerIdentificationNumberRoute(index: Index) = routes.ContainerIdentificationNumberController.onPageLoad(mrn, mode, index).url
+  private def containerIdentificationNumberRoute(index: Index) = routes.ContainerIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
+      .overrides(bind(classOf[EquipmentNavigatorProvider]).toInstance(fakeEquipmentNavigatorProvider))
 
   "ContainerIdentificationNumber Controller" - {
 
@@ -59,12 +59,12 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(), mrn, mode, index)(request, messages).toString
+        view(form(), mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerIdentificationNumberRoute(index))
@@ -78,7 +78,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -100,7 +100,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
 
       "when same value is resubmitted at index" in {
 
-        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), validAnswer)
+        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), validAnswer)
         setExistingUserAnswers(userAnswers)
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -133,11 +133,11 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
         val view = injector.instanceOf[ContainerIdentificationNumberView]
 
         contentAsString(result) mustEqual
-          view(filledForm, mrn, mode, index)(request, messages).toString
+          view(filledForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
       }
 
       "when duplicate value is submitted" in {
-        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(Index(0)), validAnswer)
+        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, Index(0)), validAnswer)
         setExistingUserAnswers(userAnswers)
 
         val request    = FakeRequest(POST, containerIdentificationNumberRoute(Index(1))).withFormUrlEncodedBody(("value", validAnswer))
@@ -150,7 +150,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
         val view = injector.instanceOf[ContainerIdentificationNumberView]
 
         contentAsString(result) mustEqual
-          view(filledForm, mrn, mode, Index(1))(request, messages).toString
+          view(filledForm, mrn, mode, incidentIndex, Index(1))(request, messages).toString
       }
     }
 

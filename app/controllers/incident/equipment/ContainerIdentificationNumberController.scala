@@ -21,9 +21,9 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.ContainerIdentificationFormProvider
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber, RichOptionJsArray}
-import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.ContainerIdentificationNumberPage
-import pages.sections.incident.IncidentsSection
+import pages.sections.incident.EquipmentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: IncidentNavigatorProvider,
+  navigatorProvider: EquipmentNavigatorProvider,
   formProvider: ContainerIdentificationFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -46,36 +46,37 @@ class ContainerIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(index: Index)(implicit request: DataRequest[_]): Form[String] =
-    formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(index))
+  private def form(incidentIndex: Index, equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+    formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(incidentIndex, equipmentIndex))
 
-  private def otherContainerIdentificationNumbers(index: Index)(implicit request: DataRequest[_]): Seq[String] = {
-    val numberOfIncidents = request.userAnswers.get(IncidentsSection).length
-    (0 until numberOfIncidents)
+  // TODO - is this the ids for the entire declaration? Or just at this incident index?
+  private def otherContainerIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val numberOfEquipments = request.userAnswers.get(EquipmentsSection(incidentIndex)).length
+    (0 until numberOfEquipments)
       .map(Index(_))
-      .filterNot(_ == index)
-      .map(ContainerIdentificationNumberPage)
+      .filterNot(_ == equipmentIndex)
+      .map(ContainerIdentificationNumberPage(incidentIndex, _))
       .flatMap(request.userAnswers.get(_))
   }
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
-        case None        => form(index)
-        case Some(value) => form(index).fill(value)
+      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)) match {
+        case None        => form(incidentIndex, equipmentIndex)
+        case Some(value) => form(incidentIndex, equipmentIndex).fill(value)
       }
-      Ok(view(preparedForm, mrn, mode, index))
+      Ok(view(preparedForm, mrn, mode, incidentIndex, equipmentIndex))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form(index)
+      form(incidentIndex, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            ContainerIdentificationNumberPage(index).writeToUserAnswers(value).writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex)
+            ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

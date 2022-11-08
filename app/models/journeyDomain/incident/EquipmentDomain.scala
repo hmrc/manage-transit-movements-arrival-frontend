@@ -17,31 +17,31 @@
 package models.journeyDomain.incident
 
 import models.Index
-import models.incident.IncidentCode._
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import pages.incident.IncidentCodePage
-import pages.incident.equipment._
+import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
 
-case class EquipmentDomain(containerId: Option[String])
+case class EquipmentDomain(containerId: Option[String]) extends JourneyDomainModel
 
 object EquipmentDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[Option[EquipmentDomain]] =
-    IncidentCodePage(index).reader.flatMap {
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =
+    UserAnswersReader.apply(EquipmentDomain(None))
+
+  /*def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[Option[EquipmentDomain]] =
+    IncidentCodePage(incidentIndex).reader.flatMap {
       case SealsBrokenOrTampered | PartiallyOrFullyUnloaded =>
-        ContainerIdentificationNumberYesNoPage(index)
-          .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(index).reader)
+        ContainerIdentificationNumberYesNoPage(incidentIndex)
+          .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(incidentIndex).reader)
           .map(EquipmentDomain(_))
           .map(Some(_))
       case TransferredToAnotherTransport | UnexpectedlyChanged =>
-        ContainerIndicatorYesNoPage(index).reader.flatMap {
+        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true =>
-            ContainerIdentificationNumberPage(index).reader.map(Some(_)).map(EquipmentDomain(_)).map(Some(_))
+            ContainerIdentificationNumberPage(incidentIndex).reader.map(Some(_)).map(EquipmentDomain(_)).map(Some(_))
           case false =>
-            AddTransportEquipmentPage(index)
+            AddTransportEquipmentPage(incidentIndex)
               .filterOptionalDependent(identity) {
-                ContainerIdentificationNumberYesNoPage(index).filterOptionalDependent(identity) {
-                  ContainerIdentificationNumberPage(index).reader
+                ContainerIdentificationNumberYesNoPage(incidentIndex).filterOptionalDependent(identity) {
+                  ContainerIdentificationNumberPage(incidentIndex).reader
                 }
               }
               .map(_.flatten)
@@ -50,5 +50,5 @@ object EquipmentDomain {
         }
       case DeviatedFromItinerary | CarrierUnableToComply =>
         UserAnswersReader.apply(None)
-    }
+    }*/
 }

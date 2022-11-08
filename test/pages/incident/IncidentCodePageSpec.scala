@@ -20,9 +20,9 @@ import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
-import pages.incident.equipment.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage}
-import pages.sections.incident.EquipmentSection
-import play.api.libs.json.Json
+import pages.incident
+import pages.sections.incident.EquipmentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class IncidentCodePageSpec extends PageBehaviours {
 
@@ -41,13 +41,13 @@ class IncidentCodePageSpec extends PageBehaviours {
         forAll(Gen.oneOf(SealsBrokenOrTampered, PartiallyOrFullyUnloaded)) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorYesNoPage(index), false)
-              .setValue(AddTransportEquipmentPage(index), false)
+              .setValue(incident.ContainerIndicatorYesNoPage(index), false)
+              .setValue(incident.AddTransportEquipmentPage(index), false)
 
             val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
 
-            result.get(ContainerIndicatorYesNoPage(index)) mustNot be(defined)
-            result.get(AddTransportEquipmentPage(index)) mustNot be(defined)
+            result.get(incident.ContainerIndicatorYesNoPage(index)) mustNot be(defined)
+            result.get(incident.AddTransportEquipmentPage(index)) mustNot be(defined)
         }
       }
 
@@ -55,11 +55,11 @@ class IncidentCodePageSpec extends PageBehaviours {
         forAll(Gen.oneOf(DeviatedFromItinerary, CarrierUnableToComply)) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
-              .setValue(EquipmentSection(index), Json.obj("foo" -> "bar"))
+              .setValue(EquipmentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
             val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
 
-            result.get(EquipmentSection(index)) mustNot be(defined)
+            result.get(EquipmentsSection(index)) mustNot be(defined)
         }
       }
 

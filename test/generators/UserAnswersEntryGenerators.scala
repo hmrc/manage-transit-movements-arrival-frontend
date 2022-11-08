@@ -95,15 +95,17 @@ trait UserAnswersEntryGenerators {
   private def generateIncidentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.incident._
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
-      case IncidentFlagPage            => arbitrary[Boolean].map(JsBoolean)
-      case IncidentCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
-      case IncidentCodePage(_)         => arbitrary[IncidentCode].map(Json.toJson(_))
-      case IncidentTextPage(_)         => Gen.alphaNumStr.map(JsString)
-      case AddEndorsementPage(_)       => arbitrary[Boolean].map(JsBoolean)
-      case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
-      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
-      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
-      case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
+      case IncidentFlagPage               => arbitrary[Boolean].map(JsBoolean)
+      case IncidentCountryPage(_)         => arbitrary[Country].map(Json.toJson(_))
+      case IncidentCodePage(_)            => arbitrary[IncidentCode].map(Json.toJson(_))
+      case IncidentTextPage(_)            => Gen.alphaNumStr.map(JsString)
+      case AddEndorsementPage(_)          => arbitrary[Boolean].map(JsBoolean)
+      case EndorsementDatePage(_)         => arbitrary[LocalDate].map(Json.toJson(_))
+      case EndorsementAuthorityPage(_)    => Gen.alphaNumStr.map(JsString)
+      case EndorsementLocationPage(_)     => Gen.alphaNumStr.map(JsString)
+      case EndorsementCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
+      case ContainerIndicatorYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AddTransportEquipmentPage(_)   => arbitrary[Boolean].map(JsBoolean)
     }
 
     pf orElse
@@ -124,10 +126,8 @@ trait UserAnswersEntryGenerators {
   private def generateIncidentEquipmentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.incident.equipment._
     {
-      case ContainerIndicatorYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
-      case AddTransportEquipmentPage(_)              => arbitrary[Boolean].map(JsBoolean)
-      case ContainerIdentificationNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
-      case ContainerIdentificationNumberPage(_)      => Gen.alphaNumStr.map(JsString)
+      case ContainerIdentificationNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
+      case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString)
     }
   }
 

@@ -18,10 +18,10 @@ package pages.sections.incident
 
 import models.Index
 import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class EquipmentSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsObject] {
+case class EquipmentsSection(index: Index) extends Section[JsArray] {
 
-  override def path: JsPath = EquipmentsSection(incidentIndex).path \ equipmentIndex.position
+  override def path: JsPath = IncidentSection(index).path \ "equipment"
 
 }

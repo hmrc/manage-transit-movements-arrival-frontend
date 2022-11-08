@@ -22,10 +22,10 @@ class ContainerIdentificationNumberPageSpec extends PageBehaviours {
 
   "ContainerIdentificationNumberPage" - {
 
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
+    beRetrievable[String](ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
 
-    beSettable[String](ContainerIdentificationNumberPage(index))
+    beSettable[String](ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
 
-    beRemovable[String](ContainerIdentificationNumberPage(index))
+    beRemovable[String](ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
   }
 }

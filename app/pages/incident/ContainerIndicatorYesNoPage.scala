@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.incident.equipment
+package pages.incident
 
-import controllers.incident.equipment.routes
-import models.{Index, Mode, UserAnswers}
+import controllers.incident.routes
+import models.{Index, Mode, RichOptionJsArray, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.EquipmentSection
+import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.sections.incident.{EquipmentsSection, IncidentSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = EquipmentSection(index).path \ toString
+  override def path: JsPath = IncidentSection(index).path \ toString
 
   override def toString: String = "containerIndicatorYesNo"
 
@@ -36,11 +37,19 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(ContainerIdentificationNumberPage(index))
+      case Some(false) =>
+        val numberOfEquipments = userAnswers.get(EquipmentsSection(index)).length
+        (0 until numberOfEquipments).foldLeft[Try[UserAnswers]](Success(userAnswers)) {
+          (acc, i) =>
+            acc match {
+              case Success(value) => value.remove(ContainerIdentificationNumberPage(index, Index(i)))
+              case _              => acc
+            }
+        }
       case Some(true) =>
         userAnswers
           .remove(AddTransportEquipmentPage(index))
-          .flatMap(_.remove(ContainerIdentificationNumberYesNoPage(index)))
+          .flatMap(_.remove(ContainerIdentificationNumberYesNoPage(index, Index(0))))
       case _ => super.cleanup(value, userAnswers)
     }
 }
