@@ -414,8 +414,8 @@ incident.location.coordinates.error.longitude.maximum = The longitude coordinate
 incident.location.coordinates.error.required = Enter the {0} coordinates for the incident
 incident.location.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
 
-incident.location.address.title = What is the address for the incident
-incident.location.address.heading = What is the address for the incident
+incident.location.address.title = What is the address for the incident?
+incident.location.address.heading = What is the address for the incident?
 incident.location.address.numberAndStreet = Number and street name
 incident.location.address.city = Town or City
 incident.location.address.postalCode = Postal code
