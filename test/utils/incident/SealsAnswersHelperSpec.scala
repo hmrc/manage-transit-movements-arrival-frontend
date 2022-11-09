@@ -57,14 +57,14 @@ class SealsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAn
                   ListItem(
                     name = sealId,
                     changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                    removeUrl = Some("#")
+                    removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
                     name = sealId,
                     changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
-                    removeUrl = Some("#")
+                    removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
                   )
                 )
               )

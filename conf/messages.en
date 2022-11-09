@@ -482,3 +482,7 @@ incident.equipment.seal.addAnotherSeal.plural.heading = You have added {0} seals
 incident.equipment.seal.addAnotherSeal.error.required = Select yes if you need to add another seal
 incident.equipment.seal.addAnotherSeal.label = Do you need to add another seal?
 incident.equipment.seal.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another seal, you need to remove one first.
+
+incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
+incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
+incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
