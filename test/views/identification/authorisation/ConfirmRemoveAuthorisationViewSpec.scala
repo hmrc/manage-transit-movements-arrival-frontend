@@ -16,7 +16,7 @@
 
 package views.identification.authorisation
 
-import forms.ConfirmRemoveItemFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
 import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
@@ -30,7 +30,7 @@ class ConfirmRemoveAuthorisationViewSpec extends YesNoViewBehaviours {
   private val authorisationTitle: String = Gen.alphaNumStr.sample.value
   private val authorisationType          = AuthorisationType.ACT
 
-  override def form: Form[Boolean] = new ConfirmRemoveItemFormProvider()(prefix, authorisationTitle, authorisationType)
+  override def form: Form[Boolean] = new YesNoFormProvider()(prefix, authorisationTitle, authorisationType.toString)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
