@@ -27,12 +27,14 @@ import views.html.incident.equipment.seal.SealIdentificationNumberView
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber"
+  override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber.withContainer"
   val number: String              = nonEmptyString.sample.value
   override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil, number)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, number)(fakeRequest, messages)
+    injector
+      .instanceOf[SealIdentificationNumberView]
+      .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, prefix, number)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -49,4 +51,21 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
+
+  "when not using a container" - {
+    val prefix: String = "incident.equipment.seal.sealIdentificationNumber.withoutContainer"
+
+    def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil)
+
+    val view: HtmlFormat.Appendable =
+      injector
+        .instanceOf[SealIdentificationNumberView]
+        .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, prefix)(fakeRequest, messages)
+
+    val doc = parseView(view)
+
+    behave like pageWithTitle(doc, prefix)
+
+    behave like pageWithHeading(doc, prefix)
+  }
 }

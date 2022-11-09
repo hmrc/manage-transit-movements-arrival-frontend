@@ -35,9 +35,14 @@ import scala.concurrent.Future
 
 class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                       = new SealIdentificationFormProvider()
-  private val number: String                     = Gen.alphaNumStr.sample.value
-  private def form(otherIds: Seq[String] = Nil)  = formProvider("incident.equipment.seal.sealIdentificationNumber", otherIds, number)
+  private val withContainerPrefix    = "incident.equipment.seal.sealIdentificationNumber.withContainer"
+  private val withoutContainerPrefix = "incident.equipment.seal.sealIdentificationNumber.withoutContainer"
+
+  private val formProvider                                      = new SealIdentificationFormProvider()
+  private val containerNumber: String                           = Gen.alphaNumStr.sample.value
+  private def formWithContainer(otherIds: Seq[String] = Nil)    = formProvider(withContainerPrefix, otherIds, containerNumber)
+  private def formWithoutContainer(otherIds: Seq[String] = Nil) = formProvider(withoutContainerPrefix, otherIds)
+
   private val mode                               = NormalMode
   private lazy val sealIdentificationNumberRoute = routes.SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
 
@@ -48,51 +53,91 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
   "SealIdentificationNumber Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" - {
+      "when using a container" in {
+        val userAnswer = emptyUserAnswers
+          .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
 
-      val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
+        setExistingUserAnswers(userAnswer)
 
-      setExistingUserAnswers(userAnswer)
+        val request = FakeRequest(GET, sealIdentificationNumberRoute)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val view = injector.instanceOf[SealIdentificationNumberView]
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+        status(result) mustEqual OK
 
-      status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(formWithContainer(), mrn, mode, incidentIndex, equipmentIndex, sealIndex, withContainerPrefix, containerNumber)(request, messages).toString
+      }
 
-      contentAsString(result) mustEqual
-        view(form(), mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
+      "when not using a container" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, sealIdentificationNumberRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[SealIdentificationNumberView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(formWithoutContainer(), mrn, mode, incidentIndex, equipmentIndex, sealIndex, withoutContainerPrefix)(request, messages).toString
+      }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
-        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), "test")
+      "when using a container" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), "test")
 
-      setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+        val request = FakeRequest(GET, sealIdentificationNumberRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      val filledForm = form().bind(Map("value" -> "test"))
+        val filledForm = formWithContainer().bind(Map("value" -> "test"))
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+        val view = injector.instanceOf[SealIdentificationNumberView]
 
-      status(result) mustEqual OK
+        status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, withContainerPrefix, containerNumber)(request, messages).toString
+      }
+
+      "when not using a container" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), "test")
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, sealIdentificationNumberRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = formWithoutContainer().bind(Map("value" -> "test"))
+
+        val view = injector.instanceOf[SealIdentificationNumberView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, withoutContainerPrefix)(request, messages).toString
+      }
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
+        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
 
       setExistingUserAnswers(userAnswer)
 
@@ -108,26 +153,48 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request and errors when invalid data is submitted" - {
 
-      val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
+      "when using a container" in {
+        val userAnswer = emptyUserAnswers
+          .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
 
-      setExistingUserAnswers(userAnswer)
+        setExistingUserAnswers(userAnswer)
 
-      val invalidAnswer = ""
+        val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form().bind(Map("value" -> invalidAnswer))
+        val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+        val filledForm = formWithContainer().bind(Map("value" -> invalidAnswer))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+        status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+        val view = injector.instanceOf[SealIdentificationNumberView]
 
-      contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, number)(request, messages).toString
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, withContainerPrefix, containerNumber)(request, messages).toString
+      }
+
+      "when not using a container" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val invalidAnswer = ""
+
+        val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+        val filledForm = formWithoutContainer().bind(Map("value" -> invalidAnswer))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        val view = injector.instanceOf[SealIdentificationNumberView]
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, withoutContainerPrefix)(request, messages).toString
+      }
+
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
