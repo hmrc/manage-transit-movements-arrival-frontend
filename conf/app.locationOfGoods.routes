@@ -60,7 +60,7 @@ POST       /:mrn/location-of-goods/change-contact-telephone-number              
 
 GET        /:mrn/location-of-goods/add-additional-identifier                                        controllers.locationOfGoods.AddAdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/location-of-goods/add-additional-identifier                                        controllers.locationOfGoods.AddAdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/location-of-goods/change-add-additional-identifierr                                controllers.locationOfGoods.AddAdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/location-of-goods/change-add-additional-identifier                                 controllers.locationOfGoods.AddAdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-add-additional-identifier                                 controllers.locationOfGoods.AddAdditionalIdentifierController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:mrn/location-of-goods/additional-identifier                                            controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
