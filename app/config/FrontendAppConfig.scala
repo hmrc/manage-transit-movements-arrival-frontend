@@ -74,6 +74,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val maxIdentificationAuthorisations: Int = configuration.get[Int]("limits.maxIdentificationAuthorisations")
   lazy val maxIncidents: Int                    = configuration.get[Int]("limits.maxIncidents")
+  lazy val maxSeals: Int                        = configuration.get[Int]("limits.maxSeals")
 
   lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 

@@ -16,11 +16,25 @@
 
 package models.journeyDomain.incident.seal
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import controllers.incident.equipment.seal.routes
+import models.journeyDomain.Stage._
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
+import play.api.mvc.Call
 
-case class SealDomain(identificationNumber: String)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) extends JourneyDomainModel
+case class SealDomain(
+  identificationNumber: String
+)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
+    extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+    stage match {
+      case AccessingJourney  => routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex)
+      case CompletingJourney => routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex)
+    }
+  }
+}
 
 object SealDomain {
 

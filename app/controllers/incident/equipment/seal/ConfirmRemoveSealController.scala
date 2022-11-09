@@ -14,65 +14,63 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.incident.equipment.seal
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
-import pages.identification.authorisation._
-import pages.sections.identification.AuthorisationSection
+import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.sections.incident.SealSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
+import views.html.incident.equipment.seal.ConfirmRemoveSealView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmRemoveAuthorisationController @Inject() (
+class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  view: ConfirmRemoveAuthorisationView
+  view: ConfirmRemoveSealView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationReferenceNumberPage(index)))
-    .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index))) {
+    .andThen(getMandatoryPage(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex))) {
       implicit request =>
-        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2.toString)
+        val form = formProvider("incident.equipment.seal.remove", request.arg)
 
-        Ok(view(form, mrn, index, mode, request.arg._1, request.arg._2.toString))
+        Ok(view(form, mrn, mode, incidentIndex, equipmentIndex, sealIndex, request.arg))
     }
 
-  def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationReferenceNumberPage(index)))
-    .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index)))
+    .andThen(getMandatoryPage(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)))
     .async {
       implicit request =>
-        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2.toString)
+        val form = formProvider("incident.equipment.seal.remove", request.arg)
 
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode, request.arg._1, request.arg._2.toString))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, sealIndex, request.arg))),
             {
               case true =>
-                AuthorisationSection(index)
+                SealSection(incidentIndex, equipmentIndex, sealIndex)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode))
+                  .navigateTo(routes.AddAnotherSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
               case false =>
-                Future.successful(Redirect(routes.AddAnotherAuthorisationController.onPageLoad(mrn, mode)))
+                Future.successful(Redirect(routes.AddAnotherSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)))
             }
           )
     }

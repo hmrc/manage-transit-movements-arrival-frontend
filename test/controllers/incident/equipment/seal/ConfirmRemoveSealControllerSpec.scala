@@ -14,42 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.incident.equipment.seal
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.identification.authorisation.AuthorisationType
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
 import org.scalacheck.Gen
-import pages.identification.authorisation._
-import pages.sections.identification.AuthorisationSection
+import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.sections.incident.SealSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.identification.authorisation.ConfirmRemoveAuthorisationView
+import views.html.incident.equipment.seal.ConfirmRemoveSealView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val prefix       = "identification.authorisation.confirmRemoveAuthorisation"
-  private val authTitle    = Gen.alphaNumStr.sample.value
-  private val authType     = AuthorisationType.ACT
-  private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider(prefix, authTitle, authType.toString)
+  private val prefix               = "incident.equipment.seal.remove"
+  private val identificationNumber = Gen.alphaNumStr.sample.value
+  private val formProvider         = new YesNoFormProvider()
+  private val form                 = formProvider(prefix, identificationNumber)
 
   private val mode                    = NormalMode
-  private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url
+  private lazy val confirmRemoveRoute = routes.ConfirmRemoveSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
 
-  "ConfirmRemoveAuthorisation Controller" - {
+  "ConfirmRemoveSeal Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), authType)
-        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), identificationNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -58,13 +55,13 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustEqual OK
 
-      val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
+      val view = injector.instanceOf[ConfirmRemoveSealView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, authorisationIndex, mode, authTitle, authType.toString)(request, messages).toString
+        view(form, mrn, mode, incidentIndex, equipmentIndex, sealIndex, identificationNumber)(request, messages).toString
     }
 
-    "must return error page when user tries to remove an authorisation that does not exist" in {
+    "must return error page when user tries to remove a seal that does not exist" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -77,12 +74,11 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to the next page when valid data is submitted and call to remove authorisation" in {
+    "must redirect to the next page when valid data is submitted and call to remove a seal" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), authType)
-        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), identificationNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -94,18 +90,17 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
+        routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(AuthorisationSection(authorisationIndex)) mustNot be(defined)
+      userAnswersCaptor.getValue.get(SealSection(incidentIndex, equipmentIndex, sealIndex)) mustNot be(defined)
     }
 
-    "must redirect to the next page when valid data is submitted and call to remove authorisation is false" in {
+    "must redirect to the next page when valid data is submitted and call to remove a seal is false" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), authType)
-        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), identificationNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -117,7 +112,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
+        routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
       verify(mockSessionRepository, never()).set(any())
     }
@@ -125,8 +120,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), authType)
-        .setValue(AuthorisationReferenceNumberPage(index), authTitle)
+        .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), identificationNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -136,10 +130,10 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[ConfirmRemoveAuthorisationView]
+      val view = injector.instanceOf[ConfirmRemoveSealView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, authorisationIndex, mode, authTitle, authType.toString)(request, messages).toString
+        view(boundForm, mrn, mode, incidentIndex, equipmentIndex, sealIndex, identificationNumber)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
