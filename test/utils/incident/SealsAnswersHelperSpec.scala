@@ -22,6 +22,7 @@ import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.incident.equipment.AddSealsYesNoPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import viewModels.ListItem
 
@@ -44,30 +45,62 @@ class SealsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAn
       }
 
       "when user answers populated with complete seals" - {
-        "must return list items" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr) {
-            (mode, sealId) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
-                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(1)), sealId)
+        "and add seal yes/no page is defined" - {
+          "must return list items with remove links" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(1)), sealId)
 
-              val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
-              helper.listItems mustBe Seq(
-                Right(
-                  ListItem(
-                    name = sealId,
-                    changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                    removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
-                  )
-                ),
-                Right(
-                  ListItem(
-                    name = sealId,
-                    changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
-                    removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
+                val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
+                    )
+                  ),
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
+                    )
                   )
                 )
-              )
+            }
+          }
+        }
+
+        "and add seal yes/no page is undefined" - {
+          "must return list items with no remove link a index 0" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(1)), sealId)
+
+                val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
+                      removeUrl = None
+                    )
+                  ),
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
+                    )
+                  )
+                )
+            }
           }
         }
       }

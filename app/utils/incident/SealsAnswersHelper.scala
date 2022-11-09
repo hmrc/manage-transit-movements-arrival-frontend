@@ -19,9 +19,11 @@ package utils.incident
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.incident.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
+import pages.incident.equipment.AddSealsYesNoPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import utils.AnswersHelper
 import viewModels.ListItem
 
@@ -37,11 +39,17 @@ class SealsAnswersHelper(
     buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
       position =>
         val sealIndex = Index(position)
+        val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && position == 0) {
+          None
+        } else {
+          Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
+        }
+
         buildListItem[SealDomain, String](
           page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(position)),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
-          removeRoute = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
+          removeRoute = removeRoute
         )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex), implicitly)
     }
 }

@@ -54,7 +54,7 @@ class AddAnotherSealController @Inject() (
       implicit request =>
         val (seals, numberOfSeals, allowMoreSeals) = viewData(mode, incidentIndex, equipmentIndex)
         numberOfSeals match {
-          case 0 => Redirect(???) // TODO
+          case 0 => Redirect(controllers.incident.equipment.routes.AddSealsYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
           case _ => Ok(view(form(allowMoreSeals), mrn, mode, incidentIndex, equipmentIndex, seals, allowMoreSeals))
         }
     }

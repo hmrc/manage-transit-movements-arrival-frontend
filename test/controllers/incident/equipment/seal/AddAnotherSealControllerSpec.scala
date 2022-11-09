@@ -63,8 +63,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   "AddAnotherSeal Controller" - {
 
-    "redirect to ???" - {
-      "when 0 seals" ignore {
+    "redirect to add seal yes/no page" - {
+      "when 0 seals" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(AddAnotherSealViewModel(Nil))
 
@@ -77,7 +77,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual ???
+        redirectLocation(result).value mustEqual
+          controllers.incident.equipment.routes.AddSealsYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
       }
     }
 
