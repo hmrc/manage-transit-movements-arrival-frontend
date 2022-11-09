@@ -43,6 +43,7 @@ case class AddAnotherSealViewModel(
 
   def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", args: _*)
   def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", args: _*)
+  def legend(implicit messages: Messages): String  = messages(s"$prefix.label", containerId.toList: _*)
 
   def allowMoreSeals(implicit config: FrontendAppConfig): Boolean = numberOfSeals < config.maxSeals
 }

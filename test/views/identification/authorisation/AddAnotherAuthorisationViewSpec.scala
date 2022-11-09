@@ -50,7 +50,7 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 
-  behave like pageWithMoreItemsAllowed(listItems.length)
+  behave like pageWithMoreItemsAllowed(listItems.length)()
 
   behave like pageWithItemsMaxedOut(maxedOutListItems.length)
 

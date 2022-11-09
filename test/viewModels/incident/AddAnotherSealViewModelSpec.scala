@@ -55,6 +55,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
             result.args mustBe Seq(1)
             result.title mustBe "You have added 1 seal"
             result.heading mustBe "You have added 1 seal"
+            result.legend mustBe "Do you want to add another seal?"
         }
       }
 
@@ -71,6 +72,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
             result.args mustBe Seq(numberOfSeals)
             result.title mustBe s"You have added $numberOfSeals seals"
             result.heading mustBe s"You have added $numberOfSeals seals"
+            result.legend mustBe "Do you want to add another seal?"
         }
       }
     }
@@ -91,6 +93,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
             result.args mustBe Seq(1, containerId)
             result.title mustBe s"You have added 1 seal for container $containerId"
             result.heading mustBe s"You have added 1 seal for container $containerId"
+            result.legend mustBe s"Do you want to add another seal for container $containerId?"
         }
       }
 
@@ -109,6 +112,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
             result.args mustBe Seq(numberOfSeals, containerId)
             result.title mustBe s"You have added $numberOfSeals seals for container $containerId"
             result.heading mustBe s"You have added $numberOfSeals seals for container $containerId"
+            result.legend mustBe s"Do you want to add another seal for container $containerId?"
         }
       }
     }

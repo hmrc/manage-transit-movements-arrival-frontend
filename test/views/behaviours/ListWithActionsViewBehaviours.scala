@@ -36,16 +36,16 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
-  def pageWithMoreItemsAllowed(args: Any*): Unit =
+  def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
     "page with more items allowed" - {
 
-      behave like pageWithTitle(doc, s"$prefix.singular", args: _*)
+      behave like pageWithTitle(doc, s"$prefix.singular", h1Args: _*)
 
-      behave like pageWithHeading(doc, s"$prefix.singular", args: _*)
+      behave like pageWithHeading(doc, s"$prefix.singular", h1Args: _*)
 
       behave like pageWithListWithActions(doc, listItems)
 
-      behave like pageWithRadioItems(legendIsHeading = false)
+      behave like pageWithRadioItems(legendIsHeading = false, args = h2Args)
     }
 
   def pageWithItemsMaxedOut(args: Any*): Unit =
