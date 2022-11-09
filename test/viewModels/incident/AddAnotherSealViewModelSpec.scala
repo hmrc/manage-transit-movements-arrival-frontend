@@ -22,6 +22,7 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import viewModels.incident.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 
@@ -38,6 +39,41 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
 
         val result = new AddAnotherSealViewModelProvider()(userAnswers, mode, incidentIndex, equipmentIndex)
         result.listItems.length mustBe numberOfSeals
+    }
+  }
+
+  "when container id is undefined" - {
+    "prefix must be incident.equipment.seal.addAnotherSeal.withoutContainer" in {
+      forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
+        (mode, numberOfSeals) =>
+          val userAnswers = (0 until numberOfSeals).foldLeft(emptyUserAnswers) {
+            (acc, i) =>
+              acc.setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(i)), Gen.alphaNumStr.sample.value)
+          }
+
+          val result = new AddAnotherSealViewModelProvider()(userAnswers, mode, incidentIndex, equipmentIndex)
+          result.prefix mustBe "incident.equipment.seal.addAnotherSeal.withoutContainer"
+          result.args mustBe Seq(numberOfSeals)
+      }
+    }
+  }
+
+  "when container id is defined" - {
+    "prefix must be incident.equipment.seal.addAnotherSeal.withContainer" in {
+      val containerId    = Gen.alphaNumStr.sample.value
+      val initialAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+
+      forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
+        (mode, numberOfSeals) =>
+          val userAnswers = (0 until numberOfSeals).foldLeft(initialAnswers) {
+            (acc, i) =>
+              acc.setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(i)), Gen.alphaNumStr.sample.value)
+          }
+
+          val result = new AddAnotherSealViewModelProvider()(userAnswers, mode, incidentIndex, equipmentIndex)
+          result.prefix mustBe "incident.equipment.seal.addAnotherSeal.withContainer"
+          result.args mustBe Seq(numberOfSeals, containerId)
+      }
     }
   }
 

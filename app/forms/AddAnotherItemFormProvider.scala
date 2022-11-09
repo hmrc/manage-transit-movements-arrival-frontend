@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class AddItemFormProvider @Inject() extends Mappings {
+class AddAnotherItemFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, allowMoreItems: Boolean): Form[Boolean] =
     Form(

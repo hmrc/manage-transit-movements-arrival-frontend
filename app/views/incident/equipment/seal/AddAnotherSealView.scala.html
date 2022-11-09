@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import controllers.incident.equipment.seal.routes
 @import models.MovementReferenceNumber
 @import viewModels.ListItem
 @import viewModels.components.InputYesNoViewModel._
+@import viewModels.incident.AddAnotherSealViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
@@ -30,14 +32,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, seals: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
-
-@singularOrPlural = @{
-    if (seals.length == 1) "singular" else "plural"
-}
+@(form: Form[Boolean], mrn: MovementReferenceNumber, viewModel: AddAnotherSealViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages(s"incident.equipment.seal.addAnotherSeal.$singularOrPlural.title", seals.length),
+    title = viewModel.title,
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -45,23 +43,23 @@
     @errorSummary(form.errors)
 
     @heading(
-        heading = messages(s"incident.equipment.seal.addAnotherSeal.$singularOrPlural.heading", seals.length),
+        heading = viewModel.heading,
         caption = Some(messages("incident.caption"))
     )
 
-    @listWithActions(seals)
+    @listWithActions(viewModel.listItems)
 
-    @formHelper(action = routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(allowMoreItems) {
+        @if(viewModel.allowMoreSeals) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = messages("incident.equipment.seal.addAnotherSeal.label")
+                    legend = messages(s"${viewModel.prefix}.label")
                 )
             )
         } else {
-            <p class="govuk-body" data-testId="maxLimit">@messages("incident.equipment.seal.addAnotherSeal.maxLimit.label")</p>
+            <p class="govuk-body" data-testId="maxLimit">@messages(s"${viewModel.prefix}.maxLimit.label")</p>
         }
 
         @button(attributes = Map("id" -> "submit"))

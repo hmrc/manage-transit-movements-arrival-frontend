@@ -16,7 +16,7 @@
 
 package views.identification.authorisation
 
-import forms.AddItemFormProvider
+import forms.AddAnotherItemFormProvider
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -30,7 +30,7 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   override def maxNumber: Int = frontendAppConfig.maxIdentificationAuthorisations
 
-  private def formProvider = new AddItemFormProvider()
+  private def formProvider = new AddAnotherItemFormProvider()
 
   override def form: Form[Boolean] = formProvider(prefix, allowMoreItems = true)
 

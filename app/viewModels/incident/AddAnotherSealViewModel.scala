@@ -16,14 +16,29 @@
 
 package viewModels.incident
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
+import pages.incident.equipment.ContainerIdentificationNumberPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import utils.incident.SealsAnswersHelper
 import viewModels.ListItem
 
 import javax.inject.Inject
 
-case class AddAnotherSealViewModel(listItems: Seq[ListItem])
+case class AddAnotherSealViewModel(
+  listItems: Seq[ListItem],
+  prefix: String,
+  onSubmitCall: Call,
+  args: Any*
+) {
+
+  val numberOfSeals: Int                                          = listItems.length
+  val singularOrPlural: String                                    = if (numberOfSeals == 1) "singular" else "plural"
+  def title(implicit messages: Messages): String                  = messages(s"$prefix.$singularOrPlural.title", args: _*)
+  def heading(implicit messages: Messages): String                = messages(s"$prefix.$singularOrPlural.heading", args: _*)
+  def allowMoreSeals(implicit config: FrontendAppConfig): Boolean = numberOfSeals < config.maxSeals
+}
 
 object AddAnotherSealViewModel {
 
@@ -36,7 +51,20 @@ object AddAnotherSealViewModel {
         case Right(value) => value
       }
 
-      new AddAnotherSealViewModel(listItems)
+      val (prefix, args) = userAnswers
+        .get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
+        .fold[(String, Seq[Any])](
+          ("incident.equipment.seal.addAnotherSeal.withoutContainer", Seq(listItems.length))
+        )(
+          containerId => ("incident.equipment.seal.addAnotherSeal.withContainer", Seq(listItems.length, containerId))
+        )
+
+      new AddAnotherSealViewModel(
+        listItems,
+        prefix = prefix,
+        onSubmitCall = controllers.incident.equipment.seal.routes.AddAnotherSealController.onSubmit(userAnswers.mrn, mode, incidentIndex, equipmentIndex),
+        args = args: _*
+      )
     }
   }
 }

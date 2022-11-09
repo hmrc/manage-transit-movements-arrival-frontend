@@ -17,7 +17,7 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.AddItemFormProvider
+import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.{Index, NormalMode}
 import navigation.IdentificationNavigatorProvider
@@ -36,7 +36,7 @@ import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
 
-  private val formProvider                  = new AddItemFormProvider()
+  private val formProvider                  = new AddAnotherItemFormProvider()
   private def form(allowMoreItems: Boolean) = formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreItems)
 
   private val mode = NormalMode

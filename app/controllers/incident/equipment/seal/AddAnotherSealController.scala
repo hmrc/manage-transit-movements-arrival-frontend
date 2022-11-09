@@ -18,15 +18,14 @@ package controllers.incident.equipment.seal
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.AddItemFormProvider
-import models.requests.DataRequest
+import forms.AddAnotherItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.EquipmentNavigatorProvider
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.ListItem
+import viewModels.incident.AddAnotherSealViewModel
 import viewModels.incident.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 import views.html.incident.equipment.seal.AddAnotherSealView
 
@@ -36,46 +35,39 @@ class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
-  formProvider: AddItemFormProvider,
+  formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  config: FrontendAppConfig,
   viewModelProvider: AddAnotherSealViewModelProvider,
   view: AddAnotherSealView
-) extends FrontendBaseController
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
-  // TODO - need dynamic heading and title
-
-  private def form(allowMoreSeals: Boolean): Form[Boolean] =
-    formProvider("incident.equipment.seal.addAnotherSeal", allowMoreSeals)
+  private def form(viewModel: AddAnotherSealViewModel): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMoreSeals)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
     .requireData(mrn) {
       implicit request =>
-        val (seals, numberOfSeals, allowMoreSeals) = viewData(mode, incidentIndex, equipmentIndex)
-        numberOfSeals match {
+        val viewModel = viewModelProvider(request.userAnswers, mode, incidentIndex, equipmentIndex)
+        viewModel.numberOfSeals match {
           case 0 => Redirect(controllers.incident.equipment.routes.AddSealsYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
-          case _ => Ok(view(form(allowMoreSeals), mrn, mode, incidentIndex, equipmentIndex, seals, allowMoreSeals))
+          case _ => Ok(view(form(viewModel), mrn, viewModel))
         }
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      lazy val (seals, numberOfSeals, allowMoreSeals) = viewData(mode, incidentIndex, equipmentIndex)
-      form(allowMoreSeals)
+      lazy val viewModel = viewModelProvider(request.userAnswers, mode, incidentIndex, equipmentIndex)
+      form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, seals, allowMoreSeals)),
+          formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
-            case true  => Redirect(routes.SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(numberOfSeals)))
+            case true =>
+              Redirect(routes.SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(viewModel.numberOfSeals)))
             case false => Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers))
           }
         )
-  }
-
-  private def viewData(mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: DataRequest[_]): (Seq[ListItem], Int, Boolean) = {
-    val seals         = viewModelProvider.apply(request.userAnswers, mode, incidentIndex, equipmentIndex).listItems
-    val numberOfSeals = seals.length
-    (seals, numberOfSeals, numberOfSeals < config.maxSeals)
   }
 }

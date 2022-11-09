@@ -16,11 +16,12 @@
 
 package views.incident.equipment.seal
 
-import forms.AddItemFormProvider
+import forms.AddAnotherItemFormProvider
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.incident.AddAnotherSealViewModel
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.incident.equipment.seal.AddAnotherSealView
 
@@ -30,9 +31,18 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   override def maxNumber: Int = frontendAppConfig.maxSeals
 
-  private def formProvider = new AddItemFormProvider()
+  private def formProvider = new AddAnotherItemFormProvider()
 
-  override def form: Form[Boolean] = formProvider(prefix, allowMoreItems = true)
+  override val prefix: String = "incident.equipment.seal.addAnotherSeal.withoutContainer"
+
+  private val viewModel = AddAnotherSealViewModel(
+    listItems,
+    prefix,
+    controllers.incident.equipment.seal.routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex),
+    listItems.length
+  )
+
+  override def form: Form[Boolean] = formProvider(prefix, viewModel.allowMoreSeals)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
@@ -40,12 +50,8 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
       .apply(
         form = form,
         mrn = mrn,
-        mode = mode,
-        incidentIndex = incidentIndex,
-        equipmentIndex = equipmentIndex,
-        seals = listItems,
-        allowMoreItems = true
-      )(fakeRequest, messages)
+        viewModel = viewModel
+      )(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
@@ -53,14 +59,13 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
       .apply(
         form = formProvider(prefix, allowMoreItems = false),
         mrn = mrn,
-        mode = mode,
-        incidentIndex = incidentIndex,
-        equipmentIndex = equipmentIndex,
-        seals = maxedOutListItems,
-        allowMoreItems = false
-      )(fakeRequest, messages)
-
-  override val prefix: String = "incident.equipment.seal.addAnotherSeal"
+        viewModel = AddAnotherSealViewModel(
+          maxedOutListItems,
+          prefix,
+          controllers.incident.equipment.seal.routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex),
+          maxedOutListItems.length
+        )
+      )(fakeRequest, messages, frontendAppConfig)
 
   behave like pageWithBackLink()
 
