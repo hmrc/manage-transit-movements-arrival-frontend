@@ -36,28 +36,26 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
-  def pageWithMoreItemsAllowed(additionalBehaviours: Unit = ()): Unit =
+  def pageWithMoreItemsAllowed(args: Any*): Unit =
     "page with more items allowed" - {
 
-      behave like pageWithTitle(doc, s"$prefix.singular", listItems.length)
+      behave like pageWithTitle(doc, s"$prefix.singular", args: _*)
 
-      behave like pageWithHeading(doc, s"$prefix.singular", listItems.length)
+      behave like pageWithHeading(doc, s"$prefix.singular", args: _*)
 
       behave like pageWithListWithActions(doc, listItems)
 
       behave like pageWithRadioItems(legendIsHeading = false)
-
-      additionalBehaviours
     }
 
-  def pageWithItemsMaxedOut(): Unit =
+  def pageWithItemsMaxedOut(args: Any*): Unit =
     "page with items maxed out" - {
 
       val doc = parseView(applyMaxedOutView)
 
-      behave like pageWithTitle(doc, s"$prefix.plural", maxedOutListItems.length)
+      behave like pageWithTitle(doc, s"$prefix.plural", args: _*)
 
-      behave like pageWithHeading(doc, s"$prefix.plural", maxedOutListItems.length)
+      behave like pageWithHeading(doc, s"$prefix.plural", args: _*)
 
       behave like pageWithListWithActions(doc, maxedOutListItems)
 

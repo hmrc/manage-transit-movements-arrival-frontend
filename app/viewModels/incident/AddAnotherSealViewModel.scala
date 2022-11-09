@@ -28,15 +28,22 @@ import javax.inject.Inject
 
 case class AddAnotherSealViewModel(
   listItems: Seq[ListItem],
-  prefix: String,
   onSubmitCall: Call,
-  args: Any*
+  containerId: Option[String]
 ) {
 
-  val numberOfSeals: Int                                          = listItems.length
-  val singularOrPlural: String                                    = if (numberOfSeals == 1) "singular" else "plural"
-  def title(implicit messages: Messages): String                  = messages(s"$prefix.$singularOrPlural.title", args: _*)
-  def heading(implicit messages: Messages): String                = messages(s"$prefix.$singularOrPlural.heading", args: _*)
+  val numberOfSeals: Int       = listItems.length
+  val singularOrPlural: String = if (numberOfSeals == 1) "singular" else "plural"
+
+  val (prefix, args) = containerId.fold[(String, Seq[Any])](
+    ("incident.equipment.seal.addAnotherSeal.withoutContainer", Seq(numberOfSeals))
+  )(
+    value => ("incident.equipment.seal.addAnotherSeal.withContainer", Seq(numberOfSeals, value))
+  )
+
+  def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", args: _*)
+  def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", args: _*)
+
   def allowMoreSeals(implicit config: FrontendAppConfig): Boolean = numberOfSeals < config.maxSeals
 }
 
@@ -51,19 +58,10 @@ object AddAnotherSealViewModel {
         case Right(value) => value
       }
 
-      val (prefix, args) = userAnswers
-        .get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
-        .fold[(String, Seq[Any])](
-          ("incident.equipment.seal.addAnotherSeal.withoutContainer", Seq(listItems.length))
-        )(
-          containerId => ("incident.equipment.seal.addAnotherSeal.withContainer", Seq(listItems.length, containerId))
-        )
-
       new AddAnotherSealViewModel(
         listItems,
-        prefix = prefix,
         onSubmitCall = controllers.incident.equipment.seal.routes.AddAnotherSealController.onSubmit(userAnswers.mrn, mode, incidentIndex, equipmentIndex),
-        args = args: _*
+        containerId = userAnswers.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
       )
     }
   }

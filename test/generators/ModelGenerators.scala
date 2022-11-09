@@ -17,11 +17,13 @@
 package generators
 
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
-import models.{QualifierOfIdentification, _}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.reference._
+import models.{QualifierOfIdentification, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs._
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
@@ -184,5 +186,12 @@ trait ModelGenerators {
         postCodeEnd     <- stringsWithLength(2, Gen.alphaChar)
       } yield UkAddress(addressLine1, addressLine2, postCodeStart + postCodeMiddle + " " + postCodeLastNum + postCodeEnd)
     }
+
+  implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
+    for {
+      method <- Gen.oneOf(GET, POST)
+      url    <- nonEmptyString
+    } yield Call(method, url)
+  }
 
 }

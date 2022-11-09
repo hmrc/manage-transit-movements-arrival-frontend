@@ -26,8 +26,12 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def mandatoryIfBoolean(condition: Boolean, requiredKey: String = "error.required", defaultResult: Boolean = true): FieldMapping[Boolean] =
-    if (condition) boolean(requiredKey) else of(ignoredFormat(defaultResult))
+  protected def mandatoryIfBoolean(condition: Boolean,
+                                   requiredKey: String = "error.required",
+                                   defaultResult: Boolean = true,
+                                   args: Seq[Any] = Seq.empty
+  ): FieldMapping[Boolean] =
+    if (condition) boolean(requiredKey, args = args) else of(ignoredFormat(defaultResult))
 
   protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(trimmedStringFormatter(errorKey, args))
@@ -41,7 +45,7 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
 
-  protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
+  protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
   protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
