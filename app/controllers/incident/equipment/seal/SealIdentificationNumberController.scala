@@ -55,7 +55,7 @@ class SealIdentificationNumberController @Inject() (
         value => ("incident.equipment.seal.sealIdentificationNumber.withContainer", Seq(value))
       )
 
-  private def form(prefix: String, args: Seq[String], incidentIndex: Index, sealIndex: Index, equipmentIndex: Index)(implicit
+  private def form(prefix: String, args: Seq[String], incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit
     request: DataRequest[_]
   ): Form[String] =
     formProvider(
