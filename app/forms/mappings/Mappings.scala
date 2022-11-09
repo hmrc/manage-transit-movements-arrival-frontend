@@ -26,10 +26,11 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def mandatoryIfBoolean(condition: Boolean,
-                                   requiredKey: String = "error.required",
-                                   defaultResult: Boolean = true,
-                                   args: Seq[Any] = Seq.empty
+  protected def mandatoryIfBoolean(
+    condition: Boolean,
+    requiredKey: String = "error.required",
+    defaultResult: Boolean = true,
+    args: Seq[Any] = Seq.empty
   ): FieldMapping[Boolean] =
     if (condition) boolean(requiredKey, args = args) else of(ignoredFormat(defaultResult))
 
@@ -39,27 +40,41 @@ trait Mappings extends Formatters with Constraints {
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 
-  protected def int(requiredKey: String = "error.required",
-                    wholeNumberKey: String = "error.wholeNumber",
-                    nonNumericKey: String = "error.nonNumeric"
+  protected def int(
+    requiredKey: String = "error.required",
+    wholeNumberKey: String = "error.wholeNumber",
+    nonNumericKey: String = "error.nonNumeric"
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
 
-  protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
+  protected def boolean(
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
-  protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
+  protected def enumerable[A](
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.invalid"
+  )(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
-  protected def localDate(invalidKey: String,
-                          allRequiredKey: String,
-                          twoRequiredKey: String,
-                          requiredKey: String,
-                          args: Seq[String] = Seq.empty
+  protected def localDate(
+    invalidKey: String,
+    allRequiredKey: String,
+    twoRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-  protected def mrn(requiredKey: String, lengthKey: String, invalidCharacterKey: String, invalidMRNKey: String): FieldMapping[MovementReferenceNumber] =
+  protected def mrn(
+    requiredKey: String,
+    lengthKey: String,
+    invalidCharacterKey: String,
+    invalidMRNKey: String
+  ): FieldMapping[MovementReferenceNumber] =
     of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
