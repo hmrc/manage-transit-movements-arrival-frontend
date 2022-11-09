@@ -458,3 +458,17 @@ incident.equipment.addSealsYesNo.title = Do you want to add a seal for container
 incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
+
+incident.equipment.seal.sealIdentificationNumber.withContainer.title = What’s the seal identification number for container {0}?
+incident.equipment.seal.sealIdentificationNumber.withContainer.heading = What’s the seal identification number for container {0}?
+incident.equipment.seal.sealIdentificationNumber.withContainer.error.required = Enter the seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.withContainer.error.length = The identification number must be 20 characters or less
+incident.equipment.seal.sealIdentificationNumber.withContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+incident.equipment.seal.sealIdentificationNumber.withContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
+
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.title = What’s the seal identification number?
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.heading = What’s the seal identification number?
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.required = Enter the seal identification number
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.length = The identification number must be 20 characters or less
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number

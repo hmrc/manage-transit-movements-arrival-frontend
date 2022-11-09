@@ -1,4 +1,6 @@
 
+->         /                                                 app.identification.authorisation.Routes
+
 GET        /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onSubmit(mode: Mode = NormalMode)
 GET        /change-movement-reference-number                            controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = CheckMode)
