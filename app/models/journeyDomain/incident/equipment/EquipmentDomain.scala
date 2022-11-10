@@ -59,7 +59,7 @@ object EquipmentDomain {
           case true =>
             (
               ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
-              sealsReads
+              sealsReadsByIncidentCode
             ).mapN {
               (containerId, seals) => EquipmentDomain(containerId, seals)(incidentIndex, equipmentIndex)
             }

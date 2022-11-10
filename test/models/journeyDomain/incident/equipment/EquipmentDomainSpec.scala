@@ -116,26 +116,80 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when container indicator is false" - {
         "and equipment index is 0" - {
-          "and container id is answered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-              .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
-              .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+          "and container id is answered" - {
+            "and incident code is 2" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
 
-            val expectedResult = EquipmentDomain(
-              Some(containerId),
-              SealsDomain(
-                Seq(
-                  SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+              val expectedResult = EquipmentDomain(
+                Some(containerId),
+                SealsDomain(
+                  Seq(
+                    SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                  )
                 )
-              )
-            )(incidentIndex, equipmentIndex)
+              )(incidentIndex, equipmentIndex)
 
-            val result: EitherType[EquipmentDomain] =
-              UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+              val result: EitherType[EquipmentDomain] =
+                UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
-            result.value mustBe expectedResult
+              result.value mustBe expectedResult
+            }
+
+            "and incident code is not 2" - {
+              "and adding seals" in {
+                forAll(Gen.oneOf(IncidentCode.values.filterNot(_ == IncidentCode.SealsBrokenOrTampered))) {
+                  incidentCode =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                      .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                      .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
+                      .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+
+                    val expectedResult = EquipmentDomain(
+                      Some(containerId),
+                      SealsDomain(
+                        Seq(
+                          SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                        )
+                      )
+                    )(incidentIndex, equipmentIndex)
+
+                    val result: EitherType[EquipmentDomain] =
+                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and not adding seals" in {
+                forAll(Gen.oneOf(IncidentCode.values.filterNot(_ == IncidentCode.SealsBrokenOrTampered))) {
+                  incidentCode =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                      .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                      .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+
+                    val expectedResult = EquipmentDomain(
+                      Some(containerId),
+                      SealsDomain(Nil)
+                    )(incidentIndex, equipmentIndex)
+
+                    val result: EitherType[EquipmentDomain] =
+                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+            }
           }
 
           "and container id is unanswered" in {
@@ -165,9 +219,9 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
           "and incident code is 2" in {
             val userAnswers = emptyUserAnswers
-              .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
               .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
               .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+              .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
               .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
 
             val expectedResult = EquipmentDomain(

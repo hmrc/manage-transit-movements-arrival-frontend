@@ -17,7 +17,7 @@
 package pages.incident.equipment
 
 import pages.behaviours.PageBehaviours
-import pages.sections.incident.{SealSection, SealsSection}
+import pages.sections.incident.SealsSection
 import play.api.libs.json.{JsArray, Json}
 
 class AddSealsYesNoPageSpec extends PageBehaviours {
