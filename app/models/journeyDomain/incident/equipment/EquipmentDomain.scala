@@ -46,28 +46,19 @@ object EquipmentDomain {
       case _                     => optionalSealsReads
     }
 
+    lazy val readsWithContainerId = (
+      ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
+      sealsReadsByIncidentCode
+    ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
+
     ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-      case true =>
-        (
-          ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
-          sealsReadsByIncidentCode
-        ).mapN {
-          (containerId, seals) => EquipmentDomain(containerId, seals)(incidentIndex, equipmentIndex)
-        }
+      case true => readsWithContainerId
       case false if equipmentIndex.position == 0 =>
         ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
-          case true =>
-            (
-              ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
-              sealsReadsByIncidentCode
-            ).mapN {
-              (containerId, seals) => EquipmentDomain(containerId, seals)(incidentIndex, equipmentIndex)
-            }
-          case false =>
-            sealsReads.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+          case true  => readsWithContainerId
+          case false => sealsReads.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
         }
-      case false =>
-        sealsReadsByIncidentCode.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+      case false => sealsReadsByIncidentCode.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity
