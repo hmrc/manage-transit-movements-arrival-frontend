@@ -40,7 +40,6 @@ class SealIdentificationNumberController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: SealNavigatorProvider,
   formProvider: SealIdentificationFormProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: SealIdentificationNumberView

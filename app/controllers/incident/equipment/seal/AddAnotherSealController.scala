@@ -44,7 +44,7 @@ class AddAnotherSealController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: AddAnotherSealViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMoreSeals)
+    formProvider(viewModel.prefix, viewModel.allowMoreSeals, viewModel.containerId.toList: _*)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
     .requireData(mrn) {

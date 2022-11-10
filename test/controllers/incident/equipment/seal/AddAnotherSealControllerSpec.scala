@@ -37,8 +37,10 @@ import views.html.incident.equipment.seal.AddAnotherSealView
 
 class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
 
-  private val formProvider                             = new AddAnotherItemFormProvider()
-  private def form(viewModel: AddAnotherSealViewModel) = formProvider(viewModel.prefix, viewModel.allowMoreSeals(frontendAppConfig))
+  private val formProvider = new AddAnotherItemFormProvider()
+
+  private def form(viewModel: AddAnotherSealViewModel) =
+    formProvider(viewModel.prefix, viewModel.allowMoreSeals, viewModel.containerId.toList: _*)
 
   private val mode = NormalMode
 
@@ -61,23 +63,11 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxSeals - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxSeals)(listItem)
 
-  private val viewModelWithNoSeals = AddAnotherSealViewModel(
-    Nil,
-    "",
-    routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex)
-  )
+  private val viewModel = arbitrary[AddAnotherSealViewModel].sample.value
 
-  private val viewModelWithSealsNotMaxedOut = AddAnotherSealViewModel(
-    listItems,
-    "",
-    routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex)
-  )
-
-  private val viewModelWithSealsMaxedOut = AddAnotherSealViewModel(
-    maxedOutListItems,
-    "",
-    routes.AddAnotherSealController.onSubmit(mrn, mode, incidentIndex, equipmentIndex)
-  )
+  private val viewModelWithNoSeals          = viewModel.copy(listItems = Nil)
+  private val viewModelWithSealsNotMaxedOut = viewModel.copy(listItems = listItems)
+  private val viewModelWithSealsMaxedOut    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherSeal Controller" - {
 
