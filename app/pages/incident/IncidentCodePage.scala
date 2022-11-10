@@ -39,12 +39,7 @@ case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
   override def cleanup(value: Option[IncidentCode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(SealsBrokenOrTampered | PartiallyOrFullyUnloaded) =>
-        userAnswers
-          .remove(ContainerIndicatorYesNoPage(index))
-          .flatMap(_.remove(AddTransportEquipmentPage(index)))
-      case Some(DeviatedFromItinerary | CarrierUnableToComply) =>
-        userAnswers.remove(EquipmentsSection(index))
-      case _ => super.cleanup(value, userAnswers)
+      case Some(_) => userAnswers.remove(EquipmentsSection(index))
+      case _       => super.cleanup(value, userAnswers)
     }
 }

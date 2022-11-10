@@ -16,28 +16,50 @@
 
 package models.journeyDomain.incident.equipment
 
+import cats.implicits._
 import models.Index
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import pages.incident.ContainerIndicatorYesNoPage
+import models.incident.IncidentCode.SealsBrokenOrTampered
+import models.journeyDomain.incident.seal.SealsDomain
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import pages.incident.equipment._
+import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 
 case class EquipmentDomain(
-  containerId: Option[String]
+  containerId: Option[String],
+  seals: SealsDomain
 )(incidentIndex: Index, equipmentIndex: Index)
     extends JourneyDomainModel
 
 object EquipmentDomain {
 
-  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =
-    ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-      case true if equipmentIndex.position == 0 =>
-        ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(
-          x => EquipmentDomain(Some(x))(incidentIndex, equipmentIndex)
-        )
-      case true => ??? // TODO - update when seals section built
-      case false =>
-        ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex)
-          .filterOptionalDependent(identity)(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader)
-          .map(EquipmentDomain(_)(incidentIndex, equipmentIndex))
+  // scalastyle:off cyclomatic.complexity
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] = {
+    lazy val sealsReads = UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex))
+
+    lazy val optionalSealsReads = AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
+      case true  => sealsReads
+      case false => UserAnswersReader.apply(SealsDomain(Nil))
     }
+
+    lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
+      case SealsBrokenOrTampered => sealsReads
+      case _                     => optionalSealsReads
+    }
+
+    lazy val readsWithContainerId = (
+      ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
+      sealsReadsByIncidentCode
+    ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
+
+    ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+      case true => readsWithContainerId
+      case false if equipmentIndex.position == 0 =>
+        ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
+          case true  => readsWithContainerId
+          case false => sealsReads.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+        }
+      case false => sealsReadsByIncidentCode.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+    }
+  }
+  // scalastyle:on cyclomatic.complexity
 }
