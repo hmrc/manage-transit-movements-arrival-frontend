@@ -17,7 +17,7 @@
 package controllers.identification.authorisation
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ConfirmRemoveItemFormProvider
+import forms.YesNoFormProvider
 import models.identification.authorisation.AuthorisationType
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -37,8 +37,8 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
   private val prefix       = "identification.authorisation.confirmRemoveAuthorisation"
   private val authTitle    = Gen.alphaNumStr.sample.value
   private val authType     = AuthorisationType.ACT
-  private val formProvider = new ConfirmRemoveItemFormProvider()
-  private val form         = formProvider(prefix, authTitle, authType)
+  private val formProvider = new YesNoFormProvider()
+  private val form         = formProvider(prefix, authTitle, authType.toString)
 
   private val mode                    = NormalMode
   private lazy val confirmRemoveRoute = routes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, authorisationIndex, mode).url

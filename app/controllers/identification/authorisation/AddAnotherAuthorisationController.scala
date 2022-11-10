@@ -19,7 +19,7 @@ package controllers.identification.authorisation
 import config.FrontendAppConfig
 import controllers.actions._
 import controllers.identification.authorisation.{routes => authRoutes}
-import forms.AddItemFormProvider
+import forms.AddAnotherItemFormProvider
 import models.journeyDomain.identification.AuthorisationDomain
 import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber}
@@ -40,7 +40,7 @@ class AddAnotherAuthorisationController @Inject() (
   navigatorProvider: IdentificationNavigatorProvider,
   actions: Actions,
   removeInProgressAuthorisations: RemoveInProgressActionProvider,
-  formProvider: AddItemFormProvider,
+  formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   config: FrontendAppConfig,
   viewModelProvider: AddAnotherAuthorisationViewModelProvider,

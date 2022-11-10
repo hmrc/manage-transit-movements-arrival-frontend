@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package navigation.annotations;
+package pages.sections.incident
 
-import com.google.inject.BindingAnnotation;
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+case class SealSection(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) extends Section[JsObject] {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface Identification {
+  override def path: JsPath = SealsSection(incidentIndex, equipmentIndex).path \ sealIndex.position
 }

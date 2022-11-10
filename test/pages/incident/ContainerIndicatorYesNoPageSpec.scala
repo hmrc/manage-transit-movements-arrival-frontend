@@ -18,7 +18,6 @@ package pages.incident
 
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 import pages.incident
 import pages.incident.equipment._

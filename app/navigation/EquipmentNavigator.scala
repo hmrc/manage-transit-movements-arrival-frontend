@@ -28,7 +28,7 @@ class EquipmentNavigatorProviderImpl @Inject() () extends EquipmentNavigatorProv
   override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index): UserAnswersNavigator =
     mode match {
       case NormalMode => new EquipmentNavigator(mode, incidentIndex, equipmentIndex)
-      case CheckMode  => new ArrivalNavigator(mode)
+      case CheckMode  => new IncidentNavigator(mode, incidentIndex)
     }
 }
 

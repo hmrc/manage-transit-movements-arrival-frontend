@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.incident
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-import javax.inject.Inject
+case class SealsSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsArray] {
 
-class AddItemFormProvider @Inject() extends Mappings {
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
-  def apply(prefix: String, allowMoreItems: Boolean): Form[Boolean] =
-    Form(
-      "value" -> mandatoryIfBoolean(allowMoreItems, s"$prefix.error.required", false)
-    )
+  override def toString: String = "seals"
 }
