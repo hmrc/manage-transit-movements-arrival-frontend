@@ -17,9 +17,10 @@
 package utils.incident
 
 import models.incident.IncidentCode
-import models.reference.Country
-import models.{Index, Mode, UserAnswers}
+import models.reference.{Country, UnLocode}
+import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
+import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
@@ -88,6 +89,35 @@ class IncidentAnswersHelper(
     prefix = "incident.endorsementLocation",
     id = Some("change-endorsement-location")
   )
+
+  def qualifierOfIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[QualifierOfIdentification](
+    page = QualifierOfIdentificationPage(index),
+    formatAnswer = formatEnumAsText(QualifierOfIdentification.messageKeyPrefix),
+    prefix = "incident.location.qualifierOfIdentification",
+    id = Some("change-qualifier-of-identification")
+  )
+
+  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[UnLocode](
+    page = UnLocodePage(index),
+    formatAnswer = formatAsText,
+    prefix = "incident.location.unLocode",
+    id = Some("change-unlocode")
+  )
+
+  def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
+    page = CoordinatesPage(index),
+    formatAnswer = formatAsText,
+    prefix = "incident.location.coordinates",
+    id = Some("change-coordinates")
+  )
+
+  def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
+    page = AddressPage(index),
+    formatAnswer = formatAsText,
+    prefix = "incident.location.address",
+    id = Some("change-address")
+  )
+
 }
 
 object IncidentAnswersHelper {

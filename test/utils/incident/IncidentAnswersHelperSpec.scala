@@ -17,15 +17,17 @@
 package utils.incident
 
 import base.SpecBase
+import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import generators.Generators
-import models.Mode
 import models.incident.IncidentCode
-import models.reference.Country
+import models.reference.{Country, UnLocode}
+import models.{Coordinates, DynamicAddress, Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident._
+import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
 import java.time.LocalDate
 
@@ -316,5 +318,141 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
+    "QualifierOfIdentificationPage" - {
+      "must return None" - {
+        "when QualifierOfIdentificationPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.qualifierOfIdentification
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when QualifierOfIdentificationPage defined" in {
+          forAll(arbitrary[QualifierOfIdentification], arbitrary[Mode]) {
+            (identificationType, mode) =>
+              val answers = emptyUserAnswers.setValue(QualifierOfIdentificationPage(incidentIndex), identificationType)
+
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.qualifierOfIdentification.get
+
+              result.key.value mustBe "Identifier type"
+              val key = s"qualifierOfIdentification.$identificationType"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe locationRoutes.QualifierOfIdentificationController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "identifier type for the incident"
+              action.id mustBe "change-qualifier-of-identification"
+          }
+        }
+      }
+    }
+
+    "UnLocodePage" - {
+      "must return None" - {
+        "when UnLocodePage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.unLocode
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when UnLocodePage is defined" in {
+          forAll(arbitrary[UnLocode], arbitrary[Mode]) {
+            (unlocode, mode) =>
+              val answers = emptyUserAnswers.setValue(UnLocodePage(incidentIndex), unlocode)
+
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.unLocode.get
+
+              result.key.value mustBe "UN/LOCODE"
+              result.value.value mustBe unlocode.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe locationRoutes.UnLocodeController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "UN/LOCODE for the incident"
+              action.id mustBe "change-unlocode"
+          }
+        }
+      }
+    }
+    "CoordinatesPage" - {
+      "must return None" - {
+        "when CoordinatesPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.coordinates
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when CoordinatesPage is defined" in {
+          forAll(arbitrary[Coordinates], arbitrary[Mode]) {
+            (coordinates, mode) =>
+              val answers = emptyUserAnswers.setValue(CoordinatesPage(incidentIndex), coordinates)
+
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.coordinates.get
+
+              result.key.value mustBe "Coordinates"
+              result.value.value mustBe coordinates.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe locationRoutes.CoordinatesController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "coordinates for the incident"
+              action.id mustBe "change-coordinates"
+          }
+        }
+      }
+    }
+    "AddressPage" - {
+      "must return None" - {
+        "when AddressPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.address
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when AddressPage is defined" in {
+          forAll(arbitrary[DynamicAddress], arbitrary[Mode]) {
+            (address, mode) =>
+              val answers = emptyUserAnswers.setValue(AddressPage(incidentIndex), address)
+
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.address.get
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe address.toString //TODO: Fix this not working ???
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe locationRoutes.AddressController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "address for the incident"
+              action.id mustBe "change-address"
+          }
+        }
+      }
+    }
   }
 }

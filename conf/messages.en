@@ -403,6 +403,8 @@ incident.endorsementLocation.error.invalid = The endorsement location must only 
 
 incident.location.qualifierOfIdentification.title = How do you want to identify where the incident happened?
 incident.location.qualifierOfIdentification.heading = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.checkYourAnswersLabel = Identifier type
+incident.location.qualifierOfIdentification.change.hidden = identifier type for the incident
 incident.location.qualifierOfIdentification.error.required = Select how you want to identify where the incident happened
 
 incident.location.unLocode.title = What is the UN/LOCODE for the incident?
@@ -433,7 +435,8 @@ incident.location.address.numberAndStreet = Number and street name
 incident.location.address.city = Town or City
 incident.location.address.postalCode = Postal code
 incident.location.address.postalCode.optional = Postal code (optional)
-incident.location.address.checkYourAnswersLabel = What is the address for the incident
+incident.location.address.checkYourAnswersLabel = Address
+incident.location.address.change.hidden = address for the incident
 incident.location.address.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
 incident.location.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 incident.location.address.error.required = Enter the {0} for the incident
