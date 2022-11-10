@@ -32,7 +32,7 @@ case class IncidentDomain(
   endorsement: Option[EndorsementDomain],
   location: IncidentLocationDomain,
   equipments: EquipmentsDomain
-) extends JourneyDomainModel
+) extends JourneyDomainModel // TODO - add incident index
 
 object IncidentDomain {
 

@@ -100,17 +100,25 @@ trait UserAnswersEntryGenerators {
       case IncidentCodePage(_)            => arbitrary[IncidentCode].map(Json.toJson(_))
       case IncidentTextPage(_)            => Gen.alphaNumStr.map(JsString)
       case AddEndorsementPage(_)          => arbitrary[Boolean].map(JsBoolean)
-      case EndorsementDatePage(_)         => arbitrary[LocalDate].map(Json.toJson(_))
-      case EndorsementAuthorityPage(_)    => Gen.alphaNumStr.map(JsString)
-      case EndorsementLocationPage(_)     => Gen.alphaNumStr.map(JsString)
-      case EndorsementCountryPage(_)      => arbitrary[Country].map(Json.toJson(_))
       case ContainerIndicatorYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
       case AddTransportEquipmentPage(_)   => arbitrary[Boolean].map(JsBoolean)
     }
 
     pf orElse
+      generateIncidentEndorsementAnswer orElse
       generateIncidentLocationAnswer orElse
-      generateIncidentEquipmentAnswer
+      generateIncidentEquipmentAnswer orElse
+      generateIncidentEquipmentSeal
+  }
+
+  private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident._
+    {
+      case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
+      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
+      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
+      case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
+    }
   }
 
   private def generateIncidentLocationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -128,6 +136,14 @@ trait UserAnswersEntryGenerators {
     {
       case ContainerIdentificationNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString)
+      case AddSealsYesNoPage(_, _)                      => arbitrary[Boolean].map(JsBoolean)
+    }
+  }
+
+  private def generateIncidentEquipmentSeal: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident.equipment.seal._
+    {
+      case SealIdentificationNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
     }
   }
 
