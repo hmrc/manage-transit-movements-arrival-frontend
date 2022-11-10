@@ -376,7 +376,7 @@ incident.endorsementDate.error.max.date = The endorsement date must be before to
 
 incident.endorsementAuthority.title = What authority made the endorsement?
 incident.endorsementAuthority.heading = What authority made the endorsement?
-incident.endorsementAuthority.checkYourAnswersLabel = authority
+incident.endorsementAuthority.checkYourAnswersLabel = Authority
 incident.endorsementAuthority.change.hidden = endorsement authority
 incident.endorsementAuthority.error.required = Enter the name of the authority that made the endorsement
 incident.endorsementAuthority.error.length = The name of the authority must be 35 characters or less
