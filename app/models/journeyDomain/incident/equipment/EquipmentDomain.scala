@@ -18,7 +18,7 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import models.Index
-import models.incident.IncidentCode.SealsBrokenOrTampered
+import models.incident.IncidentCode._
 import models.journeyDomain.incident.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import pages.incident.equipment._
@@ -51,14 +51,21 @@ object EquipmentDomain {
       sealsReadsByIncidentCode
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
 
-    ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-      case true => readsWithContainerId
-      case false if equipmentIndex.position == 0 =>
-        ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
-          case true  => readsWithContainerId
-          case false => sealsReads.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+    lazy val readsWithOptionalContainerId =
+      ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
+        case true  => readsWithContainerId
+        case false => sealsReads.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+      }
+
+    IncidentCodePage(incidentIndex).reader.flatMap {
+      case TransferredToAnotherTransport | UnexpectedlyChanged =>
+        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+          case true                                  => readsWithContainerId
+          case false if equipmentIndex.position == 0 => readsWithOptionalContainerId
+          case false                                 => sealsReadsByIncidentCode.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
         }
-      case false => sealsReadsByIncidentCode.map(EquipmentDomain(None, _)(incidentIndex, equipmentIndex))
+      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readsWithOptionalContainerId
+      case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity
