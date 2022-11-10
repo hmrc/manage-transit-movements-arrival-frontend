@@ -18,14 +18,7 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import models.Index
-import models.incident.IncidentCode.{
-  CarrierUnableToComply,
-  DeviatedFromItinerary,
-  PartiallyOrFullyUnloaded,
-  SealsBrokenOrTampered,
-  TransferredToAnotherTransport,
-  UnexpectedlyChanged
-}
+import models.incident.IncidentCode._
 import models.journeyDomain.incident.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import pages.incident.equipment._
