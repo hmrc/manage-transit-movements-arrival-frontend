@@ -26,13 +26,17 @@ case class EquipmentsDomain(equipments: Seq[EquipmentDomain])(incidentIndex: Ind
 
 object EquipmentsDomain {
 
+  // scalastyle:off cyclomatic.complexity
   implicit def userAnswersReader(incidentIndex: Index): UserAnswersReader[EquipmentsDomain] = {
-    def readEquipments[T]: UserAnswersReader[EquipmentsDomain] =
+    lazy val readEquipments: UserAnswersReader[EquipmentsDomain] =
       EquipmentsSection(incidentIndex).reader.flatMap {
         case x if x.isEmpty =>
-          UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).map(Seq(_)).map(EquipmentsDomain(_)(incidentIndex))
+          UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0)))
+            .map(Seq(_))
+            .map(EquipmentsDomain(_)(incidentIndex))
         case x =>
-          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _)).map(EquipmentsDomain(_)(incidentIndex))
+          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _))
+            .map(EquipmentsDomain(_)(incidentIndex))
       }
 
     IncidentCodePage(incidentIndex).reader.flatMap {
@@ -49,4 +53,5 @@ object EquipmentsDomain {
       case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
     }
   }
+  // scalastyle:on cyclomatic.complexity
 }
