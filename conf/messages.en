@@ -446,6 +446,9 @@ incident.location.address.error.length = The {0} must be {1} characters or less
 
 # Incident - Equipment
 
+incident.equipment.label = Equipment {0}
+incident.equipment.change.hidden = equipment {0}
+
 incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
