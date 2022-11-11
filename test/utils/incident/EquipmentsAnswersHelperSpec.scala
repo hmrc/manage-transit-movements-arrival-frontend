@@ -19,22 +19,22 @@ package utils.incident
 import base.SpecBase
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.Mode
-import org.scalacheck.Arbitrary
-import Arbitrary.arbitrary
 import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.IncidentCodePage
-import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 
 class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+
   "EquipmentsAnswersHelper" - {
 
     "equipment" - {
       "must return None" - {
         "when equipment is undefined" in {
-          forAll(Arbitrary.arbitrary[Mode]) {
+          forAll(arbitrary[Mode]) {
             mode =>
               val helper = EquipmentsAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.equipment(equipmentIndex)
@@ -42,54 +42,55 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
           }
         }
       }
-    }
-    "must return Some(Row)" - {
-      "when equipment is  defined and container id is undefined" in {
-        val initialUserAnswers = emptyUserAnswers
-          .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-          .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
-        forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
-          (userAnswers, mode) =>
-            val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-            val result = helper.equipment(index).get
+      "must return Some(Row)" - {
+        "when equipment is  defined and container id is undefined" in {
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
-            result.key.value mustBe "Equipment 1"
-            result.value.value mustBe "default container id"
-            val actions = result.actions.get.items
-            actions.size mustBe 1
-            val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-            action.visuallyHiddenText.get mustBe "equipment 1"
-            action.id mustBe "change-equipment-1"
+          forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
+            (userAnswers, mode) =>
+              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+              val result = helper.equipment(index).get
+
+              result.key.value mustBe "Equipment 1"
+              result.value.value mustBe "default container id"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
+              action.visuallyHiddenText.get mustBe "equipment 1"
+              action.id mustBe "change-equipment-1"
+          }
+        }
+
+        "when equipment is  defined and container id is defined" in {
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+
+          forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
+            (userAnswers, mode) =>
+              val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers).value
+
+              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+              val result = helper.equipment(index).get
+
+              result.key.value mustBe "Equipment 1"
+              result.value.value mustBe equipment.containerId.get
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
+              action.visuallyHiddenText.get mustBe "equipment 1"
+              action.id mustBe "change-equipment-1"
+          }
         }
       }
-      "when equipment is  defined and container id is defined" in {
-        val initialUserAnswers = emptyUserAnswers
-          .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-          .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-
-        forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
-          (userAnswers, mode) =>
-            val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers).value
-
-            val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-            val result = helper.equipment(index).get
-
-            result.key.value mustBe "Equipment 1"
-            result.value.value mustBe equipment.containerId.get
-            val actions = result.actions.get.items
-            actions.size mustBe 1
-            val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-            action.visuallyHiddenText.get mustBe "equipment 1"
-            action.id mustBe "change-equipment-1"
-        }
-      }
     }
-
   }
 
 }

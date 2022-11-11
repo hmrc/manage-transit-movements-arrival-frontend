@@ -17,10 +17,10 @@
 package models.journeyDomain.incident.equipment
 
 import cats.implicits._
-import models.{Index, Mode, UserAnswers}
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 import play.api.mvc.Call
@@ -31,9 +31,8 @@ case class EquipmentDomain(
 )(incidentIndex: Index, equipmentIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString(): String = containerId.fold("default container id")(
-    id => s"$id"
-  )
+  // TODO - decide what to do when there isn't a container ID
+  override def toString: String = containerId.fold("default container id")(identity)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Option(Call("GET", "#"))
 }

@@ -17,10 +17,8 @@
 package utils.incident
 
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.journeyDomain.incident.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
