@@ -447,11 +447,13 @@ incident.location.address.error.length = The {0} must be {1} characters or less
 incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.change.hidden = if you want to add a container identification number
 incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
 incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
 incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
-incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
+incident.equipment.containerIdentificationNumber.change.hidden = container identification number
 incident.equipment.containerIdentificationNumber.error.required = Enter the container identification number
 incident.equipment.containerIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 incident.equipment.containerIdentificationNumber.error.length = The identification number must be 17 characters or less
@@ -459,13 +461,16 @@ incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This i
 
 incident.equipment.addSealsYesNo.title = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
-incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}?
+incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}
+incident.equipment.addSealsYesNo.change.hidden = if you want to add seals
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
 
 # Incident - Seal
 
 incident.equipment.seal.sealIdentificationNumber.withContainer.title = What’s the seal identification number for container {0}?
 incident.equipment.seal.sealIdentificationNumber.withContainer.heading = What’s the seal identification number for container {0}?
+incident.equipment.seal.sealIdentificationNumber.withContainer.checkYourAnswersLabel = Seal identification number for container {0}
+incident.equipment.seal.sealIdentificationNumber.withContainer.change.hidden = seal identification number for container {0}
 incident.equipment.seal.sealIdentificationNumber.withContainer.error.required = Enter the seal identification number for container {0}
 incident.equipment.seal.sealIdentificationNumber.withContainer.error.length = The identification number must be 20 characters or less
 incident.equipment.seal.sealIdentificationNumber.withContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
@@ -473,6 +478,8 @@ incident.equipment.seal.sealIdentificationNumber.withContainer.error.alreadySubm
 
 incident.equipment.seal.sealIdentificationNumber.withoutContainer.title = What’s the seal identification number?
 incident.equipment.seal.sealIdentificationNumber.withoutContainer.heading = What’s the seal identification number?
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.checkYourAnswersLabel = Seal identification number
+incident.equipment.seal.sealIdentificationNumber.withoutContainer.change.hidden = seal identification number
 incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.required = Enter the seal identification number
 incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.length = The identification number must be 20 characters or less
 incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
