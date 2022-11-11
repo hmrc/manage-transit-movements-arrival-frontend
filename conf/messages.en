@@ -469,6 +469,9 @@ incident.equipment.addSealsYesNo.error.required = Select yes if you want to add 
 
 # Incident - Seal
 
+incident.equipment.seal.label = Seal {0}
+incident.equipment.seal.change.hidden = seal {0}
+
 incident.equipment.seal.sealIdentificationNumber.checkYourAnswersLabel = Seal identification number
 incident.equipment.seal.sealIdentificationNumber.change.hidden = seal identification number
 
