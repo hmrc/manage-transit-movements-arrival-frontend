@@ -113,7 +113,7 @@ class IncidentAnswersHelper(
 
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
     page = AddressPage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsDynamicAddress,
     prefix = "incident.location.address",
     id = Some("change-address")
   )
