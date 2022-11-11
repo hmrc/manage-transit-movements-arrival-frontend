@@ -17,76 +17,120 @@
 package utils.incident
 
 import base.SpecBase
+import controllers.incident.equipment._
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.Mode
 import models.incident.IncidentCode
-import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.incident.equipment.EquipmentDomain
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.IncidentCodePage
-import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
+import org.scalacheck.Gen
+import pages.incident._
+import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import viewModels.ListItem
 
-class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
 
   "EquipmentsAnswersHelper" - {
 
-    "equipment" - {
-      "must return None" - {
-        "when equipment is undefined" in {
+    "listItems" - {
+
+      "when empty user answers" - {
+        "must return empty list of list items" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = EquipmentsAnswersHelper(emptyUserAnswers, mode, incidentIndex)
-              val result = helper.equipment(equipmentIndex)
-              result mustBe None
+              val userAnswers = emptyUserAnswers
+
+              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+              helper.listItems mustBe Nil
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when equipment is  defined and container id is undefined" in {
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-            .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+      "when user answers populated with a complete equipment" - {
 
-          forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
-            (userAnswers, mode) =>
+        "and equipment has no container id" in {
+          forAll(arbitrary[Mode], Gen.alphaNumStr) {
+            (mode, sealId) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
               val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              val result = helper.equipment(index).get
-
-              result.key.value mustBe "Equipment 1"
-              result.value.value mustBe "default container id"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-              action.visuallyHiddenText.get mustBe "equipment 1"
-              action.id mustBe "change-equipment-1"
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = "",
+                    changeUrl = "#",
+                    removeUrl = Some("#")
+                  )
+                )
+              )
           }
         }
 
-        "when equipment is  defined and container id is defined" in {
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-            .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-
-          forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
-            (userAnswers, mode) =>
-              val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers).value
+        "and equipment has a container id" in {
+          forAll(arbitrary[Mode], Gen.alphaNumStr, Gen.alphaNumStr) {
+            (mode, containerId, sealId) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
 
               val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              val result = helper.equipment(index).get
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = containerId,
+                    changeUrl = "#",
+                    removeUrl = Some("#")
+                  )
+                )
+              )
+          }
+        }
+      }
 
-              result.key.value mustBe "Equipment 1"
-              result.value.value mustBe equipment.containerId.get
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-              action.visuallyHiddenText.get mustBe "equipment 1"
-              action.id mustBe "change-equipment-1"
+      "when user answers populated with an in progress equipment" - {
+        "and equipment has no container id" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+
+              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = "",
+                    changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
+                    removeUrl = Some("#")
+                  )
+                )
+              )
+          }
+        }
+
+        "and equipment has a container id" in {
+          forAll(arbitrary[Mode], Gen.alphaNumStr) {
+            (mode, containerId) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+
+              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = containerId,
+                    changeUrl = seal.routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url,
+                    removeUrl = Some("#")
+                  )
+                )
+              )
           }
         }
       }

@@ -30,42 +30,6 @@ class SealsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAn
 
   "SealsAnswersHelper" - {
 
-    "seal" - {
-      "must return None" - {
-        "when seal is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = SealsAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
-              val result = helper.seal(index)
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when seal is  defined" in {
-          forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-            (idNumber, mode) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), idNumber)
-
-              val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
-              val result = helper.seal(index).get
-
-              result.key.value mustBe "Seal 1"
-              result.value.value mustBe idNumber
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
-              action.visuallyHiddenText.get mustBe "seal 1"
-              action.id mustBe "change-seal-1"
-          }
-        }
-      }
-    }
-
     "listItems" - {
 
       "when empty user answers" - {

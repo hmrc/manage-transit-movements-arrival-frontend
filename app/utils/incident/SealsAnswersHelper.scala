@@ -24,7 +24,6 @@ import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import utils.AnswersHelper
 import viewModels.ListItem
 
@@ -35,13 +34,6 @@ class SealsAnswersHelper(
   equipmentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
-
-  def seal(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
-    formatAnswer = formatAsText,
-    prefix = "incident.equipment.seal",
-    id = Some(s"change-seal-${index.display}"),
-    args = index.display
-  )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, index))
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
@@ -54,7 +46,7 @@ class SealsAnswersHelper(
         }
 
         buildListItem[SealDomain, String](
-          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
           removeRoute = removeRoute

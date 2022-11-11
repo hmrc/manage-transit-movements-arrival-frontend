@@ -36,7 +36,9 @@ case class IncidentDomain(
   equipments: EquipmentsDomain
 )(index: Index)
     extends JourneyDomainModel {
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Option(Call(GET, "#"))
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    Option(Call(GET, "#")) // TODO - incident check your answers page
 }
 
 object IncidentDomain {

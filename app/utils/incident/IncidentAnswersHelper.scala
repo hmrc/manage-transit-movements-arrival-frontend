@@ -17,6 +17,7 @@
 package utils.incident
 
 import models.incident.IncidentCode
+import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.reference.{Country, UnLocode}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
@@ -30,92 +31,113 @@ import java.time.LocalDate
 class IncidentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
-  index: Index
+  incidentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
+  def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
+    formatAnswer = formatAsText,
+    prefix = "incident.equipment",
+    id = Some(s"change-equipment-${index.display}"),
+    args = index.display
+  )(EquipmentDomain.userAnswersReader(incidentIndex, index))
+
   def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = IncidentCountryPage(index),
+    page = IncidentCountryPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.incidentCountry",
     id = Some("change-country")
   )
 
   def code: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
-    page = IncidentCodePage(index),
+    page = IncidentCodePage(incidentIndex),
     formatAnswer = formatEnumAsText(IncidentCode.messageKeyPrefix),
     prefix = "incident.incidentCode",
     id = Some("change-code")
   )
 
   def text: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = IncidentTextPage(index),
+    page = IncidentTextPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.incidentText",
     id = Some("change-text")
   )
 
   def endorsementYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddEndorsementPage(index),
+    page = AddEndorsementPage(incidentIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "incident.addEndorsement",
     id = Some("change-add-endorsement")
   )
 
   def endorsementDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
-    page = EndorsementDatePage(index),
+    page = EndorsementDatePage(incidentIndex),
     formatAnswer = formatAsDate,
     prefix = "incident.endorsementDate",
     id = Some("change-endorsement-date")
   )
 
   def endorsementAuthority: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = EndorsementAuthorityPage(index),
+    page = EndorsementAuthorityPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.endorsementAuthority",
     id = Some("change-endorsement-authority")
   )
 
   def endorsementCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = EndorsementCountryPage(index),
+    page = EndorsementCountryPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.endorsementCountry",
     id = Some("change-endorsement-country")
   )
 
   def endorsementLocation: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = EndorsementLocationPage(index),
+    page = EndorsementLocationPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.endorsementLocation",
     id = Some("change-endorsement-location")
   )
 
   def qualifierOfIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[QualifierOfIdentification](
-    page = QualifierOfIdentificationPage(index),
+    page = QualifierOfIdentificationPage(incidentIndex),
     formatAnswer = formatEnumAsText(QualifierOfIdentification.messageKeyPrefix),
     prefix = "incident.location.qualifierOfIdentification",
     id = Some("change-qualifier-of-identification")
   )
 
   def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[UnLocode](
-    page = UnLocodePage(index),
+    page = UnLocodePage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.location.unLocode",
     id = Some("change-unlocode")
   )
 
   def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
-    page = CoordinatesPage(index),
+    page = CoordinatesPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.location.coordinates",
     id = Some("change-coordinates")
   )
 
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
-    page = AddressPage(index),
+    page = AddressPage(incidentIndex),
     formatAnswer = formatAsDynamicAddress,
     prefix = "incident.location.address",
     id = Some("change-address")
+  )
+
+  def containerIndicatorYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = ContainerIndicatorYesNoPage(incidentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "incident.containerIndicatorYesNo",
+    id = Some("change-add-container-indicator")
+  )
+
+  def transportEquipmentYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddTransportEquipmentPage(incidentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "incident.addTransportEquipment",
+    id = Some("change-add-transport-equipment")
   )
 
 }
@@ -125,7 +147,7 @@ object IncidentAnswersHelper {
   def apply(
     userAnswers: UserAnswers,
     mode: Mode,
-    index: Index
+    incidentIndex: Index
   )(implicit messages: Messages) =
-    new IncidentAnswersHelper(userAnswers, mode, index)
+    new IncidentAnswersHelper(userAnswers, mode, incidentIndex)
 }

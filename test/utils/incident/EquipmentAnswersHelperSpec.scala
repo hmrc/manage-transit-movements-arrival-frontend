@@ -17,24 +17,62 @@
 package utils.incident
 
 import base.SpecBase
+import controllers.incident.equipment.seal.routes
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 
 class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "EquipmentAnswersHelper" - {
 
-    "ContainerIdentificationNumberYesNoPage" - {
+    "seal" - {
+      "must return None" - {
+        "when seal is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.seal(index)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when seal is  defined" in {
+          forAll(Gen.alphaNumStr, arbitrary[Mode]) {
+            (idNumber, mode) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), idNumber)
+
+              val helper = EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.seal(index).get
+
+              result.key.value mustBe "Seal 1"
+              result.value.value mustBe idNumber
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
+              action.visuallyHiddenText.get mustBe "seal 1"
+              action.id mustBe "change-seal-1"
+          }
+        }
+      }
+    }
+
+    "containerIdentificationNumberYesNo" - {
       "must return None" - {
         "when ContainerIdentificationNumberYesNoPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
               val result = helper.containerIdentificationNumberYesNo
               result mustBe None
           }
@@ -47,7 +85,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val answers = emptyUserAnswers.setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
-              val helper = new EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+              val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
               val result = helper.containerIdentificationNumberYesNo.get
 
               result.key.value mustBe "Do you want to add a container identification number?"
@@ -64,12 +102,12 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
-    "ContainerIdentificationNumberPage" - {
+    "containerIdentificationNumber" - {
       "must return None" - {
         "when ContainerIdentificationNumberPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
               val result = helper.containerIdentificationNumber
               result mustBe None
           }
@@ -82,7 +120,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             (containerNumber, mode) =>
               val answers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
 
-              val helper = new EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+              val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
               val result = helper.containerIdentificationNumber.get
 
               result.key.value mustBe "Container identification number"
@@ -98,12 +136,12 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
-      "AddSealsYesNoPage" - {
+      "sealsYesNo" - {
         "must return None" - {
           "when AddSealsYesNoPage is undefined" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+                val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
                 val result = helper.sealsYesNo
                 result mustBe None
             }
@@ -116,7 +154,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               mode =>
                 val answers = emptyUserAnswers.setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
 
-                val helper = new EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+                val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
                 val result = helper.sealsYesNo.get
 
                 result.key.value mustBe s"Do you want to add a seal for container {0}"

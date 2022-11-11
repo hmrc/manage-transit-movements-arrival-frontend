@@ -29,13 +29,13 @@ class SealAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
   "SealAnswersHelper" - {
 
-    "identificationNumber" - {
+    "sealIdentificationNumber" - {
 
       "must return None" - {
         "when SealIdentificationNumberPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new SealAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = SealAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
               val result = helper.sealIdentificationNumber
               result mustBe None
           }
@@ -48,7 +48,7 @@ class SealAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             (sealNumber, mode) =>
               val answers = emptyUserAnswers.setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealNumber)
 
-              val helper = new SealAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = SealAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
               val result = helper.sealIdentificationNumber.get
 
               result.key.value mustBe "Seal identification number"

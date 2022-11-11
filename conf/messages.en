@@ -92,6 +92,10 @@ arrivals.checkYourAnswers.authorisations.subheading = Authorisations
 arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
 arrivals.checkYourAnswers.identification.subheading = Identification
 arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
+arrivals.checkYourAnswers.seals.subheading = Seals
+arrivals.checkYourAnswers.seals.addOrRemove = Add or remove seals
+arrivals.checkYourAnswers.equipments.subheading = Equipments
+arrivals.checkYourAnswers.equipments.addOrRemove = Add or remove equipments
 
 identification.destinationOffice.title = Where is the office of destination?
 identification.destinationOffice.heading = Where is the office of destination?
@@ -346,11 +350,13 @@ incident.incidentText.error.invalidCharacters = The description of the incident 
 incident.containerIndicatorYesNo.title = Did the incident involve a container?
 incident.containerIndicatorYesNo.heading = Did the incident involve a container?
 incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
+incident.containerIndicatorYesNo.change.hidden = if the incident involved a container
 incident.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
 
 incident.addTransportEquipment.title = Do you need to add any transport equipment?
 incident.addTransportEquipment.heading = Do you need to add any transport equipment?
 incident.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
+incident.addTransportEquipment.change.hidden = if you need to add any transport equipment
 incident.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
 incident.addTransportEquipment.paragraph = This includes any containers or seals.
 

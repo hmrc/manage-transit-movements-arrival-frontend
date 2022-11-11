@@ -16,6 +16,7 @@
 
 package utils.incident
 
+import models.journeyDomain.incident.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import play.api.i18n.Messages
@@ -50,6 +51,13 @@ class EquipmentAnswersHelper(
     prefix = "incident.equipment.addSealsYesNo",
     id = Some("change-add-seals")
   )
+
+  def seal(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
+    formatAnswer = formatAsText,
+    prefix = "incident.equipment.seal",
+    id = Some(s"change-seal-${index.display}"),
+    args = index.display
+  )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, index))
 
 }
 

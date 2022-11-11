@@ -54,7 +54,7 @@ class IncidentsAnswersHelper(
       position =>
         val index = Index(position)
         buildListItem[IncidentDomain, Country](
-          page = IncidentCountryPage(Index(position)),
+          page = IncidentCountryPage(index),
           formatJourneyDomainModel = x => formatEnumAsString(IncidentCode.messageKeyPrefix)(x.incidentCode),
           formatType = _.toString,
           removeRoute = Option(Call(GET, "#"))

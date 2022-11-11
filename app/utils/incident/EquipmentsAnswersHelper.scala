@@ -18,18 +18,36 @@ package utils.incident
 
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, UserAnswers}
+import pages.incident.equipment.ContainerIdentificationNumberPage
+import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.AnswersHelper
+import viewModels.ListItem
 
-case class EquipmentsAnswersHelper(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit messages: Messages)
+class EquipmentsAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode,
+  incidentIndex: Index
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
-  def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
-    formatAnswer = formatAsText,
-    prefix = "incident.equipment",
-    id = Some(s"change-equipment-${index.display}"),
-    args = index.display
-  )(EquipmentDomain.userAnswersReader(incidentIndex, index))
+  def listItems: Seq[Either[ListItem, ListItem]] =
+    buildListItems(EquipmentsSection(incidentIndex)) {
+      position =>
+        val equipmentIndex = Index(position)
+        buildListItemWithDefault[EquipmentDomain, String](
+          page = ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+          formatJourneyDomainModel = _.toString,
+          formatType = _.fold("")(identity), // TODO - what should be rendered when container id is not present?
+          removeRoute = Some(Call(GET, "#")) // TODO - remove incident page
+        )(EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex), implicitly)
+    }
+}
 
+object EquipmentsAnswersHelper {
+
+  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit messages: Messages) =
+    new EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
 }

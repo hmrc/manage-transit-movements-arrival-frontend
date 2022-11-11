@@ -45,7 +45,7 @@ class AuthorisationsAnswersHelper(
       position =>
         val index = Index(position)
         buildListItem[AuthorisationDomain, AuthorisationType](
-          page = AuthorisationTypePage(Index(position)),
+          page = AuthorisationTypePage(index),
           formatJourneyDomainModel = _.toString,
           formatType = _.toString,
           removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
