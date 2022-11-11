@@ -18,8 +18,6 @@ package utils.incident
 
 import base.SpecBase
 import controllers.incident.location.{routes => locationRoutes}
-import controllers.incident.equipment.{routes => equipmentRoutes}
-import controllers.incident.equipment.seal.{routes => sealRoutes}
 import controllers.incident.routes
 import generators.Generators
 import models.incident.IncidentCode
@@ -29,8 +27,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident._
-import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
 import java.time.LocalDate
@@ -44,7 +40,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when IncidentCountryPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.country
               result mustBe None
           }
@@ -57,7 +53,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (country, mode) =>
               val answers = emptyUserAnswers.setValue(IncidentCountryPage(incidentIndex), country)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.country.get
 
               result.key.value mustBe "Country"
@@ -79,7 +75,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when IncidentCodePage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.code
               result mustBe None
           }
@@ -92,7 +88,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (code, mode) =>
               val answers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), code)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.code.get
 
               result.key.value mustBe "Incident code"
@@ -116,7 +112,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when IncidentTextPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.text
               result mustBe None
           }
@@ -129,7 +125,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (text, mode) =>
               val answers = emptyUserAnswers.setValue(IncidentTextPage(incidentIndex), text)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.text.get
 
               result.key.value mustBe "Description"
@@ -151,7 +147,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AddEndorsementPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.endorsementYesNo
               result mustBe None
           }
@@ -164,7 +160,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             mode =>
               val answers = emptyUserAnswers.setValue(AddEndorsementPage(incidentIndex), true)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.endorsementYesNo.get
 
               result.key.value mustBe "Do you need to add an endorsement for the incident?"
@@ -186,7 +182,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when EndorsementDatePage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.endorsementDate
               result mustBe None
           }
@@ -200,7 +196,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val date    = LocalDate.of(2021, 9, 9)
               val answers = emptyUserAnswers.setValue(EndorsementDatePage(incidentIndex), date)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.endorsementDate.get
 
               result.key.value mustBe "Endorsement date"
@@ -222,7 +218,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when EndorsementAuthorityPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.endorsementAuthority
               result mustBe None
           }
@@ -235,7 +231,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (authority, mode) =>
               val answers = emptyUserAnswers.setValue(EndorsementAuthorityPage(incidentIndex), authority)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.endorsementAuthority.get
 
               result.key.value mustBe "Authority"
@@ -257,7 +253,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when EndorsementCountryPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.endorsementCountry
               result mustBe None
           }
@@ -270,7 +266,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (country, mode) =>
               val answers = emptyUserAnswers.setValue(EndorsementCountryPage(incidentIndex), country)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.endorsementCountry.get
 
               result.key.value mustBe "Country"
@@ -292,7 +288,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when EndorsementLocationPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.endorsementLocation
               result mustBe None
           }
@@ -305,7 +301,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (location, mode) =>
               val answers = emptyUserAnswers.setValue(EndorsementLocationPage(incidentIndex), location)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.endorsementLocation.get
 
               result.key.value mustBe "Location"
@@ -327,7 +323,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when QualifierOfIdentificationPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.qualifierOfIdentification
               result mustBe None
           }
@@ -340,7 +336,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (identificationType, mode) =>
               val answers = emptyUserAnswers.setValue(QualifierOfIdentificationPage(incidentIndex), identificationType)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
@@ -364,7 +360,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when UnLocodePage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.unLocode
               result mustBe None
           }
@@ -376,7 +372,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (unlocode, mode) =>
               val answers = emptyUserAnswers.setValue(UnLocodePage(incidentIndex), unlocode)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.unLocode.get
 
               result.key.value mustBe "UN/LOCODE"
@@ -397,7 +393,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when CoordinatesPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.coordinates
               result mustBe None
           }
@@ -409,7 +405,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (coordinates, mode) =>
               val answers = emptyUserAnswers.setValue(CoordinatesPage(incidentIndex), coordinates)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.coordinates.get
 
               result.key.value mustBe "Coordinates"
@@ -430,7 +426,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AddressPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
               val result = helper.address
               result mustBe None
           }
@@ -442,11 +438,11 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (address, mode) =>
               val answers = emptyUserAnswers.setValue(AddressPage(incidentIndex), address)
 
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
+              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.address.get
 
               result.key.value mustBe "Address"
-              result.value.value mustBe address.toString //TODO: Fix this not working ???
+              result.value.value mustBe address.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -459,182 +455,5 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "ContainerIdentificationNumberYesNoPage" - {
-      "must return None" - {
-        "when ContainerIdentificationNumberYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
-              val result = helper.containerIdentificationNumberYesNo
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when ContainerIdentificationNumberYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
-              val result = helper.containerIdentificationNumberYesNo.get
-
-              result.key.value mustBe "Do you want to add a container identification number?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentRoutes.ContainerIdentificationNumberYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a container identification number"
-              action.id mustBe "change-add-container-identification-number"
-          }
-        }
-      }
-    }
-
-    "ContainerIdentificationNumberPage" - {
-      "must return None" - {
-        "when ContainerIdentificationNumberPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
-              val result = helper.containerIdentificationNumber
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when ContainerIdentificationNumberPage defined" in {
-          forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-            (containerNumber, mode) =>
-              val answers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerNumber)
-
-              val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
-              val result = helper.containerIdentificationNumber.get
-
-              result.key.value mustBe "Container identification number"
-              result.value.value mustBe containerNumber
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentRoutes.ContainerIdentificationNumberController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-              action.visuallyHiddenText.get mustBe "container identification number"
-              action.id mustBe "change-container-identification-number"
-          }
-        }
-      }
-
-      "AddSealsYesNoPage" - {
-        "must return None" - {
-          "when AddSealsYesNoPage is undefined" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
-                val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
-                val result = helper.sealsYesNo
-                result mustBe None
-            }
-          }
-        }
-
-        "must return Some(Row)" - {
-          "when AddSealsYesNoPage defined" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
-                val answers = emptyUserAnswers.setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
-
-                val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
-                val result = helper.sealsYesNo.get
-
-                result.key.value mustBe s"Do you want to add a seal for container {0}"
-                result.value.value mustBe "Yes"
-                val actions = result.actions.get.items
-                actions.size mustBe 1
-                val action = actions.head
-                action.content.value mustBe "Change"
-                action.href mustBe equipmentRoutes.AddSealsYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-                action.visuallyHiddenText.get mustBe "if you want to add seals"
-                action.id mustBe "change-add-seals"
-            }
-          }
-        }
-      }
-
-      "SealIdentificationNumberPage" - {
-        "with container" - {
-          "must return None" - {
-            "when SealIdentificationNumberPage is undefined" in {
-              forAll(arbitrary[Mode]) {
-                mode =>
-                  val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
-                  val result = helper.sealIdentificationNumberWithContainer
-                  result mustBe None
-              }
-            }
-          }
-
-          "must return Some(Row)" - {
-            "when SealIdentificationNumberPage defined" in {
-              forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-                (sealNumber, mode) =>
-                  val answers = emptyUserAnswers.setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealNumber)
-
-                  val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
-                  val result = helper.sealIdentificationNumberWithContainer.get
-
-                  result.key.value mustBe "Seal identification number for container {0}"
-                  result.value.value mustBe sealNumber
-                  val actions = result.actions.get.items
-                  actions.size mustBe 1
-                  val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe sealRoutes.SealIdentificationNumberController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
-                  action.visuallyHiddenText.get mustBe "seal identification number for container {0}"
-                  action.id mustBe "change-seal-identification-number-with-container"
-              }
-            }
-          }
-        }
-
-        "without container" - {
-          "must return None" - {
-            "when SealIdentificationNumberPage is undefined" in {
-              forAll(arbitrary[Mode]) {
-                mode =>
-                  val helper = new IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
-                  val result = helper.sealIdentificationNumberWithoutContainer
-                  result mustBe None
-              }
-            }
-          }
-
-          "must return Some(Row)" - {
-            "when SealIdentificationNumberPage defined" in {
-              forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-                (sealNumber, mode) =>
-                  val answers = emptyUserAnswers.setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealNumber)
-
-                  val helper = new IncidentAnswersHelper(answers, mode, incidentIndex, equipmentIndex, sealIndex)
-                  val result = helper.sealIdentificationNumberWithoutContainer.get
-
-                  result.key.value mustBe "Seal identification number"
-                  result.value.value mustBe sealNumber
-                  val actions = result.actions.get.items
-                  actions.size mustBe 1
-                  val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe sealRoutes.SealIdentificationNumberController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
-                  action.visuallyHiddenText.get mustBe "seal identification number"
-                  action.id mustBe "change-seal-identification-number-without-container"
-              }
-            }
-          }
-        }
-      }
-
-    }
   }
 }

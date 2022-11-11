@@ -20,8 +20,6 @@ import models.incident.IncidentCode
 import models.reference.{Country, UnLocode}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
-import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -32,9 +30,7 @@ import java.time.LocalDate
 class IncidentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
-  index: Index,
-  equipmentIndex: Index,
-  sealIndex: Index
+  index: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
@@ -122,41 +118,6 @@ class IncidentAnswersHelper(
     id = Some("change-address")
   )
 
-  def containerIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = ContainerIdentificationNumberYesNoPage(index, equipmentIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "incident.equipment.containerIdentificationNumberYesNo",
-    id = Some("change-add-container-identification-number")
-  )
-
-  def containerIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ContainerIdentificationNumberPage(index, equipmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "incident.equipment.containerIdentificationNumber",
-    id = Some("change-container-identification-number")
-  )
-
-  def sealsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddSealsYesNoPage(index, equipmentIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "incident.equipment.addSealsYesNo",
-    id = Some("change-add-seals")
-  )
-
-  def sealIdentificationNumberWithContainer: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealIdentificationNumberPage(index, equipmentIndex, sealIndex),
-    formatAnswer = formatAsText,
-    prefix = "incident.equipment.seal.sealIdentificationNumber.withContainer",
-    id = Some("change-seal-identification-number-with-container")
-  )
-
-  def sealIdentificationNumberWithoutContainer: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealIdentificationNumberPage(index, equipmentIndex, sealIndex),
-    formatAnswer = formatAsText,
-    prefix = "incident.equipment.seal.sealIdentificationNumber.withoutContainer",
-    id = Some("change-seal-identification-number-without-container")
-  )
-
 }
 
 object IncidentAnswersHelper {
@@ -164,9 +125,7 @@ object IncidentAnswersHelper {
   def apply(
     userAnswers: UserAnswers,
     mode: Mode,
-    index: Index,
-    equipmentIndex: Index,
-    sealIndex: Index
+    index: Index
   )(implicit messages: Messages) =
-    new IncidentAnswersHelper(userAnswers, mode, index, equipmentIndex, sealIndex)
+    new IncidentAnswersHelper(userAnswers, mode, index)
 }
