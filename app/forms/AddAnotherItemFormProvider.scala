@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package navigation.annotations;
+package forms
 
-import com.google.inject.BindingAnnotation;
+import forms.mappings.Mappings
+import play.api.data.Form
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.inject.Inject
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface Incident {
+class AddAnotherItemFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, allowMoreItems: Boolean, args: Any*): Form[Boolean] =
+    Form(
+      "value" -> mandatoryIfBoolean(allowMoreItems, s"$prefix.error.required", defaultResult = false, args)
+    )
 }

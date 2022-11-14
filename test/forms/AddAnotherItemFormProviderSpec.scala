@@ -19,10 +19,10 @@ package forms
 import forms.behaviours.BooleanFieldBehaviours
 import org.scalacheck.Gen
 
-class AddItemFormProviderSpec extends BooleanFieldBehaviours {
+class AddAnotherItemFormProviderSpec extends BooleanFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
-  private val form   = new AddItemFormProvider()
+  private val form   = new AddAnotherItemFormProvider()
 
   ".value" - {
 

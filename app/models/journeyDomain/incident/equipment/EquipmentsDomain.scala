@@ -19,8 +19,6 @@ package models.journeyDomain.incident.equipment
 import models.incident.IncidentCode._
 import models.journeyDomain.{GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
-import pages.QuestionPage
-import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
 import pages.sections.incident.EquipmentsSection
 
@@ -28,25 +26,32 @@ case class EquipmentsDomain(equipments: Seq[EquipmentDomain])(incidentIndex: Ind
 
 object EquipmentsDomain {
 
+  // scalastyle:off cyclomatic.complexity
   implicit def userAnswersReader(incidentIndex: Index): UserAnswersReader[EquipmentsDomain] = {
-    def readEquipmentsOrRedirectToPage[T](page: (Index, Index) => QuestionPage[T]): UserAnswersReader[EquipmentsDomain] =
+    lazy val readEquipments: UserAnswersReader[EquipmentsDomain] =
       EquipmentsSection(incidentIndex).reader.flatMap {
-        case x if x.isEmpty => UserAnswersReader.fail(page(incidentIndex, Index(0)))
-        case x              => x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _)).map(EquipmentsDomain.apply(_)(incidentIndex))
+        case x if x.isEmpty =>
+          UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0)))
+            .map(Seq(_))
+            .map(EquipmentsDomain(_)(incidentIndex))
+        case x =>
+          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _))
+            .map(EquipmentsDomain(_)(incidentIndex))
       }
 
     IncidentCodePage(incidentIndex).reader.flatMap {
       case TransferredToAnotherTransport | UnexpectedlyChanged =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true => readEquipmentsOrRedirectToPage(ContainerIdentificationNumberPage)
+          case true => readEquipments
           case false =>
             AddTransportEquipmentPage(incidentIndex).reader.flatMap {
-              case true  => readEquipmentsOrRedirectToPage(ContainerIdentificationNumberYesNoPage)
+              case true  => readEquipments
               case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
             }
         }
-      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readEquipmentsOrRedirectToPage(ContainerIdentificationNumberYesNoPage)
+      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readEquipments
       case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
     }
   }
+  // scalastyle:on cyclomatic.complexity
 }

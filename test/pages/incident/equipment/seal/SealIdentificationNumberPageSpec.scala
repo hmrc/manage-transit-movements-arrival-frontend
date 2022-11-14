@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package navigation.annotations;
+package pages.incident.equipment.seal
 
-import com.google.inject.BindingAnnotation;
+import pages.behaviours.PageBehaviours
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+class SealIdentificationNumberPageSpec extends PageBehaviours {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface IdentificationDetails {
+  "SealIdentificationNumberPage" - {
+
+    beRetrievable[String](SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex))
+
+    beSettable[String](SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex))
+
+    beRemovable[String](SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex))
+  }
 }

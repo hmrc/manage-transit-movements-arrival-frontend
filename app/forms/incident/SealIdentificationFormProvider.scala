@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.incident
 
+import forms.StopOnFirstFail
 import forms.mappings.Mappings
-import models.identification.authorisation.AuthorisationType
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class ConfirmRemoveItemFormProvider @Inject() extends Mappings {
+class SealIdentificationFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, referenceNumber: String, authorisationType: AuthorisationType): Form[Boolean] =
+  def apply(prefix: String, otherSealIdentificationNumbers: Seq[String], args: String*): Form[String] =
     Form(
-      "value" -> boolean(s"$prefix.error.required", args = Seq(authorisationType.toString, referenceNumber))
+      "value" -> text(s"$prefix.error.required", args = args)
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(20, s"$prefix.error.length"),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            valueIsNotInList(otherSealIdentificationNumbers, s"$prefix.error.alreadySubmitted")
+          )
+        )
     )
 }

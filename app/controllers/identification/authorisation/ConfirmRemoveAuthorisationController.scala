@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.ConfirmRemoveItemFormProvider
+import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.identification.authorisation._
 import pages.sections.identification.AuthorisationSection
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  formProvider: ConfirmRemoveItemFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -48,7 +48,7 @@ class ConfirmRemoveAuthorisationController @Inject() (
     .andThen(getMandatoryPage.getFirst(AuthorisationReferenceNumberPage(index)))
     .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index))) {
       implicit request =>
-        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2)
+        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2.toString)
 
         Ok(view(form, mrn, index, mode, request.arg._1, request.arg._2.toString))
     }
@@ -59,7 +59,7 @@ class ConfirmRemoveAuthorisationController @Inject() (
     .andThen(getMandatoryPage.getSecond(AuthorisationTypePage(index)))
     .async {
       implicit request =>
-        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2)
+        val form = formProvider("identification.authorisation.confirmRemoveAuthorisation", request.arg._1, request.arg._2.toString)
 
         form
           .bindFromRequest()
