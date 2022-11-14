@@ -60,7 +60,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
       }
 
       "and there are multiple seals" in {
-        forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
+        forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxSeals)) {
           (mode, numberOfSeals) =>
             val userAnswers = (0 until numberOfSeals).foldLeft(emptyUserAnswers) {
               (acc, i) =>
@@ -100,7 +100,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
       "and there are multiple seals" in {
         val initialAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
-        forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
+        forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxSeals)) {
           (mode, numberOfSeals) =>
             val userAnswers = (0 until numberOfSeals).foldLeft(initialAnswers) {
               (acc, i) =>
