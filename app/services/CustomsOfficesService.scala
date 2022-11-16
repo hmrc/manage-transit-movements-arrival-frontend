@@ -30,12 +30,12 @@ class CustomsOfficesService @Inject() (
 
   def getCustomsOfficesOfArrival(implicit hc: HeaderCarrier): Future[CustomsOfficeList] = {
 
-    def getCustomsOfficesForCountry(countryCode: String): Future[Seq[CustomsOffice]] =
-      referenceDataConnector.getCustomsOfficesForCountry(CountryCode(countryCode))
+    def getCustomsOfficesOfDepartureForCountry(countryCode: String): Future[Seq[CustomsOffice]] =
+      referenceDataConnector.getCustomsOfficesOfDepartureForCountry(CountryCode(countryCode))
 
     for {
-      gbOffices <- getCustomsOfficesForCountry("GB")
-      niOffices <- getCustomsOfficesForCountry("XI")
+      gbOffices <- getCustomsOfficesOfDepartureForCountry("GB")
+      niOffices <- getCustomsOfficesOfDepartureForCountry("XI")
     } yield sort(gbOffices ++ niOffices)
   }
 
