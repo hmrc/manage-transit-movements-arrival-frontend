@@ -40,7 +40,7 @@ object Monitors {
     DefaultRequestMonitor[Seq[CustomsOffice]]("get-customs-offices-of-the-country")
 
   val getCustomsOfficesOfDepartureForCountryMonitor: DefaultRequestMonitor[Seq[CustomsOffice]] =
-    DefaultRequestMonitor[Seq[CustomsOffice]]("get-customs-offices-of-the-country")
+    DefaultRequestMonitor[Seq[CustomsOffice]]("get-customs-offices-of-departure-for-the-country")
 
   val getCountryListMonitor: DefaultRequestMonitor[Seq[Country]] =
     DefaultRequestMonitor[Seq[Country]]("get-country-list")
