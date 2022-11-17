@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.seal
+package models.journeyDomain.incident.equipment
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.sections.incident.SealsSection
-import play.api.libs.json.JsArray
+import pages.sections.incident.ItemNumbersSection
 
-case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
+case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain]) extends JourneyDomainModel
 
-object SealsDomain {
+object ItemNumbersDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[SealsDomain] = {
-    SealsSection(incidentIndex, equipmentIndex).reader.flatMap {
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[ItemNumbersDomain] =
+    ItemNumbersSection(incidentIndex, equipmentIndex).reader.flatMap {
       case x if x.isEmpty =>
-        UserAnswersReader.fail[SealsDomain](SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)))
+        UserAnswersReader.fail[ItemNumbersDomain](SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)))
       case x =>
-        x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(SealsDomain.apply)
+        x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
     }
-  }
 }
