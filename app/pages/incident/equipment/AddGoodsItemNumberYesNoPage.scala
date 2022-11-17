@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.equipment
 
-import controllers.incident.routes
-import models.incident.IncidentCode
+import controllers.incident.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident
-import pages.sections.incident.EquipmentsSection
+import pages.sections.incident.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+case class AddGoodsItemNumberYesNoPage(incidentIndex: Index, equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
+  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
-  override def path: JsPath = incident.IncidentSection(index).path \ toString
-
-  override def toString: String = "incidentCode"
+  override def toString: String = "addGoodsItemNumberYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
-
-  override def cleanup(value: Option[IncidentCode], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(_) => userAnswers.remove(EquipmentsSection(index))
-      case _       => super.cleanup(value, userAnswers)
-    }
+    Some(routes.AddGoodsItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }
