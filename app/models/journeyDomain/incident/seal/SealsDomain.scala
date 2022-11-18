@@ -20,7 +20,6 @@ import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Use
 import models.{Index, RichJsArray}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
-import play.api.libs.json.JsArray
 
 case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
 

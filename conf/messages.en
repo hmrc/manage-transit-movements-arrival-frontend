@@ -495,6 +495,13 @@ incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
 
+# Incident - Item Number
+
+incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
+
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
 incident.equipment.itemNumber.hint = This will be 5 characters long, for example 54123.
