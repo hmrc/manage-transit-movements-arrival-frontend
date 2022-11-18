@@ -35,7 +35,7 @@ class ItemNumberViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new ItemNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ItemNumberView].apply(form, mrn, NormalMode, call)(fakeRequest, messages)
+    injector.instanceOf[ItemNumberView].apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, itemNumberIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

@@ -23,7 +23,7 @@ import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{ItemNumberNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.itemNumber.ItemNumberView
@@ -53,22 +53,20 @@ class ItemNumberController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, mrn, mode, routes.ItemNumberController.onSubmit(mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)))
+        Ok(view(preparedForm, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex))
     }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Action[AnyContent] = {
-    val submit = routes.ItemNumberController.onSubmit(mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Action[AnyContent] =
     actions.requireData(mrn).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, submit))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
               ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession().navigate()
             }
           )
     }
-  }
 }

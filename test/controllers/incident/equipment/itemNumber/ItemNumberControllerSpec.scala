@@ -33,11 +33,12 @@ import scala.concurrent.Future
 
 class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider         = new ItemNumberFormProvider()
-  private val form                 = formProvider("incident.equipment.itemNumber")
-  private val mode                 = NormalMode
-  private val call                 = routes.ItemNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)
-  private lazy val itemNumberRoute = call.url
+  private val formProvider                       = new ItemNumberFormProvider()
+  private val form                               = formProvider("incident.equipment.itemNumber")
+  private val mode                               = NormalMode
+  private lazy val sealIdentificationNumberRoute = routes.ItemNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex).url
+
+  private val testString = "54321"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -50,7 +51,7 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, itemNumberRoute)
+      val request = FakeRequest(GET, sealIdentificationNumberRoute)
 
       val result = route(app, request).value
 
@@ -59,26 +60,26 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode, call)(request, messages).toString
+        view(form, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), "test string")
+      val userAnswers = emptyUserAnswers.setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), testString)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, itemNumberRoute)
+      val request = FakeRequest(GET, sealIdentificationNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> testString))
 
       val view = injector.instanceOf[ItemNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, call)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -87,8 +88,8 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, itemNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, sealIdentificationNumberRoute)
+        .withFormUrlEncodedBody(("value", testString))
 
       val result = route(app, request).value
 
@@ -103,7 +104,7 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, itemNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -113,14 +114,14 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       val view = injector.instanceOf[ItemNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, call)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, itemNumberRoute)
+      val request = FakeRequest(GET, sealIdentificationNumberRoute)
 
       val result = route(app, request).value
 
@@ -133,8 +134,8 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, itemNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, sealIdentificationNumberRoute)
+        .withFormUrlEncodedBody(("value", testString))
 
       val result = route(app, request).value
 
