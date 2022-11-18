@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.incident
 
-object Constants {
-  lazy val additionalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int   = 12
-  lazy val maxEoriNumberLength: Int           = 17
-  lazy val minEoriNumberLength: Int           = 14
-  lazy val maxNameLength: Int                 = 70
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val authorisationNumberLength: Int     = 35
-  lazy val maxIncidentTextLength: Int         = 512
-  lazy val itemNumberLength: Int              = 5
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
+case class ItemNumberSection(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index) extends Section[JsObject] {
+
+  override def path: JsPath = ItemNumbersSection(incidentIndex, equipmentIndex).path \ itemNumberIndex.position
+
+  override def toString: String = "itemNumber"
 }

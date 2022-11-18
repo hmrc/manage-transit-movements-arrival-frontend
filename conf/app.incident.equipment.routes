@@ -1,5 +1,6 @@
 
 ->         /                                                                                                                   app.incident.equipment.seal.Routes
+->         /                                                                                                                   app.incident.equipment.itemNumber.Routes
 
 GET        /:mrn/incidents/:incidentIndex/transport-equipment/:equipmentIndex/add-container-identification-number              controllers.incident.equipment.ContainerIdentificationNumberYesNoController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, incidentIndex: Index, equipmentIndex: Index)
 POST       /:mrn/incidents/:incidentIndex/transport-equipment/:equipmentIndex/add-container-identification-number              controllers.incident.equipment.ContainerIdentificationNumberYesNoController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, incidentIndex: Index, equipmentIndex: Index)

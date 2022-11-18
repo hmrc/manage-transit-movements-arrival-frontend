@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident.equipment.itemNumber
 
-object Constants {
-  lazy val additionalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int   = 12
-  lazy val maxEoriNumberLength: Int           = 17
-  lazy val minEoriNumberLength: Int           = 14
-  lazy val maxNameLength: Int                 = 70
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val authorisationNumberLength: Int     = 35
-  lazy val maxIncidentTextLength: Int         = 512
-  lazy val itemNumberLength: Int              = 5
+import pages.behaviours.PageBehaviours
 
+class ItemNumberPageSpec extends PageBehaviours {
+
+  //TODO
+
+//  "ItemNumberPage" - {
+//
+//    beRetrievable[String](ItemNumberPage)
+//
+//    beSettable[String](ItemNumberPage)
+//
+//    beRemovable[String](ItemNumberPage)
+//  }
 }
