@@ -68,7 +68,10 @@ class AddAnotherItemNumberYesNoController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
             case true =>
-              Redirect(controllers.incident.equipment.itemNumber.routes.ItemNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
+              Redirect(
+                controllers.incident.equipment.itemNumber.routes.ItemNumberController
+                  .onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(viewModel.numberOfItemNumbers))
+              )
             case false => Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers))
           }
         )

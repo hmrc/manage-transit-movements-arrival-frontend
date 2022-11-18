@@ -59,4 +59,3 @@ object ItemsAnswersHelper {
   def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit messages: Messages) =
     new ItemsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
 }
-
