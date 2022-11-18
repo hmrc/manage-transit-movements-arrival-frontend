@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.transportMeans
 
-import controllers.incident.routes
-import models.incident.IncidentCode
+import controllers.incident.transportMeans.routes
+import models.incident.transportMeans.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident
-import pages.sections.incident.EquipmentsSection
+import pages.sections.incident.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+case class IdentificationPage(index: Index) extends QuestionPage[Identification] {
 
-case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
+  override def path: JsPath = TransportMeansSection(index).path \ toString
 
-  override def path: JsPath = incident.IncidentSection(index).path \ toString
-
-  override def toString: String = "incidentCode"
+  override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.IdentificationController.onPageLoad(userAnswers.mrn, mode, index))
 
-  override def cleanup(value: Option[IncidentCode], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(_) => userAnswers.remove(EquipmentsSection(index))
-      case _       => super.cleanup(value, userAnswers)
-    }
+  //TODO: Add clean up logic when following pages implemented
 }

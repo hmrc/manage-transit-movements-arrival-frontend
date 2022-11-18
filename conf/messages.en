@@ -495,6 +495,22 @@ incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
 
+incident.transportMeans.identification.title = Which type of identification do you want to use for the replacement means of transport?
+incident.transportMeans.identification.heading = Which type of identification do you want to use for the replacement means of transport?
+incident.transportMeans.identification.seaGoingVehicle = Name of a sea-going vehicle
+incident.transportMeans.identification.iataFlightNumber = IATA flight number
+incident.transportMeans.identification.inlandWaterwaysVehicle = Name of an inland waterways vehicle
+incident.transportMeans.identification.imoShipIdNumber = IMO ship identification number
+incident.transportMeans.identification.wagonNumber = Wagon number
+incident.transportMeans.identification.trainNumber = Train number
+incident.transportMeans.identification.regNumberRoadVehicle = Registration number of a road vehicle
+incident.transportMeans.identification.regNumberRoadTrailer = Registration number of a road trailer
+incident.transportMeans.identification.regNumberAircraft = Registration number of an aircraft
+incident.transportMeans.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
+incident.transportMeans.identification.unknown = Unknown - this can only be used during the transitional period
+incident.transportMeans.identification.checkYourAnswersLabel = Which type of identification do you want to use for the replacement means of transport
+incident.transportMeans.identification.error.required = Select which type of identification you want to use for the replacement means of transport
+
 incident.transportMeans.identificationNumber.title = What is the {0}?
 incident.transportMeans.identificationNumber.heading = What is the {0}?
 incident.transportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.

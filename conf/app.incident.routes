@@ -1,6 +1,7 @@
 
 ->         /                                                          app.incident.location.Routes
 ->         /                                                          app.incident.equipment.Routes
+->         /                                                          app.incident.transportMeans.Routes
 
 GET        /:mrn/incidents/add                                        controllers.incident.IncidentFlagController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/incidents/add                                        controllers.incident.IncidentFlagController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
