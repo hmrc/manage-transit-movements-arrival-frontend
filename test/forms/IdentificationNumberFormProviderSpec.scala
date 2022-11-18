@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Constants.identificationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
@@ -25,7 +26,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 35
+  val invalidKey     = s"$prefix.error.invalid"
 
   val form = new IdentificationNumberFormProvider()(prefix)
 
@@ -36,20 +37,27 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(identificationNumberLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = identificationNumberLength,
+      lengthError = FormError(fieldName, lengthKey)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey),
+      identificationNumberLength
     )
   }
 }

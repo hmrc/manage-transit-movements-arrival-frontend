@@ -19,9 +19,6 @@ package controllers.incident.transportMeans
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
-import models.incident.transportMeans.Identification
-import models.incident.transportMeans.Identification.Unknown
-import models.requests.SpecificDataRequestProvider1
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.transportMeans.{IdentificationNumberPage, IdentificationPage}
@@ -50,40 +47,32 @@ class IdentificationNumberController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(IdentificationPage(incidentIndex)))
-      .async
-      {
+      .andThen(getMandatoryPage(IdentificationPage(incidentIndex))) {
         implicit request =>
-            val identificationType = request.arg
-              val form = formProvider("incident.transportMeans.identificationNumber", identificationType.arg)
-              val preparedForm = form.fill(identificationType)
-              val preparedForm = request.userAnswers.get(IdentificationNumberPage(incidentIndex)) match {
-                case None => form
-                case Some(value) => form.fill(identificationType)
-              }
-              Ok(view(preparedForm, mrn, mode, incidentIndex, identificationType))
-            case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+          val identificationType = request.arg
+          val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.arg)
+          val preparedForm = request.userAnswers.get(IdentificationNumberPage(incidentIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, mrn, mode, incidentIndex, identificationType))
       }
-
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
     .requireData(mrn)
     .andThen(getMandatoryPage(IdentificationPage(incidentIndex)))
     .async {
       implicit request =>
-        request.userAnswers.get(IdentificationPage(incidentIndex)) match {
-          case Some(value) =>
-            val form = formProvider("incident.transportMeans.IdentificationNumber", value.arg)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, value))),
-                value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
-                  IdentificationNumberPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()
-                }
-              )
-          case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-        }
+        val identificationType = request.arg
+        val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.arg)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, identificationType))),
+            value => {
+              implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
+              IdentificationNumberPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()
+            }
+          )
     }
 }

@@ -39,13 +39,13 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(identificationType.arg)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(identificationType.arg)
 
   behave like pageWithHint(
     "This can be up to 35 characters long and include both letters and numbers."
