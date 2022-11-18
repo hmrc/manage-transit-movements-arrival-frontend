@@ -550,7 +550,7 @@ incident.equipment.itemNumber.error.length = The goods item number must be 5 cha
 
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.heading = You have added {0} goods item number
-incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.plural = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.title = You have added {0} goods item numbers
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You have added {0} goods item numbers
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?

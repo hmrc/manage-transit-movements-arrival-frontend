@@ -35,7 +35,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, viewModel:AddAnotherItemNumberViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages("incident.equipment.itemNumber.addAnotherItemNumberYesNo.title"),
+    title = viewModel.title,
     showBackLink = true,
     mrn = Some(mrn)
 ) {
