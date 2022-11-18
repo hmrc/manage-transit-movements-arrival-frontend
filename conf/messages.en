@@ -498,6 +498,6 @@ incident.equipment.seal.remove.error.required = Select yes if you want to remove
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
-incident.equipment.itemNumber.error.required = Enter What is the goods item number?
+incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.length = The goods item number must be 5 characters long
 
