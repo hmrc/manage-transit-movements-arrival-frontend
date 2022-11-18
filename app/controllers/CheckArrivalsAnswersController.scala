@@ -21,17 +21,23 @@ import controllers.actions.Actions
 import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.ApiService
+import uk.gov.hmrc.http.HttpReads.{is2xx, is4xx}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
 import views.html.CheckArrivalsAnswersView
+
+import scala.concurrent.ExecutionContext
 
 class CheckArrivalsAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
-  viewModelProvider: CheckArrivalsAnswersViewModelProvider
-) extends FrontendBaseController
+  viewModelProvider: CheckArrivalsAnswersViewModelProvider,
+  apiService: ApiService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
@@ -40,9 +46,21 @@ class CheckArrivalsAnswersController @Inject() (
       Ok(view(mrn, sections))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
-    _ =>
-      Redirect(routes.CheckArrivalsAnswersController.onPageLoad(mrn)) // TODO - redirect to submission page once built
-  }
+  // TODO - check dependant tasks completed in actions?
+  def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions
+    .requireData(mrn)
+    .async {
+      implicit request =>
+        apiService.submitDeclaration(request.userAnswers).map {
+          case response if is2xx(response.status) =>
+            Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad())
+          case response if is4xx(response.status) =>
+            // TODO - log and audit fail. How to handle this?
+            BadRequest
+          case _ =>
+            // TODO - log and audit fail. How to handle this?
+            InternalServerError("Something went wrong")
+        }
+    }
 
 }
