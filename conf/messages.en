@@ -494,3 +494,10 @@ incident.equipment.seal.addAnotherSeal.withoutContainer.maxLimit.label = You can
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
+
+incident.transportMeans.identificationNumber.title = What is the {0}?
+incident.transportMeans.identificationNumber.heading = What is the {0}?
+incident.transportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+incident.transportMeans.identificationNumber.checkYourAnswersLabel = Identification number
+incident.transportMeans.identificationNumber.error.required = Enter the {0}
+incident.transportMeans.identificationNumber.error.length = The {0} must be 35 characters or less
