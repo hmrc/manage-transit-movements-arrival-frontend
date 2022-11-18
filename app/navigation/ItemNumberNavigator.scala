@@ -22,7 +22,7 @@ import models.journeyDomain.incident.equipment.ItemNumberDomain
 
 import javax.inject.{Inject, Singleton}
 
-@Singleton
+@Singleton()
 class ItemNumberNavigatorProviderImpl @Inject() () extends ItemNumberNavigatorProvider {
 
   override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersNavigator =
@@ -40,6 +40,6 @@ class ItemNumberNavigator(override val mode: Mode, incidentIndex: Index, equipme
 
   override type T = ItemNumberDomain
 
-  implicit override val reader: UserAnswersReader[ItemNumberDomain] = ???
+  implicit override val reader: UserAnswersReader[ItemNumberDomain] = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex)
 
 }

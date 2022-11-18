@@ -30,6 +30,7 @@ object ItemNumbersDomain {
       case x if x.isEmpty =>
         UserAnswersReader.fail[ItemNumbersDomain](SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)))
       case x =>
-        x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
+        ???
+      //x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
     }
 }

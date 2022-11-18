@@ -17,13 +17,17 @@
 package models.journeyDomain.incident.equipment
 
 import models.Index
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import pages.incident.equipment.itemNumber.ItemNumberPage
 
 case class ItemNumberDomain(
   value: String
-) extends JourneyDomainModel
+)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
+    extends JourneyDomainModel
 
-object IncidentDomain {
-  def userAnswersReader(index: Index): UserAnswersReader[ItemNumberDomain] = ???
+object ItemNumberDomain {
+
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersReader[ItemNumberDomain] =
+    ItemNumberPage(incidentIndex, equipmentIndex, sealIndex).reader.map(ItemNumberDomain(_)(incidentIndex, equipmentIndex, sealIndex))
 
 }

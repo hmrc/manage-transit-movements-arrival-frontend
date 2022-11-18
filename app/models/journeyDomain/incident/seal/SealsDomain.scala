@@ -26,12 +26,11 @@ case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
 
 object SealsDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[SealsDomain] = {
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[SealsDomain] =
     SealsSection(incidentIndex, equipmentIndex).reader.flatMap {
       case x if x.isEmpty =>
         UserAnswersReader.fail[SealsDomain](SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)))
       case x =>
         x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(SealsDomain.apply)
     }
-  }
 }
