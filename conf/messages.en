@@ -499,4 +499,5 @@ incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
 incident.equipment.itemNumber.error.required = Enter What is the goods item number?
-incident.equipment.itemNumber.error.length = What is the goods item number? must be 5 characters or less
+incident.equipment.itemNumber.error.length = The goods item number must be 5 characters long
+
