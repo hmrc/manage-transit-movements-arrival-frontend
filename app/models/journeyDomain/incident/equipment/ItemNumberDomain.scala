@@ -21,7 +21,7 @@ import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswer
 import pages.incident.equipment.itemNumber.ItemNumberPage
 
 case class ItemNumberDomain(
-  value: String
+  itemNumber: String
 )(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
     extends JourneyDomainModel
 

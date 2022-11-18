@@ -17,10 +17,10 @@
 package utils.incident
 
 import controllers.incident.equipment.seal.routes
-import models.journeyDomain.incident.seal.SealDomain
+import models.journeyDomain.incident.equipment.ItemNumberDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.AddGoodsItemNumberYesNoPage
-import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -45,11 +45,18 @@ class ItemsAnswersHelper(
           Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
         }
 
-        buildListItem[SealDomain, String](
-          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(position)),
-          formatJourneyDomainModel = _.identificationNumber,
+        buildListItem[ItemNumberDomain, String](
+          page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          formatJourneyDomainModel = _.itemNumber,
           formatType = identity,
           removeRoute = removeRoute
-        )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, itemIndex), implicitly)
+        )(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemIndex), implicitly)
     }
 }
+
+object ItemsAnswersHelper {
+
+  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit messages: Messages) =
+    new ItemsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+}
+

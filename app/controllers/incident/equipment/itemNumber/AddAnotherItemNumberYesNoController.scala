@@ -52,6 +52,7 @@ class AddAnotherItemNumberYesNoController @Inject() (
     .requireData(mrn) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, mode, incidentIndex, equipmentIndex)
+        Ok(view(form(viewModel), mrn, viewModel))
         viewModel.numberOfItemNumbers match {
           case 0 => Redirect(controllers.incident.equipment.routes.AddGoodsItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
           case _ => Ok(view(form(viewModel), mrn, viewModel))
@@ -67,8 +68,7 @@ class AddAnotherItemNumberYesNoController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
             case true =>
-              Redirect(controllers.incident.equipment.routes.AddGoodsItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
-            //todo redirect to item number page when merged in
+              Redirect(controllers.incident.equipment.itemNumber.routes.ItemNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
             case false => Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers))
           }
         )
