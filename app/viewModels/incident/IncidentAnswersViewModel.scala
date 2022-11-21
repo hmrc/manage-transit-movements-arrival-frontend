@@ -40,7 +40,6 @@ object IncidentAnswersViewModel {
           helper.country,
           helper.code,
           helper.text,
-          helper.text,
           helper.endorsementYesNo,
           helper.endorsementDate,
           helper.endorsementAuthority,
