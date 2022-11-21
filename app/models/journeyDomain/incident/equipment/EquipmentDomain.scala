@@ -17,18 +17,27 @@
 package models.journeyDomain.incident.equipment
 
 import cats.implicits._
-import models.Index
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.seal.SealsDomain
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class EquipmentDomain(
   containerId: Option[String],
   seals: SealsDomain
 )(incidentIndex: Index, equipmentIndex: Index)
-    extends JourneyDomainModel
+    extends JourneyDomainModel {
+
+  // TODO - decide what to do when there isn't a container ID
+  override def toString: String = containerId.fold("")(identity)
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    Option(Call(GET, "#")) // TODO - equipment check your answers page
+}
 
 object EquipmentDomain {
 

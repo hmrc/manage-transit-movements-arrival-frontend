@@ -156,6 +156,38 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
         }
     }
 
+  protected def buildListItemWithDefault[A <: JourneyDomainModel, B](
+    page: QuestionPage[B],
+    formatJourneyDomainModel: A => String,
+    formatType: Option[B] => String,
+    removeRoute: Option[Call]
+  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
+    UserAnswersReader[A].run(userAnswers) match {
+      case Left(readerError) =>
+        readerError.page.route(userAnswers, mode).map {
+          changeRoute =>
+            Left(
+              getNameAndBuildListItemWithDefault[B](
+                page = page,
+                formatName = formatType,
+                changeUrl = changeRoute.url,
+                removeUrl = removeRoute.map(_.url)
+              )
+            )
+        }
+      case Right(journeyDomainModel) =>
+        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
+          changeRoute =>
+            Right(
+              ListItem(
+                name = formatJourneyDomainModel(journeyDomainModel),
+                changeUrl = changeRoute.url,
+                removeUrl = removeRoute.map(_.url)
+              )
+            )
+        }
+    }
+
   protected def getNameAndBuildListItem[T](
     page: QuestionPage[T],
     formatName: T => String,
@@ -170,4 +202,16 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
           removeUrl = removeUrl
         )
     }
+
+  protected def getNameAndBuildListItemWithDefault[T](
+    page: QuestionPage[T],
+    formatName: Option[T] => String,
+    changeUrl: String,
+    removeUrl: Option[String]
+  )(implicit rds: Reads[T]): ListItem =
+    ListItem(
+      name = formatName(userAnswers.get(page)),
+      changeUrl = changeUrl,
+      removeUrl = removeUrl
+    )
 }

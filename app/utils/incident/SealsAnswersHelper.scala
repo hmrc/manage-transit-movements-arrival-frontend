@@ -46,7 +46,7 @@ class SealsAnswersHelper(
         }
 
         buildListItem[SealDomain, String](
-          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
           removeRoute = removeRoute
