@@ -18,6 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.Actions
+import logging.Logging
 import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,6 +39,7 @@ class CheckArrivalsAnswersController @Inject() (
   apiService: ApiService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
+    with Logging
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
@@ -53,12 +55,13 @@ class CheckArrivalsAnswersController @Inject() (
       implicit request =>
         apiService.submitDeclaration(request.userAnswers).map {
           case response if is2xx(response.status) =>
+            logger.debug(s"Declaration submitted: $mrn")
             Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad())
           case response if is4xx(response.status) =>
-            // TODO - log and audit fail. How to handle this?
+            logger.error(s"Declaration submission failed for $mrn : ${response.body}")
             BadRequest
-          case _ =>
-            // TODO - log and audit fail. How to handle this?
+          case ex =>
+            logger.error(s"Declaration submission failed for $mrn : ${ex.body}")
             InternalServerError("Something went wrong")
         }
     }

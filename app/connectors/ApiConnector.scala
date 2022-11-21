@@ -72,7 +72,6 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
           <CustomsOffice>
             <referenceNumber>AB123456</referenceNumber>
           </CustomsOffice>
-
           <EconomicOperator>
             <identificationNumber>ezv3Z</identificationNumber>
           </EconomicOperator>
@@ -107,7 +106,6 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
             <qualifierOfIdentification>A</qualifierOfIdentification>
             <UNLocode>token</UNLocode>
             <country>SA</country>
-
             <Address>
               <streetAndNumber>token</streetAndNumber>
               <postcode>token</postcode>

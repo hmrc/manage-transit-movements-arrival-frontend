@@ -24,7 +24,7 @@ object ApiXmlHelpers {
   def toDate(date: String) =
     DatatypeFactory
       .newInstance()
-      .newXMLGregorianCalendar(date)
+      .newXMLGregorianCalendar(date.replace("Z", ""))
 
   def boolToFlag(x: Boolean) = x match {
     case true => Number1

@@ -494,3 +494,9 @@ incident.equipment.seal.addAnotherSeal.withoutContainer.maxLimit.label = You can
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
+
+# Declaration
+
+declarationSubmitted.title = Declaration Submitted
+declarationSubmitted.heading = Declaration Submitted
+declarationSubmitted.paragraph1 = You have submitted your declaration.

@@ -31,7 +31,7 @@ object Conversions {
       incidentFlag <- userAnswers.getAsEither(IncidentFlagPage)
     } yield TransitOperationType02(
       userAnswers.mrn.toString,
-      arrivalNotificationDateAndTime = ApiXmlHelpers.toDate(DateTime.now().toString),
+      arrivalNotificationDateAndTime = ApiXmlHelpers.toDate(DateTime.now().toString()),
       simplifiedProcedure = ApiXmlHelpers.boolToFlag(sp match {
         case ProcedureType.Simplified => true
         case _                        => false
