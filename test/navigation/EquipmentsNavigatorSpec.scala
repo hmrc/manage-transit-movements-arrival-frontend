@@ -21,23 +21,23 @@ import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class EquipmentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "Equipment Navigator" - {
+  "Equipments Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new EquipmentNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex)
+      val navigatorProvider = new EquipmentsNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode, incidentIndex)
 
       "when answers complete" - {
-        "must redirect to equipment check your answers page" in {
-          forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
+        "must redirect to add another equipment" in {
+          forAll(arbitraryEquipmentsAnswers(emptyUserAnswers, incidentIndex)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.incident.equipment.routes.CheckEquipmentAnswersController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex))
+                .mustBe(controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(answers.mrn, mode, incidentIndex))
           }
         }
       }
@@ -46,11 +46,11 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new EquipmentNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex)
+      val navigatorProvider = new EquipmentsNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode, incidentIndex)
 
       "when answers complete" - {
-        "must redirect to incident answers page" ignore {
+        "must redirect to check incident answers" ignore {
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
             answers =>
               navigator

@@ -17,6 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import cats.implicits._
+import controllers.incident.equipment.routes
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
@@ -35,7 +36,7 @@ case class EquipmentDomain(
   def asString(implicit messages: Messages): String = EquipmentDomain.asString(containerId, equipmentIndex)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    super.routeIfCompleted(userAnswers, mode, stage) // TODO - equipment check your answers page
+    Some(routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }
 
 object EquipmentDomain {
