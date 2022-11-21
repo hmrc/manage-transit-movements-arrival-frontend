@@ -62,7 +62,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = "",
+                      name = "Transport equipment 1",
                       changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
                       removeUrl = None
                     )
@@ -84,7 +84,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = containerId,
+                      name = s"Transport equipment 1 - container $containerId",
                       changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
                       removeUrl = None
                     )
@@ -110,9 +110,9 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = "",
+                      name = "Transport equipment 1",
                       changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
-                      removeUrl = Some("#")
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )
                 )
@@ -134,9 +134,9 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = containerId,
+                      name = s"Transport equipment 1 - container $containerId",
                       changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
-                      removeUrl = Some("#")
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )
                 )
@@ -159,7 +159,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = "",
+                      name = "Transport equipment 1",
                       changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
                       removeUrl = None
                     )
@@ -180,7 +180,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = containerId,
+                      name = s"Transport equipment 1 - container $containerId",
                       changeUrl =
                         seal.routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url,
                       removeUrl = None
@@ -205,9 +205,9 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = "",
+                      name = "Transport equipment 1",
                       changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
-                      removeUrl = Some("#")
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )
                 )
@@ -228,9 +228,9 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = containerId,
+                      name = s"Transport equipment 1 - container $containerId",
                       changeUrl = routes.AddSealsYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
-                      removeUrl = Some("#")
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )
                 )

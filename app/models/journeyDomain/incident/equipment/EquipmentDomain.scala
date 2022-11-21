@@ -23,6 +23,7 @@ import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, Use
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class EquipmentDomain(
@@ -31,14 +32,18 @@ case class EquipmentDomain(
 )(incidentIndex: Index, equipmentIndex: Index)
     extends JourneyDomainModel {
 
-  // TODO - decide what to do when there isn't a container ID
-  override def toString: String = containerId.fold("")(identity)
+  def asString(implicit messages: Messages): String = EquipmentDomain.asString(containerId, equipmentIndex)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     super.routeIfCompleted(userAnswers, mode, stage) // TODO - equipment check your answers page
 }
 
 object EquipmentDomain {
+
+  def asString(containerId: Option[String], equipmentIndex: Index)(implicit messages: Messages): String = containerId match {
+    case Some(value) => messages("incident.equipment.withContainer.label", equipmentIndex.display, value)
+    case None        => messages("incident.equipment.withoutContainer.label", equipmentIndex.display)
+  }
 
   // scalastyle:off cyclomatic.complexity
   def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] = {
