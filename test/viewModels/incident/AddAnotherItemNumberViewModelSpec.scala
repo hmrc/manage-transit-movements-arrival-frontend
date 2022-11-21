@@ -65,7 +65,7 @@ class AddAnotherItemNumberViewModelSpec extends SpecBase with Generators with Sc
 
           val result = new AddAnotherItemNumberViewModelProvider()(userAnswers, mode, incidentIndex, equipmentIndex)
           result.prefix mustBe "incident.equipment.itemNumber.addAnotherItemNumberYesNo"
-          result.title mustBe s"You have added $numberOfItems good item numbers"
+          result.title mustBe s"You have added $numberOfItems goods item numbers"
           result.heading mustBe s"You have added $numberOfItems goods item numbers"
       }
     }

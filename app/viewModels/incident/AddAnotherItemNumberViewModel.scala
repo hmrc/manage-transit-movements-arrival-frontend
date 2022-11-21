@@ -35,8 +35,8 @@ case class AddAnotherItemNumberViewModel(
 
   val prefix = "incident.equipment.itemNumber.addAnotherItemNumberYesNo"
 
-  def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title")
-  def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading")
+  def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", numberOfItemNumbers)
+  def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", numberOfItemNumbers)
   def legend(implicit messages: Messages): String  = messages(s"$prefix.label")
 
   def allowMoreItems(implicit config: FrontendAppConfig): Boolean = numberOfItemNumbers < config.maxNumberOfItems
@@ -55,7 +55,8 @@ object AddAnotherItemNumberViewModel {
 
       new AddAnotherItemNumberViewModel(
         listItems,
-        onSubmitCall = controllers.incident.equipment.routes.AddGoodsItemNumberYesNoController.onSubmit(userAnswers.mrn, mode, incidentIndex, equipmentIndex)
+        onSubmitCall =
+          controllers.incident.equipment.itemNumber.routes.AddAnotherItemNumberYesNoController.onSubmit(userAnswers.mrn, mode, incidentIndex, equipmentIndex)
       )
     }
 

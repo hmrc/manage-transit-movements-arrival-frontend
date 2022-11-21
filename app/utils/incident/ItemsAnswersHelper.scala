@@ -19,7 +19,6 @@ package utils.incident
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.incident.equipment.ItemNumberDomain
 import models.{Index, Mode, UserAnswers}
-import pages.incident.equipment.AddGoodsItemNumberYesNoPage
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
@@ -39,11 +38,8 @@ class ItemsAnswersHelper(
     buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
       position =>
         val itemIndex = Index(position)
-        val removeRoute: Option[Call] = if (userAnswers.get(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex)).isEmpty && position == 0) {
-          None
-        } else {
-          Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
-        }
+        //TODO: change to ConfirmRemoveItemNumber when added
+        val removeRoute: Option[Call] = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
 
         buildListItem[ItemNumberDomain, String](
           page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),

@@ -16,18 +16,29 @@
 
 package models.journeyDomain.incident.equipment
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
+import controllers.incident.equipment.itemNumber.routes
+import models.{Index, Mode, UserAnswers}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import pages.incident.equipment.itemNumber.ItemNumberPage
+import play.api.mvc.Call
 
 case class ItemNumberDomain(
   itemNumber: String
-)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
-    extends JourneyDomainModel
+)(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index)
+    extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+    stage match {
+      case AccessingJourney  => routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)
+      case CompletingJourney => routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex)
+    }
+  }
+}
 
 object ItemNumberDomain {
 
-  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersReader[ItemNumberDomain] =
-    ItemNumberPage(incidentIndex, equipmentIndex, sealIndex).reader.map(ItemNumberDomain(_)(incidentIndex, equipmentIndex, sealIndex))
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersReader[ItemNumberDomain] =
+    ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).reader.map(ItemNumberDomain(_)(incidentIndex, equipmentIndex, itemNumberIndex))
 
 }

@@ -82,39 +82,6 @@ class ItemNumberAnswersHelperSpec extends SpecBase with Generators with ArrivalU
             }
           }
         }
-
-        "and add item number yes/no page is undefined" - {
-          "must return list items with no remove link a index 0" in {
-            forAll(arbitrary[Mode], Gen.numStr) {
-              (mode, itemNumber) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ItemNumberPage(incidentIndex, equipmentIndex, Index(0)), itemNumber)
-                  .setValue(ItemNumberPage(incidentIndex, equipmentIndex, Index(1)), itemNumber)
-
-                val helper = ItemsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = itemNumber,
-                      changeUrl = routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = itemNumber,
-                      changeUrl = routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
-                      removeUrl = Some(
-                        controllers.incident.equipment.seal.routes.ConfirmRemoveSealController
-                          .onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1))
-                          .url
-                      )
-                    )
-                  )
-                )
-            }
-          }
-        }
       }
     }
   }

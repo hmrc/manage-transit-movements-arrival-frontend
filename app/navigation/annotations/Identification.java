@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.sections.incident
+package navigation.annotations;
 
-import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
+import com.google.inject.BindingAnnotation;
 
-case class ItemNumbersSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsArray] {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
-
-  override def toString: String = "itemNumbers"
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Identification {
 }

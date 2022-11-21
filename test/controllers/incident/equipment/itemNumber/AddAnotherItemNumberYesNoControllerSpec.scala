@@ -19,7 +19,7 @@ package controllers.incident.equipment.itemNumber
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.NormalMode
+import models.{Index, NormalMode}
 import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -139,8 +139,9 @@ class AddAnotherItemNumberYesNoControllerSpec extends SpecBase with AppWithDefau
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.incident.equipment.routes.AddGoodsItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
-          //todo change to item nimber page once merged in
+            controllers.incident.equipment.itemNumber.routes.ItemNumberController
+              .onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(listItems.length))
+              .url
         }
       }
 

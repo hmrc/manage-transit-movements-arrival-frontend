@@ -57,9 +57,9 @@ class AddAnotherItemNumberYesNoViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithMoreItemsAllowed()()
+  behave like pageWithMoreItemsAllowed(viewModelWithItemsNotMaxedOut.listItems.length)()
 
-  behave like pageWithItemsMaxedOut()
+  behave like pageWithItemsMaxedOut(viewModelWithItemsMaxedOut.listItems.length)
 
   behave like pageWithSubmitButton("Continue")
 }
