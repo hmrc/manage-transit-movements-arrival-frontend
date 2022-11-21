@@ -29,6 +29,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
+    Arbitrary {
+      Gen.oneOf(models.incident.transportMeans.Identification.values.toSeq)
+    }
+
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
