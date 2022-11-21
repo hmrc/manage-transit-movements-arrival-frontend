@@ -38,7 +38,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink()git
+  behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals")
 
