@@ -16,7 +16,7 @@
 
 package models.journeyDomain.incident.equipment.itemNumber
 
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
@@ -30,7 +30,6 @@ object ItemNumbersDomain {
       case x if x.isEmpty =>
         UserAnswersReader.fail[ItemNumbersDomain](ItemNumberPage(incidentIndex, equipmentIndex, Index(0)))
       case x =>
-        ???
-      //x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
+        x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
     }
 }
