@@ -94,6 +94,8 @@ arrivals.checkYourAnswers.identification.subheading = Identification
 arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
 arrivals.checkYourAnswers.seals.subheading = Seals
 arrivals.checkYourAnswers.seals.addOrRemove = Add or remove seals
+arrivals.checkYourAnswers.goodsItemNumbers.subheading = Goods item numbers
+arrivals.checkYourAnswers.goodsItemNumbers.addOrRemove = Add or remove goods item numbers
 arrivals.checkYourAnswers.equipments.subheading = Equipments
 arrivals.checkYourAnswers.equipments.addOrRemove = Add or remove equipments
 
@@ -475,8 +477,8 @@ incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This i
 
 incident.equipment.addSealsYesNo.title = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
-incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}
-incident.equipment.addSealsYesNo.change.hidden = if you want to add seals
+incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal?
+incident.equipment.addSealsYesNo.change.hidden = if you want to add a seal
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
 
 incident.equipment.addAnotherTransportEquipment.singular.title = You have added {0} transport equipment
@@ -536,11 +538,15 @@ incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
 
-# Incident - Item Number
+# Incident - Goods item Number
+
+incident.equipment.goodsItemNumber.label = Goods item number {0}
+incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
 
 incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
 incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
 incident.equipment.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
 incident.equipment.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
 
 incident.equipment.itemNumber.title = What is the goods item number?
@@ -550,3 +556,15 @@ incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item num
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
 incident.equipment.itemNumber.error.length = The goods item number must be 5 characters long
+
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.heading = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.title = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You cannot add any more goods item numbers. To add another, you need to remove one first.
+
+incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.error.required = Select yes if you want to remove goods item number {0}
