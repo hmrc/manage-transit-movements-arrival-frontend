@@ -35,10 +35,10 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     }
   }
 
-  def getCustomsOfficesOfDepartureForCountry(countryCode: CountryCode)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
+  def getCustomsOfficesForCountry(countryCode: CountryCode)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
     val serviceUrl = s"${config.referenceDataUrl}/customs-offices/${countryCode.code}?role=DES"
 
-    metricsService.timeAsyncCall(Monitors.getCustomsOfficesOfDepartureForCountryMonitor) {
+    metricsService.timeAsyncCall(Monitors.getCustomsOfficesForCountryMonitor) {
       http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header)
     }
   }

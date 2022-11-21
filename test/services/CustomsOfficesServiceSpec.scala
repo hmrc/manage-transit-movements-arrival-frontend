@@ -50,14 +50,14 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return a list of GB and NI customs offices" in {
 
-      when(mockRefDataConnector.getCustomsOfficesOfDepartureForCountry(eqTo(CountryCode("XI")))(any(), any())).thenReturn(Future.successful(xiCustomsOffices))
-      when(mockRefDataConnector.getCustomsOfficesOfDepartureForCountry(eqTo(CountryCode("GB")))(any(), any())).thenReturn(Future.successful(gbCustomsOffices))
+      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("XI")))(any(), any())).thenReturn(Future.successful(xiCustomsOffices))
+      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any())).thenReturn(Future.successful(gbCustomsOffices))
 
       service.getCustomsOfficesOfArrival.futureValue mustBe
         CustomsOfficeList(Seq(xiCustomsOffice2, gbCustomsOffice2, xiCustomsOffice1, gbCustomsOffice1))
 
-      verify(mockRefDataConnector).getCustomsOfficesOfDepartureForCountry(eqTo(CountryCode("XI")))(any(), any())
-      verify(mockRefDataConnector).getCustomsOfficesOfDepartureForCountry(eqTo(CountryCode("GB")))(any(), any())
+      verify(mockRefDataConnector).getCustomsOfficesForCountry(eqTo(CountryCode("XI")))(any(), any())
+      verify(mockRefDataConnector).getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any())
     }
 
   }

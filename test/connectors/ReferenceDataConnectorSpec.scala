@@ -139,11 +139,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           CustomsOffice("GBtestId2", Some("testName2"), None)
         )
 
-        connector.getCustomsOfficesOfDepartureForCountry(country).futureValue mustBe expectedResult
+        connector.getCustomsOfficesForCountry(country).futureValue mustBe expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DES", connector.getCustomsOfficesOfDepartureForCountry(country))
+        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DES", connector.getCustomsOfficesForCountry(country))
       }
     }
 
