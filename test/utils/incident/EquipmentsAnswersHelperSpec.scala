@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident._
 import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import viewModels.ListItem
 
 class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
@@ -57,6 +57,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
                   .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                 val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
                 helper.listItems mustBe Seq(
@@ -79,6 +80,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                   .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                   .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                 val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
                 helper.listItems mustBe Seq(
@@ -105,6 +107,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
                   .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                 val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
                 helper.listItems mustBe Seq(
@@ -129,6 +132,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                   .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                   .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                 val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
                 helper.listItems mustBe Seq(

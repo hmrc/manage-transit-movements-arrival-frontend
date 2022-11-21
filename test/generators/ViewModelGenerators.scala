@@ -23,7 +23,7 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.incident.AddAnotherSealViewModel
+import viewModels.incident.{AddAnotherEquipmentViewModel, AddAnotherItemNumberViewModel, AddAnotherSealViewModel}
 import viewModels.{Link, ListItem}
 import viewModels.sections.Section
 
