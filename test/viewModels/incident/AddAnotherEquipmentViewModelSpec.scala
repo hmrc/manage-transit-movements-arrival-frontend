@@ -26,17 +26,39 @@ import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewM
 
 class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with ArrivalUserAnswersGenerator {
 
-  "must get list items" in {
+  "must get list items" - {
 
-    forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxTransportEquipments)) {
-      (mode, numberOfTransportEquipments) =>
-        val userAnswers = (0 until numberOfTransportEquipments).foldLeft(emptyUserAnswers) {
-          (acc, i) =>
-            arbitraryEquipmentAnswers(acc, incidentIndex, Index(i)).sample.value
-        }
+    "when there is one transport equipment" in {
+      forAll(arbitrary[Mode]) {
+        mode =>
+          val userAnswers = arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, Index(0)).sample.value
 
-        val result = new AddAnotherEquipmentViewModelProvider()(userAnswers, mode, incidentIndex)
-        result.listItems.length mustBe numberOfTransportEquipments
+          val result = new AddAnotherEquipmentViewModelProvider()(userAnswers, mode, incidentIndex)
+          result.listItems.length mustBe 1
+          result.title mustBe "You have added 1 transport equipment"
+          result.heading mustBe "You have added 1 transport equipment"
+          result.legend mustBe "Do you want to add any other transport equipment?"
+          result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add more, you need to remove one first."
+      }
+    }
+
+    "when there are multiple transport equipments" in {
+      val formatter = java.text.NumberFormat.getIntegerInstance
+
+      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxTransportEquipments)) {
+        (mode, numberOfTransportEquipments) =>
+          val userAnswers = (0 until numberOfTransportEquipments).foldLeft(emptyUserAnswers) {
+            (acc, i) =>
+              arbitraryEquipmentAnswers(acc, incidentIndex, Index(i)).sample.value
+          }
+
+          val result = new AddAnotherEquipmentViewModelProvider()(userAnswers, mode, incidentIndex)
+          result.listItems.length mustBe numberOfTransportEquipments
+          result.title mustBe s"You have added ${formatter.format(numberOfTransportEquipments)} transport equipment"
+          result.heading mustBe s"You have added ${formatter.format(numberOfTransportEquipments)} transport equipment"
+          result.legend mustBe "Do you want to add any other transport equipment?"
+          result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add more, you need to remove one first."
+      }
     }
   }
 

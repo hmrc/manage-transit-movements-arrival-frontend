@@ -23,7 +23,8 @@ import models.{Index, Mode, MovementReferenceNumber}
 import navigation.IncidentNavigatorProvider
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.incident.AddAnotherEquipmentViewModel
 import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -46,6 +47,7 @@ class AddAnotherEquipmentController @Inject() (
   private def form(viewModel: AddAnotherEquipmentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMoreEquipments)
 
+  // TODO - do we need to remove in progress transport equipments as part of this action builder?
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
     .requireData(mrn) {
       implicit request =>
@@ -64,7 +66,7 @@ class AddAnotherEquipmentController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
-            case true  => ??? // TODO - equipment CYA
+            case true  => Redirect(Call(GET, "#")) // TODO - equipment CYA
             case false => Redirect(navigatorProvider(mode, incidentIndex).nextPage(request.userAnswers))
           }
         )

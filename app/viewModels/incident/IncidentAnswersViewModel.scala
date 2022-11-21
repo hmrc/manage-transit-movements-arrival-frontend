@@ -64,7 +64,7 @@ object IncidentAnswersViewModel {
         addAnotherLink = Link(
           id = "add-or-remove-equipments",
           text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
-          href = "#" // TODO - add another equipment page
+          href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
         )
       )
 

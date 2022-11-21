@@ -18,6 +18,7 @@ package utils.incident
 
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, UserAnswers}
+import pages.incident.AddTransportEquipmentPage
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
@@ -37,11 +38,18 @@ class EquipmentsAnswersHelper(
     buildListItems(EquipmentsSection(incidentIndex)) {
       position =>
         val equipmentIndex = Index(position)
+
+        val removeRoute: Option[Call] = if (userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty && position == 0) {
+          None
+        } else {
+          Some(Call(GET, "#")) // TODO - remove incident page
+        }
+
         buildListItemWithDefault[EquipmentDomain, String](
           page = ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
           formatJourneyDomainModel = _.toString,
           formatType = _.fold("")(identity), // TODO - what should be rendered when container id is not present?
-          removeRoute = Some(Call(GET, "#")) // TODO - remove incident page
+          removeRoute = removeRoute
         )(EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex), implicitly)
     }
 }
