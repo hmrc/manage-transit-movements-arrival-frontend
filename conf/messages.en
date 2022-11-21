@@ -290,14 +290,14 @@ locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location o
 locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the location of goods must only include letters a to z and spaces
 locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the location of goods must be 5 characters long
 
-locationOfGoods.identificationNumber.title = What is the EORI number or TIN for the location of goods?
-locationOfGoods.identificationNumber.heading = What is the EORI number or TIN for the location of goods?
+locationOfGoods.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 locationOfGoods.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
 locationOfGoods.identificationNumber.change.hidden = EORI number or Trader Identification Number (TIN) for the location of goods
-locationOfGoods.identificationNumber.error.required = Enter the EORI number or TIN for the location of goods
-locationOfGoods.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less
-locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9
-locationOfGoods.identificationNumber.hintText = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+locationOfGoods.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the location of goods
+locationOfGoods.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
+locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 
 locationOfGoods.addAdditionalIdentifier.title = Do you want to add an additional identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.heading = Do you want to add an additional identifier for the location of goods?
