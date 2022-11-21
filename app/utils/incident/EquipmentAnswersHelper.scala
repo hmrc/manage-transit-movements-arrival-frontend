@@ -16,7 +16,7 @@
 
 package utils.incident
 
-import models.journeyDomain.incident.seal.SealDomain
+import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import play.api.i18n.Messages

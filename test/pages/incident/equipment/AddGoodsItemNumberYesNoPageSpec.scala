@@ -17,6 +17,8 @@
 package pages.incident.equipment
 
 import pages.behaviours.PageBehaviours
+import pages.sections.incident.ItemsSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +29,18 @@ class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex))
 
     beRemovable[Boolean](AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex))
+  }
+
+  "cleanup" - {
+    "when changed to false" - {
+      "Must remove the seals section" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(ItemsSection(incidentIndex, equipmentIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+        val result = userAnswers.setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
+
+        result.get(ItemsSection(incidentIndex, equipmentIndex)) must not be defined
+      }
+    }
   }
 }

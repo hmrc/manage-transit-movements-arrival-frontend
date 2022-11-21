@@ -547,3 +547,15 @@ incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item num
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
 incident.equipment.itemNumber.error.length = The goods item number must be 5 characters long
+
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.heading = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.title = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You cannot add any more goods item numbers. To add another, you need to remove one first.
+
+incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.error.required = Select yes if you want to remove goods item number {0}

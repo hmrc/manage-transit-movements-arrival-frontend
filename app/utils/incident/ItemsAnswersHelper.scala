@@ -16,18 +16,17 @@
 
 package utils.incident
 
-import controllers.incident.equipment.seal.routes
-import models.journeyDomain.incident.equipment.seal.SealDomain
+import controllers.incident.equipment.itemNumber.routes
+import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.{Index, Mode, UserAnswers}
-import pages.incident.equipment.AddSealsYesNoPage
-import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.sections.incident.SealsSection
+import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.AnswersHelper
 import viewModels.ListItem
 
-class SealsAnswersHelper(
+class ItemsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   incidentIndex: Index,
@@ -36,26 +35,23 @@ class SealsAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
-    buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
+    buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
       position =>
-        val sealIndex = Index(position)
-        val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && position == 0) {
-          None
-        } else {
-          Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
-        }
+        val itemIndex = Index(position)
+        val removeRoute: Option[Call] =
+          Some(routes.ConfirmRemoveItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
 
-        buildListItem[SealDomain, String](
-          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
-          formatJourneyDomainModel = _.identificationNumber,
+        buildListItem[ItemNumberDomain, String](
+          page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          formatJourneyDomainModel = _.itemNumber,
           formatType = identity,
           removeRoute = removeRoute
-        )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex), implicitly)
+        )(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemIndex), implicitly)
     }
 }
 
-object SealsAnswersHelper {
+object ItemsAnswersHelper {
 
   def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit messages: Messages) =
-    new SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+    new ItemsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
 }

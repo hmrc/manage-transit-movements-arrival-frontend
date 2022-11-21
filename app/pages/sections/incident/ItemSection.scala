@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.equipment
+package pages.sections.incident
 
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class ItemNumberDomain(
-  value: String
-)(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
-    extends JourneyDomainModel
+case class ItemSection(incidentIndex: Index, equipmentIndex: Index, itemIndex: Index) extends Section[JsObject] {
 
-object ItemNumberDomain {
-
-  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersReader[ItemNumberDomain] =
-    ItemNumberPage(incidentIndex, equipmentIndex, sealIndex).reader.map(ItemNumberDomain(_)(incidentIndex, equipmentIndex, sealIndex))
+  override def path: JsPath = ItemsSection(incidentIndex, equipmentIndex).path \ itemIndex.position
 
 }

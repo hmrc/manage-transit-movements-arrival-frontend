@@ -20,7 +20,7 @@ import base.SpecBase
 import models.journeyDomain.ArrivalDomain
 import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.journeyDomain.incident.seal.SealDomain
+import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.{Index, UserAnswers}

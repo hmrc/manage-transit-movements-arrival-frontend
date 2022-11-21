@@ -20,11 +20,13 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import models.incident.IncidentCode
-import models.journeyDomain.incident.seal.{SealDomain, SealsDomain}
+import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
+import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.equipment._
+import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 import pages.sections.incident.EquipmentSection
@@ -56,6 +58,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                     .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                     .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
                     .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
@@ -63,7 +66,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                       Seq(
                         SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                       )
-                    )
+                    ),
+                    ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
                   val result: EitherType[EquipmentDomain] =
@@ -81,10 +85,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                     .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
                     .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                     .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(Nil)
+                    SealsDomain(Nil),
+                    ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
                   val result: EitherType[EquipmentDomain] =
@@ -110,6 +116,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                       .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                       .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
                       .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                     val expectedResult = EquipmentDomain(
                       Some(containerId),
@@ -117,7 +124,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                         Seq(
                           SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                         )
-                      )
+                      ),
+                      ItemNumbersDomain(Nil)
                     )(incidentIndex, equipmentIndex)
 
                     val result: EitherType[EquipmentDomain] =
@@ -136,10 +144,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                       .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                       .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                       .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                     val expectedResult = EquipmentDomain(
                       Some(containerId),
-                      SealsDomain(Nil)
+                      SealsDomain(Nil),
+                      ItemNumbersDomain(Nil)
                     )(incidentIndex, equipmentIndex)
 
                     val result: EitherType[EquipmentDomain] =
@@ -158,6 +168,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                     .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                     .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
                     .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                   val expectedResult = EquipmentDomain(
                     None,
@@ -165,7 +176,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                       Seq(
                         SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                       )
-                    )
+                    ),
+                    ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
                   val result: EitherType[EquipmentDomain] =
@@ -188,6 +200,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                     .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
                     .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
                     .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                   val expectedResult = EquipmentDomain(
                     None,
@@ -195,7 +208,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                       Seq(
                         SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                       )
-                    )
+                    ),
+                    ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
                   val result: EitherType[EquipmentDomain] =
@@ -205,24 +219,29 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
               }
             }
 
-            "and not adding seals" in {
-              forAll(incidentCodeGen) {
-                incidentCode =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                    .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                    .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
-                    .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+            "and not adding seals" - {
+              "and adding goods item number" in {
+                forAll(incidentCodeGen, Gen.alphaNumStr) {
+                  (incidentCode, itemNumber) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                      .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
+                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                      .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), itemNumber)
 
-                  val expectedResult = EquipmentDomain(
-                    None,
-                    SealsDomain(Nil)
-                  )(incidentIndex, equipmentIndex)
+                    val expectedResult = EquipmentDomain(
+                      None,
+                      SealsDomain(Nil),
+                      ItemNumbersDomain(Seq(ItemNumberDomain(itemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)))
+                    )(incidentIndex, equipmentIndex)
 
-                  val result: EitherType[EquipmentDomain] =
-                    UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+                    val result: EitherType[EquipmentDomain] =
+                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                    result.value mustBe expectedResult
+                }
               }
             }
           }
@@ -239,6 +258,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
               .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
               .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
               .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+              .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
             val expectedResult = EquipmentDomain(
               Some(containerId),
@@ -246,7 +266,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 Seq(
                   SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                 )
-              )
+              ),
+              ItemNumbersDomain(Nil)
             )(incidentIndex, equipmentIndex)
 
             val result: EitherType[EquipmentDomain] =
@@ -263,6 +284,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                 .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
                 .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
               val expectedResult = EquipmentDomain(
                 Some(containerId),
@@ -270,7 +292,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                   Seq(
                     SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                   )
-                )
+                ),
+                ItemNumbersDomain(Nil)
               )(incidentIndex, equipmentIndex)
 
               val result: EitherType[EquipmentDomain] =
@@ -285,10 +308,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                 .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                 .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
               val expectedResult = EquipmentDomain(
                 Some(containerId),
-                SealsDomain(Nil)
+                SealsDomain(Nil),
+                ItemNumbersDomain(Nil)
               )(incidentIndex, equipmentIndex)
 
               val result: EitherType[EquipmentDomain] =
@@ -306,6 +331,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
                 .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
                 .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
               val expectedResult = EquipmentDomain(
                 None,
@@ -313,7 +339,8 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                   Seq(
                     SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
                   )
-                )
+                ),
+                ItemNumbersDomain(Nil)
               )(incidentIndex, equipmentIndex)
 
               val result: EitherType[EquipmentDomain] =
@@ -466,6 +493,19 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             result.left.value.page mustBe IncidentCodePage(incidentIndex)
         }
+      }
+
+      "when add seals is no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(IncidentCodePage(incidentIndex), IncidentCode.PartiallyOrFullyUnloaded)
+          .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+          .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+          .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+
+        val result: EitherType[EquipmentDomain] =
+          UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+        result.left.value.page mustBe AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex)
       }
     }
   }
