@@ -61,15 +61,15 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
               val result = helper.equipment(index).get
 
-              result.key.value mustBe "Equipment 1"
-              result.value.value mustBe ""
+              result.key.value mustBe "Transport equipment 1"
+              result.value.value mustBe "Transport equipment 1"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               //action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-              action.visuallyHiddenText.get mustBe "equipment 1"
-              action.id mustBe "change-equipment-1"
+              action.visuallyHiddenText.get mustBe "transport equipment 1"
+              action.id mustBe "change-transport-equipment-1"
           }
         }
 
@@ -85,15 +85,15 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
               val result = helper.equipment(index).get
 
-              result.key.value mustBe "Equipment 1"
-              result.value.value mustBe equipment.containerId.get
+              result.key.value mustBe "Transport equipment 1"
+              result.value.value mustBe s"Transport equipment 1 - container ${equipment.containerId.get}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               //action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
-              action.visuallyHiddenText.get mustBe "equipment 1"
-              action.id mustBe "change-equipment-1"
+              action.visuallyHiddenText.get mustBe "transport equipment 1"
+              action.id mustBe "change-transport-equipment-1"
           }
         }
       }

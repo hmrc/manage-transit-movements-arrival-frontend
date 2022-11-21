@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident._
 import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import viewModels.ListItem
 
 class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
@@ -48,89 +48,193 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
 
       "when user answers populated with a complete equipment" - {
 
-        "and equipment has no container id" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr) {
-            (mode, sealId) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
-                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+        "and add transport equipment yes/no is unanswered" - {
 
-              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              helper.listItems mustBe Seq(
-                Right(
-                  ListItem(
-                    name = "",
-                    changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
-                    removeUrl = Some("#")
+          "and equipment has no container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = "Transport equipment 1",
+                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      removeUrl = None
+                    )
                   )
                 )
-              )
+            }
+          }
+
+          "and equipment has a container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr, Gen.alphaNumStr) {
+              (mode, containerId, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = s"Transport equipment 1 - container $containerId",
+                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      removeUrl = None
+                    )
+                  )
+                )
+            }
           }
         }
 
-        "and equipment has a container id" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr, Gen.alphaNumStr) {
-            (mode, containerId, sealId) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-                .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
-                .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+        "and add transport equipment yes/no is answered" - {
 
-              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              helper.listItems mustBe Seq(
-                Right(
-                  ListItem(
-                    name = containerId,
-                    changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
-                    removeUrl = Some("#")
+          "and equipment has no container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(AddTransportEquipmentPage(incidentIndex), true)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = "Transport equipment 1",
+                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
+                    )
                   )
                 )
-              )
+            }
+          }
+
+          "and equipment has a container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, containerId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(AddTransportEquipmentPage(incidentIndex), true)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                  .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = s"Transport equipment 1 - container $containerId",
+                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
+                    )
+                  )
+                )
+            }
           }
         }
       }
 
       "when user answers populated with an in progress equipment" - {
-        "and equipment has no container id" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
-              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              helper.listItems mustBe Seq(
-                Left(
-                  ListItem(
-                    name = "",
-                    changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
-                    removeUrl = Some("#")
+        "and add transport equipment yes/no is unanswered" - {
+          "and equipment has no container id" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = "Transport equipment 1",
+                      changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
+                      removeUrl = None
+                    )
                   )
                 )
-              )
+            }
+          }
+
+          "and equipment has a container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, containerId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = s"Transport equipment 1 - container $containerId",
+                      changeUrl =
+                        seal.routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url,
+                      removeUrl = None
+                    )
+                  )
+                )
+            }
           }
         }
 
-        "and equipment has a container id" in {
-          forAll(arbitrary[Mode], Gen.alphaNumStr) {
-            (mode, containerId) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
-                .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-                .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+        "and add transport equipment yes/no is answered" - {
+          "and equipment has no container id" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(AddTransportEquipmentPage(incidentIndex), true)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
-              val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
-              helper.listItems mustBe Seq(
-                Left(
-                  ListItem(
-                    name = containerId,
-                    changeUrl = seal.routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url,
-                    removeUrl = Some("#")
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = "Transport equipment 1",
+                      changeUrl = routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
+                    )
                   )
                 )
-              )
+            }
+          }
+
+          "and equipment has a container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, containerId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(AddTransportEquipmentPage(incidentIndex), true)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = s"Transport equipment 1 - container $containerId",
+                      changeUrl = routes.AddSealsYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
+                    )
+                  )
+                )
+            }
           }
         }
       }
