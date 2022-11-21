@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.NormalMode
 import models.incident.transportMeans.Identification
-import navigation.{IncidentNavigatorProvider}
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.transportMeans.IdentificationPage
