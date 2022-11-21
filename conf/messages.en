@@ -484,6 +484,10 @@ incident.equipment.addAnotherTransportEquipment.error.required = Select yes if y
 incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
 incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
 
+incident.equipment.remove.title = Are you sure you want to remove transport equipment {0}?
+incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
+incident.equipment.remove.error.required = Select yes if you want to remove transport equipment {0}
+
 # Incident - Seal
 
 incident.equipment.seal.label = Seal {0}
