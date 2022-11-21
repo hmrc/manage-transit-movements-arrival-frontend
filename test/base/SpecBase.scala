@@ -32,7 +32,9 @@ import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+
+import scala.concurrent.Future
 
 trait SpecBase
     extends AnyFreeSpec
@@ -104,4 +106,6 @@ trait SpecBase
   implicit class RichAction(ai: ActionItem) {
     def id: String = ai.attributes.get("id").value
   }
+
+  def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }

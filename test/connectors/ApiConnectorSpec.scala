@@ -24,7 +24,7 @@ import models.UserAnswers
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HttpResponse
 
 class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators with ArrivalUserAnswersGenerator {
 
@@ -72,9 +72,8 @@ class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Wir
 
         server.stubFor(post(urlEqualTo(uri)).willReturn(badRequest()))
 
-        intercept[BadRequestException] {
-          await(connector.submitDeclaration(uA))
-        }
+        val res: HttpResponse = await(connector.submitDeclaration(uA))
+        res.status mustBe BAD_REQUEST
 
       }
 
@@ -82,9 +81,8 @@ class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Wir
 
         server.stubFor(post(urlEqualTo(uri)).willReturn(serverError()))
 
-        intercept[UpstreamErrorResponse] {
-          await(connector.submitDeclaration(uA))
-        }
+        val res: HttpResponse = await(connector.submitDeclaration(uA))
+        res.status mustBe INTERNAL_SERVER_ERROR
 
       }
 
