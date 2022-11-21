@@ -61,7 +61,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 Right(
                   ListItem(
                     name = "",
-                    changeUrl = "#",
+                    changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
                     removeUrl = Some("#")
                   )
                 )
@@ -83,7 +83,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                 Right(
                   ListItem(
                     name = containerId,
-                    changeUrl = "#",
+                    changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
                     removeUrl = Some("#")
                   )
                 )
