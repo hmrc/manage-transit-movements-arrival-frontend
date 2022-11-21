@@ -130,7 +130,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getCustomsOfficesOfDepartureForCountry" - {
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices/GB?role=DEP"))
+          get(urlEqualTo(s"/$startUrl/customs-offices/GB?role=DES"))
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
@@ -143,7 +143,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DEP", connector.getCustomsOfficesOfDepartureForCountry(country))
+        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DES", connector.getCustomsOfficesOfDepartureForCountry(country))
       }
     }
 
