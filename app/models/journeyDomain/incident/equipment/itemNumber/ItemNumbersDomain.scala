@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.itemNumber
+package models.journeyDomain.incident.equipment.itemNumber
 
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.{Index, RichJsArray}

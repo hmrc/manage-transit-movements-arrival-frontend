@@ -17,7 +17,7 @@
 package utils.incident
 
 import controllers.incident.equipment.itemNumber.routes
-import models.journeyDomain.incident.itemNumber.ItemNumberDomain
+import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection

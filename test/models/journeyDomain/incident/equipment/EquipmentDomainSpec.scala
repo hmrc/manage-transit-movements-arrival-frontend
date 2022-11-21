@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import models.incident.IncidentCode
-import models.journeyDomain.incident.seal.{SealDomain, SealsDomain}
+import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

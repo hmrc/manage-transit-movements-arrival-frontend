@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.itemNumber
+package models.journeyDomain.incident.equipment.itemNumber
 
 import controllers.incident.equipment.itemNumber.routes
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
