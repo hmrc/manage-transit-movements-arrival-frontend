@@ -518,7 +518,7 @@ incident.transportMeans.identification.regNumberAircraft.arg = registration numb
 incident.transportMeans.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
 incident.transportMeans.identification.europeanVesselIdNumber.arg = European vessel identification number (ENI code)
 incident.transportMeans.identification.unknown = Unknown - this can only be used during the transitional period
-incident.transportMeans.identification.unknown.arg = Unknown - this can only be used during the transitional period
+incident.transportMeans.identification.unknown.arg = identification number
 incident.transportMeans.identification.checkYourAnswersLabel = Which type of identification do you want to use for the replacement means of transport
 incident.transportMeans.identification.error.required = Select which type of identification you want to use for the replacement means of transport
 
