@@ -16,15 +16,23 @@
 
 package forms
 
-object Constants {
-  lazy val additionalIdentifierMaxLength: Int = 4
-  lazy val tirCarnetReferenceMaxLength: Int   = 12
-  lazy val maxEoriNumberLength: Int           = 17
-  lazy val minEoriNumberLength: Int           = 14
-  lazy val maxNameLength: Int                 = 70
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val authorisationNumberLength: Int     = 35
-  lazy val maxIncidentTextLength: Int         = 512
-  lazy val identificationNumberLength: Int    = 35
+import forms.Constants.identificationNumberLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
+
+import javax.inject.Inject
+import play.api.data.Form
+
+class IdentificationNumberFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, args: String*): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required", args)
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(identificationNumberLength, s"$prefix.error.length", args),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid", args)
+          )
+        )
+    )
 }

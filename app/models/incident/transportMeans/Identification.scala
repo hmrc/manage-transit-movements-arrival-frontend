@@ -17,8 +17,11 @@
 package models.incident.transportMeans
 
 import models.{RadioModel, WithName}
+import play.api.i18n.Messages
 
-sealed trait Identification
+sealed trait Identification {
+  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
+}
 
 object Identification extends RadioModel[Identification] {
 
