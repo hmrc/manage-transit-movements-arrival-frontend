@@ -29,13 +29,16 @@ import pages.incident.equipment._
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
-import pages.sections.incident.EquipmentSection
-import play.api.libs.json.Json
 
 class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  private val containerId = Gen.alphaNumStr.sample.value
-  private val sealId      = Gen.alphaNumStr.sample.value
+  private val containerId     = Gen.alphaNumStr.sample.value
+  private val sealId          = Gen.alphaNumStr.sample.value
+  private val goodsItemNumber = Gen.alphaNumStr.sample.value
+
+  private val incidentCode3Or6Gen = Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
+  private val incidentCode2Or4Gen = Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
+  private val incidentCode1Or5Gen = Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
 
   "EquipmentDomain" - {
 
@@ -43,14 +46,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when incident code is 3 or 6" - {
 
-        val incidentCodeGen = Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
-
         "when container indicator is true" - {
 
           "and container id is answered" - {
 
             "and adding seals" in {
-              forAll(incidentCodeGen) {
+              forAll(incidentCode3Or6Gen) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -62,11 +63,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(
-                      Seq(
-                        SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                      )
-                    ),
+                    SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
                     ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
@@ -78,7 +75,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             }
 
             "and not adding seals" in {
-              forAll(incidentCodeGen) {
+              forAll(incidentCode3Or6Gen) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -103,80 +100,47 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "when container indicator is false" - {
-          "and equipment index is 0" - {
-            "and container id is answered" - {
+          "and container id is answered" - {
 
-              "and adding seals" in {
-                forAll(incidentCodeGen) {
-                  incidentCode =>
-                    val userAnswers = emptyUserAnswers
-                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                      .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-                      .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
-                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
-                      .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
-                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
-
-                    val expectedResult = EquipmentDomain(
-                      Some(containerId),
-                      SealsDomain(
-                        Seq(
-                          SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                        )
-                      ),
-                      ItemNumbersDomain(Nil)
-                    )(incidentIndex, equipmentIndex)
-
-                    val result: EitherType[EquipmentDomain] =
-                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
-
-                    result.value mustBe expectedResult
-                }
-              }
-
-              "and not adding seals" in {
-                forAll(incidentCodeGen) {
-                  incidentCode =>
-                    val userAnswers = emptyUserAnswers
-                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                      .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
-                      .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
-                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
-                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
-
-                    val expectedResult = EquipmentDomain(
-                      Some(containerId),
-                      SealsDomain(Nil),
-                      ItemNumbersDomain(Nil)
-                    )(incidentIndex, equipmentIndex)
-
-                    val result: EitherType[EquipmentDomain] =
-                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
-
-                    result.value mustBe expectedResult
-                }
-              }
-            }
-
-            "and container id is unanswered" in {
-              forAll(incidentCodeGen) {
+            "and adding seals" in {
+              forAll(incidentCode3Or6Gen) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
                     .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                    .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                    .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                    .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                    .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
                     .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
                     .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
                   val expectedResult = EquipmentDomain(
-                    None,
-                    SealsDomain(
-                      Seq(
-                        SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                      )
-                    ),
+                    Some(containerId),
+                    SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
+                    ItemNumbersDomain(Nil)
+                  )(incidentIndex, equipmentIndex)
+
+                  val result: EitherType[EquipmentDomain] =
+                    UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and not adding seals" in {
+              forAll(incidentCode3Or6Gen) {
+                incidentCode =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                    .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                    .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+                    .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
+                    .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
+                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
+
+                  val expectedResult = EquipmentDomain(
+                    Some(containerId),
+                    SealsDomain(Nil),
                     ItemNumbersDomain(Nil)
                   )(incidentIndex, equipmentIndex)
 
@@ -188,68 +152,32 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             }
           }
 
-          "and equipment index is not 0" - {
-            val equipmentIndex = Index(1)
+          "and container id is unanswered" in {
+            forAll(incidentCode3Or6Gen) {
+              incidentCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
-            "and adding seals" in {
-              forAll(incidentCodeGen) {
-                incidentCode =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                    .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                    .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
-                    .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
-                    .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
-                    .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
+                val expectedResult = EquipmentDomain(
+                  None,
+                  SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
+                  ItemNumbersDomain(Nil)
+                )(incidentIndex, equipmentIndex)
 
-                  val expectedResult = EquipmentDomain(
-                    None,
-                    SealsDomain(
-                      Seq(
-                        SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                      )
-                    ),
-                    ItemNumbersDomain(Nil)
-                  )(incidentIndex, equipmentIndex)
+                val result: EitherType[EquipmentDomain] =
+                  UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
 
-                  val result: EitherType[EquipmentDomain] =
-                    UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
-
-                  result.value mustBe expectedResult
-              }
-            }
-
-            "and not adding seals" - {
-              "and adding goods item number" in {
-                forAll(incidentCodeGen, Gen.alphaNumStr) {
-                  (incidentCode, itemNumber) =>
-                    val userAnswers = emptyUserAnswers
-                      .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                      .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                      .setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
-                      .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
-                      .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
-                      .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), itemNumber)
-
-                    val expectedResult = EquipmentDomain(
-                      None,
-                      SealsDomain(Nil),
-                      ItemNumbersDomain(Seq(ItemNumberDomain(itemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)))
-                    )(incidentIndex, equipmentIndex)
-
-                    val result: EitherType[EquipmentDomain] =
-                      UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
-
-                    result.value mustBe expectedResult
-                }
-              }
+                result.value mustBe expectedResult
             }
           }
         }
       }
 
       "when incident code is 2 or 4" - {
-        val incidentCodeGen = Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
 
         "and container id is answered" - {
           "and incident code is 2" in {
@@ -262,11 +190,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             val expectedResult = EquipmentDomain(
               Some(containerId),
-              SealsDomain(
-                Seq(
-                  SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                )
-              ),
+              SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
               ItemNumbersDomain(Nil)
             )(incidentIndex, equipmentIndex)
 
@@ -288,11 +212,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val expectedResult = EquipmentDomain(
                 Some(containerId),
-                SealsDomain(
-                  Seq(
-                    SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                  )
-                ),
+                SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
                 ItemNumbersDomain(Nil)
               )(incidentIndex, equipmentIndex)
 
@@ -325,7 +245,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "and container id is not answered" in {
-          forAll(incidentCodeGen) {
+          forAll(incidentCode2Or4Gen) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -335,11 +255,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val expectedResult = EquipmentDomain(
                 None,
-                SealsDomain(
-                  Seq(
-                    SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
-                  )
-                ),
+                SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
                 ItemNumbersDomain(Nil)
               )(incidentIndex, equipmentIndex)
 
@@ -350,17 +266,38 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           }
         }
       }
+
+      "when adding goods item numbers" in {
+        forAll(incidentCode2Or4Gen) {
+          incidentCode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(IncidentCodePage(incidentIndex), incidentCode)
+              .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+              .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
+              .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
+              .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), goodsItemNumber)
+
+            val expectedResult = EquipmentDomain(
+              None,
+              SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
+              ItemNumbersDomain(Seq(ItemNumberDomain(goodsItemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)))
+            )(incidentIndex, equipmentIndex)
+
+            val result: EitherType[EquipmentDomain] =
+              UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+
+            result.value mustBe expectedResult
+        }
+      }
     }
 
     "cannot be parsed from user answers" - {
 
       "when incident code is 3 or 6" - {
 
-        val incidentCodeGen = Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
-
         "when container indicator is true" - {
           "and container id number is unanswered" in {
-            forAll(incidentCodeGen) {
+            forAll(incidentCode3Or6Gen) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -374,7 +311,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           }
 
           "and container id is answered" in {
-            forAll(incidentCodeGen) {
+            forAll(incidentCode3Or6Gen) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -390,60 +327,41 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "when container indicator is false" - {
-          "and equipment index is 0" - {
-            "and add container id number is unanswered" in {
-              forAll(incidentCodeGen) {
-                incidentCode =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                    .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-
-                  val result: EitherType[EquipmentDomain] =
-                    UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).run(userAnswers)
-
-                  result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
-              }
-            }
-
-            "and add container id is false" in {
-              forAll(incidentCodeGen) {
-                incidentCode =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(IncidentCodePage(incidentIndex), incidentCode)
-                    .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
-                    .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
-
-                  val result: EitherType[EquipmentDomain] =
-                    UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).run(userAnswers)
-
-                  result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
-              }
-            }
-          }
-
-          "and equipment index is not 0" in {
-            val equipmentIndex = Index(1)
-
-            forAll(incidentCodeGen) {
+          "and add container id number is unanswered" in {
+            forAll(incidentCode3Or6Gen) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
 
                 val result: EitherType[EquipmentDomain] =
-                  UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+                  UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).run(userAnswers)
 
-                result.left.value.page mustBe AddSealsYesNoPage(incidentIndex, equipmentIndex)
+                result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
+            }
+          }
+
+          "and add container id is false" in {
+            forAll(incidentCode3Or6Gen) {
+              incidentCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
+
+                val result: EitherType[EquipmentDomain] =
+                  UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).run(userAnswers)
+
+                result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
             }
           }
         }
       }
 
       "when incident code is 2 or 4" - {
-        val incidentCodeGen = Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
 
         "and container id number is unanswered" in {
-          forAll(incidentCodeGen) {
+          forAll(incidentCode2Or4Gen) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -482,8 +400,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when incident code is not 2, 3, 4 or 6" in {
-        val incidentCodeGen = Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
-        forAll(incidentCodeGen) {
+        forAll(incidentCode1Or5Gen) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
               .setValue(IncidentCodePage(incidentIndex), incidentCode)

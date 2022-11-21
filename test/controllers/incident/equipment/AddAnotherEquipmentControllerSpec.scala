@@ -19,12 +19,15 @@ package controllers.incident.equipment
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.NormalMode
+import models.incident.IncidentCode
+import models.{Index, NormalMode}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -34,7 +37,12 @@ import viewModels.incident.AddAnotherEquipmentViewModel
 import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 import views.html.incident.equipment.AddAnotherEquipmentView
 
-class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
+class AddAnotherEquipmentControllerSpec
+    extends SpecBase
+    with AppWithDefaultMockFixtures
+    with ScalaCheckPropertyChecks
+    with Generators
+    with ArrivalUserAnswersGenerator {
 
   private val formProvider = new AddAnotherItemFormProvider()
 
@@ -129,20 +137,86 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to ???" ignore {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(viewModelWithItemsNotMaxedOut)
+        "and container indicator is undefined" - {
+          "must redirect to add container id yes/no at next index" in {
+            forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
+              incidentCode =>
+                val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 
-          setExistingUserAnswers(emptyUserAnswers)
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
+                  .thenReturn(viewModelWithItemsNotMaxedOut)
 
-          val request = FakeRequest(POST, addAnotherSealRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+                val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
 
-          val result = route(app, request).value
+                setExistingUserAnswers(userAnswers)
 
-          status(result) mustEqual SEE_OTHER
+                val request = FakeRequest(POST, addAnotherSealRoute)
+                  .withFormUrlEncodedBody(("value", "true"))
 
-          redirectLocation(result).value mustEqual ???
+                val result = route(app, request).value
+
+                status(result) mustEqual SEE_OTHER
+
+                redirectLocation(result).value mustEqual
+                  routes.ContainerIdentificationNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, nextIndex).url
+            }
+          }
+        }
+
+        "and container indicator is true" - {
+          "must redirect to container id at next index" in {
+            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+              incidentCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
+
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
+                  .thenReturn(viewModelWithItemsNotMaxedOut)
+
+                val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
+
+                setExistingUserAnswers(userAnswers)
+
+                val request = FakeRequest(POST, addAnotherSealRoute)
+                  .withFormUrlEncodedBody(("value", "true"))
+
+                val result = route(app, request).value
+
+                status(result) mustEqual SEE_OTHER
+
+                redirectLocation(result).value mustEqual
+                  routes.ContainerIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, nextIndex).url
+            }
+          }
+        }
+
+        "and container indicator is false" - {
+          "must redirect to add container id yes/no at next index" in {
+            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+              incidentCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), incidentCode)
+                  .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
+
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
+                  .thenReturn(viewModelWithItemsNotMaxedOut)
+
+                val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
+
+                setExistingUserAnswers(userAnswers)
+
+                val request = FakeRequest(POST, addAnotherSealRoute)
+                  .withFormUrlEncodedBody(("value", "true"))
+
+                val result = route(app, request).value
+
+                status(result) mustEqual SEE_OTHER
+
+                redirectLocation(result).value mustEqual
+                  routes.ContainerIdentificationNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, nextIndex).url
+            }
+          }
         }
       }
 

@@ -54,8 +54,6 @@ object EquipmentDomain {
     lazy val sealsReads       = UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex))
     lazy val itemNumbersReads = UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex))
 
-    lazy val noContainerIdReads = UserAnswersReader[Option[String]](None)
-
     lazy val optionalSealsReads = AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
       case true  => sealsReads
       case false => UserAnswersReader.apply(SealsDomain(Nil))
@@ -82,7 +80,7 @@ object EquipmentDomain {
         case true => readsWithContainerId
         case false =>
           (
-            noContainerIdReads,
+            UserAnswersReader[Option[String]](None),
             sealsReads,
             optionalItemNumbersReads
           ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
@@ -91,14 +89,8 @@ object EquipmentDomain {
     IncidentCodePage(incidentIndex).reader.flatMap {
       case TransferredToAnotherTransport | UnexpectedlyChanged =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true                                  => readsWithContainerId
-          case false if equipmentIndex.position == 0 => readsWithOptionalContainerId
-          case false =>
-            (
-              noContainerIdReads,
-              sealsReadsByIncidentCode,
-              optionalItemNumbersReads
-            ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
+          case true  => readsWithContainerId
+          case false => readsWithOptionalContainerId
         }
       case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readsWithOptionalContainerId
       case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
