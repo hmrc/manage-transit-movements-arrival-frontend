@@ -61,7 +61,7 @@ class ItemNumberAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                       name = itemNumber,
                       changeUrl = routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
                       removeUrl = Some(
-                        controllers.incident.equipment.seal.routes.ConfirmRemoveSealController
+                        routes.ConfirmRemoveItemNumberController
                           .onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0))
                           .url
                       )
@@ -72,7 +72,7 @@ class ItemNumberAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                       name = itemNumber,
                       changeUrl = routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
                       removeUrl = Some(
-                        controllers.incident.equipment.seal.routes.ConfirmRemoveSealController
+                        routes.ConfirmRemoveItemNumberController
                           .onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1))
                           .url
                       )

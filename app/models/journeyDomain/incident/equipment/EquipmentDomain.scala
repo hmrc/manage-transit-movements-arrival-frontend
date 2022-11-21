@@ -18,6 +18,7 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import models.incident.IncidentCode._
+import models.journeyDomain.incident.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, UserAnswers}

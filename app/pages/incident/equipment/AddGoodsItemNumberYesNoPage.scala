@@ -19,9 +19,11 @@ package pages.incident.equipment
 import controllers.incident.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.incident.EquipmentSection
+import pages.sections.incident.{EquipmentSection, ItemsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddGoodsItemNumberYesNoPage(incidentIndex: Index, equipmentIndex: Index) extends QuestionPage[Boolean] {
 
@@ -31,4 +33,10 @@ case class AddGoodsItemNumberYesNoPage(incidentIndex: Index, equipmentIndex: Ind
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddGoodsItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(ItemsSection(incidentIndex, equipmentIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

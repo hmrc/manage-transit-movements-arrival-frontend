@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.equipment
+package models.journeyDomain.incident.itemNumber
 
-import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import controllers.incident.equipment.itemNumber.routes
-import models.{Index, Mode, UserAnswers}
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import play.api.mvc.Call
 

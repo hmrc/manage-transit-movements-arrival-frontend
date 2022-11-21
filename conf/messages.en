@@ -555,3 +555,7 @@ incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You hav
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You cannot add any more seals for this container. To add another, you need to remove one first.
+
+incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.error.required = Select yes if you want to remove goods item number {0}

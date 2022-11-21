@@ -16,8 +16,8 @@
 
 package utils.incident
 
-import controllers.incident.equipment.seal.routes
-import models.journeyDomain.incident.equipment.ItemNumberDomain
+import controllers.incident.equipment.itemNumber.routes
+import models.journeyDomain.incident.itemNumber.ItemNumberDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
@@ -38,8 +38,8 @@ class ItemsAnswersHelper(
     buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
       position =>
         val itemIndex = Index(position)
-        //TODO: change to ConfirmRemoveItemNumber when added
-        val removeRoute: Option[Call] = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
+        val removeRoute: Option[Call] =
+          Some(routes.ConfirmRemoveItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
 
         buildListItem[ItemNumberDomain, String](
           page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),
