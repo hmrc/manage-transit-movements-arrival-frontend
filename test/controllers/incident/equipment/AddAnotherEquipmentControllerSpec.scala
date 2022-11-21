@@ -20,14 +20,17 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.incident.IncidentCode
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.IncidentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
+import pages.sections.incident.EquipmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -78,7 +81,27 @@ class AddAnotherEquipmentControllerSpec
 
   "AddAnotherSeal Controller" - {
 
-    "redirect to add seal yes/no page" - {
+    "must remove any in progress transport equipments" in {
+      val userAnswersWithInProgressTransportEquipment = emptyUserAnswers
+        .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
+
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        .thenReturn(viewModelWithItemsNotMaxedOut)
+
+      setExistingUserAnswers(userAnswersWithInProgressTransportEquipment)
+
+      val request = FakeRequest(GET, addAnotherSealRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any(), any())(any())
+      userAnswersCaptor.getValue.get(EquipmentSection(incidentIndex, equipmentIndex)) mustNot be(defined)
+    }
+
+    "must redirect to add seal yes/no page" - {
       "when 0 seals" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithNoItems)

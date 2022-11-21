@@ -23,6 +23,7 @@ import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
+import pages.sections.incident.{EquipmentSection, EquipmentsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,6 +38,7 @@ class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
+  removeInProgressTransportEquipments: RemoveInProgressActionProvider,
   formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherEquipmentViewModelProvider,
@@ -48,9 +50,14 @@ class AddAnotherEquipmentController @Inject() (
   private def form(viewModel: AddAnotherEquipmentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMoreEquipments)
 
-  // TODO - do we need to remove in progress transport equipments as part of this action builder?
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn) {
+    .requireData(mrn)
+    .andThen(
+      removeInProgressTransportEquipments[EquipmentDomain](
+        EquipmentsSection(incidentIndex),
+        EquipmentSection(incidentIndex, _)
+      )(EquipmentDomain.userAnswersReader(incidentIndex, _))
+    ) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, mode, incidentIndex)
         viewModel.numberOfTransportEquipments match {
