@@ -17,13 +17,15 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.Index
+import models.{Index, Mode, UserAnswers}
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.Country
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class IncidentDomain(
   incidentCountry: Country,
@@ -33,7 +35,11 @@ case class IncidentDomain(
   location: IncidentLocationDomain,
   equipments: EquipmentsDomain
 )(index: Index)
-    extends JourneyDomainModel
+    extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    Option(Call(GET, "#")) // TODO - incident check your answers page
+}
 
 object IncidentDomain {
 

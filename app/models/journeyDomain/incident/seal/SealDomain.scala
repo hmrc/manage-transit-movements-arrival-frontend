@@ -28,6 +28,8 @@ case class SealDomain(
 )(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
     extends JourneyDomainModel {
 
+  override def toString: String = identificationNumber
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney  => routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex)
