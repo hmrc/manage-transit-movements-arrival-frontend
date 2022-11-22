@@ -62,7 +62,7 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
 
     "must have an associated arg value" - {
 
-      "when sea going vehicle" in {
+      "when sea going vessel" in {
         val result = SeaGoingVehicle.arg
         result mustBe "name of the sea-going vessel"
       }
