@@ -17,7 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.reference.Nationality
 import models.NationalityList
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,10 +29,7 @@ class NationalitiesService @Inject() (
 
   def getNationalities()(implicit hc: HeaderCarrier): Future[NationalityList] =
     referenceDataConnector
-      .getNationalities()
-      .map(sort)
-
-  private def sort(nationalities: Seq[Nationality]): NationalityList =
-    NationalityList(nationalities.sortBy(_.desc.toLowerCase))
+      .getTransportData()
+      .map(_.sort)
 
 }

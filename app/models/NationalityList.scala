@@ -17,6 +17,7 @@
 package models
 
 import models.reference.Nationality
+import play.api.libs.json.{Format, Json}
 
 case class NationalityList(nationalities: Seq[Nationality]) {
 
@@ -31,9 +32,13 @@ case class NationalityList(nationalities: Seq[Nationality]) {
     case _                  => false
   }
 
+  def sort: NationalityList = this.copy(nationalities = nationalities.sortBy(_.desc.toLowerCase))
+
 }
 
 object NationalityList {
+
+  implicit val format: Format[NationalityList] = Json.format[NationalityList]
 
   def apply(nationalities: Seq[Nationality]): NationalityList =
     new NationalityList(nationalities)
