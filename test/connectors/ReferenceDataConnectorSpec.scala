@@ -130,7 +130,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getCustomsOfficesOfDepartureForCountry" - {
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices/GB?role=DEP"))
+          get(urlEqualTo(s"/$startUrl/customs-offices/GB?role=DES"))
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
@@ -139,11 +139,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           CustomsOffice("GBtestId2", Some("testName2"), None)
         )
 
-        connector.getCustomsOfficesOfDepartureForCountry(country).futureValue mustBe expectedResult
+        connector.getCustomsOfficesForCountry(country).futureValue mustBe expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DEP", connector.getCustomsOfficesOfDepartureForCountry(country))
+        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DES", connector.getCustomsOfficesForCountry(country))
       }
     }
 
