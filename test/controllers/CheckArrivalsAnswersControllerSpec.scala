@@ -24,6 +24,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.ApiService
 import viewModels.CheckArrivalsAnswersViewModel
 import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
 import viewModels.sections.Section
@@ -32,11 +33,13 @@ import views.html.CheckArrivalsAnswersView
 class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val mockViewModelProvider = mock[CheckArrivalsAnswersViewModelProvider]
+  private val mockApiService: ApiService = mock[ApiService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[CheckArrivalsAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[ApiService]).toInstance(mockApiService))
 
   "Check your Answers Controller" - {
 
@@ -71,8 +74,11 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to itself until the next page has been built" in {
+    "must redirect to Declaration Submitted Controller" in {
       setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockApiService.submitDeclaration(any())(any()))
+        .thenReturn(response(OK))
 
       val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
 
@@ -81,7 +87,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        routes.CheckArrivalsAnswersController.onPageLoad(mrn).url
+        routes.DeclarationSubmittedController.onPageLoad().url
 
     }
 
