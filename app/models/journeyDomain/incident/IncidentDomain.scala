@@ -32,7 +32,8 @@ case class IncidentDomain(
   incidentText: String,
   endorsement: Option[EndorsementDomain],
   location: IncidentLocationDomain,
-  equipments: EquipmentsDomain
+  equipments: EquipmentsDomain,
+  transportMeans: TransportMeansDomain
 )(index: Index)
     extends JourneyDomainModel {
 
@@ -49,7 +50,8 @@ object IncidentDomain {
       IncidentTextPage(index).reader,
       AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
       UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
-      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index))
+      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index)),
+      UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index))
     ).tupled.map((IncidentDomain.apply _).tupled).map(_(index))
 
 }
