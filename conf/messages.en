@@ -529,3 +529,11 @@ incident.transportMeans.identificationNumber.checkYourAnswersLabel = Identificat
 incident.transportMeans.identificationNumber.error.required = Enter the {0}
 incident.transportMeans.identificationNumber.error.length = The {0} must be 35 characters or less
 incident.transportMeans.identificationNumber.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
+
+incident.transportMeans.transportNationality.title = What country is the replacement transport registered to?
+incident.transportMeans.transportNationality.heading = What country is the replacement transport registered to?
+incident.transportMeans.transportNationality.hintText = Enter the country or code, like AT or Austria.
+incident.transportMeans.transportNationality.label = What country is the replacement transport registered to?
+incident.transportMeans.transportNationality.placeholder = Select a nationality
+incident.transportMeans.transportNationality.change.hidden =  the country the replacement transport is registered to
+incident.transportMeans.transportNationality.error.required = Select the country the replacement transport is registered to

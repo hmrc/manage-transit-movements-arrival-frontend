@@ -199,4 +199,12 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
+  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Nationality(code, desc)
+    }
+
 }
