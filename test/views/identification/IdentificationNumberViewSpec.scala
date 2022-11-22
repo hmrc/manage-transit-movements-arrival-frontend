@@ -46,7 +46,9 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithContent("p", "The consignee is the person or company receiving the goods at the office of destination.")
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.")
+  behave like pageWithHint(
+    "The EORI number or Trader Identification Number (TIN) can be up to 17 characters long and include both letters and numbers. For example, GB123456789000."
+  )
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
