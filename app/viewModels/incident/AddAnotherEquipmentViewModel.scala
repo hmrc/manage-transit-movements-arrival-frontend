@@ -58,7 +58,7 @@ object AddAnotherEquipmentViewModel {
 
       new AddAnotherEquipmentViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex)
+        onSubmitCall = routes.AddAnotherEquipmentController.onSubmit(userAnswers.mrn, mode, incidentIndex)
       )
     }
   }

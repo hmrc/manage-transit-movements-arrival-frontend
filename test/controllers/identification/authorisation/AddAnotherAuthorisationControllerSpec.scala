@@ -62,8 +62,8 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
   "AddAnotherAuthorisation Controller" - {
 
-    "redirect to add guarantee yes/no page" - {
-      "when 0 guarantees" in {
+    "must redirect to procedure type page" - {
+      "when 0 authorisations" in {
         when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(AddAnotherAuthorisationViewModel(Nil))
 

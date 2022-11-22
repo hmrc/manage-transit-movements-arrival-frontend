@@ -19,12 +19,14 @@ package controllers.incident.equipment
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.IncidentNavigatorProvider
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
+import pages.sections.incident.{EquipmentSection, EquipmentsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.http.HttpVerbs.GET
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.incident.AddAnotherEquipmentViewModel
 import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -36,6 +38,7 @@ class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
+  removeInProgressTransportEquipments: RemoveInProgressActionProvider,
   formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherEquipmentViewModelProvider,
@@ -47,9 +50,14 @@ class AddAnotherEquipmentController @Inject() (
   private def form(viewModel: AddAnotherEquipmentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMoreEquipments)
 
-  // TODO - do we need to remove in progress transport equipments as part of this action builder?
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn) {
+    .requireData(mrn)
+    .andThen(
+      removeInProgressTransportEquipments[EquipmentDomain](
+        EquipmentsSection(incidentIndex),
+        EquipmentSection(incidentIndex, _)
+      )(EquipmentDomain.userAnswersReader(incidentIndex, _))
+    ) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, mode, incidentIndex)
         viewModel.numberOfTransportEquipments match {
@@ -66,8 +74,12 @@ class AddAnotherEquipmentController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
-            case true  => Redirect(Call(GET, "#")) // TODO - equipment CYA
-            case false => Redirect(navigatorProvider(mode, incidentIndex).nextPage(request.userAnswers))
+            case true =>
+              implicit val reader: UserAnswersReader[EquipmentDomain] =
+                EquipmentDomain.userAnswersReader(incidentIndex, Index(viewModel.numberOfTransportEquipments))
+              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode))
+            case false =>
+              Redirect(navigatorProvider(mode, incidentIndex).nextPage(request.userAnswers))
           }
         )
   }

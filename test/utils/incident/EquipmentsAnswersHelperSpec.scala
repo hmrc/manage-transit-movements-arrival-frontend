@@ -64,7 +64,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   Right(
                     ListItem(
                       name = "Transport equipment 1",
-                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
                       removeUrl = None
                     )
                   )
@@ -87,7 +87,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   Right(
                     ListItem(
                       name = s"Transport equipment 1 - container $containerId",
-                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
                       removeUrl = None
                     )
                   )
@@ -114,7 +114,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   Right(
                     ListItem(
                       name = "Transport equipment 1",
-                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )
@@ -139,7 +139,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalU
                   Right(
                     ListItem(
                       name = s"Transport equipment 1 - container $containerId",
-                      changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url)
                     )
                   )

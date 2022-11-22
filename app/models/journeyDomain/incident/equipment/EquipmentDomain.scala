@@ -17,6 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import cats.implicits._
+import controllers.incident.equipment.routes
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
@@ -37,7 +38,7 @@ case class EquipmentDomain(
   def asString(implicit messages: Messages): String = EquipmentDomain.asString(containerId, equipmentIndex)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    super.routeIfCompleted(userAnswers, mode, stage) // TODO - equipment check your answers page
+    Some(routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }
 
 object EquipmentDomain {
@@ -52,8 +53,6 @@ object EquipmentDomain {
   def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] = {
     lazy val sealsReads       = UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex))
     lazy val itemNumbersReads = UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex))
-
-    lazy val noContainerIdReads = UserAnswersReader[Option[String]](None)
 
     lazy val optionalSealsReads = AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
       case true  => sealsReads
@@ -81,7 +80,7 @@ object EquipmentDomain {
         case true => readsWithContainerId
         case false =>
           (
-            noContainerIdReads,
+            UserAnswersReader[Option[String]](None),
             sealsReads,
             optionalItemNumbersReads
           ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
@@ -90,14 +89,8 @@ object EquipmentDomain {
     IncidentCodePage(incidentIndex).reader.flatMap {
       case TransferredToAnotherTransport | UnexpectedlyChanged =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true                                  => readsWithContainerId
-          case false if equipmentIndex.position == 0 => readsWithOptionalContainerId
-          case false =>
-            (
-              noContainerIdReads,
-              sealsReadsByIncidentCode,
-              optionalItemNumbersReads
-            ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
+          case true  => readsWithContainerId
+          case false => readsWithOptionalContainerId
         }
       case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readsWithOptionalContainerId
       case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader.fail(IncidentCodePage(incidentIndex))

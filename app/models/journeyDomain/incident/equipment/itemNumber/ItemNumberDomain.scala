@@ -28,6 +28,8 @@ case class ItemNumberDomain(
 )(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index)
     extends JourneyDomainModel {
 
+  override def toString: String = itemNumber
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney  => routes.ItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)

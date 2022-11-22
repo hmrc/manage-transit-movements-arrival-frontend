@@ -28,7 +28,7 @@ class ItemNumberNavigatorProviderImpl @Inject() () extends ItemNumberNavigatorPr
   override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersNavigator =
     mode match {
       case NormalMode => new ItemNumberNavigator(mode, incidentIndex, equipmentIndex, itemNumberIndex)
-      case CheckMode  => new ArrivalNavigator(mode)
+      case CheckMode  => new EquipmentNavigator(mode, incidentIndex, equipmentIndex)
     }
 }
 
@@ -40,6 +40,7 @@ class ItemNumberNavigator(override val mode: Mode, incidentIndex: Index, equipme
 
   override type T = ItemNumberDomain
 
-  implicit override val reader: UserAnswersReader[ItemNumberDomain] = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex)
+  implicit override val reader: UserAnswersReader[ItemNumberDomain] =
+    ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex)
 
 }

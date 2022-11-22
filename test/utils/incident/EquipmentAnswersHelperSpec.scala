@@ -17,15 +17,17 @@
 package utils.incident
 
 import base.SpecBase
-import controllers.incident.equipment.seal.routes
+import controllers.incident.equipment.itemNumber.{routes => goodsItemNumberRoutes}
+import controllers.incident.equipment.seal.{routes => sealRoutes}
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 
 class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -44,7 +46,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
 
       "must return Some(Row)" - {
-        "when seal is  defined" in {
+        "when seal is defined" in {
           forAll(Gen.alphaNumStr, arbitrary[Mode]) {
             (idNumber, mode) =>
               val userAnswers = emptyUserAnswers
@@ -59,9 +61,47 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
+              action.href mustBe sealRoutes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
               action.visuallyHiddenText.get mustBe "seal 1"
               action.id mustBe "change-seal-1"
+          }
+        }
+      }
+    }
+
+    "goodsItemNumber" - {
+      "must return None" - {
+        "when goods item number is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.goodsItemNumber(index)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when goods item number is defined" in {
+          forAll(Gen.alphaNumStr, arbitrary[Mode]) {
+            (goodsItemNumber, mode) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), goodsItemNumber)
+
+              val helper = EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.goodsItemNumber(index).get
+
+              result.key.value mustBe "Goods item number 1"
+              result.value.value mustBe goodsItemNumber
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe goodsItemNumberRoutes.ItemNumberController
+                .onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex)
+                .url
+              action.visuallyHiddenText.get mustBe "goods item number 1"
+              action.id mustBe "change-goods-item-number-1"
           }
         }
       }
@@ -157,15 +197,50 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
                 val result = helper.sealsYesNo.get
 
-                result.key.value mustBe s"Do you want to add a seal for container {0}"
+                result.key.value mustBe "Do you want to add a seal?"
                 result.value.value mustBe "Yes"
                 val actions = result.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe equipmentRoutes.AddSealsYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-                action.visuallyHiddenText.get mustBe "if you want to add seals"
+                action.visuallyHiddenText.get mustBe "if you want to add a seal"
                 action.id mustBe "change-add-seals"
+            }
+          }
+        }
+      }
+
+      "goodsItemNumbersYesNo" - {
+        "must return None" - {
+          "when AddGoodsItemNumberYesNoPage is undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+                val result = helper.goodsItemNumbersYesNo
+                result mustBe None
+            }
+          }
+        }
+
+        "must return Some(Row)" - {
+          "when AddGoodsItemNumberYesNoPage defined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = emptyUserAnswers.setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
+
+                val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+                val result = helper.goodsItemNumbersYesNo.get
+
+                result.key.value mustBe "Do you want to add a goods item number?"
+                result.value.value mustBe "Yes"
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe equipmentRoutes.AddGoodsItemNumberYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
+                action.visuallyHiddenText.get mustBe "if you want to add a goods item number"
+                action.id mustBe "change-add-goods-item-numbers"
             }
           }
         }
