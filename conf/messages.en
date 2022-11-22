@@ -495,9 +495,9 @@ incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
 
-incident.transportMeans.identification.title = Which type of identification do you want to use for the replacement means of transport?
-incident.transportMeans.identification.heading = Which type of identification do you want to use for the replacement means of transport?
-incident.transportMeans.identification.seaGoingVehicle = Name of a sea-going vehicle
+incident.transportMeans.identification.title = Which identification do you want to use for the replacement means of transport?
+incident.transportMeans.identification.heading = Which identification do you want to use for the replacement means of transport?
+incident.transportMeans.identification.seaGoingVehicle = Name of a sea-going vessel
 incident.transportMeans.identification.seaGoingVehicle.arg = name of the sea-going vessel
 incident.transportMeans.identification.iataFlightNumber = IATA flight number
 incident.transportMeans.identification.iataFlightNumber.arg = IATA flight number
@@ -519,8 +519,8 @@ incident.transportMeans.identification.europeanVesselIdNumber = European vessel 
 incident.transportMeans.identification.europeanVesselIdNumber.arg = European vessel identification number (ENI code)
 incident.transportMeans.identification.unknown = Unknown - this can only be used during the transitional period
 incident.transportMeans.identification.unknown.arg = identification number
-incident.transportMeans.identification.checkYourAnswersLabel = Which type of identification do you want to use for the replacement means of transport
-incident.transportMeans.identification.error.required = Select which type of identification you want to use for the replacement means of transport
+incident.transportMeans.identification.checkYourAnswersLabel = Which identification do you want to use for the replacement means of transport
+incident.transportMeans.identification.error.required = Select which identification you want to use for the replacement means of transport
 
 incident.transportMeans.identificationNumber.title = What is the {0}?
 incident.transportMeans.identificationNumber.heading = What is the {0}?
