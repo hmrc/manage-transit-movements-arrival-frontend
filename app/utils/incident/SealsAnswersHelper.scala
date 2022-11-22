@@ -17,7 +17,7 @@
 package utils.incident
 
 import controllers.incident.equipment.seal.routes
-import models.journeyDomain.incident.seal.SealDomain
+import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.AddSealsYesNoPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
@@ -46,7 +46,7 @@ class SealsAnswersHelper(
         }
 
         buildListItem[SealDomain, String](
-          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
           removeRoute = removeRoute

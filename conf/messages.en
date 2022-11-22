@@ -92,6 +92,12 @@ arrivals.checkYourAnswers.authorisations.subheading = Authorisations
 arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
 arrivals.checkYourAnswers.identification.subheading = Identification
 arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
+arrivals.checkYourAnswers.seals.subheading = Seals
+arrivals.checkYourAnswers.seals.addOrRemove = Add or remove seals
+arrivals.checkYourAnswers.goodsItemNumbers.subheading = Goods item numbers
+arrivals.checkYourAnswers.goodsItemNumbers.addOrRemove = Add or remove goods item numbers
+arrivals.checkYourAnswers.equipments.subheading = Equipments
+arrivals.checkYourAnswers.equipments.addOrRemove = Add or remove equipments
 
 identification.destinationOffice.title = Where is the office of destination?
 identification.destinationOffice.heading = Where is the office of destination?
@@ -304,6 +310,8 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 # Incidents and Endorsements
 
 incident.caption = Arrivals - Incidents
+incident.label = Incident {0}
+incident.change.hidden = incident {0}
 
 incident.incidentFlag.title = Were there any incidents during the transit?
 incident.incidentFlag.heading = Were there any incidents during the transit?
@@ -344,11 +352,13 @@ incident.incidentText.error.invalidCharacters = The description of the incident 
 incident.containerIndicatorYesNo.title = Did the incident involve a container?
 incident.containerIndicatorYesNo.heading = Did the incident involve a container?
 incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
+incident.containerIndicatorYesNo.change.hidden = if the incident involved a container
 incident.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
 
 incident.addTransportEquipment.title = Do you need to add any transport equipment?
 incident.addTransportEquipment.heading = Do you need to add any transport equipment?
 incident.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
+incident.addTransportEquipment.change.hidden = if you need to add any transport equipment
 incident.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
 incident.addTransportEquipment.paragraph = This includes any containers or seals.
 
@@ -376,7 +386,7 @@ incident.endorsementDate.error.max.date = The endorsement date must be before to
 
 incident.endorsementAuthority.title = What authority made the endorsement?
 incident.endorsementAuthority.heading = What authority made the endorsement?
-incident.endorsementAuthority.checkYourAnswersLabel = authority
+incident.endorsementAuthority.checkYourAnswersLabel = Authority
 incident.endorsementAuthority.change.hidden = endorsement authority
 incident.endorsementAuthority.error.required = Enter the name of the authority that made the endorsement
 incident.endorsementAuthority.error.length = The name of the authority must be 35 characters or less
@@ -403,6 +413,8 @@ incident.endorsementLocation.error.invalid = The endorsement location must only 
 
 incident.location.qualifierOfIdentification.title = How do you want to identify where the incident happened?
 incident.location.qualifierOfIdentification.heading = How do you want to identify where the incident happened?
+incident.location.qualifierOfIdentification.checkYourAnswersLabel = Identifier type
+incident.location.qualifierOfIdentification.change.hidden = identifier type for the incident
 incident.location.qualifierOfIdentification.error.required = Select how you want to identify where the incident happened
 
 incident.location.unLocode.title = What is the UN/LOCODE for the incident?
@@ -433,7 +445,8 @@ incident.location.address.numberAndStreet = Number and street name
 incident.location.address.city = Town or City
 incident.location.address.postalCode = Postal code
 incident.location.address.postalCode.optional = Postal code (optional)
-incident.location.address.checkYourAnswersLabel = What is the address for the incident
+incident.location.address.checkYourAnswersLabel = Address
+incident.location.address.change.hidden = address for the incident
 incident.location.address.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
 incident.location.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 incident.location.address.error.required = Enter the {0} for the incident
@@ -441,14 +454,22 @@ incident.location.address.error.length = The {0} must be {1} characters or less
 
 # Incident - Equipment
 
+incident.equipment.label = Transport equipment {0}
+incident.equipment.change.hidden = transport equipment {0}
+
+incident.equipment.withContainer.label = Transport equipment {0} - container {1}
+incident.equipment.withoutContainer.label = Transport equipment {0}
+
 incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.change.hidden = if you want to add a container identification number
 incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
 incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
 incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
-incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
+incident.equipment.containerIdentificationNumber.change.hidden = container identification number
 incident.equipment.containerIdentificationNumber.error.required = Enter the container identification number
 incident.equipment.containerIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 incident.equipment.containerIdentificationNumber.error.length = The identification number must be 17 characters or less
@@ -456,10 +477,32 @@ incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This i
 
 incident.equipment.addSealsYesNo.title = Do you want to add a seal for container {0}?
 incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
-incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal for container {0}?
+incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal?
+incident.equipment.addSealsYesNo.change.hidden = if you want to add a seal
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
 
-# Incident - Seal
+incident.equipment.addAnotherTransportEquipment.singular.title = You have added {0} transport equipment
+incident.equipment.addAnotherTransportEquipment.singular.heading = You have added {0} transport equipment
+incident.equipment.addAnotherTransportEquipment.plural.title = You have added {0} transport equipment
+incident.equipment.addAnotherTransportEquipment.plural.heading = You have added {0} transport equipment
+incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any more transport equipment
+incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
+incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
+
+incident.equipment.remove.title = Are you sure you want to remove transport equipment {0}?
+incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
+incident.equipment.remove.error.required = Select yes if you want to remove transport equipment {0}
+
+incident.equipment.checkEquipmentAnswers.title = Check your answers
+incident.equipment.checkEquipmentAnswers.heading = Check your answers
+
+# Incident - Equipment - Seal
+
+incident.equipment.seal.label = Seal {0}
+incident.equipment.seal.change.hidden = seal {0}
+
+incident.equipment.seal.sealIdentificationNumber.checkYourAnswersLabel = Seal identification number
+incident.equipment.seal.sealIdentificationNumber.change.hidden = seal identification number
 
 incident.equipment.seal.sealIdentificationNumber.withContainer.title = What’s the seal identification number for container {0}?
 incident.equipment.seal.sealIdentificationNumber.withContainer.heading = What’s the seal identification number for container {0}?
@@ -494,6 +537,39 @@ incident.equipment.seal.addAnotherSeal.withoutContainer.maxLimit.label = You can
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove seal {0}
+
+# Incident - Equipment - Goods item Number
+
+incident.equipment.goodsItemNumber.label = Goods item number {0}
+incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
+
+incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
+incident.equipment.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
+
+incident.equipment.itemNumber.title = What is the goods item number?
+incident.equipment.itemNumber.heading = What is the goods item number?
+incident.equipment.itemNumber.hint = This will be 5 characters long, for example 54123.
+incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
+incident.equipment.itemNumber.error.required = Enter the goods item number
+incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
+incident.equipment.itemNumber.error.length = The goods item number must be 5 characters long
+
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.heading = You have added {0} goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.title = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You have added {0} goods item numbers
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You cannot add any more goods item numbers. To add another, you need to remove one first.
+
+incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
+incident.equipment.itemNumber.remove.error.required = Select yes if you want to remove goods item number {0}
+
+# Incident - Transport means
 
 incident.transportMeans.identification.title = Which identification do you want to use for the replacement means of transport?
 incident.transportMeans.identification.heading = Which identification do you want to use for the replacement means of transport?
@@ -537,3 +613,9 @@ incident.transportMeans.transportNationality.label = What country is the replace
 incident.transportMeans.transportNationality.placeholder = Select a nationality
 incident.transportMeans.transportNationality.change.hidden =  the country the replacement transport is registered to
 incident.transportMeans.transportNationality.error.required = Select the country the replacement transport is registered to
+
+# Declaration
+
+declarationSubmitted.title = Declaration Submitted
+declarationSubmitted.heading = Declaration Submitted
+declarationSubmitted.paragraph1 = You have submitted your declaration.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.seal
+package models.journeyDomain.incident.equipment.seal
 
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}

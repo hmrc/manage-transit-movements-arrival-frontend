@@ -46,6 +46,7 @@ object MovementReferenceNumber {
     val validCharactersRegex = """^[a-zA-Z0-9 ]*$"""
   }
 
+  // TODO - verify MRN regex from API XSD '([0-1][0-9]|[2][0-4])[A-Z]{2}[A-Z0-9]{13}[0-9]|([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]'
   private val mrnFormat = """^(\d{2})([A-Z]{2})([A-Z0-9]{13})(\d)$""".r
 
   def apply(input: String): Option[MovementReferenceNumber] =

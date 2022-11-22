@@ -48,8 +48,17 @@ class FakeEquipmentNavigator(desiredRoute: Call, incidentIndex: Index, equipment
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeEquipmentsNavigator(desiredRoute: Call, incidentIndex: Index, mode: Mode) extends EquipmentsNavigator(mode, incidentIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeSealNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, mode: Mode)
     extends SealNavigator(mode, incidentIndex, equipmentIndex, sealIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeItemNumberNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index, mode: Mode)
+    extends ItemNumberNavigator(mode, incidentIndex, equipmentIndex, itemNumberIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 

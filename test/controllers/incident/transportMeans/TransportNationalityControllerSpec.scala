@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NationalityFormProvider
 import generators.Generators
 import models.{NationalityList, NormalMode}
-import navigation.{IdentificationNavigatorProvider, IncidentNavigatorProvider}
+import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.incident.transportMeans.TransportNationalityPage

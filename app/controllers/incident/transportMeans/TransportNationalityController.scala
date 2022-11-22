@@ -47,7 +47,7 @@ class TransportNationalityController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getNationalities.map {
+      service.getNationalities().map {
         nationalityList =>
           val form = formProvider("incident.transportMeans.transportNationality", nationalityList)
           val preparedForm = request.userAnswers.get(TransportNationalityPage(incidentIndex)) match {
@@ -61,7 +61,7 @@ class TransportNationalityController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getNationalities.flatMap {
+      service.getNationalities().flatMap {
         nationalityList =>
           val form = formProvider("incident.transportMeans.transportNationality", nationalityList)
           form

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.seal
+package models.journeyDomain.incident.equipment.seal
 
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.Stage._
@@ -27,6 +27,8 @@ case class SealDomain(
   identificationNumber: String
 )(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)
     extends JourneyDomainModel {
+
+  override def toString: String = identificationNumber
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {

@@ -81,7 +81,7 @@ package object models {
     def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[List[T]] =
       arr.zipWithIndex
         .traverse[UserAnswersReader, T] {
-          case (_, index) => UserAnswersReader[T](userAnswersReader(Index(index)))
+          case (_, index) => userAnswersReader(Index(index))
         }
   }
 

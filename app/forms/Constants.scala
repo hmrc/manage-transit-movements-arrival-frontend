@@ -26,5 +26,6 @@ object Constants {
   lazy val minTelephoneNumberLength: Int      = 6
   lazy val authorisationNumberLength: Int     = 35
   lazy val maxIncidentTextLength: Int         = 512
+  lazy val itemNumberLength: Int              = 5
   lazy val identificationNumberLength: Int    = 35
 }
