@@ -19,6 +19,7 @@ package models.journeyDomain.incident
 import cats.implicits._
 import models.Index
 import models.incident.IncidentCode
+import models.incident.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
@@ -34,7 +35,7 @@ case class IncidentDomain(
   endorsement: Option[EndorsementDomain],
   location: IncidentLocationDomain,
   equipments: EquipmentsDomain,
-  transportMeans: TransportMeansDomain
+  transportMeans: Option[TransportMeansDomain]
 )(index: Index)
     extends JourneyDomainModel {
 
@@ -47,7 +48,13 @@ case class IncidentDomain(
 
 object IncidentDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
+  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
+
+    val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
+      .filterOptionalDependent(
+        x => x == TransferredToAnotherTransport || x == UnexpectedlyChanged
+      )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
+
     (
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
@@ -55,7 +62,8 @@ object IncidentDomain {
       AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
       UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
       UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index)),
-      UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index))
+      transportMeansReads
     ).tupled.map((IncidentDomain.apply _).tupled).map(_(index))
+  }
 
 }

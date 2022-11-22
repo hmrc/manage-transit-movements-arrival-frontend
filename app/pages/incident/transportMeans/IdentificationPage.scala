@@ -24,6 +24,8 @@ import pages.sections.incident.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class IdentificationPage(index: Index) extends QuestionPage[Identification] {
 
   override def path: JsPath = TransportMeansSection(index).path \ toString
@@ -33,5 +35,8 @@ case class IdentificationPage(index: Index) extends QuestionPage[Identification]
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(userAnswers.mrn, mode, index))
 
-  //TODO: Add clean up logic when following pages implemented
+  override def cleanup(value: Option[Identification], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(_) => userAnswers.remove(IdentificationNumberPage(index)).flatMap(_.remove(TransportNationalityPage(index)))
+    case None    => super.cleanup(value, userAnswers)
+  }
 }

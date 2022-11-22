@@ -35,7 +35,8 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val nationality2: Nationality = Nationality("Code2", "Desc2")
   val nationality3: Nationality = Nationality("Code3", "Desc3")
 
-  val nationalities: Seq[Nationality] = Seq(nationality2, nationality1, nationality3)
+  val nationalities: Seq[Nationality]  = Seq(nationality2, nationality1, nationality3)
+  val nationalityList: NationalityList = NationalityList(nationalities)
 
   val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
 
@@ -50,13 +51,13 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "must return a list of sorted nationalities" in {
 
-        when(mockRefDataConnector.getNationalities()(any(), any()))
-          .thenReturn(Future.successful(nationalities))
+        when(mockRefDataConnector.getTransportData()(any(), any()))
+          .thenReturn(Future.successful(nationalityList))
 
         service.getNationalities().futureValue mustBe
           NationalityList(Seq(nationality1, nationality2, nationality3))
 
-        verify(mockRefDataConnector).getNationalities()(any(), any())
+        verify(mockRefDataConnector).getTransportData()(any(), any())
 
       }
     }

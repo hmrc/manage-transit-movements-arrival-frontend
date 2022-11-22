@@ -18,22 +18,71 @@ package models.journeyDomain.incident
 
 import base.SpecBase
 import forms.Constants
-import generators.Generators
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.incident.IncidentCode
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.incident._
 
-class IncidentDomainSpec extends SpecBase with Generators {
+class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
 
+  private val incidentCode3Or6Gen = Gen.oneOf(
+    IncidentCode.TransferredToAnotherTransport,
+    IncidentCode.UnexpectedlyChanged
+  )
+
+  private val incidentCodeNot3Or6Gen = Gen.oneOf(
+    IncidentCode.SealsBrokenOrTampered,
+    IncidentCode.PartiallyOrFullyUnloaded,
+    IncidentCode.DeviatedFromItinerary,
+    IncidentCode.CarrierUnableToComply
+  )
+
   "IncidentDomain" - {
+
+    "when incident code is 3 or 6" - {
+      "transport means must be defined" in {
+        forAll(incidentCode3Or6Gen) {
+          incidentCode =>
+            val initialAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
+
+            forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
+              userAnswers =>
+                val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](
+                  IncidentDomain.userAnswersReader(index)
+                ).run(userAnswers)
+
+                result.value.transportMeans must be(defined)
+            }
+        }
+      }
+    }
+
+    "when incident code is not 3 or 6" - {
+      "transport means must not be defined" in {
+        forAll(incidentCodeNot3Or6Gen) {
+          incidentCode =>
+            val initialAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
+
+            forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
+              userAnswers =>
+                val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](
+                  IncidentDomain.userAnswersReader(index)
+                ).run(userAnswers)
+
+                result.value.transportMeans must not be defined
+            }
+        }
+      }
+    }
 
     "cannot be parsed from UserAnswer" - {
 

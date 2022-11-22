@@ -16,10 +16,15 @@
 
 package pages.incident.transportMeans
 
+import generators.Generators
 import models.incident.transportMeans.Identification
+import models.reference.Nationality
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.behaviours.PageBehaviours
 
-class IdentificationPageSpec extends PageBehaviours {
+class IdentificationPageSpec extends PageBehaviours with ScalaCheckPropertyChecks with Generators {
 
   "IdentificationPage" - {
 
@@ -28,5 +33,44 @@ class IdentificationPageSpec extends PageBehaviours {
     beSettable[Identification](IdentificationPage(index))
 
     beRemovable[Identification](IdentificationPage(index))
+
+    "cleanup" - {
+      "when answer changes" - {
+        "must remove id number and country" in {
+          forAll(arbitrary[Identification], Gen.alphaNumStr, arbitrary[Nationality]) {
+            (identificationType, identificationNumber, country) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IdentificationPage(incidentIndex), identificationType)
+                .setValue(IdentificationNumberPage(incidentIndex), identificationNumber)
+                .setValue(TransportNationalityPage(incidentIndex), country)
+
+              forAll(arbitrary[Identification].retryUntil(_ != identificationType)) {
+                differentAnswer =>
+                  val result = userAnswers.setValue(IdentificationPage(incidentIndex), differentAnswer)
+
+                  result.get(IdentificationNumberPage(incidentIndex)) must not be defined
+                  result.get(TransportNationalityPage(incidentIndex)) must not be defined
+              }
+          }
+        }
+      }
+
+      "when answer doesn't change" - {
+        "must not remove id number and country" in {
+          forAll(arbitrary[Identification], Gen.alphaNumStr, arbitrary[Nationality]) {
+            (identificationType, identificationNumber, country) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(IdentificationPage(incidentIndex), identificationType)
+                .setValue(IdentificationNumberPage(incidentIndex), identificationNumber)
+                .setValue(TransportNationalityPage(incidentIndex), country)
+
+              val result = userAnswers.setValue(IdentificationPage(incidentIndex), identificationType)
+
+              result.get(IdentificationNumberPage(incidentIndex)) must be(defined)
+              result.get(TransportNationalityPage(incidentIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
