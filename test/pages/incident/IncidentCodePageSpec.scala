@@ -18,10 +18,10 @@ package pages.incident
 
 import models.incident.IncidentCode
 import models.incident.IncidentCode._
-import pages.behaviours.PageBehaviours
-import pages.sections.incident.EquipmentsSection
-import play.api.libs.json.{JsArray, Json}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
+import pages.sections.incident.{EquipmentsSection, TransportMeansSection}
+import play.api.libs.json.{JsArray, Json}
 
 class IncidentCodePageSpec extends PageBehaviours {
 
@@ -40,10 +40,12 @@ class IncidentCodePageSpec extends PageBehaviours {
         incidentCode =>
           val userAnswers = emptyUserAnswers
             .setValue(EquipmentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(TransportMeansSection(index), Json.obj("foo" -> "bar"))
 
           val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
 
           result.get(EquipmentsSection(index)) mustNot be(defined)
+          result.get(TransportMeansSection(index)) mustNot be(defined)
       }
 
     }

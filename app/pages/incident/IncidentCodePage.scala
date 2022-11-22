@@ -21,7 +21,7 @@ import models.incident.IncidentCode
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
-import pages.sections.incident.EquipmentsSection
+import pages.sections.incident.{EquipmentsSection, TransportMeansSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,7 +38,7 @@ case class IncidentCodePage(index: Index) extends QuestionPage[IncidentCode] {
 
   override def cleanup(value: Option[IncidentCode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(EquipmentsSection(index))
+      case Some(_) => userAnswers.remove(EquipmentsSection(index)).flatMap(_.remove(TransportMeansSection(index)))
       case _       => super.cleanup(value, userAnswers)
     }
 }
