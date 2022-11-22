@@ -25,7 +25,7 @@ sealed trait Identification {
 
 object Identification extends RadioModel[Identification] {
 
-  case object SeaGoingVehicle extends WithName("seaGoingVehicle") with Identification
+  case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification
   case object IataFlightNumber extends WithName("iataFlightNumber") with Identification
   case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification
@@ -40,7 +40,7 @@ object Identification extends RadioModel[Identification] {
   override val messageKeyPrefix: String = "incident.transportMeans.identification"
 
   val values: Seq[Identification] = Seq(
-    SeaGoingVehicle,
+    SeaGoingVessel,
     IataFlightNumber,
     InlandWaterwaysVehicle,
     ImoShipIdNumber,

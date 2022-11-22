@@ -497,8 +497,8 @@ incident.equipment.seal.remove.error.required = Select yes if you want to remove
 
 incident.transportMeans.identification.title = Which identification do you want to use for the replacement means of transport?
 incident.transportMeans.identification.heading = Which identification do you want to use for the replacement means of transport?
-incident.transportMeans.identification.seaGoingVehicle = Name of a sea-going vessel
-incident.transportMeans.identification.seaGoingVehicle.arg = name of the sea-going vessel
+incident.transportMeans.identification.seaGoingVessel = Name of a sea-going vessel
+incident.transportMeans.identification.seaGoingVessel.arg = name of the sea-going vessel
 incident.transportMeans.identification.iataFlightNumber = IATA flight number
 incident.transportMeans.identification.iataFlightNumber.arg = IATA flight number
 incident.transportMeans.identification.inlandWaterwaysVehicle = Name of an inland waterways vehicle

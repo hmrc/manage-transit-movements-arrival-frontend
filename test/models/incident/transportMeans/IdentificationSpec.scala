@@ -17,13 +17,12 @@
 package models.incident.transportMeans
 
 import base.SpecBase
-import generators.Generators
 import models.incident.transportMeans.Identification._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -63,7 +62,7 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
     "must have an associated arg value" - {
 
       "when sea going vessel" in {
-        val result = SeaGoingVehicle.arg
+        val result = SeaGoingVessel.arg
         result mustBe "name of the sea-going vessel"
       }
       "when IATA flight number" in {
