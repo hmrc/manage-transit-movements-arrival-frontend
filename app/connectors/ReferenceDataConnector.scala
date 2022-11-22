@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import metrics.{MetricsService, Monitors}
+import models.TransportAggregateData
 import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -59,6 +60,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getAddressPostcodeBasedCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/country-address-postcode-based"
     http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+  }
+
+  def getTransportData()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[TransportAggregateData] = {
+    val serviceUrl = s"${config.referenceDataUrl}/transport"
+    http.GET[TransportAggregateData](serviceUrl, headers = version2Header)
   }
 
   private def version2Header = Seq(
