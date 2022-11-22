@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms
 
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.reference.Nationality
+import models.NationalityList
 
-case class Nationality(code: String, desc: String) extends Selectable {
+class NationalityFormProvider @Inject() extends Mappings {
 
-  override def toString: String = s"$desc ($code)"
-
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
-
-object Nationality {
-  implicit val format: Format[Nationality] = Json.format[Nationality]
+  def apply(prefix: String, nationalityList: NationalityList): Form[Nationality] =
+    Form(
+      "value" -> nationality(nationalityList, s"$prefix.error.required")
+    )
 }

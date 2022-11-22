@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.incident.transportMeans
 
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import models.reference.Nationality
+import pages.behaviours.PageBehaviours
 
-case class Nationality(code: String, desc: String) extends Selectable {
+class TransportNationalityPageSpec extends PageBehaviours {
 
-  override def toString: String = s"$desc ($code)"
+  "TransportNationalityPage" - {
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
+    beRetrievable[Nationality](TransportNationalityPage(incidentIndex))
 
-object Nationality {
-  implicit val format: Format[Nationality] = Json.format[Nationality]
+    beSettable[Nationality](TransportNationalityPage(incidentIndex))
+
+    beRemovable[Nationality](TransportNationalityPage(incidentIndex))
+  }
 }

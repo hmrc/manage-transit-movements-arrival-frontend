@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package models.reference
+package navigation.annotations;
 
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import com.google.inject.BindingAnnotation;
 
-case class Nationality(code: String, desc: String) extends Selectable {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def toString: String = s"$desc ($code)"
-
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
-
-object Nationality {
-  implicit val format: Format[Nationality] = Json.format[Nationality]
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Identification {
 }
