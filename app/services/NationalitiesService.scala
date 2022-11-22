@@ -17,7 +17,8 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.{NationalityList, TransportAggregateData}
+import models.reference.Nationality
+import models.NationalityList
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,10 +30,10 @@ class NationalitiesService @Inject() (
 
   def getNationalities()(implicit hc: HeaderCarrier): Future[NationalityList] =
     referenceDataConnector
-      .getTransportData()
+      .getNationalities()
       .map(sort)
 
-  private def sort(transportAggregateData: TransportAggregateData): NationalityList =
-    NationalityList(transportAggregateData.nationalities.sortBy(_.desc.toLowerCase))
+  private def sort(nationalities: Seq[Nationality]): NationalityList =
+    NationalityList(nationalities.sortBy(_.desc.toLowerCase))
 
 }

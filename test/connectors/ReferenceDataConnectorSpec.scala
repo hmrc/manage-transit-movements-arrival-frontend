@@ -102,6 +102,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val nationalitiesResponseJson: String =
+    """
+      |[
+      | {
+      |   "code":"GB",
+      |   "desc":"United Kingdom"
+      | },
+      | {
+      |   "code":"AD",
+      |   "desc":"Andorra"
+      | }
+      |]
+      |""".stripMargin
+
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
   "Reference Data" - {
@@ -238,6 +252,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getNationalities" - {
+
+      "must return a successful future response with a sequence of Nationalities" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/nationalities"))
+            .willReturn(okJson(nationalitiesResponseJson))
+        )
+
+        val expectedResult =
+          Seq(
+            Nationality("GB", "United Kingdom"),
+            Nationality("AD", "Andorra")
+          )
+
+        connector.getNationalities().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/nationalities", connector.getNationalities())
+      }
+
+    }
+
   }
 
   private def checkErrorResponse(url: String, result: Future[_]): Assertion =
@@ -255,4 +292,5 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           _ mustBe an[Exception]
         }
     }
+
 }

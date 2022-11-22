@@ -16,7 +16,7 @@
 
 package metrics
 
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CustomsOffice, Nationality}
 
 trait RequestMonitor[A] {
   val name: String
