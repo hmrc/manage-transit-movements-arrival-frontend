@@ -53,8 +53,11 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-language:implicitConversions",
+      "-language:postfixOps",
+      "-language:higherKinds",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:cat=unused-imports&src=html/.*:s",
+      "-Wconf:src=src_managed/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,

@@ -58,7 +58,7 @@ class CheckArrivalsAnswersController @Inject() (
             logger.debug(s"Declaration submitted: $mrn")
             Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad())
           case response if is4xx(response.status) =>
-            logger.error(s"Declaration submission failed for $mrn : ${response.body}")
+            logger.debug(s"Declaration submission failed for $mrn : ${response.body}")
             BadRequest
           case ex =>
             logger.error(s"Declaration submission failed for $mrn : ${ex.body}")
