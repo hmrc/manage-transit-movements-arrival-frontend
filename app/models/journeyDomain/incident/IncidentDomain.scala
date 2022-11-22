@@ -17,6 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
+import models.Index
 import models.incident.IncidentCode
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
@@ -37,9 +38,14 @@ case class IncidentDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
+  val label = s"Incident ${index.position} - $incidentCode"
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     super.routeIfCompleted(userAnswers, mode, stage) // TODO - incident check your answers page
+
 }
+
+
 
 object IncidentDomain {
 

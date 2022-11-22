@@ -51,7 +51,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
               val helper = IncidentsAnswersHelper(userAnswers, mode)
               val result = helper.incident(index).get
 
-              result.key.value mustBe "Incident 1"
+              result.key.value mustBe "Do you want to add another incident?"
               val key = s"incident.incidentCode.${incident.incidentCode}"
               messages.isDefinedAt(key) mustBe true
               result.value.value mustBe messages(key)
@@ -121,7 +121,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
               val incident = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(incidentIndex)).run(userAnswers).value
-              val key      = s"incident.incidentCode.${incident.incidentCode}"
+              val key      = s"Incident ${index.position} - ${incident.incidentCode}"
               val helper   = IncidentsAnswersHelper(userAnswers, mode)
               helper.listItems mustBe Seq(
                 Right(

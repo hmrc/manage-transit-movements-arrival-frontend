@@ -18,6 +18,8 @@ package utils.incident
 
 import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
+import models.{Index, Mode, UserAnswers}
+import pages.incident.{IncidentCodePage, IncidentFlagPage}
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{IncidentCountryPage, IncidentFlagPage}
@@ -37,7 +39,7 @@ class IncidentsAnswersHelper(
 
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
     formatAnswer = x => formatEnumAsText(IncidentCode.messageKeyPrefix)(x.incidentCode),
-    prefix = "incident",
+    prefix = "incident.addAnotherIncident",
     id = Some(s"change-incident-${index.display}"),
     args = index.display
   )(IncidentDomain.userAnswersReader(index))
@@ -53,9 +55,9 @@ class IncidentsAnswersHelper(
     buildListItems(IncidentsSection) {
       position =>
         val index = Index(position)
-        buildListItem[IncidentDomain, Country](
-          page = IncidentCountryPage(index),
-          formatJourneyDomainModel = x => formatEnumAsString(IncidentCode.messageKeyPrefix)(x.incidentCode),
+        buildListItem[IncidentDomain, IncidentCode](
+          page = IncidentCodePage(index),
+          formatJourneyDomainModel = _.label,
           formatType = _.toString,
           removeRoute = Option(Call(GET, "#"))
         )(IncidentDomain.userAnswersReader(index), implicitly)
