@@ -7,7 +7,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "manage-transit-movements-arrival-frontend"
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
+  .enablePlugins(ScalaxbPlugin, PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(itSettings): _*)
@@ -23,6 +23,10 @@ lazy val root = (project in file("."))
   .settings(automateHeaderSettings(IntegrationTest))
   .settings(headerSettings(A11yTest): _*)
   .settings(automateHeaderSettings(A11yTest))
+  .settings(
+    Compile / scalaxb / scalaxbXsdSource := new File("./conf/xsd"),
+    Compile / scalaxb / scalaxbDispatchVersion := "1.1.3",
+    Compile / scalaxb / scalaxbPackageName := "generated")
   .settings(
     name := appName,
     RoutesKeys.routesImport ++= Seq("models._", "models.OptionBinder._"),
@@ -42,15 +46,18 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*TestOnlyController;.*LabelSize;.*LegendSize",
-    ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*;",
+    ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*;.*scalaxb.*;.*generated.*",
     ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq(
       "-feature",
       "-language:implicitConversions",
+      "-language:postfixOps",
+      "-language:higherKinds",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:cat=unused-imports&src=html/.*:s",
+      "-Wconf:src=src_managed/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,

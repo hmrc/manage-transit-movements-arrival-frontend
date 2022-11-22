@@ -85,4 +85,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Int]("dates.endorsementDateMin.month"),
     configuration.get[Int]("dates.endorsementDateMin.day")
   )
+
+  lazy val apiUrl = configuration.get[Service]("microservice.services.common-transit-convention-traders").baseUrl
 }

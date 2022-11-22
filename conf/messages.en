@@ -568,3 +568,10 @@ incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You can
 incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
 incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
 incident.equipment.itemNumber.remove.error.required = Select yes if you want to remove goods item number {0}
+
+
+# Declaration
+
+declarationSubmitted.title = Declaration Submitted
+declarationSubmitted.heading = Declaration Submitted
+declarationSubmitted.paragraph1 = You have submitted your declaration.
