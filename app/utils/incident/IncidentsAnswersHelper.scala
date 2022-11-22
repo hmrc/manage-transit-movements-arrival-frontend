@@ -20,9 +20,6 @@ import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentFlagPage}
-import models.reference.Country
-import models.{Index, Mode, UserAnswers}
-import pages.incident.{IncidentCountryPage, IncidentFlagPage}
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call

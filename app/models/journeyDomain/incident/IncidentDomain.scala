@@ -45,8 +45,6 @@ case class IncidentDomain(
 
 }
 
-
-
 object IncidentDomain {
 
   def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
