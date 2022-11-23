@@ -43,7 +43,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
       }
 
       "must return Some(Row)" - {
-        "when incident is  defined" in {
+        "when incident is defined" in {
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
               val incident = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(incidentIndex)).run(userAnswers).value
@@ -52,9 +52,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
               val result = helper.incident(index).get
 
               result.key.value mustBe "Do you want to add another incident?"
-              val key = s"incident.incidentCode.${incident.incidentCode}"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe s"Incident 1 - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -121,12 +119,11 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
               val incident = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(incidentIndex)).run(userAnswers).value
-              val key      = s"Incident ${index.position} - ${incident.incidentCode}"
               val helper   = IncidentsAnswersHelper(userAnswers, mode)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = messages(key),
+                    name = s"Incident 1 - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}",
                     changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
                     removeUrl = Option("#")
                   )

@@ -17,7 +17,6 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.Index
 import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
@@ -26,6 +25,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class IncidentDomain(
@@ -39,7 +39,8 @@ case class IncidentDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-  val label = s"Incident ${index.position} - $incidentCode"
+  def asString(f: IncidentCode => String)(implicit messages: Messages): String =
+    messages("incident.value", index.display, f(incidentCode))
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     super.routeIfCompleted(userAnswers, mode, stage) // TODO - incident check your answers page

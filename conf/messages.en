@@ -312,6 +312,7 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 
 incident.caption = Arrivals - Incidents
 incident.label = Incident {0}
+incident.value = Incident {0} - {1}
 incident.change.hidden = incident {0}
 
 incident.incidentFlag.title = Were there any incidents during the transit?
@@ -337,6 +338,12 @@ incident.incidentCode.transferredToAnotherTransport = 3 - The goods were transfe
 incident.incidentCode.partiallyOrFullyUnloaded = 4 - The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
 incident.incidentCode.carrierUnableToComply = 5 - The holder of procedure or carrier was unable to comply with their obligations due to an incident
 incident.incidentCode.unexpectedlyChanged = 6 - The means of transport was unexpectedly changed
+incident.incidentCode.forDisplay.deviatedFromItinerary = The carrier deviated from the itinerary due to circumstances beyond their control
+incident.incidentCode.forDisplay.sealsBrokenOrTampered = The seals were broken or tampered with during transit for reasons beyond the carrier's control
+incident.incidentCode.forDisplay.transferredToAnotherTransport = The goods were transferred to another means of transport under the supervision of the customs authority
+incident.incidentCode.forDisplay.partiallyOrFullyUnloaded = The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
+incident.incidentCode.forDisplay.carrierUnableToComply = The holder of procedure or carrier was unable to comply with their obligations due to an incident
+incident.incidentCode.forDisplay.unexpectedlyChanged = The means of transport was unexpectedly changed
 incident.incidentCode.checkYourAnswersLabel = Incident code
 incident.incidentCode.change.hidden = incident code
 incident.incidentCode.error.required = Select the type of incident
