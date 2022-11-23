@@ -92,6 +92,7 @@ arrivals.checkYourAnswers.authorisations.subheading = Authorisations
 arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
 arrivals.checkYourAnswers.identification.subheading = Identification
 arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
+
 arrivals.checkYourAnswers.seals.subheading = Seals
 arrivals.checkYourAnswers.seals.addOrRemove = Add or remove seals
 arrivals.checkYourAnswers.goodsItemNumbers.subheading = Goods item numbers
@@ -311,6 +312,7 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 
 incident.caption = Arrivals - Incidents
 incident.label = Incident {0}
+incident.value = Incident {0} - {1}
 incident.change.hidden = incident {0}
 
 incident.incidentFlag.title = Were there any incidents during the transit?
@@ -336,6 +338,12 @@ incident.incidentCode.transferredToAnotherTransport = 3 - The goods were transfe
 incident.incidentCode.partiallyOrFullyUnloaded = 4 - The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
 incident.incidentCode.carrierUnableToComply = 5 - The holder of procedure or carrier was unable to comply with their obligations due to an incident
 incident.incidentCode.unexpectedlyChanged = 6 - The means of transport was unexpectedly changed
+incident.incidentCode.forDisplay.deviatedFromItinerary = The carrier deviated from the itinerary due to circumstances beyond their control
+incident.incidentCode.forDisplay.sealsBrokenOrTampered = The seals were broken or tampered with during transit for reasons beyond the carrier's control
+incident.incidentCode.forDisplay.transferredToAnotherTransport = The goods were transferred to another means of transport under the supervision of the customs authority
+incident.incidentCode.forDisplay.partiallyOrFullyUnloaded = The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
+incident.incidentCode.forDisplay.carrierUnableToComply = The holder of procedure or carrier was unable to comply with their obligations due to an incident
+incident.incidentCode.forDisplay.unexpectedlyChanged = The means of transport was unexpectedly changed
 incident.incidentCode.checkYourAnswersLabel = Incident code
 incident.incidentCode.change.hidden = incident code
 incident.incidentCode.error.required = Select the type of incident
@@ -613,6 +621,15 @@ incident.transportMeans.transportNationality.label = What country is the replace
 incident.transportMeans.transportNationality.placeholder = Select a nationality
 incident.transportMeans.transportNationality.change.hidden =  the country the replacement transport is registered to
 incident.transportMeans.transportNationality.error.required = Select the country the replacement transport is registered to
+
+incident.addAnotherIncident.singular.title = You have added {0} incident
+incident.addAnotherIncident.singular.heading = You have added {0} incident
+incident.addAnotherIncident.plural.title = You have added {0} incidents
+incident.addAnotherIncident.plural.heading = You have added {0} incidents
+incident.addAnotherIncident.error.required = Select yes if you want to add another incident
+incident.addAnotherIncident.label = Do you want to add another incident?
+incident.addAnotherIncident.change.hidden = incident {0}
+incident.addAnotherIncident.maxLimit.label = You cannot add any more incidents. To add another, you need to remove one first.
 
 # Declaration
 
