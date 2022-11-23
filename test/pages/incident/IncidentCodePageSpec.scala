@@ -39,11 +39,15 @@ class IncidentCodePageSpec extends PageBehaviours {
       forAll(arbitrary[IncidentCode]) {
         incidentCode =>
           val userAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorYesNoPage(index), false)
+            .setValue(AddTransportEquipmentPage(index), false)
             .setValue(EquipmentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
             .setValue(TransportMeansSection(index), Json.obj("foo" -> "bar"))
 
           val result = userAnswers.setValue(IncidentCodePage(index), incidentCode)
 
+          result.get(ContainerIndicatorYesNoPage(index)) mustNot be(defined)
+          result.get(AddTransportEquipmentPage(index)) mustNot be(defined)
           result.get(EquipmentsSection(index)) mustNot be(defined)
           result.get(TransportMeansSection(index)) mustNot be(defined)
       }
