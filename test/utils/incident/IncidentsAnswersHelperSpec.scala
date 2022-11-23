@@ -127,7 +127,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
                   ListItem(
                     name = s"Incident 1 - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}",
                     changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
-                    removeUrl = Option("#")
+                    removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                   )
                 )
               )
@@ -148,7 +148,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
                     ListItem(
                       name = "Incident 1",
                       changeUrl = routes.IncidentCodeController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
-                      removeUrl = Option("#")
+                      removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                     )
                   )
                 )
@@ -170,7 +170,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
                     ListItem(
                       name = s"Incident 1 - ${messages(s"incident.incidentCode.forDisplay.$incidentCode")}",
                       changeUrl = routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
-                      removeUrl = Option("#")
+                      removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                     )
                   )
                 )
