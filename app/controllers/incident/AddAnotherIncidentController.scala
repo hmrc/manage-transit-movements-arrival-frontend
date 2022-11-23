@@ -19,12 +19,12 @@ package controllers.incident
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
-import models.{Mode, MovementReferenceNumber}
-import navigation.ArrivalNavigatorProvider
+import models.journeyDomain.incident.IncidentDomain
+import models.{Index, Mode, MovementReferenceNumber}
+import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.http.HttpVerbs.GET
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.incident.AddAnotherIncidentViewModel
 import viewModels.incident.AddAnotherIncidentViewModel.AddAnotherIncidentViewModelProvider
@@ -65,7 +65,10 @@ class AddAnotherIncidentController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
-            case true  => Redirect(Call(GET, "#")) // TODO - incident CYA
+            case true =>
+              Redirect(
+                UserAnswersNavigator.nextPage[IncidentDomain](request.userAnswers, mode)(IncidentDomain.userAnswersReader(Index(viewModel.numberOfIncidents)))
+              )
             case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
           }
         )

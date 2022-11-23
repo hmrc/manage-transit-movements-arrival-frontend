@@ -19,7 +19,7 @@ package controllers.incident
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.NormalMode
+import models.{Index, NormalMode}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -129,20 +129,24 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to seal id number page at next index" in {
-          when(mockViewModelProvider.apply(any(), any())(any()))
-            .thenReturn(viewModelWithItemsNotMaxedOut)
+        "must redirect to incident country page at next index" in {
+          forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
+            userAnswers =>
+              when(mockViewModelProvider.apply(any(), any())(any()))
+                .thenReturn(viewModelWithItemsNotMaxedOut)
 
-          setExistingUserAnswers(emptyUserAnswers)
+              setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(POST, addAnotherIncidentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+              val request = FakeRequest(POST, addAnotherIncidentRoute)
+                .withFormUrlEncodedBody(("value", "true"))
 
-          val result = route(app, request).value
+              val result = route(app, request).value
 
-          status(result) mustEqual SEE_OTHER
+              status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual "#"
+              redirectLocation(result).value mustEqual
+                routes.IncidentCountryController.onPageLoad(mrn, mode, Index(1)).url
+          }
         }
       }
 
