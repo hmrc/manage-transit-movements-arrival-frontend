@@ -39,8 +39,8 @@ case class IncidentDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-  def asString(f: IncidentCode => String)(implicit messages: Messages): String =
-    messages("incident.value", index.display, f(incidentCode))
+  def asString(f: String => IncidentCode => String)(implicit messages: Messages): String =
+    messages("incident.value", index.display, f(IncidentCode.prefixForDisplay)(incidentCode))
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     super.routeIfCompleted(userAnswers, mode, stage) // TODO - incident check your answers page

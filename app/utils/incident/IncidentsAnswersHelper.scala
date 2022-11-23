@@ -23,11 +23,11 @@ import pages.incident.{IncidentCodePage, IncidentFlagPage}
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.AnswersHelper
 import viewModels.ListItem
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class IncidentsAnswersHelper(
   userAnswers: UserAnswers,
@@ -36,7 +36,7 @@ class IncidentsAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
-    formatAnswer = _.asString(formatEnumAsString(IncidentCode.prefixForDisplay)).toText,
+    formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "incident.addAnotherIncident",
     id = Some(s"change-incident-${index.display}"),
     args = index.display
@@ -55,7 +55,7 @@ class IncidentsAnswersHelper(
         val index = Index(position)
         buildListItem[IncidentDomain, IncidentCode](
           page = IncidentCodePage(index),
-          formatJourneyDomainModel = _.asString(formatEnumAsString(IncidentCode.prefixForDisplay)),
+          formatJourneyDomainModel = _.asString(formatEnumAsString),
           formatType = _.toString,
           removeRoute = Option(Call(GET, "#"))
         )(IncidentDomain.userAnswersReader(index), implicitly)
