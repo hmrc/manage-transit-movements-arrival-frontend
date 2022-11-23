@@ -312,6 +312,9 @@ locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want 
 
 # Incidents and Endorsements
 
+incident.checkAnswers.title = Check your answers
+incident.checkAnswers.heading = Check your answers
+
 incident.caption = Arrivals - Incidents
 incident.label = Incident {0}
 incident.value = Incident {0} - {1}
