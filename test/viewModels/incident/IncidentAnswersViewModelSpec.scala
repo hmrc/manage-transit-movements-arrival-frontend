@@ -30,13 +30,20 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
     forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
       (userAnswers, mode) =>
         val sections = new IncidentAnswersViewModelProvider().apply(userAnswers, incidentIndex, mode).sections
-        sections.size mustBe 2
+        sections.size mustBe 4
 
-        val addOrRemoveEquipmentsLink = sections(1).addAnotherLink.value
-        addOrRemoveEquipmentsLink.text mustBe "Add or remove equipments"
-        addOrRemoveEquipmentsLink.id mustBe "add-or-remove-equipments"
+        sections.head.sectionTitle must not be defined
+
+        sections(1).sectionTitle.get mustBe "Endorsements"
+
+        sections(2).sectionTitle.get mustBe "Transport equipment"
+        val addOrRemoveEquipmentsLink = sections(2).addAnotherLink.value
+        addOrRemoveEquipmentsLink.text mustBe "Add or remove transport equipment"
+        addOrRemoveEquipmentsLink.id mustBe "add-or-remove-transport-equipment"
         addOrRemoveEquipmentsLink.href mustBe
           controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
+
+        sections(3).sectionTitle.get mustBe "Replacement means of transport"
     }
   }
 }
