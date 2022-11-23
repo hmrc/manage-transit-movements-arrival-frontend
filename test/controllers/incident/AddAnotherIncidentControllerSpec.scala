@@ -130,23 +130,22 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to incident country page at next index" in {
-          forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
-            userAnswers =>
-              when(mockViewModelProvider.apply(any(), any())(any()))
-                .thenReturn(viewModelWithItemsNotMaxedOut)
+          when(mockViewModelProvider.apply(any(), any())(any()))
+            .thenReturn(viewModelWithItemsNotMaxedOut)
 
-              setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(emptyUserAnswers)
 
-              val request = FakeRequest(POST, addAnotherIncidentRoute)
-                .withFormUrlEncodedBody(("value", "true"))
+          val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfIncidents)
 
-              val result = route(app, request).value
+          val request = FakeRequest(POST, addAnotherIncidentRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
-              status(result) mustEqual SEE_OTHER
+          val result = route(app, request).value
 
-              redirectLocation(result).value mustEqual
-                routes.IncidentCountryController.onPageLoad(mrn, mode, Index(1)).url
-          }
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            routes.IncidentCountryController.onPageLoad(mrn, mode, nextIndex).url
         }
       }
 
