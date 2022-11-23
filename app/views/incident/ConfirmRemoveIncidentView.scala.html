@@ -30,7 +30,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.confirmRemoveIncident.title", incidentIndex.display),
+    title = messages("incident.remove.title", incidentIndex.display),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("incident.confirmRemoveIncident.heading", incidentIndex.display),
+                heading = messages("incident.remove.heading", incidentIndex.display),
                 caption = Some(messages("incident.caption"))
             )
         )
