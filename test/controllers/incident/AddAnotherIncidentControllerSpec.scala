@@ -19,12 +19,16 @@ package controllers.incident
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.{Index, NormalMode}
+import models.reference.Country
+import models.{Index, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.incident.IncidentCountryPage
+import pages.sections.incident.IncidentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -69,6 +73,26 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val viewModelWithItemsMaxedOut    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherIncident Controller" - {
+
+    "must remove any in progress transport equipments" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(IncidentCountryPage(incidentIndex), arbitrary[Country].sample.value)
+
+      when(mockViewModelProvider.apply(any(), any())(any()))
+        .thenReturn(viewModelWithItemsNotMaxedOut)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addAnotherIncidentRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any())(any())
+      userAnswersCaptor.getValue.get(IncidentSection(incidentIndex)) mustNot be(defined)
+    }
 
     "redirect to add incident yes/no" - {
       "when 0 incidents" in {

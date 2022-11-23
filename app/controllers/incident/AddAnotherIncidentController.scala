@@ -22,6 +22,7 @@ import forms.AddAnotherItemFormProvider
 import models.journeyDomain.incident.IncidentDomain
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
+import pages.sections.incident.{IncidentSection, IncidentsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +37,7 @@ class AddAnotherIncidentController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
+  removeInProgressIncidents: RemoveInProgressActionProvider,
   formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherIncidentViewModelProvider,
@@ -48,7 +50,8 @@ class AddAnotherIncidentController @Inject() (
     formProvider(viewModel.prefix, viewModel.allowMoreIncidents)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(mrn) {
+    .requireData(mrn)
+    .andThen(removeInProgressIncidents[IncidentDomain](IncidentsSection, IncidentSection)(IncidentDomain.userAnswersReader)) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, mode)
         viewModel.numberOfIncidents match {
