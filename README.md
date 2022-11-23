@@ -17,8 +17,8 @@ or
 ### Running manually or for journey tests
 
 <pre>
-sm --start CTC_TRADERS_PRELODGE -r
-sm --start TRANSIT_MOVEMENTS_TRADER_REFERENCE_DATA_TEST_ONLY // running locally
+sm --start CTC_TRADERS_ARRIVAL_P5_ACCEPTANCE -r OR
+sm --start CTC_TRADERS_ARRIVAL_P5_ACCEPTANCE CTC_TRADERS_API -r // with API running
 sm --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND
 sbt run
 </pre>
