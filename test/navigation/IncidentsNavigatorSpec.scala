@@ -21,23 +21,23 @@ import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class IncidentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "Seal Navigator" - {
+  "Incidents Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new SealNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, sealIndex)
+      val navigatorProvider = new IncidentsNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
-        "must redirect to add another seal page" in {
-          forAll(arbitrarySealAnswers(emptyUserAnswers, incidentIndex, equipmentIndex, sealIndex)) {
+        "must redirect to add another equipment" in {
+          forAll(arbitraryIncidentsAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.incident.equipment.seal.routes.AddAnotherSealController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex))
+                .mustBe(controllers.incident.routes.AddAnotherIncidentController.onPageLoad(answers.mrn, mode))
           }
         }
       }
@@ -46,16 +46,16 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new SealNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, sealIndex)
+      val navigatorProvider = new IncidentsNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
-        "must redirect to equipment check your answers" in {
-          forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
+        "must redirect to check incident answers" in {
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.incident.equipment.routes.CheckEquipmentAnswersController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex))
+                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

@@ -20,11 +20,13 @@ import base.SpecBase
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
+import controllers.incident.transportMeans.{routes => transportMeansRoutes}
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, UnLocode}
+import models.reference.{Country, Nationality, UnLocode}
 import models.{Coordinates, DynamicAddress, Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -32,6 +34,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident._
 import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
+import pages.incident.transportMeans.{IdentificationNumberPage, IdentificationPage, TransportNationalityPage}
 
 import java.time.LocalDate
 
@@ -207,7 +210,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "endorsement-yes-no" - {
+    "endorsementYesNo" - {
       "must return None" - {
         "when AddEndorsementPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -242,7 +245,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "endorsement-date" - {
+    "endorsementDate" - {
       "must return None" - {
         "when EndorsementDatePage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -278,7 +281,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "endorsement-authority" - {
+    "endorsementAuthority" - {
       "must return None" - {
         "when EndorsementAuthorityPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -313,7 +316,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "endorsement-country" - {
+    "endorsementCountry" - {
       "must return None" - {
         "when EndorsementCountryPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -348,7 +351,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "endorsement-location" - {
+    "endorsementLocation" - {
       "must return None" - {
         "when EndorsementLocationPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -383,7 +386,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "QualifierOfIdentificationPage" - {
+    "qualifierOfIdentification" - {
       "must return None" - {
         "when QualifierOfIdentificationPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -420,7 +423,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "UnLocodePage" - {
+    "unLocode" - {
       "must return None" - {
         "when UnLocodePage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -454,7 +457,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "CoordinatesPage" - {
+    "coordinates" - {
       "must return None" - {
         "when CoordinatesPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -488,7 +491,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "AddressPage" - {
+    "address" - {
       "must return None" - {
         "when AddressPage is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -587,6 +590,110 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.href mustBe routes.AddTransportEquipmentController.onPageLoad(answers.mrn, mode, incidentIndex).url
               action.visuallyHiddenText.get mustBe "if you need to add any transport equipment"
               action.id mustBe "change-add-transport-equipment"
+          }
+        }
+      }
+    }
+
+    "transportMeansIdentificationType" - {
+      "must return None" - {
+        "when IdentificationPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.transportMeansIdentificationType
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when IdentificationPage is defined" in {
+          forAll(arbitrary[Identification], arbitrary[Mode]) {
+            (identification, mode) =>
+              val answers = emptyUserAnswers.setValue(IdentificationPage(incidentIndex), identification)
+
+              val helper = IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.transportMeansIdentificationType.get
+
+              result.key.value mustBe "Identification type"
+              val key = s"incident.transportMeans.identification.$identification"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe transportMeansRoutes.IdentificationController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "identification type for the replacement means of transport"
+              action.id mustBe "change-transport-means-identification-type"
+          }
+        }
+      }
+    }
+
+    "transportMeansIdentificationNumber" - {
+      "must return None" - {
+        "when IdentificationNumberPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.transportMeansIdentificationNumber
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when IdentificationNumberPage is defined" in {
+          forAll(Gen.alphaNumStr, arbitrary[Mode]) {
+            (identificationNumber, mode) =>
+              val answers = emptyUserAnswers.setValue(IdentificationNumberPage(incidentIndex), identificationNumber)
+
+              val helper = IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.transportMeansIdentificationNumber.get
+
+              result.key.value mustBe "Identification number"
+              result.value.value mustBe identificationNumber
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe transportMeansRoutes.IdentificationNumberController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "identification number for the replacement means of transport"
+              action.id mustBe "change-transport-means-identification-number"
+          }
+        }
+      }
+    }
+
+    "transportMeansRegisteredCountry" - {
+      "must return None" - {
+        "when TransportNationalityPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.transportMeansRegisteredCountry
+              result mustBe None
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        "when TransportNationalityPage is defined" in {
+          forAll(arbitrary[Nationality], arbitrary[Mode]) {
+            (nationality, mode) =>
+              val answers = emptyUserAnswers.setValue(TransportNationalityPage(incidentIndex), nationality)
+
+              val helper = IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result = helper.transportMeansRegisteredCountry.get
+
+              result.key.value mustBe "Registered country"
+              result.value.value mustBe nationality.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe transportMeansRoutes.TransportNationalityController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.visuallyHiddenText.get mustBe "registered country for the replacement means of transport"
+              action.id mustBe "change-transport-means-registered-country"
           }
         }
       }

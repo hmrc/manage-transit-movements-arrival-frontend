@@ -43,7 +43,7 @@ case class IncidentDomain(
     IncidentDomain.asString(index, incidentCode)(f)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    super.routeIfCompleted(userAnswers, mode, stage) // TODO - incident check your answers page
+    Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
 
 }
 

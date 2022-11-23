@@ -21,23 +21,26 @@ import generators.{ArrivalUserAnswersGenerator, Generators}
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class ItemNumberNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "Seal Navigator" - {
+  "ItemNumber Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new SealNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, sealIndex)
+      val navigatorProvider = new ItemNumberNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, itemNumberIndex)
 
       "when answers complete" - {
-        "must redirect to add another seal page" in {
-          forAll(arbitrarySealAnswers(emptyUserAnswers, incidentIndex, equipmentIndex, sealIndex)) {
+        "must redirect to add another item number page" in {
+          forAll(arbitraryItemNumberAnswers(emptyUserAnswers, incidentIndex, equipmentIndex, itemNumberIndex)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.incident.equipment.seal.routes.AddAnotherSealController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex))
+                .mustBe(
+                  controllers.incident.equipment.itemNumber.routes.AddAnotherItemNumberYesNoController
+                    .onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex)
+                )
           }
         }
       }
@@ -46,8 +49,8 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new SealNavigatorProviderImpl
-      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, sealIndex)
+      val navigatorProvider = new ItemNumberNavigatorProviderImpl
+      val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex, itemNumberIndex)
 
       "when answers complete" - {
         "must redirect to equipment check your answers" in {

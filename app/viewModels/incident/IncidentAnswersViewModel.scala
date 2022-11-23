@@ -31,6 +31,7 @@ object IncidentAnswersViewModel {
 
   class IncidentAnswersViewModelProvider @Inject() () {
 
+    // scalastyle:off method.length
     def apply(userAnswers: UserAnswers, incidentIndex: Index, mode: Mode)(implicit messages: Messages): IncidentAnswersViewModel = {
 
       val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
@@ -40,37 +41,54 @@ object IncidentAnswersViewModel {
           helper.country,
           helper.code,
           helper.text,
-          helper.endorsementYesNo,
-          helper.endorsementDate,
-          helper.endorsementAuthority,
-          helper.endorsementCountry,
-          helper.endorsementLocation,
           helper.qualifierOfIdentification,
           helper.unLocode,
           helper.coordinates,
           helper.address,
-          helper.containerIndicatorYesNo,
-          helper.transportEquipmentYesNo
+          helper.containerIndicatorYesNo
         ).flatten
       )
 
-      val equipmentsSection = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.equipments.subheading"),
-        rows = userAnswers
+      val endorsementSection = Section(
+        sectionTitle = messages("arrivals.checkYourAnswers.endorsement.subheading"),
+        rows = Seq(
+          helper.endorsementYesNo,
+          helper.endorsementDate,
+          helper.endorsementAuthority,
+          helper.endorsementCountry,
+          helper.endorsementLocation
+        ).flatten
+      )
+
+      val equipmentsSection = {
+        val equipmentRows = userAnswers
           .get(EquipmentsSection(incidentIndex))
           .mapWithIndex {
             (_, index) => helper.equipment(Index(index))
-          },
-        addAnotherLink = Link(
-          id = "add-or-remove-equipments",
-          text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
-          href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
+          }
+
+        Section(
+          sectionTitle = messages("arrivals.checkYourAnswers.equipments.subheading"),
+          rows = helper.transportEquipmentYesNo.toList ++ equipmentRows,
+          addAnotherLink = Link(
+            id = "add-or-remove-transport-equipment",
+            text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
+            href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
+          )
         )
+      }
+
+      val transportMeansSection = Section(
+        sectionTitle = messages("arrivals.checkYourAnswers.transportMeans.subheading"),
+        rows = Seq(
+          helper.transportMeansIdentificationType,
+          helper.transportMeansIdentificationNumber,
+          helper.transportMeansRegisteredCountry
+        ).flatten
       )
 
-      // TODO - add section for transport means questions
-
-      new IncidentAnswersViewModel(Seq(incidentSection, equipmentsSection))
+      new IncidentAnswersViewModel(Seq(incidentSection, endorsementSection, equipmentsSection, transportMeansSection))
     }
+    // scalastyle:on method.length
   }
 }

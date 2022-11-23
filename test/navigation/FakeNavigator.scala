@@ -35,6 +35,10 @@ class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode) extend
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeIncidentsNavigator(desiredRoute: Call, mode: Mode) extends IncidentsNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeIdentificationNavigator(desiredRoute: Call, mode: Mode) extends IdentificationNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

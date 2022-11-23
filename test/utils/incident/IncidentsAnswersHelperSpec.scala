@@ -59,7 +59,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              //action.href mustBe "#" // TODO - Update when CheckIncidentAnswersController is built
+              action.href mustBe routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
               action.visuallyHiddenText.get mustBe "incident 1"
               action.id mustBe "change-incident-1"
           }
@@ -126,7 +126,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUs
                 Right(
                   ListItem(
                     name = s"Incident 1 - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}",
-                    changeUrl = controllers.identification.routes.DestinationOfficeController.onPageLoad(userAnswers.mrn, mode).url, // TODO
+                    changeUrl = routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                     removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                   )
                 )

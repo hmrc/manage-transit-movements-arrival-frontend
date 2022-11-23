@@ -37,7 +37,7 @@ class IncidentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(???)
+                .mustBe(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(answers.mrn, mode, index))
           }
         }
       }
