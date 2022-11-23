@@ -17,6 +17,7 @@
 package utils.incident
 
 import base.SpecBase
+import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import generators.{ArrivalUserAnswersGenerator, Generators}
@@ -67,7 +68,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              //action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
+              action.href mustBe equipmentRoutes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
               action.visuallyHiddenText.get mustBe "transport equipment 1"
               action.id mustBe "change-transport-equipment-1"
           }
@@ -91,7 +92,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              //action.href mustBe "#" // TODO - Update when CheckEquipmentAnswersController is built
+              action.href mustBe equipmentRoutes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
               action.visuallyHiddenText.get mustBe "transport equipment 1"
               action.id mustBe "change-transport-equipment-1"
           }
