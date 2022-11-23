@@ -17,24 +17,22 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.Generators
-import models.NormalMode
-import models.identification.authorisation.AuthorisationType
+import generators.{ArrivalUserAnswersGenerator, Generators}
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 
-class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
+class AuthorisationAnswersViewModelSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
 
-  "must return section" in {
-    val userAnswers = emptyUserAnswers
-      .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
-      .setValue(AuthorisationReferenceNumberPage(authorisationIndex), Gen.alphaNumStr.sample.value)
-
-    val section = new AuthorisationAnswersViewModelProvider().apply(userAnswers, authorisationIndex, NormalMode).section
-
-    section.sectionTitle mustNot be(defined)
-    section.rows.size mustBe 2
+  "authorisation section" - {
+    "must have 2 rows" in {
+      forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex), arbitrary[Mode]) {
+        (answers, mode) =>
+          val section = new AuthorisationAnswersViewModelProvider().apply(answers, authorisationIndex, mode).section
+          section.sectionTitle must not be defined
+          section.rows.size mustBe 2
+          section.addAnotherLink must not be defined
+      }
+    }
   }
 }

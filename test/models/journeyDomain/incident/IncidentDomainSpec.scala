@@ -34,23 +34,11 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   private val incidentCode = arbitrary[IncidentCode].sample.value
   private val incidentText = Gen.alphaNumStr.sample.value.take(Constants.maxIncidentTextLength)
 
-  private val incidentCode3Or6Gen = Gen.oneOf(
-    IncidentCode.TransferredToAnotherTransport,
-    IncidentCode.UnexpectedlyChanged
-  )
-
-  private val incidentCodeNot3Or6Gen = Gen.oneOf(
-    IncidentCode.SealsBrokenOrTampered,
-    IncidentCode.PartiallyOrFullyUnloaded,
-    IncidentCode.DeviatedFromItinerary,
-    IncidentCode.CarrierUnableToComply
-  )
-
   "IncidentDomain" - {
 
     "when incident code is 3 or 6" - {
       "transport means must be defined" in {
-        forAll(incidentCode3Or6Gen) {
+        forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
           incidentCode =>
             val initialAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 
@@ -68,7 +56,7 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
     "when incident code is not 3 or 6" - {
       "transport means must not be defined" in {
-        forAll(incidentCodeNot3Or6Gen) {
+        forAll(arbitrary[IncidentCode](arbitraryNot3Or6IncidentCode)) {
           incidentCode =>
             val initialAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 

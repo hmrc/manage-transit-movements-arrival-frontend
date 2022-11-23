@@ -24,13 +24,16 @@ import viewModels.identification.IdentificationAnswersViewModel.IdentificationAn
 
 class IdentificationAnswersViewModelSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
 
-  "must return section" in {
-    forAll(arbitrary[Mode], arbitraryIdentificationAnswers(emptyUserAnswers)) {
-      (mode, answers) =>
-        val section = new IdentificationAnswersViewModelProvider().apply(answers, mode).section
+  "identification section" - {
+    "must have 4 rows" in {
+      forAll(arbitrary[Mode], arbitraryIdentificationAnswers(emptyUserAnswers)) {
+        (mode, answers) =>
+          val section = new IdentificationAnswersViewModelProvider().apply(answers, mode).section
 
-        section.sectionTitle.get mustBe "Identification"
-        section.rows.size mustBe 4
+          section.sectionTitle.get mustBe "Identification"
+          section.rows.size mustBe 4
+          section.addAnotherLink must not be defined
+      }
     }
   }
 }
