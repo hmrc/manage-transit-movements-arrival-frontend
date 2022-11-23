@@ -16,16 +16,15 @@
 
 package utils.incident
 
+import controllers.incident.routes
 import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentFlagPage}
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.AnswersHelper
 import viewModels.ListItem
 
@@ -57,7 +56,7 @@ class IncidentsAnswersHelper(
           page = IncidentCodePage(index),
           formatJourneyDomainModel = _.asString(formatEnumAsString),
           formatType = _.fold(messages("incident.label", index.display))(IncidentDomain.asString(index, _)(formatEnumAsString)),
-          removeRoute = Option(Call(GET, "#"))
+          removeRoute = Option(routes.ConfirmRemoveIncidentController.onPageLoad(mrn, mode, index))
         )(IncidentDomain.userAnswersReader(index), implicitly)
     }
 }
