@@ -19,6 +19,7 @@ package generators
 import base.SpecBase
 import models.journeyDomain.ArrivalDomain
 import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
 import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
@@ -55,6 +56,9 @@ trait ArrivalUserAnswersGenerator extends UserAnswersGenerator {
 
   def arbitrarySealAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[SealDomain](userAnswers)(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex))
+
+  def arbitraryItemNumberAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[ItemNumberDomain](userAnswers)(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex))
 
   def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[ArrivalDomain](userAnswers)(ArrivalDomain.userAnswersReader)

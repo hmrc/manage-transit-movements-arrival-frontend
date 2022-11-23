@@ -20,14 +20,12 @@ import pages.behaviours.PageBehaviours
 
 class ItemNumberPageSpec extends PageBehaviours {
 
-  //TODO
+  "ItemNumberPage" - {
 
-//  "ItemNumberPage" - {
-//
-//    beRetrievable[String](ItemNumberPage)
-//
-//    beSettable[String](ItemNumberPage)
-//
-//    beRemovable[String](ItemNumberPage)
-//  }
+    beRetrievable[String](ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex))
+
+    beSettable[String](ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex))
+
+    beRemovable[String](ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex))
+  }
 }
