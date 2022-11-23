@@ -57,7 +57,7 @@ object AddAnotherIncidentViewModel {
 
       new AddAnotherIncidentViewModel(
         listItems,
-        onSubmitCall = controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode)
+        onSubmitCall = controllers.incident.routes.AddAnotherIncidentController.onSubmit(userAnswers.mrn, mode)
       )
     }
   }
