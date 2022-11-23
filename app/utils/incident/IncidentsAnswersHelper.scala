@@ -53,10 +53,10 @@ class IncidentsAnswersHelper(
     buildListItems(IncidentsSection) {
       position =>
         val index = Index(position)
-        buildListItem[IncidentDomain, IncidentCode](
+        buildListItemWithDefault[IncidentDomain, IncidentCode](
           page = IncidentCodePage(index),
           formatJourneyDomainModel = _.asString(formatEnumAsString),
-          formatType = _.toString,
+          formatType = _.fold(messages("incident.label", index.display))(IncidentDomain.asString(index, _)(formatEnumAsString)),
           removeRoute = Option(Call(GET, "#"))
         )(IncidentDomain.userAnswersReader(index), implicitly)
     }
