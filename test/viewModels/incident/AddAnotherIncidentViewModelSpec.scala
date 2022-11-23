@@ -18,7 +18,7 @@ package viewModels.incident
 
 import base.SpecBase
 import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.Mode
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -49,7 +49,7 @@ class AddAnotherIncidentViewModelSpec extends SpecBase with Generators with Scal
         (mode, numberOfIncidents) =>
           val userAnswers = (0 until numberOfIncidents).foldLeft(emptyUserAnswers) {
             (acc, i) =>
-              arbitraryIncidentAnswers(acc, incidentIndex).sample.value
+              arbitraryIncidentAnswers(acc, Index(i)).sample.value
           }
 
           val result = new AddAnotherIncidentViewModelProvider()(userAnswers, mode)
