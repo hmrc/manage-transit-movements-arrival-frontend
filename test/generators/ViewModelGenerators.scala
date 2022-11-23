@@ -23,7 +23,7 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.incident.AddAnotherSealViewModel
+import viewModels.incident.{AddAnotherEquipmentViewModel, AddAnotherItemNumberViewModel, AddAnotherSealViewModel}
 import viewModels.{Link, ListItem}
 import viewModels.sections.Section
 
@@ -160,5 +160,19 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
       containerId  <- Gen.option(nonEmptyString)
     } yield AddAnotherSealViewModel(listItems, onSubmitCall, containerId)
+  }
+
+  implicit lazy val arbitraryAddAnotherItemNumberViewModel: Arbitrary[AddAnotherItemNumberViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherItemNumberViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall)
   }
 }

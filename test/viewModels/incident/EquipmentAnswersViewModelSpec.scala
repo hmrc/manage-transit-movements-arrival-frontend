@@ -31,13 +31,19 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
     forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
       (userAnswers, mode) =>
         val sections = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
-        sections.size mustBe 2
+        sections.size mustBe 3
 
         val addOrRemoveSealsLink = sections(1).addAnotherLink.value
         addOrRemoveSealsLink.text mustBe "Add or remove seals"
         addOrRemoveSealsLink.id mustBe "add-or-remove-seals"
         addOrRemoveSealsLink.href mustBe
           seal.routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+
+        val addOrRemoveGoodsItemNumbersLink = sections(2).addAnotherLink.value
+        addOrRemoveGoodsItemNumbersLink.text mustBe "Add or remove goods item numbers"
+        addOrRemoveGoodsItemNumbersLink.id mustBe "add-or-remove-goods-item-numbers"
+        addOrRemoveGoodsItemNumbersLink.href mustBe
+          itemNumber.routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
     }
   }
 }

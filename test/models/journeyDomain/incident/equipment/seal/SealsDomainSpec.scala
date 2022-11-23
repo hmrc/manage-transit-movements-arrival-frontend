@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.seal
+package models.journeyDomain.incident.equipment.seal
 
 import base.SpecBase
 import models.Index

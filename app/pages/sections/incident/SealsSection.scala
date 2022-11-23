@@ -25,4 +25,5 @@ case class SealsSection(incidentIndex: Index, equipmentIndex: Index) extends Sec
   override def path: JsPath = EquipmentSection(incidentIndex, equipmentIndex).path \ toString
 
   override def toString: String = "seals"
+
 }

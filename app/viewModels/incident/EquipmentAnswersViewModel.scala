@@ -18,7 +18,7 @@ package viewModels.incident
 
 import controllers.incident.equipment._
 import models.{Index, Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.incident.SealsSection
+import pages.sections.incident.{ItemsSection, SealsSection}
 import play.api.i18n.Messages
 import utils.incident.EquipmentAnswersHelper
 import viewModels.Link
@@ -39,28 +39,47 @@ object EquipmentAnswersViewModel {
       val equipmentSection = Section(
         rows = Seq(
           helper.containerIdentificationNumberYesNo,
-          helper.containerIdentificationNumber,
-          helper.sealsYesNo
+          helper.containerIdentificationNumber
         ).flatten
       )
 
-      val sealsSection = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.seals.subheading"),
-        rows = userAnswers
+      val sealsSection = {
+        val sealRows = userAnswers
           .get(SealsSection(incidentIndex, equipmentIndex))
           .mapWithIndex {
             (_, index) => helper.seal(Index(index))
-          },
-        addAnotherLink = Link(
-          id = "add-or-remove-seals",
-          text = messages("arrivals.checkYourAnswers.seals.addOrRemove"),
-          href = seal.routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+          }
+
+        Section(
+          sectionTitle = messages("arrivals.checkYourAnswers.seals.subheading"),
+          rows = helper.sealsYesNo.toList ++ sealRows,
+          addAnotherLink = Link(
+            id = "add-or-remove-seals",
+            text = messages("arrivals.checkYourAnswers.seals.addOrRemove"),
+            href = seal.routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+          )
         )
-      )
+      }
 
-      // TODO - add goods references section
+      val goodsItemNumbersSection = {
+        val goodsItemNumberRows = userAnswers
+          .get(ItemsSection(incidentIndex, equipmentIndex))
+          .mapWithIndex {
+            (_, index) => helper.goodsItemNumber(Index(index))
+          }
 
-      new EquipmentAnswersViewModel(Seq(equipmentSection, sealsSection))
+        Section(
+          sectionTitle = messages("arrivals.checkYourAnswers.goodsItemNumbers.subheading"),
+          rows = helper.goodsItemNumbersYesNo.toList ++ goodsItemNumberRows,
+          addAnotherLink = Link(
+            id = "add-or-remove-goods-item-numbers",
+            text = messages("arrivals.checkYourAnswers.goodsItemNumbers.addOrRemove"),
+            href = itemNumber.routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+          )
+        )
+      }
+
+      new EquipmentAnswersViewModel(Seq(equipmentSection, sealsSection, goodsItemNumbersSection))
     }
   }
 }
