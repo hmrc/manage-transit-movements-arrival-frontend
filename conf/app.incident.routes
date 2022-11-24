@@ -1,4 +1,5 @@
 
+->         /                                                          app.incident.endorsement.Routes
 ->         /                                                          app.incident.location.Routes
 ->         /                                                          app.incident.equipment.Routes
 ->         /                                                          app.incident.transportMeans.Routes
@@ -27,26 +28,6 @@ GET        /:mrn/incidents/:index/add-endorsement                     controller
 POST       /:mrn/incidents/:index/add-endorsement                     controllers.incident.AddEndorsementController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
 GET        /:mrn/incidents/:index/change-add-endorsement              controllers.incident.AddEndorsementController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 POST       /:mrn/incidents/:index/change-add-endorsement              controllers.incident.AddEndorsementController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-
-GET        /:mrn/incidents/:index/endorsement-date                    controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
-POST       /:mrn/incidents/:index/endorsement-date                    controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = NormalMode)
-GET        /:mrn/incidents/:index/change-endorsement-date             controllers.incident.EndorsementDateController.onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
-POST       /:mrn/incidents/:index/change-endorsement-date             controllers.incident.EndorsementDateController.onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode = CheckMode)
-
-GET        /:mrn/incidents/:index/endorsement-authority               controllers.incident.EndorsementAuthorityController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-POST       /:mrn/incidents/:index/endorsement-authority               controllers.incident.EndorsementAuthorityController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-GET        /:mrn/incidents/:index/change-endorsement-authority        controllers.incident.EndorsementAuthorityController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-POST       /:mrn/incidents/:index/change-endorsement-authority        controllers.incident.EndorsementAuthorityController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-
-GET        /:mrn/incidents/:index/endorsement-location                controllers.incident.EndorsementLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-POST       /:mrn/incidents/:index/endorsement-location                controllers.incident.EndorsementLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-GET        /:mrn/incidents/:index/change-endorsement-location         controllers.incident.EndorsementLocationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-POST       /:mrn/incidents/:index/change-endorsement-location         controllers.incident.EndorsementLocationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-
-GET        /:mrn/incidents/:index/endorsement-country                 controllers.incident.EndorsementCountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-POST       /:mrn/incidents/:index/endorsement-country                 controllers.incident.EndorsementCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
-GET        /:mrn/incidents/:index/change-endorsement-country          controllers.incident.EndorsementCountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
-POST       /:mrn/incidents/:index/change-endorsement-country          controllers.incident.EndorsementCountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode, index: Index)
 
 GET        /:mrn/incidents/:index/container-indicator                 controllers.incident.ContainerIndicatorYesNoController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)
 POST       /:mrn/incidents/:index/container-indicator                 controllers.incident.ContainerIndicatorYesNoController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode, index: Index)

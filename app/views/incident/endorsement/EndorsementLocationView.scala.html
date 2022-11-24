@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.incident.routes
+@import controllers.incident.endorsement.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
@@ -27,24 +27,25 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, countryName: String, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.endorsementAuthority.title"),
+    title = messages("incident.endorsement.location.title", countryName),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.EndorsementAuthorityController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.EndorsementLocationController.onSubmit(mrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("incident.endorsementAuthority.heading"),
+                heading = messages("incident.endorsement.location.heading", countryName),
                 caption = Some(messages("incident.caption"))
             ),
+            hint = Some(messages("incident.endorsement.location.hintText")),
             inputClass = InputSize.Width20
         )
 

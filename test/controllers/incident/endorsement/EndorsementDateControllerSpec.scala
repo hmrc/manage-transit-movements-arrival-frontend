@@ -14,90 +14,96 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.incident.EndorsementLocationFormProvider
-import generators.Generators
+import forms.DateFormProvider
 import models.NormalMode
-import models.reference.Country
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
-import pages.incident.{EndorsementCountryPage, EndorsementLocationPage}
+import pages.incident.endorsement.EndorsementDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.EndorsementLocationView
+import views.html.incident.endorsement.EndorsementDateView
 
+import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val country                       = arbitrary[Country].sample.value
-  private val formProvider                  = new EndorsementLocationFormProvider()
-  private val form                          = formProvider("incident.endorsementLocation", country.description)
-  private val mode                          = NormalMode
-  private lazy val endorsementLocationRoute = routes.EndorsementLocationController.onPageLoad(mrn, mode, index).url
+  private val minDate = frontendAppConfig.endorsementDateMin
+  private val zone    = ZoneOffset.UTC
+  private val clock   = Clock.systemDefaultZone.withZone(zone)
+
+  private val formProvider              = new DateFormProvider(clock)
+  private val form                      = formProvider("incident.endorsement.date", minDate)
+  private val mode                      = NormalMode
+  private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, index, mode).url
+  private val date                      = LocalDate.now
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
-  "EndorsementLocation Controller" - {
+  "EndorsementDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, endorsementLocationRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[EndorsementLocationView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, country.description, mode, index)(request, messages).toString
+        view(form, mrn, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(EndorsementCountryPage(index), country)
-        .setValue(EndorsementLocationPage(index), "test string")
+      val userAnswers = emptyUserAnswers.setValue(EndorsementDatePage(index), date)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, endorsementLocationRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(
+        Map(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
+        )
+      )
 
-      val view = injector.instanceOf[EndorsementLocationView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, endorsementLocationRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, endorsementDateRoute)
+        .withFormUrlEncodedBody(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
+        )
 
       val result = route(app, request).value
 
@@ -108,30 +114,28 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, endorsementLocationRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, endorsementDateRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[EndorsementLocationView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, endorsementLocationRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
@@ -144,8 +148,13 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, endorsementLocationRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request =
+        FakeRequest(POST, endorsementDateRoute)
+          .withFormUrlEncodedBody(
+            "value.day"   -> date.getDayOfMonth.toString,
+            "value.month" -> date.getMonthValue.toString,
+            "value.year"  -> date.getYear.toString
+          )
 
       val result = route(app, request).value
 

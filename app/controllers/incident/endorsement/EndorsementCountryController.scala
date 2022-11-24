@@ -14,66 +14,65 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.incident.EndorsementLocationFormProvider
+import forms.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.{EndorsementCountryPage, EndorsementLocationPage}
+import pages.incident.endorsement.EndorsementCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.EndorsementLocationView
+import views.html.incident.endorsement.EndorsementCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EndorsementLocationController @Inject() (
+class EndorsementCountryController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
-  formProvider: EndorsementLocationFormProvider,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: CountryFormProvider,
+  service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  view: EndorsementLocationView
+  view: EndorsementCountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] =
-    actions
-      .requireData(mrn)
-      .andThen(getMandatoryPage(EndorsementCountryPage(index))) {
-        implicit request =>
-          val country = request.arg
-          val form    = formProvider("incident.endorsementLocation", country.description)
-          val preparedForm = request.userAnswers.get(EndorsementLocationPage(index)) match {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      service.getTransitCountries().map {
+        countryList =>
+          val form = formProvider("incident.endorsement.country", countryList)
+          val preparedForm = request.userAnswers.get(EndorsementCountryPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, mrn, country.description, mode, index))
-      }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] =
-    actions
-      .requireData(mrn)
-      .andThen(getMandatoryPage(EndorsementCountryPage(index)))
-      .async {
-        implicit request =>
-          val country = request.arg
-          val form    = formProvider("incident.endorsementLocation", country.description)
+          Ok(view(preparedForm, mrn, countryList.countries, mode, index))
+      }
+  }
+
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
+    implicit request =>
+      service.getTransitCountries().flatMap {
+        countryList =>
+          val form = formProvider("incident.endorsement.country", countryList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, country.description, mode, index))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
               value => {
-                implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }
+  }
 }

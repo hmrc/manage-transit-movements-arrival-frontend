@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
-import controllers.incident.routes
+import controllers.incident.endorsement.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident.EndorsementSection

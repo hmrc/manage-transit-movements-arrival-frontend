@@ -27,16 +27,16 @@ class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[IdentificationNavigatorProvider]).to(classOf[IdentificationNavigatorProviderImpl])
-    bind(classOf[LocationOfGoodsNavigatorProvider]).to(classOf[LocationOfGoodsNavigatorProviderImpl])
-    bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
-    bind(classOf[IncidentsNavigatorProvider]).to(classOf[IncidentsNavigatorProviderImpl])
-    bind(classOf[EquipmentNavigatorProvider]).to(classOf[EquipmentNavigatorProviderImpl])
-    bind(classOf[EquipmentsNavigatorProvider]).to(classOf[EquipmentsNavigatorProviderImpl])
-    bind(classOf[SealNavigatorProvider]).to(classOf[SealNavigatorProviderImpl])
-    bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
-    bind(classOf[AuthorisationsNavigatorProvider]).to(classOf[AuthorisationsNavigatorProviderImpl])
     bind(classOf[ArrivalNavigatorProvider]).to(classOf[ArrivalNavigatorProviderImpl])
+
+    bind(classOf[AuthorisationsNavigatorProvider]).to(classOf[AuthorisationsNavigatorProviderImpl])
+    bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
+
+    bind(classOf[IncidentsNavigatorProvider]).to(classOf[IncidentsNavigatorProviderImpl])
+    bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
+    bind(classOf[EquipmentsNavigatorProvider]).to(classOf[EquipmentsNavigatorProviderImpl])
+    bind(classOf[EquipmentNavigatorProvider]).to(classOf[EquipmentNavigatorProviderImpl])
+    bind(classOf[SealNavigatorProvider]).to(classOf[SealNavigatorProviderImpl])
     bind(classOf[ItemNumberNavigatorProvider]).to(classOf[ItemNumberNavigatorProviderImpl])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction

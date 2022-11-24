@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
+import models.reference.Country
 import pages.behaviours.PageBehaviours
 
-class EndorsementLocationPageSpec extends PageBehaviours {
+class EndorsementCountryPageSpec extends PageBehaviours {
 
-  "EndorsementLocationPage" - {
+  "EndorsementCountryPage" - {
 
-    beRetrievable[String](EndorsementLocationPage(index))
+    beRetrievable[Country](EndorsementCountryPage(index))
 
-    beSettable[String](EndorsementLocationPage(index))
+    beSettable[Country](EndorsementCountryPage(index))
 
-    beRemovable[String](EndorsementLocationPage(index))
+    beRemovable[Country](EndorsementCountryPage(index))
   }
 }

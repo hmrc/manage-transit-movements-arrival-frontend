@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import config.FrontendAppConfig
 import controllers.actions._
@@ -22,12 +22,12 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.EndorsementDatePage
+import pages.incident.endorsement.EndorsementDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.EndorsementDateView
+import views.html.incident.endorsement.EndorsementDateView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +46,7 @@ class EndorsementDateController @Inject() (
     with I18nSupport {
 
   private val minDate = appConfig.endorsementDateMin
-  private val form    = formProvider("incident.endorsementDate", minDate)
+  private val form    = formProvider("incident.endorsement.date", minDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CustomsOfficeFormProvider
 import generators.Generators
 import models.{CustomsOfficeList, NormalMode}
-import navigation.IdentificationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.DestinationOfficePage
@@ -49,7 +49,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
       .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
   "DestinationOffice Controller" - {

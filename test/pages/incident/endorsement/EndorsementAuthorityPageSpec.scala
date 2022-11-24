@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
 import pages.behaviours.PageBehaviours
 

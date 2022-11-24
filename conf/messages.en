@@ -364,6 +364,14 @@ incident.incidentText.error.required = Describe what happened during the inciden
 incident.incidentText.error.maxLength = The description of the incident must be 512 characters or less
 incident.incidentText.error.invalidCharacters = The description of the incident must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
+incident.addEndorsement.title = Do you need to add an endorsement for the incident?
+incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
+incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.
+incident.addEndorsement.paragraph2 = An endorsement can only be provided by customs, Border Force or the police.
+incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsement for the incident?
+incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
+incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
+
 incident.containerIndicatorYesNo.title = Did the incident involve a container?
 incident.containerIndicatorYesNo.heading = Did the incident involve a container?
 incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
@@ -379,50 +387,42 @@ incident.addTransportEquipment.paragraph = This includes any containers or seals
 
 # Incident - Endorsement
 
-incident.addEndorsement.title = Do you need to add an endorsement for the incident?
-incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
-incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.
-incident.addEndorsement.paragraph2 = An endorsement can only be provided by customs, Border Force or the police.
-incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsement for the incident?
-incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
-incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
+incident.endorsement.date.title = When was the endorsement made?
+incident.endorsement.date.heading = When was the endorsement made?
+incident.endorsement.date.checkYourAnswersLabel = Endorsement date
+incident.endorsement.date.change.hidden = endorsement date
+incident.endorsement.date.hint = For example, 15 08 2022.
+incident.endorsement.date.error.required.all = Enter the date the endorsement was made
+incident.endorsement.date.error.required.two = The endorsement date must include a {0} and {1}
+incident.endorsement.date.error.required = The endorsement date must include a {0}
+incident.endorsement.date.error.invalid = The endorsement date must only include numbers 0 to 9 //TODO: Content reassessing invalid error for date pages. New ticket expected.
+incident.endorsement.date.error.min.date = The endorsement date must be after {0}
+incident.endorsement.date.error.max.date = The endorsement date must be before today’s date
 
-incident.endorsementDate.title = When was the endorsement made?
-incident.endorsementDate.heading = When was the endorsement made?
-incident.endorsementDate.checkYourAnswersLabel = Endorsement date
-incident.endorsementDate.change.hidden = endorsement date
-incident.endorsementDate.hint = For example, 15 08 2022.
-incident.endorsementDate.error.required.all = Enter the date the endorsement was made
-incident.endorsementDate.error.required.two = The endorsement date must include a {0} and {1}
-incident.endorsementDate.error.required = The endorsement date must include a {0}
-incident.endorsementDate.error.invalid = The endorsement date must only include numbers 0 to 9 //TODO: Content reassessing invalid error for date pages. New ticket expected.
-incident.endorsementDate.error.min.date = The endorsement date must be after {0}
-incident.endorsementDate.error.max.date = The endorsement date must be before today’s date
+incident.endorsement.authority.title = What authority made the endorsement?
+incident.endorsement.authority.heading = What authority made the endorsement?
+incident.endorsement.authority.checkYourAnswersLabel = Authority
+incident.endorsement.authority.change.hidden = endorsement authority
+incident.endorsement.authority.error.required = Enter the name of the authority that made the endorsement
+incident.endorsement.authority.error.length = The name of the authority must be 35 characters or less
+incident.endorsement.authority.error.invalid = The name of the authority must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
-incident.endorsementAuthority.title = What authority made the endorsement?
-incident.endorsementAuthority.heading = What authority made the endorsement?
-incident.endorsementAuthority.checkYourAnswersLabel = Authority
-incident.endorsementAuthority.change.hidden = endorsement authority
-incident.endorsementAuthority.error.required = Enter the name of the authority that made the endorsement
-incident.endorsementAuthority.error.length = The name of the authority must be 35 characters or less
-incident.endorsementAuthority.error.invalid = The name of the authority must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+incident.endorsement.country.title = In which country was the endorsement made?
+incident.endorsement.country.heading = In which country was the endorsement made?
+incident.endorsement.country.hintText = Enter the country, like Italy or Spain.
+incident.endorsement.country.placeholder = Select a country
+incident.endorsement.country.checkYourAnswersLabel = Country
+incident.endorsement.country.change.hidden = endorsement country
+incident.endorsement.country.error.required = Enter which country the endorsement was made in
 
-incident.endorsementCountry.title = In which country was the endorsement made?
-incident.endorsementCountry.heading = In which country was the endorsement made?
-incident.endorsementCountry.hintText = Enter the country, like Italy or Spain.
-incident.endorsementCountry.placeholder = Select a country
-incident.endorsementCountry.checkYourAnswersLabel = Country
-incident.endorsementCountry.change.hidden = endorsement country
-incident.endorsementCountry.error.required = Enter which country the endorsement was made in
-
-incident.endorsementLocation.title = Where in {0} was the endorsement made?
-incident.endorsementLocation.heading = Where in {0} was the endorsement made?
-incident.endorsementLocation.hintText = Describe the specific location of the endorsement. This can be up to 35 characters long.
-incident.endorsementLocation.checkYourAnswersLabel = Location
-incident.endorsementLocation.change.hidden = endorsement location
-incident.endorsementLocation.error.required = Enter where in {0} the endorsement was made
-incident.endorsementLocation.error.length = The endorsement location must be 35 characters or less
-incident.endorsementLocation.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+incident.endorsement.location.title = Where in {0} was the endorsement made?
+incident.endorsement.location.heading = Where in {0} was the endorsement made?
+incident.endorsement.location.hintText = Describe the specific location of the endorsement. This can be up to 35 characters long.
+incident.endorsement.location.checkYourAnswersLabel = Location
+incident.endorsement.location.change.hidden = endorsement location
+incident.endorsement.location.error.required = Enter where in {0} the endorsement was made
+incident.endorsement.location.error.length = The endorsement location must be 35 characters or less
+incident.endorsement.location.error.invalid = The endorsement location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 # Incident - Location
 

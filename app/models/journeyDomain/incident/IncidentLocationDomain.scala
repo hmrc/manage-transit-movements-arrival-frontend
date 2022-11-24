@@ -17,12 +17,12 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
 import models.reference.UnLocode
+import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
-sealed trait IncidentLocationDomain extends JourneyDomainModel
+sealed trait IncidentLocationDomain
 
 object IncidentLocationDomain {
 

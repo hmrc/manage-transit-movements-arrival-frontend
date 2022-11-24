@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UnLocodeFormProvider
 import generators.Generators
 import models.{NormalMode, UnLocodeList}
-import navigation.LocationOfGoodsNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.UnlocodePage
@@ -50,7 +50,7 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[UnLocodeService]).toInstance(mockUnLocodesService))
-      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "Unlocode Controller" - {
 

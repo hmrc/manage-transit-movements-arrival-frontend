@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
-import navigation.LocationOfGoodsNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
@@ -45,7 +45,7 @@ class ContactPersonTelephoneControllerSpec extends SpecBase with AppWithDefaultM
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "ContactPersonTelephone Controller" - {
 

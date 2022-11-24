@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EoriNumberFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
+import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.IdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: LocationOfGoodsNavigatorProvider,
+  navigatorProvider: ArrivalNavigatorProvider,
   formProvider: EoriNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,

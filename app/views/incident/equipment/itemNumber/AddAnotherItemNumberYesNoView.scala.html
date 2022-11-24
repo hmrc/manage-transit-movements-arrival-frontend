@@ -43,25 +43,25 @@
     @errorSummary(form.errors)
 
     @heading(
-          heading = viewModel.heading,
-          caption = Some(messages("incident.caption"))
+        heading = viewModel.heading,
+        caption = Some(messages("incident.caption"))
     )
 
     @listWithActions(viewModel.listItems)
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-       @if(viewModel.allowMoreItems) {
-           @inputYesNo(
-               field = form("value"),
-               yesNoType = YesNoWithLegend(
-                   legend = messages(viewModel.legend)
-               )
-           )
-       } else {
+        @if(viewModel.allowMoreItems) {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegend(
+                    legend = messages(viewModel.legend)
+                )
+            )
+        } else {
             <p class="govuk-body" data-testId="maxLimit">@messages(s"${viewModel.prefix}.maxLimit.label")</p>
-       }
+        }
 
-       @button(attributes = Map("id" -> "submit"))
+        @button(attributes = Map("id" -> "submit"))
     }
 }

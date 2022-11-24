@@ -50,13 +50,13 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-    @if(viewModel.allowMoreIncidents) {
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = YesNoWithLegend(
-            legend = viewModel.legend
+        @if(viewModel.allowMoreIncidents) {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegend(
+                    legend = viewModel.legend
+                )
             )
-        )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }

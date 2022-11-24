@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification._
@@ -29,18 +29,18 @@ case class IdentificationDomain(
   identificationNumber: String,
   procedureType: ProcedureType,
   authorisations: Option[AuthorisationsDomain]
-) extends JourneyDomainModel
+)
 
 object IdentificationDomain {
 
-  private val mrn: UserAnswersReader[MovementReferenceNumber] = {
+  private val mrnReader: UserAnswersReader[MovementReferenceNumber] = {
     val fn: UserAnswers => EitherType[MovementReferenceNumber] = ua => Right(ua.mrn)
     UserAnswersReader(fn)
   }
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] = {
+  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
     for {
-      mrn                  <- mrn
+      mrn                  <- mrnReader
       destinationOffice    <- DestinationOfficePage.reader
       identificationNumber <- IdentificationNumberPage.reader
       isSimplified         <- IsSimplifiedProcedurePage.reader
@@ -50,5 +50,4 @@ object IdentificationDomain {
       }
 
     } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisations)
-  }
 }

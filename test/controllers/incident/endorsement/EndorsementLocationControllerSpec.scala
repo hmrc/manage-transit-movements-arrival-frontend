@@ -14,79 +14,89 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.incident.EndorsementAuthorityFormProvider
+import forms.incident.EndorsementLocationFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.Country
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.EndorsementAuthorityPage
+import org.scalacheck.Arbitrary.arbitrary
+import pages.incident.endorsement.{EndorsementCountryPage, EndorsementLocationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.EndorsementAuthorityView
+import views.html.incident.endorsement.EndorsementLocationView
 
 import scala.concurrent.Future
 
-class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                   = new EndorsementAuthorityFormProvider()
-  private val form                           = formProvider("incident.endorsementAuthority")
-  private val mode                           = NormalMode
-  private lazy val endorsementAuthorityRoute = routes.EndorsementAuthorityController.onPageLoad(mrn, mode, index).url
+  private val country                       = arbitrary[Country].sample.value
+  private val formProvider                  = new EndorsementLocationFormProvider()
+  private val form                          = formProvider("incident.endorsement.location", country.description)
+  private val mode                          = NormalMode
+  private lazy val endorsementLocationRoute = routes.EndorsementLocationController.onPageLoad(mrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
-  "EndorsementAuthority Controller" - {
+  "EndorsementLocation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode, index)(request, messages).toString
+        view(form, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementAuthorityPage(index), "test string")
+      val userAnswers = emptyUserAnswers
+        .setValue(EndorsementCountryPage(index), country)
+        .setValue(EndorsementLocationPage(index), "test string")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, endorsementAuthorityRoute)
+      val request = FakeRequest(POST, endorsementLocationRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
@@ -98,28 +108,30 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, endorsementAuthorityRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, endorsementLocationRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementLocationView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, country.description, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      val request = FakeRequest(GET, endorsementLocationRoute)
 
       val result = route(app, request).value
 
@@ -132,7 +144,7 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, endorsementAuthorityRoute)
+      val request = FakeRequest(POST, endorsementLocationRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

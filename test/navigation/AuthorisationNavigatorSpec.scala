@@ -51,12 +51,12 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
       val navigator         = navigatorProvider.apply(mode, authorisationIndex)
 
       "when answers complete" - {
-        "must redirect to location of goods type page" in {
-          forAll(arbitraryIdentificationAnswers(emptyUserAnswers)) {
+        "must redirect to check your answers" in {
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(controllers.locationOfGoods.routes.TypeOfLocationController.onPageLoad(answers.mrn, mode))
+                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

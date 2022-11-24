@@ -17,12 +17,10 @@
 package models.journeyDomain
 
 import models.{Mode, UserAnswers}
-import navigation.UserAnswersNavigator
 import play.api.mvc.Call
 
 trait JourneyDomainModel {
 
-  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(UserAnswersNavigator.nextPage[ArrivalDomain](userAnswers, mode))
+  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call]
 
 }

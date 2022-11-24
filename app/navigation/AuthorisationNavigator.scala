@@ -28,7 +28,7 @@ class AuthorisationNavigatorProviderImpl @Inject() () extends AuthorisationNavig
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
       case NormalMode => new AuthorisationNavigator(mode, index)
-      case CheckMode  => new IdentificationNavigator(mode)
+      case CheckMode  => new ArrivalNavigator(mode)
     }
 }
 
