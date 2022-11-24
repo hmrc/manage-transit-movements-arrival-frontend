@@ -17,13 +17,12 @@
 package views.incident.transportMeans
 
 import forms.NationalityFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import models.{NationalityList, NormalMode}
 import models.reference.Nationality
-import models.NationalityList
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.incident.transportMeans.TransportNationalityView
 
 class TransportNationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
@@ -40,6 +39,8 @@ class TransportNationalityViewSpec extends InputSelectViewBehaviours[Nationality
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
+
+  behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading()
 
