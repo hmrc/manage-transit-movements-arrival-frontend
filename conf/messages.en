@@ -152,14 +152,14 @@ identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you
 identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the {0} authorisation {1}?
 identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you sure you want to remove the {0} authorisation {1}
 
-identification.identificationNumber.title = What is the consignee’s EORI number or TIN?
-identification.identificationNumber.heading = What is the consignee’s EORI number or TIN?
+identification.identificationNumber.title = What is the consignee’s EORI number or Trader Identification Number (TIN)?
+identification.identificationNumber.heading = What is the consignee’s EORI number or Trader Identification Number (TIN)?
 identification.identificationNumber.paragraph = The consignee is the person or company receiving the goods at the office of destination.
-identification.identificationNumber.hint = The EORI number or TIN can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+identification.identificationNumber.hint = This number can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 identification.identificationNumber.checkYourAnswersLabel = Consignee EORI number or Trader Identification Number (TIN)
-identification.identificationNumber.error.required = Enter the consignee’s EORI number or TIN.
-identification.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9.
-identification.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less.
+identification.identificationNumber.error.required = Enter the consignee’s EORI number or Trader Identification Number (TIN)
+identification.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
+identification.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 identification.identificationNumber.change.hidden = consignee EORI number or Trader Identification Number (TIN)
 
 #location of goods
@@ -292,14 +292,14 @@ locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location o
 locationOfGoods.unlocode.error.invalidCharacters = The UN/LOCODE for the location of goods must only include letters a to z and spaces
 locationOfGoods.unlocode.error.maxLength = The UN/LOCODE for the location of goods must be 5 characters long
 
-locationOfGoods.identificationNumber.title = What is the EORI number or TIN for the location of goods?
-locationOfGoods.identificationNumber.heading = What is the EORI number or TIN for the location of goods?
+locationOfGoods.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 locationOfGoods.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
 locationOfGoods.identificationNumber.change.hidden = EORI number or Trader Identification Number (TIN) for the location of goods
-locationOfGoods.identificationNumber.error.required = Enter the EORI number or TIN for the location of goods
-locationOfGoods.identificationNumber.error.maxLength = The EORI number or TIN must be 17 characters or less
-locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or TIN must only include letters a to z and numbers 0 to 9
-locationOfGoods.identificationNumber.hintText = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+locationOfGoods.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the location of goods
+locationOfGoods.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
+locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 
 locationOfGoods.addAdditionalIdentifier.title = Do you want to add an additional identifier for the location of goods?
 locationOfGoods.addAdditionalIdentifier.heading = Do you want to add an additional identifier for the location of goods?
