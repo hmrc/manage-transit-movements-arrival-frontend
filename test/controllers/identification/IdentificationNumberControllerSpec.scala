@@ -19,7 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EoriNumberFormProvider
 import models.NormalMode
-import navigation.IdentificationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.IdentificationNumberPage
@@ -41,7 +41,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "IdentificationNumber Controller" - {
 

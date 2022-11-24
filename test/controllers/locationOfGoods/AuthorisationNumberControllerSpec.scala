@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
-import navigation.LocationOfGoodsNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AuthorisationNumberPage
@@ -41,7 +41,7 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "AuthorisationNumber Controller" - {
 

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PostalCodeFormProvider
 import generators.Generators
 import models.{CountryList, NormalMode, PostalCodeAddress, UserAnswers}
-import navigation.LocationOfGoodsNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -56,7 +56,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
-      .overrides(bind(classOf[LocationOfGoodsNavigatorProvider]).toInstance(fakeLocationOfGoodsNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "Address Controller" - {
 

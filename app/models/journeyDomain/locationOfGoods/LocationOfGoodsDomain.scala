@@ -17,14 +17,14 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import pages.locationOfGoods.TypeOfLocationPage
 
 case class LocationOfGoodsDomain(
   typeOfLocation: TypeOfLocation,
   qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
-) extends JourneyDomainModel
+)
 
 object LocationOfGoodsDomain {
 

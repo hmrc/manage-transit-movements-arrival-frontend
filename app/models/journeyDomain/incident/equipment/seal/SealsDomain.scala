@@ -16,12 +16,12 @@
 
 package models.journeyDomain.incident.equipment.seal
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
 
-case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
+case class SealsDomain(seals: Seq[SealDomain])
 
 object SealsDomain {
 

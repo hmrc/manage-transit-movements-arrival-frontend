@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.{Mode, MovementReferenceNumber, QualifierOfIdentification}
-import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
+import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class QualifierOfIdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: LocationOfGoodsNavigatorProvider,
+  navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,

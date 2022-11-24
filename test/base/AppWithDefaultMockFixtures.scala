@@ -58,29 +58,26 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
-  protected val fakeIncidentNavigatorProvider: IncidentNavigatorProvider =
-    (mode: Mode, index: Index) => new FakeIncidentNavigator(onwardRoute, index, mode)
-
-  protected val fakeIncidentsNavigatorProvider: IncidentsNavigatorProvider =
-    (mode: Mode) => new FakeIncidentsNavigator(onwardRoute, mode)
-
-  protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
-    (mode: Mode, index: Index) => new FakeAuthorisationNavigator(onwardRoute, index, mode)
+  protected val fakeArrivalNavigatorProvider: ArrivalNavigatorProvider =
+    (mode: Mode) => new FakeArrivalNavigator(onwardRoute, mode)
 
   protected val fakeAuthorisationsNavigatorProvider: AuthorisationsNavigatorProvider =
     (mode: Mode) => new FakeAuthorisationsNavigator(onwardRoute, mode)
 
-  protected val fakeIdentificationNavigatorProvider: IdentificationNavigatorProvider =
-    (mode: Mode) => new FakeIdentificationNavigator(onwardRoute, mode)
+  protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
+    (mode: Mode, index: Index) => new FakeAuthorisationNavigator(onwardRoute, index, mode)
 
-  protected val fakeLocationOfGoodsNavigatorProvider: LocationOfGoodsNavigatorProvider =
-    (mode: Mode) => new FakeLocationOfGoodsNavigator(onwardRoute, mode)
+  protected val fakeIncidentsNavigatorProvider: IncidentsNavigatorProvider =
+    (mode: Mode) => new FakeIncidentsNavigator(onwardRoute, mode)
 
-  protected val fakeEquipmentNavigatorProvider: EquipmentNavigatorProvider =
-    (mode: Mode, incidentIndex: Index, equipmentIndex: Index) => new FakeEquipmentNavigator(onwardRoute, incidentIndex, equipmentIndex, mode)
+  protected val fakeIncidentNavigatorProvider: IncidentNavigatorProvider =
+    (mode: Mode, index: Index) => new FakeIncidentNavigator(onwardRoute, index, mode)
 
   protected val fakeEquipmentsNavigatorProvider: EquipmentsNavigatorProvider =
     (mode: Mode, incidentIndex: Index) => new FakeEquipmentsNavigator(onwardRoute, incidentIndex, mode)
+
+  protected val fakeEquipmentNavigatorProvider: EquipmentNavigatorProvider =
+    (mode: Mode, incidentIndex: Index, equipmentIndex: Index) => new FakeEquipmentNavigator(onwardRoute, incidentIndex, equipmentIndex, mode)
 
   protected val fakeSealNavigatorProvider: SealNavigatorProvider =
     (mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) =>
@@ -89,9 +86,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeItemNumberNavigatorProvider: ItemNumberNavigatorProvider =
     (mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) =>
       new FakeItemNumberNavigator(onwardRoute, incidentIndex, equipmentIndex, sealIndex, mode)
-
-  protected val fakeArrivalNavigatorProvider: ArrivalNavigatorProvider =
-    (mode: Mode) => new FakeArrivalNavigator(onwardRoute, mode)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

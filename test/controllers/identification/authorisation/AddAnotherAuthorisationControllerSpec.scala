@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.{Index, NormalMode}
-import navigation.IdentificationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -49,7 +49,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AddAnotherAuthorisationViewModelProvider]).toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

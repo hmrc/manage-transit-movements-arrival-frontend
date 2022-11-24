@@ -19,7 +19,7 @@ package controllers.identification
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, NormalMode, UserAnswers}
-import navigation.IdentificationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -47,7 +47,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[IdentificationNavigatorProvider]).toInstance(fakeIdentificationNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
       .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
 
   override def beforeEach(): Unit = {

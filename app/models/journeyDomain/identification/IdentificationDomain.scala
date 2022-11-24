@@ -18,7 +18,7 @@ package models.journeyDomain.identification
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification._
@@ -29,7 +29,7 @@ case class IdentificationDomain(
   identificationNumber: String,
   procedureType: ProcedureType,
   authorisations: Option[AuthorisationsDomain]
-) extends JourneyDomainModel
+)
 
 object IdentificationDomain {
 

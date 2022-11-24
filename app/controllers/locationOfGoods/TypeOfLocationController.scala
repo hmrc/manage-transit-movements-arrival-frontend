@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
-import navigation.{LocationOfGoodsNavigatorProvider, UserAnswersNavigator}
+import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TypeOfLocationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: LocationOfGoodsNavigatorProvider,
+  navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,

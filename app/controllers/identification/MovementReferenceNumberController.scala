@@ -19,7 +19,7 @@ package controllers.identification
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
 import models.Mode
-import navigation.IdentificationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class MovementReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigatorProvider: IdentificationNavigatorProvider,
+  navigatorProvider: ArrivalNavigatorProvider,
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
   userAnswersService: UserAnswersService,

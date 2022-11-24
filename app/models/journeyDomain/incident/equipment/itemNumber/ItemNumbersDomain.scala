@@ -16,12 +16,12 @@
 
 package models.journeyDomain.incident.equipment.itemNumber
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 
-case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain]) extends JourneyDomainModel
+case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain])
 
 object ItemNumbersDomain {
 
