@@ -42,7 +42,5 @@ object AuthorisationDomain {
     (
       AuthorisationTypePage(index).reader,
       AuthorisationReferenceNumberPage(index).reader
-    ).mapN {
-      (`type`, referenceNumber) => AuthorisationDomain(`type`, referenceNumber)(index)
-    }
+    ).tupled.map((AuthorisationDomain.apply _).tupled).map(_(index))
 }

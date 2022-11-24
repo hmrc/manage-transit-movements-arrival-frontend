@@ -33,14 +33,14 @@ case class IdentificationDomain(
 
 object IdentificationDomain {
 
-  private val mrn: UserAnswersReader[MovementReferenceNumber] = {
+  private val mrnReader: UserAnswersReader[MovementReferenceNumber] = {
     val fn: UserAnswers => EitherType[MovementReferenceNumber] = ua => Right(ua.mrn)
     UserAnswersReader(fn)
   }
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] = {
+  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
     for {
-      mrn                  <- mrn
+      mrn                  <- mrnReader
       destinationOffice    <- DestinationOfficePage.reader
       identificationNumber <- IdentificationNumberPage.reader
       isSimplified         <- IsSimplifiedProcedurePage.reader
@@ -50,5 +50,4 @@ object IdentificationDomain {
       }
 
     } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisations)
-  }
 }
