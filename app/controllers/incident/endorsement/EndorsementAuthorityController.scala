@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.EndorsementAuthorityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementAuthorityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -47,7 +47,7 @@ class EndorsementAuthorityController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(endorsement.EndorsementAuthorityPage(index)) match {
+      val preparedForm = request.userAnswers.get(EndorsementAuthorityPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -62,7 +62,7 @@ class EndorsementAuthorityController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            endorsement.EndorsementAuthorityPage(index).writeToUserAnswers(value).writeToSession().navigate()
+            EndorsementAuthorityPage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

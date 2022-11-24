@@ -23,7 +23,7 @@ import models.{CountryList, NormalMode}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementCountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -74,7 +74,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementCountryPage(index), country1)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, endorsementCountryRoute)

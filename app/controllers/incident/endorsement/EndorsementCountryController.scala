@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -50,7 +50,7 @@ class EndorsementCountryController @Inject() (
       service.getTransitCountries().map {
         countryList =>
           val form = formProvider("incident.endorsement.country", countryList)
-          val preparedForm = request.userAnswers.get(endorsement.EndorsementCountryPage(index)) match {
+          val preparedForm = request.userAnswers.get(EndorsementCountryPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
@@ -70,7 +70,7 @@ class EndorsementCountryController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                endorsement.EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

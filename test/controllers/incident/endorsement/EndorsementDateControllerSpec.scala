@@ -22,7 +22,7 @@ import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -69,7 +69,7 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementDatePage(index), date)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementDatePage(index), date)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, endorsementDateRoute)

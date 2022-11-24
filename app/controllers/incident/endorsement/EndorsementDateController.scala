@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -50,7 +50,7 @@ class EndorsementDateController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(endorsement.EndorsementDatePage(index)) match {
+      val preparedForm = request.userAnswers.get(EndorsementDatePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -65,7 +65,7 @@ class EndorsementDateController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode))),
           value => {
             implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            endorsement.EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigate()
+            EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

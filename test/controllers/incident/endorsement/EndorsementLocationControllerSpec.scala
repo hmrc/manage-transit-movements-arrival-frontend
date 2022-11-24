@@ -25,7 +25,6 @@ import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.incident.endorsement
 import pages.incident.endorsement.{EndorsementCountryPage, EndorsementLocationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -71,7 +70,7 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(endorsement.EndorsementCountryPage(index), country)
+        .setValue(EndorsementCountryPage(index), country)
         .setValue(EndorsementLocationPage(index), "test string")
       setExistingUserAnswers(userAnswers)
 
@@ -91,7 +90,7 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementCountryPage(index), country)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
 
       setExistingUserAnswers(userAnswers)
 
@@ -109,7 +108,7 @@ class EndorsementLocationControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementCountryPage(index), country)
+      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country)
 
       setExistingUserAnswers(userAnswers)
 

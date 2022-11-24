@@ -22,7 +22,7 @@ import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.endorsement
+import pages.incident.endorsement.EndorsementAuthorityPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -63,7 +63,7 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementAuthorityPage(index), "test string")
+      val userAnswers = emptyUserAnswers.setValue(EndorsementAuthorityPage(index), "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, endorsementAuthorityRoute)

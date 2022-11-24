@@ -21,7 +21,6 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.EndorsementLocationFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.endorsement
 import pages.incident.endorsement.{EndorsementCountryPage, EndorsementLocationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -62,7 +61,7 @@ class EndorsementLocationController @Inject() (
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(endorsement.EndorsementCountryPage(index)))
+      .andThen(getMandatoryPage(EndorsementCountryPage(index)))
       .async {
         implicit request =>
           val country = request.arg
@@ -73,7 +72,7 @@ class EndorsementLocationController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, country.description, mode, index))),
               value => {
                 implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                endorsement.EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }
