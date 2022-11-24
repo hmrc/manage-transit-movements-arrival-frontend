@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
+import models.NationalityList
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -100,6 +101,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |   "description":"Andorra"
       | }
       |]
+      |""".stripMargin
+
+  private val transportDataJson: String =
+    """
+      |{
+      |  "nationalities": [
+      |    {
+      |      "code":"GB",
+      |      "desc":"United Kingdom"
+      |    },
+      |    {
+      |      "code":"AD",
+      |      "desc":"Andorra"
+      |    }
+      |  ]
+      |}
       |""".stripMargin
 
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
@@ -238,6 +255,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getNationalities" - {
+
+      "must return a successful future response with a sequence of Nationalities" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/transport"))
+            .willReturn(okJson(transportDataJson))
+        )
+
+        val expectedResult = NationalityList(
+          Seq(
+            Nationality("GB", "United Kingdom"),
+            Nationality("AD", "Andorra")
+          )
+        )
+
+        connector.getTransportData().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/nationalities", connector.getTransportData())
+      }
+
+    }
+
   }
 
   private def checkErrorResponse(url: String, result: Future[_]): Assertion =
@@ -255,4 +296,5 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           _ mustBe an[Exception]
         }
     }
+
 }

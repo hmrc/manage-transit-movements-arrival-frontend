@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ApiService
 import uk.gov.hmrc.http.HttpReads.{is2xx, is4xx}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
+import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import views.html.CheckArrivalsAnswersView
 
 import scala.concurrent.ExecutionContext
@@ -35,7 +35,7 @@ class CheckArrivalsAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
-  viewModelProvider: CheckArrivalsAnswersViewModelProvider,
+  viewModelProvider: ArrivalAnswersViewModelProvider,
   apiService: ApiService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

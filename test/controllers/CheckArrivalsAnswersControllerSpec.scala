@@ -25,20 +25,20 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ApiService
-import viewModels.CheckArrivalsAnswersViewModel
-import viewModels.CheckArrivalsAnswersViewModel.CheckArrivalsAnswersViewModelProvider
+import viewModels.ArrivalAnswersViewModel
+import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import viewModels.sections.Section
 import views.html.CheckArrivalsAnswersView
 
 class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[CheckArrivalsAnswersViewModelProvider]
+  private lazy val mockViewModelProvider = mock[ArrivalAnswersViewModelProvider]
   private val mockApiService: ApiService = mock[ApiService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckArrivalsAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider))
       .overrides(bind(classOf[ApiService]).toInstance(mockApiService))
 
   "Check your Answers Controller" - {
@@ -46,7 +46,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return OK and the correct view for a GET" in {
       val sampleSections = listWithMaxLength[Section]().sample.value
 
-      when(mockViewModelProvider.apply(any())(any())).thenReturn(CheckArrivalsAnswersViewModel(sampleSections))
+      when(mockViewModelProvider.apply(any())(any())).thenReturn(ArrivalAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 

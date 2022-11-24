@@ -19,8 +19,9 @@ package generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
 import models.{Coordinates, DynamicAddress, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -109,7 +110,8 @@ trait UserAnswersEntryGenerators {
       generateIncidentLocationAnswer orElse
       generateIncidentEquipmentAnswer orElse
       generateIncidentEquipmentSealAnswer orElse
-      generateIncidentEquipmentItemNumberAnswer
+      generateIncidentEquipmentItemNumberAnswer orElse
+      generateIncidentTransportMeansAnswer
   }
 
   private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -153,6 +155,15 @@ trait UserAnswersEntryGenerators {
     import pages.incident.equipment.itemNumber._
     {
       case ItemNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateIncidentTransportMeansAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident.transportMeans._
+    {
+      case IdentificationPage(_)       => arbitrary[Identification].map(Json.toJson(_))
+      case IdentificationNumberPage(_) => Gen.alphaNumStr.map(JsString)
+      case TransportNationalityPage(_) => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 

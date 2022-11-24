@@ -21,26 +21,29 @@ import play.api.i18n.Messages
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
 import viewModels.identification.AuthorisationsAnswersViewModel.AuthorisationsAnswersViewModelProvider
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
+import viewModels.incident.IncidentsAnswersViewModel.IncidentsAnswersViewModelProvider
 import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class CheckArrivalsAnswersViewModel(sections: Seq[Section])
+case class ArrivalAnswersViewModel(sections: Seq[Section])
 
-object CheckArrivalsAnswersViewModel {
+object ArrivalAnswersViewModel {
 
-  class CheckArrivalsAnswersViewModelProvider @Inject() (
+  class ArrivalAnswersViewModelProvider @Inject() (
     identificationAnswersViewModelProvider: IdentificationAnswersViewModelProvider,
     authorisationsAnswersViewModelProvider: AuthorisationsAnswersViewModelProvider,
-    locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider
+    locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider,
+    IncidentsAnswersViewModelProvider: IncidentsAnswersViewModelProvider
   ) {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckArrivalsAnswersViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): ArrivalAnswersViewModel = {
       val mode = CheckMode
-      new CheckArrivalsAnswersViewModel(
+      new ArrivalAnswersViewModel(
         identificationAnswersViewModelProvider.apply(userAnswers, mode).section ::
           authorisationsAnswersViewModelProvider.apply(userAnswers, mode).section ::
           locationOfGoodsAnswersViewModelProvider.apply(userAnswers, mode).section ::
+          IncidentsAnswersViewModelProvider.apply(userAnswers, mode).section ::
           Nil
       )
     }

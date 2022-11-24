@@ -16,16 +16,15 @@
 
 package utils.incident
 
+import controllers.incident.routes
 import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
-import models.reference.Country
 import models.{Index, Mode, UserAnswers}
-import pages.incident.{IncidentCountryPage, IncidentFlagPage}
+import pages.incident.{IncidentCodePage, IncidentFlagPage}
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.AnswersHelper
 import viewModels.ListItem
 
@@ -36,7 +35,7 @@ class IncidentsAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
-    formatAnswer = x => formatEnumAsText(IncidentCode.messageKeyPrefix)(x.incidentCode),
+    formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "incident",
     id = Some(s"change-incident-${index.display}"),
     args = index.display
@@ -53,11 +52,11 @@ class IncidentsAnswersHelper(
     buildListItems(IncidentsSection) {
       position =>
         val index = Index(position)
-        buildListItem[IncidentDomain, Country](
-          page = IncidentCountryPage(index),
-          formatJourneyDomainModel = x => formatEnumAsString(IncidentCode.messageKeyPrefix)(x.incidentCode),
-          formatType = _.toString,
-          removeRoute = Option(Call(GET, "#"))
+        buildListItemWithDefault[IncidentDomain, IncidentCode](
+          page = IncidentCodePage(index),
+          formatJourneyDomainModel = _.asString(formatEnumAsString),
+          formatType = _.fold(messages("incident.label", index.display))(IncidentDomain.asString(index, _)(formatEnumAsString)),
+          removeRoute = Option(routes.ConfirmRemoveIncidentController.onPageLoad(mrn, mode, index))
         )(IncidentDomain.userAnswersReader(index), implicitly)
     }
 }

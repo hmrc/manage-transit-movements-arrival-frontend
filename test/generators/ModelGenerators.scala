@@ -18,6 +18,7 @@ package generators
 
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
+import models.incident.IncidentCode
 import models.reference._
 import models.{QualifierOfIdentification, _}
 import org.scalacheck.Arbitrary.arbitrary
@@ -28,6 +29,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
+    Arbitrary {
+      Gen.oneOf(models.incident.transportMeans.Identification.values.toSeq)
+    }
 
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
@@ -47,9 +53,34 @@ trait ModelGenerators {
       } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
     }
 
-  implicit lazy val arbitraryIncidentCode: Arbitrary[models.incident.IncidentCode] =
+  implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(models.incident.IncidentCode.values)
+      Gen.oneOf(IncidentCode.values)
+    }
+
+  lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
+    Arbitrary {
+      Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
+    }
+
+  lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
+    Arbitrary {
+      Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
+    }
+
+  lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
+    Arbitrary {
+      Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
+    }
+
+  lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
+    Arbitrary {
+      Gen.oneOf(
+        IncidentCode.SealsBrokenOrTampered,
+        IncidentCode.PartiallyOrFullyUnloaded,
+        IncidentCode.DeviatedFromItinerary,
+        IncidentCode.CarrierUnableToComply
+      )
     }
 
   implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
@@ -193,5 +224,13 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
+
+  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Nationality(code, desc)
+    }
 
 }

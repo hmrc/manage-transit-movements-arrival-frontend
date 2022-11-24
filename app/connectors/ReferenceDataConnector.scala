@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import metrics.{MetricsService, Monitors}
+import models.NationalityList
 import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -49,6 +50,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     metricsService.timeAsyncCall(Monitors.getCountryListMonitor) {
       http.GET[Seq[Country]](serviceUrl, queryParameters)
     }
+  }
+
+  def getTransportData()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NationalityList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/transport"
+    http.GET[NationalityList](serviceUrl, headers = version2Header)
   }
 
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[UnLocode]] = {

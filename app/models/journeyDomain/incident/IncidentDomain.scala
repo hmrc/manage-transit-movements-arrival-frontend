@@ -18,12 +18,14 @@ package models.journeyDomain.incident
 
 import cats.implicits._
 import models.incident.IncidentCode
+import models.incident.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class IncidentDomain(
@@ -32,24 +34,40 @@ case class IncidentDomain(
   incidentText: String,
   endorsement: Option[EndorsementDomain],
   location: IncidentLocationDomain,
-  equipments: EquipmentsDomain
+  equipments: EquipmentsDomain,
+  transportMeans: Option[TransportMeansDomain]
 )(index: Index)
     extends JourneyDomainModel {
 
+  def asString(f: String => IncidentCode => String)(implicit messages: Messages): String =
+    IncidentDomain.asString(index, incidentCode)(f)
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    super.routeIfCompleted(userAnswers, mode, stage) // TODO - incident check your answers page
+    Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
+
 }
 
 object IncidentDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] =
+  def asString(index: Index, incidentCode: IncidentCode)(f: String => IncidentCode => String)(implicit messages: Messages): String =
+    messages("incident.value", index.display, f(IncidentCode.prefixForDisplay)(incidentCode))
+
+  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
+
+    val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
+      .filterOptionalDependent(
+        x => x == TransferredToAnotherTransport || x == UnexpectedlyChanged
+      )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
+
     (
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
       AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
       UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
-      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index))
+      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index)),
+      transportMeansReads
     ).tupled.map((IncidentDomain.apply _).tupled).map(_(index))
+  }
 
 }

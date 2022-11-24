@@ -82,13 +82,13 @@ class AddAnotherEquipmentControllerSpec
   "AddAnotherSeal Controller" - {
 
     "must remove any in progress transport equipments" in {
-      val userAnswersWithInProgressTransportEquipment = emptyUserAnswers
+      val userAnswers = emptyUserAnswers
         .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
       when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(viewModelWithItemsNotMaxedOut)
 
-      setExistingUserAnswers(userAnswersWithInProgressTransportEquipment)
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addAnotherSealRoute)
 

@@ -17,38 +17,38 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.Generators
-import models.identification.authorisation.AuthorisationType
+import generators.{ArrivalUserAnswersGenerator, Generators}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import viewModels.Link
 import viewModels.identification.AuthorisationsAnswersViewModel.AuthorisationsAnswersViewModelProvider
 
-class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
 
-  "must return sections" in {
-    forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxIdentificationAuthorisations)) {
-      (mode, numberOfAuthorisations) =>
-        val userAnswers = (0 until numberOfAuthorisations).foldLeft(emptyUserAnswers) {
-          (acc, i) =>
-            acc
-              .setValue(AuthorisationTypePage(Index(i)), arbitrary[AuthorisationType].sample.value)
-              .setValue(AuthorisationReferenceNumberPage(Index(i)), arbitrary[String].sample.value)
-        }
+  "authorisations section" - {
+    "must have row for each authorisation" in {
+      forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxIdentificationAuthorisations)) {
+        (mode, numberOfAuthorisations) =>
+          val userAnswersGen = (0 until numberOfAuthorisations).foldLeft(Gen.const(emptyUserAnswers)) {
+            (acc, i) =>
+              acc.flatMap(arbitraryAuthorisationAnswers(_, Index(i)))
+          }
+          forAll(userAnswersGen) {
+            userAnswers =>
+              val viewModelProvider = injector.instanceOf[AuthorisationsAnswersViewModelProvider]
+              val section           = viewModelProvider.apply(userAnswers, mode).section
 
-        val viewModelProvider = injector.instanceOf[AuthorisationsAnswersViewModelProvider]
-        val section           = viewModelProvider.apply(userAnswers, mode).section
-
-        section.sectionTitle.get mustBe "Authorisations"
-        section.rows.size mustBe numberOfAuthorisations
-        section.addAnotherLink.get mustBe Link(
-          "add-or-remove-authorisations",
-          "Add or remove authorisations",
-          controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
-        )
+              section.sectionTitle.get mustBe "Authorisations"
+              section.rows.size mustBe numberOfAuthorisations
+              section.addAnotherLink.get mustBe Link(
+                "add-or-remove-authorisations",
+                "Add or remove authorisations",
+                controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
+              )
+          }
+      }
     }
   }
 }

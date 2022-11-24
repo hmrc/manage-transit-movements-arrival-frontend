@@ -23,6 +23,7 @@ import models.incident.IncidentCode
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.equipment._
@@ -36,10 +37,6 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
   private val sealId          = Gen.alphaNumStr.sample.value
   private val goodsItemNumber = Gen.alphaNumStr.sample.value
 
-  private val incidentCode3Or6Gen = Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
-  private val incidentCode2Or4Gen = Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
-  private val incidentCode1Or5Gen = Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
-
   "EquipmentDomain" - {
 
     "can be parsed from user answers" - {
@@ -51,7 +48,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           "and container id is answered" - {
 
             "and adding seals" in {
-              forAll(incidentCode3Or6Gen) {
+              forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -75,7 +72,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             }
 
             "and not adding seals" in {
-              forAll(incidentCode3Or6Gen) {
+              forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -103,7 +100,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           "and container id is answered" - {
 
             "and adding seals" in {
-              forAll(incidentCode3Or6Gen) {
+              forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -128,7 +125,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             }
 
             "and not adding seals" in {
-              forAll(incidentCode3Or6Gen) {
+              forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
                 incidentCode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -153,7 +150,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           }
 
           "and container id is unanswered" in {
-            forAll(incidentCode3Or6Gen) {
+            forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -245,7 +242,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "and container id is not answered" in {
-          forAll(incidentCode2Or4Gen) {
+          forAll(arbitrary[IncidentCode](arbitrary2Or4IncidentCode)) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -268,7 +265,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when adding goods item numbers" in {
-        forAll(incidentCode2Or4Gen) {
+        forAll(arbitrary[IncidentCode](arbitrary2Or4IncidentCode)) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
               .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -297,7 +294,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         "when container indicator is true" - {
           "and container id number is unanswered" in {
-            forAll(incidentCode3Or6Gen) {
+            forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -311,7 +308,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           }
 
           "and container id is answered" in {
-            forAll(incidentCode3Or6Gen) {
+            forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -328,7 +325,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         "when container indicator is false" - {
           "and add container id number is unanswered" in {
-            forAll(incidentCode3Or6Gen) {
+            forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -342,7 +339,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           }
 
           "and add container id is false" in {
-            forAll(incidentCode3Or6Gen) {
+            forAll(arbitrary[IncidentCode](arbitrary3Or6IncidentCode)) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -361,7 +358,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
       "when incident code is 2 or 4" - {
 
         "and container id number is unanswered" in {
-          forAll(incidentCode2Or4Gen) {
+          forAll(arbitrary[IncidentCode](arbitrary2Or4IncidentCode)) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -400,7 +397,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when incident code is not 2, 3, 4 or 6" in {
-        forAll(incidentCode1Or5Gen) {
+        forAll(arbitrary[IncidentCode](arbitrary1Or5IncidentCode)) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
               .setValue(IncidentCodePage(incidentIndex), incidentCode)

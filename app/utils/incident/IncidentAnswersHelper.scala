@@ -17,11 +17,13 @@
 package utils.incident
 
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, UnLocode}
+import models.reference.{Country, Nationality, UnLocode}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
+import pages.incident.transportMeans._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -139,6 +141,27 @@ class IncidentAnswersHelper(
     formatAnswer = formatAsYesOrNo,
     prefix = "incident.addTransportEquipment",
     id = Some("change-add-transport-equipment")
+  )
+
+  def transportMeansIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
+    page = IdentificationPage(incidentIndex),
+    formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
+    prefix = "incident.transportMeans.identification",
+    id = Some("change-transport-means-identification-type")
+  )
+
+  def transportMeansIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = IdentificationNumberPage(incidentIndex),
+    formatAnswer = formatAsText,
+    prefix = "incident.transportMeans.identificationNumber",
+    id = Some("change-transport-means-identification-number")
+  )
+
+  def transportMeansRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
+    page = TransportNationalityPage(incidentIndex),
+    formatAnswer = formatAsText,
+    prefix = "incident.transportMeans.transportNationality",
+    id = Some("change-transport-means-registered-country")
   )
 
 }
