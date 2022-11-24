@@ -36,7 +36,8 @@ object EquipmentAnswersViewModel {
 
       val helper = EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
 
-      val equipmentSection = Section(
+      val containerSection = Section(
+        sectionTitle = messages("arrivals.checkYourAnswers.container.subheading"),
         rows = Seq(
           helper.containerIdentificationNumberYesNo,
           helper.containerIdentificationNumber
@@ -79,7 +80,7 @@ object EquipmentAnswersViewModel {
         )
       }
 
-      new EquipmentAnswersViewModel(Seq(equipmentSection, sealsSection, goodsItemNumbersSection))
+      new EquipmentAnswersViewModel(Seq(containerSection, sealsSection, goodsItemNumbersSection))
     }
   }
 }

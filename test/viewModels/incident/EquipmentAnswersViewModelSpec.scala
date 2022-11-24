@@ -40,7 +40,9 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
     }
   }
 
-  "equipment section" - {
+  "container section" - {
+    val sectionTitle = "Container"
+
     "when incident code is 3 or 6" - {
       "and container indicator is false" - {
         "when adding container id" - {
@@ -56,7 +58,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                   (userAnswers, mode) =>
                     val sections         = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
                     val equipmentSection = sections.head
-                    equipmentSection.sectionTitle must not be defined
+                    equipmentSection.sectionTitle.get mustBe sectionTitle
                     equipmentSection.rows.size mustBe 2
                     equipmentSection.addAnotherLink must not be defined
                 }
@@ -77,7 +79,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                   (userAnswers, mode) =>
                     val sections         = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
                     val equipmentSection = sections.head
-                    equipmentSection.sectionTitle must not be defined
+                    equipmentSection.sectionTitle.get mustBe sectionTitle
                     equipmentSection.rows.size mustBe 1
                     equipmentSection.addAnotherLink must not be defined
                 }
@@ -98,7 +100,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 (userAnswers, mode) =>
                   val sections         = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
                   val equipmentSection = sections.head
-                  equipmentSection.sectionTitle must not be defined
+                  equipmentSection.sectionTitle.get mustBe sectionTitle
                   equipmentSection.rows.size mustBe 1
                   equipmentSection.addAnotherLink must not be defined
               }
@@ -120,7 +122,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 (userAnswers, mode) =>
                   val sections         = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
                   val equipmentSection = sections.head
-                  equipmentSection.sectionTitle must not be defined
+                  equipmentSection.sectionTitle.get mustBe sectionTitle
                   equipmentSection.rows.size mustBe 2
                   equipmentSection.addAnotherLink must not be defined
               }
@@ -140,7 +142,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 (userAnswers, mode) =>
                   val sections         = new EquipmentAnswersViewModelProvider().apply(userAnswers, incidentIndex, equipmentIndex, mode).sections
                   val equipmentSection = sections.head
-                  equipmentSection.sectionTitle must not be defined
+                  equipmentSection.sectionTitle.get mustBe sectionTitle
                   equipmentSection.rows.size mustBe 1
                   equipmentSection.addAnotherLink must not be defined
               }
