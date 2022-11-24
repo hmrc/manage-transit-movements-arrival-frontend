@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.incident.seal
+package models.journeyDomain.incident.equipment.seal
 
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.Stage._

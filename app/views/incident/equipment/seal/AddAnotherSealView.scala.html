@@ -15,7 +15,6 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.incident.equipment.seal.routes
 @import models.MovementReferenceNumber
 @import viewModels.ListItem
 @import viewModels.components.InputYesNoViewModel._
@@ -55,7 +54,7 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = messages(viewModel.legend)
+                    legend = viewModel.legend
                 )
             )
         } else {

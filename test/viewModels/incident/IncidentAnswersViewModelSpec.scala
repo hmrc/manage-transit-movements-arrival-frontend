@@ -35,7 +35,8 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
         val addOrRemoveEquipmentsLink = sections(1).addAnotherLink.value
         addOrRemoveEquipmentsLink.text mustBe "Add or remove equipments"
         addOrRemoveEquipmentsLink.id mustBe "add-or-remove-equipments"
-        addOrRemoveEquipmentsLink.href mustBe "#"
+        addOrRemoveEquipmentsLink.href mustBe
+          controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
     }
   }
 }

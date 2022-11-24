@@ -108,7 +108,8 @@ trait UserAnswersEntryGenerators {
       generateIncidentEndorsementAnswer orElse
       generateIncidentLocationAnswer orElse
       generateIncidentEquipmentAnswer orElse
-      generateIncidentEquipmentSeal
+      generateIncidentEquipmentSealAnswer orElse
+      generateIncidentEquipmentItemNumberAnswer
   }
 
   private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -137,13 +138,21 @@ trait UserAnswersEntryGenerators {
       case ContainerIdentificationNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString)
       case AddSealsYesNoPage(_, _)                      => arbitrary[Boolean].map(JsBoolean)
+      case AddGoodsItemNumberYesNoPage(_, _)            => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
-  private def generateIncidentEquipmentSeal: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentEquipmentSealAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.incident.equipment.seal._
     {
       case SealIdentificationNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateIncidentEquipmentItemNumberAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.incident.equipment.itemNumber._
+    {
+      case ItemNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
     }
   }
 

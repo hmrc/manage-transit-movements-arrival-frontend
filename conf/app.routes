@@ -27,3 +27,5 @@ POST       /:mrn/check-answers                               controllers.CheckAr
 
 GET        /unauthorised-group-access                        controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 GET        /cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
+
+GET        /declaration-submitted                            controllers.DeclarationSubmittedController.onPageLoad()

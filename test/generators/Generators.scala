@@ -112,6 +112,12 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnsw
       chars <- listOfN(length, charGen)
     } yield chars.mkString
 
+  def stringsWithLengthNotEqual(length: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
+    for {
+      len   <- Gen.posNum[Int].filter(_ != length)
+      chars <- listOfN(len, charGen)
+    } yield chars.mkString
+
   def alphaStringWithLength(length: Int): Gen[String] =
     for {
       chars <- listOfN(length, Gen.alphaNumChar)

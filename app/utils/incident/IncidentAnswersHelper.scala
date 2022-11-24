@@ -23,6 +23,7 @@ import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentificati
 import pages.incident._
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 
@@ -36,9 +37,9 @@ class IncidentAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString.toText,
     prefix = "incident.equipment",
-    id = Some(s"change-equipment-${index.display}"),
+    id = Some(s"change-transport-equipment-${index.display}"),
     args = index.display
   )(EquipmentDomain.userAnswersReader(incidentIndex, index))
 
