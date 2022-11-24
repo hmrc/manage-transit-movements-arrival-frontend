@@ -22,6 +22,7 @@ import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.reference.{Country, Nationality, UnLocode}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
+import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import pages.incident.transportMeans._
 import play.api.i18n.Messages
@@ -76,28 +77,28 @@ class IncidentAnswersHelper(
   def endorsementDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = EndorsementDatePage(incidentIndex),
     formatAnswer = formatAsDate,
-    prefix = "incident.endorsementDate",
+    prefix = "incident.endorsement.date",
     id = Some("change-endorsement-date")
   )
 
   def endorsementAuthority: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = EndorsementAuthorityPage(incidentIndex),
     formatAnswer = formatAsText,
-    prefix = "incident.endorsementAuthority",
+    prefix = "incident.endorsement.authority",
     id = Some("change-endorsement-authority")
   )
 
   def endorsementCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = EndorsementCountryPage(incidentIndex),
     formatAnswer = formatAsText,
-    prefix = "incident.endorsementCountry",
+    prefix = "incident.endorsement.country",
     id = Some("change-endorsement-country")
   )
 
   def endorsementLocation: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = EndorsementLocationPage(incidentIndex),
     formatAnswer = formatAsText,
-    prefix = "incident.endorsementLocation",
+    prefix = "incident.endorsement.location",
     id = Some("change-endorsement-location")
   )
 

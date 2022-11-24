@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package views.incident
+package views.incident.endorsement
 
-import forms.DateFormProvider
-import models.{Index, NormalMode}
+import forms.CountryFormProvider
+import models.reference.Country
+import models.{CountryList, NormalMode}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.DateInputViewBehaviours
-import views.html.incident.EndorsementDateView
+import views.behaviours.InputSelectViewBehaviours
+import views.html.incident.endorsement.EndorsementCountryView
 
-import java.time.{Clock, LocalDate, ZoneOffset}
+class EndorsementCountryViewSpec extends InputSelectViewBehaviours[Country] {
 
-class EndorsementDateViewSpec extends DateInputViewBehaviours {
+  override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
 
-  private val minDate = frontendAppConfig.endorsementDateMin
-  private val zone    = ZoneOffset.UTC
-  private val clock   = Clock.systemDefaultZone.withZone(zone)
+  override def applyView(form: Form[Country]): HtmlFormat.Appendable =
+    injector.instanceOf[EndorsementCountryView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
-  override def form: Form[LocalDate] = new DateFormProvider(clock)(prefix, minDate)
+  implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
-  override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
-    injector.instanceOf[EndorsementDateView].apply(form, mrn, Index(0), NormalMode)(fakeRequest, messages)
-
-  override val prefix: String = "incident.endorsementDate"
+  override val prefix: String = "incident.endorsement.country"
 
   behave like pageWithTitle()
 
@@ -46,9 +44,9 @@ class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("For example, 15 08 2022.")
+  behave like pageWithSelect()
 
-  behave like pageWithDateInput()
+  behave like pageWithHint("Enter the country, like Italy or Spain.")
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
-import controllers.incident.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.incident.EndorsementSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case class EndorsementAuthorityPage(index: Index) extends QuestionPage[String] {
+class EndorsementLocationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = EndorsementSection(index).path \ toString
+  "EndorsementLocationPage" - {
 
-  override def toString: String = "authority"
+    beRetrievable[String](EndorsementLocationPage(index))
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.EndorsementAuthorityController.onPageLoad(userAnswers.mrn, mode, index))
+    beSettable[String](EndorsementLocationPage(index))
+
+    beRemovable[String](EndorsementLocationPage(index))
+  }
 }

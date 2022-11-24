@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
+import controllers.incident.endorsement.routes
 import models.reference.Country
-import pages.behaviours.PageBehaviours
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.incident.EndorsementSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class EndorsementCountryPageSpec extends PageBehaviours {
+case class EndorsementCountryPage(index: Index) extends QuestionPage[Country] {
 
-  "EndorsementCountryPage" - {
+  override def path: JsPath = EndorsementSection(index).path \ toString
 
-    beRetrievable[Country](EndorsementCountryPage(index))
+  override def toString: String = "country"
 
-    beSettable[Country](EndorsementCountryPage(index))
-
-    beRemovable[Country](EndorsementCountryPage(index))
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.EndorsementCountryController.onPageLoad(userAnswers.mrn, mode, index))
 }

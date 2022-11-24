@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views.incident
+package views.incident.endorsement
 
 import forms.incident.EndorsementLocationFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.incident.EndorsementLocationView
-import org.scalacheck.{Arbitrary, Gen}
+import views.html.incident.endorsement.EndorsementLocationView
 
 class EndorsementLocationViewSpec extends InputTextViewBehaviours[String] {
 
   private lazy val countryName = arbitraryCountry.arbitrary.sample.get.description
 
-  override val prefix: String = "incident.endorsementLocation"
+  override val prefix: String = "incident.endorsement.location"
 
   override def form: Form[String] = new EndorsementLocationFormProvider()(prefix, countryName)
 

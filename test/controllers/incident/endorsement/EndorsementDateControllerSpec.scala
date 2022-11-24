@@ -14,70 +14,82 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.incident.EndorsementAuthorityFormProvider
+import forms.DateFormProvider
 import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.EndorsementAuthorityPage
+import pages.incident.endorsement
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.incident.EndorsementAuthorityView
+import views.html.incident.endorsement.EndorsementDateView
 
+import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                   = new EndorsementAuthorityFormProvider()
-  private val form                           = formProvider("incident.endorsementAuthority")
-  private val mode                           = NormalMode
-  private lazy val endorsementAuthorityRoute = routes.EndorsementAuthorityController.onPageLoad(mrn, mode, index).url
+  private val minDate = frontendAppConfig.endorsementDateMin
+  private val zone    = ZoneOffset.UTC
+  private val clock   = Clock.systemDefaultZone.withZone(zone)
+
+  private val formProvider              = new DateFormProvider(clock)
+  private val form                      = formProvider("incident.endorsement.date", minDate)
+  private val mode                      = NormalMode
+  private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, index, mode).url
+  private val date                      = LocalDate.now
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
 
-  "EndorsementAuthority Controller" - {
+  "EndorsementDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, mode, index)(request, messages).toString
+        view(form, mrn, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(EndorsementAuthorityPage(index), "test string")
+      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementDatePage(index), date)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(
+        Map(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
+        )
+      )
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -86,8 +98,12 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, endorsementAuthorityRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, endorsementDateRoute)
+        .withFormUrlEncodedBody(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
+        )
 
       val result = route(app, request).value
 
@@ -102,24 +118,24 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, endorsementAuthorityRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, endorsementDateRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[EndorsementAuthorityView]
+      val view = injector.instanceOf[EndorsementDateView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, mode, index)(request, messages).toString
+        view(filledForm, mrn, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, endorsementAuthorityRoute)
+      val request = FakeRequest(GET, endorsementDateRoute)
 
       val result = route(app, request).value
 
@@ -132,8 +148,13 @@ class EndorsementAuthorityControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, endorsementAuthorityRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request =
+        FakeRequest(POST, endorsementDateRoute)
+          .withFormUrlEncodedBody(
+            "value.day"   -> date.getDayOfMonth.toString,
+            "value.month" -> date.getMonthValue.toString,
+            "value.year"  -> date.getYear.toString
+          )
 
       val result = route(app, request).value
 

@@ -115,7 +115,7 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.incident._
+    import pages.incident.endorsement._
     {
       case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
       case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)

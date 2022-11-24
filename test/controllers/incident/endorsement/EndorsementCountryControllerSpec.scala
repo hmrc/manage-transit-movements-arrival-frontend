@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CountryFormProvider
@@ -23,13 +23,13 @@ import models.{CountryList, NormalMode}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.incident.EndorsementCountryPage
+import pages.incident.endorsement
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CountriesService
-import views.html.incident.EndorsementCountryView
+import views.html.incident.endorsement.EndorsementCountryView
 
 import scala.concurrent.Future
 
@@ -40,7 +40,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
   private val countryList = CountryList(Seq(country1, country2))
 
   private val formProvider = new CountryFormProvider()
-  private val form         = formProvider("incident.endorsementCountry", countryList)
+  private val form         = formProvider("incident.endorsement.country", countryList)
   private val mode         = NormalMode
 
   private val mockCountriesService: CountriesService = mock[CountriesService]
@@ -74,7 +74,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers = emptyUserAnswers.setValue(EndorsementCountryPage(index), country1)
+      val userAnswers = emptyUserAnswers.setValue(endorsement.EndorsementCountryPage(index), country1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, endorsementCountryRoute)

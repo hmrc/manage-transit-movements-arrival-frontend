@@ -23,7 +23,8 @@ import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.incident.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
+import pages.incident.endorsement
+import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 
 import java.time.LocalDate
 
@@ -57,17 +58,17 @@ class EndorsementDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(
-          EndorsementDatePage(index),
-          EndorsementAuthorityPage(index),
-          EndorsementCountryPage(index),
-          EndorsementLocationPage(index)
+          endorsement.EndorsementDatePage(index),
+          endorsement.EndorsementAuthorityPage(index),
+          endorsement.EndorsementCountryPage(index),
+          endorsement.EndorsementLocationPage(index)
         )
 
         val userAnswers = emptyUserAnswers
-          .setValue(EndorsementDatePage(index), localDate)
-          .setValue(EndorsementAuthorityPage(index), authority)
-          .setValue(EndorsementCountryPage(index), country)
-          .setValue(EndorsementLocationPage(index), location)
+          .setValue(endorsement.EndorsementDatePage(index), localDate)
+          .setValue(endorsement.EndorsementAuthorityPage(index), authority)
+          .setValue(endorsement.EndorsementCountryPage(index), country)
+          .setValue(endorsement.EndorsementLocationPage(index), location)
 
         mandatoryPages.map {
           mandatoryPage =>

@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.endorsement
 
-import controllers.incident.routes
-import models.reference.Country
+import controllers.incident.endorsement.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident.EndorsementSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class EndorsementCountryPage(index: Index) extends QuestionPage[Country] {
+case class EndorsementLocationPage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = EndorsementSection(index).path \ toString
 
-  override def toString: String = "country"
+  override def toString: String = "location"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.EndorsementCountryController.onPageLoad(userAnswers.mrn, mode, index))
+    Some(routes.EndorsementLocationController.onPageLoad(userAnswers.mrn, mode, index))
 }

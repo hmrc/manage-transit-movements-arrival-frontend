@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.incident.routes
+@import controllers.incident.endorsement.routes
 @import models.MovementReferenceNumber
 @import models.reference.Country
 @import models.reference.Selectable._
@@ -32,7 +32,7 @@
 @(form: Form[Country], mrn: MovementReferenceNumber, countries: Seq[Country], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.endorsementCountry.title"),
+    title = messages("incident.endorsement.country.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -44,12 +44,12 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("incident.endorsementCountry.heading"),
+                heading = messages("incident.endorsement.country.heading"),
                 caption = Some(messages("incident.caption"))
             ),
-            hint = Some(messages("incident.endorsementCountry.hintText")),
+            hint = Some(messages("incident.endorsement.country.hintText")),
             selectItems = countries.toSelectItems(form.value),
-            placeholder = messages("incident.endorsementCountry.placeholder")
+            placeholder = messages("incident.endorsement.country.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

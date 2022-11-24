@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.incident
+package views.incident.endorsement
 
 import forms.incident.EndorsementAuthorityFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.incident.EndorsementAuthorityView
-import org.scalacheck.{Arbitrary, Gen}
+import views.html.incident.endorsement.EndorsementAuthorityView
 
 class EndorsementAuthorityViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "incident.endorsementAuthority"
+  override val prefix: String = "incident.endorsement.authority"
 
   override def form: Form[String] = new EndorsementAuthorityFormProvider()(prefix)
 

@@ -14,65 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CountryFormProvider
+import forms.incident.EndorsementAuthorityFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.EndorsementCountryPage
+import pages.incident.endorsement
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.EndorsementCountryView
+import views.html.incident.endorsement.EndorsementAuthorityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EndorsementCountryController @Inject() (
+class EndorsementAuthorityController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
+  formProvider: EndorsementAuthorityFormProvider,
   actions: Actions,
-  formProvider: CountryFormProvider,
-  service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  view: EndorsementCountryView
+  view: EndorsementAuthorityView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      service.getTransitCountries().map {
-        countryList =>
-          val form = formProvider("incident.endorsementCountry", countryList)
-          val preparedForm = request.userAnswers.get(EndorsementCountryPage(index)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  private val form = formProvider("incident.endorsement.authority")
 
-          Ok(view(preparedForm, mrn, countryList.countries, mode, index))
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(endorsement.EndorsementAuthorityPage(index)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, mrn, mode, index))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTransitCountries().flatMap {
-        countryList =>
-          val form = formProvider("incident.endorsementCountry", countryList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
-              }
-            )
-      }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            endorsement.EndorsementAuthorityPage(index).writeToUserAnswers(value).writeToSession().navigate()
+          }
+        )
   }
 }

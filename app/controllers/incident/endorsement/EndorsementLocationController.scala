@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.incident
+package controllers.incident.endorsement
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.incident.EndorsementLocationFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.{EndorsementCountryPage, EndorsementLocationPage}
+import pages.incident.endorsement
+import pages.incident.endorsement.{EndorsementCountryPage, EndorsementLocationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.incident.EndorsementLocationView
+import views.html.incident.endorsement.EndorsementLocationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +51,7 @@ class EndorsementLocationController @Inject() (
       .andThen(getMandatoryPage(EndorsementCountryPage(index))) {
         implicit request =>
           val country = request.arg
-          val form    = formProvider("incident.endorsementLocation", country.description)
+          val form    = formProvider("incident.endorsement.location", country.description)
           val preparedForm = request.userAnswers.get(EndorsementLocationPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -61,18 +62,18 @@ class EndorsementLocationController @Inject() (
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage(EndorsementCountryPage(index)))
+      .andThen(getMandatoryPage(endorsement.EndorsementCountryPage(index)))
       .async {
         implicit request =>
           val country = request.arg
-          val form    = formProvider("incident.endorsementLocation", country.description)
+          val form    = formProvider("incident.endorsement.location", country.description)
           form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, country.description, mode, index))),
               value => {
                 implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                endorsement.EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

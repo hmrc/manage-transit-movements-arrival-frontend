@@ -17,6 +17,7 @@
 package utils.incident
 
 import base.SpecBase
+import controllers.incident.endorsement.{routes => endorsementRoutes}
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
@@ -32,6 +33,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident._
+import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import pages.incident.transportMeans.{IdentificationNumberPage, IdentificationPage, TransportNationalityPage}
@@ -273,7 +275,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.EndorsementDateController.onPageLoad(answers.mrn, incidentIndex, mode).url
+              action.href mustBe endorsementRoutes.EndorsementDateController.onPageLoad(answers.mrn, incidentIndex, mode).url
               action.visuallyHiddenText.get mustBe "endorsement date"
               action.id mustBe "change-endorsement-date"
           }
@@ -308,7 +310,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.EndorsementAuthorityController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.href mustBe endorsementRoutes.EndorsementAuthorityController.onPageLoad(answers.mrn, mode, incidentIndex).url
               action.visuallyHiddenText.get mustBe "endorsement authority"
               action.id mustBe "change-endorsement-authority"
           }
@@ -343,7 +345,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.EndorsementCountryController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.href mustBe endorsementRoutes.EndorsementCountryController.onPageLoad(answers.mrn, mode, incidentIndex).url
               action.visuallyHiddenText.get mustBe "endorsement country"
               action.id mustBe "change-endorsement-country"
           }
@@ -378,7 +380,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.EndorsementLocationController.onPageLoad(answers.mrn, mode, incidentIndex).url
+              action.href mustBe endorsementRoutes.EndorsementLocationController.onPageLoad(answers.mrn, mode, incidentIndex).url
               action.visuallyHiddenText.get mustBe "endorsement location"
               action.id mustBe "change-endorsement-location"
           }
