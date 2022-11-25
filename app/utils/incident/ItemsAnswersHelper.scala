@@ -22,7 +22,6 @@ import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.AnswersHelper
 import viewModels.ListItem
 
@@ -38,14 +37,12 @@ class ItemsAnswersHelper(
     buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
       position =>
         val itemIndex = Index(position)
-        val removeRoute: Option[Call] =
-          Some(routes.ConfirmRemoveItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
 
         buildListItem[ItemNumberDomain, String](
           page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),
           formatJourneyDomainModel = _.itemNumber,
           formatType = identity,
-          removeRoute = removeRoute
+          removeRoute = Some(routes.ConfirmRemoveItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))
         )(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemIndex), implicitly)
     }
 }
