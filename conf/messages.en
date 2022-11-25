@@ -92,7 +92,7 @@ arrivals.checkYourAnswers.authorisations.subheading = Authorisations
 arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
 arrivals.checkYourAnswers.identification.subheading = Identification
 arrivals.checkYourAnswers.locationOfGoods.subheading = Location of goods
-
+arrivals.checkYourAnswers.container.subheading = Container
 arrivals.checkYourAnswers.seals.subheading = Seals
 arrivals.checkYourAnswers.seals.addOrRemove = Add or remove seals
 arrivals.checkYourAnswers.goodsItemNumbers.subheading = Goods item numbers
@@ -496,6 +496,12 @@ incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a se
 incident.equipment.addSealsYesNo.change.hidden = if you want to add a seal
 incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
 
+incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
+incident.equipment.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
+incident.equipment.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
+
 incident.equipment.addAnotherTransportEquipment.singular.title = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.singular.heading = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.plural.title = You have added {0} transport equipment
@@ -557,12 +563,6 @@ incident.equipment.seal.remove.error.required = Select yes if you want to remove
 
 incident.equipment.goodsItemNumber.label = Goods item number {0}
 incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
-
-incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
-incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
-incident.equipment.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
-incident.equipment.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
-incident.equipment.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
 
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
