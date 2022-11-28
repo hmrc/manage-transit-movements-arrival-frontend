@@ -28,7 +28,7 @@ class CheckArrivalAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
-  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
+  def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckArrivalsAnswersView].apply(mrn, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()

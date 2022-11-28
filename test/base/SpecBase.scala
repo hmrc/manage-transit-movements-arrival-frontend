@@ -17,6 +17,7 @@
 package base
 
 import config.FrontendAppConfig
+import models.reference.CustomsOffice
 import models.{EoriNumber, Index, MovementReferenceNumber, UkAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -69,6 +70,9 @@ trait SpecBase
   val traderAddress: UkAddress    = UkAddress("buildingAndStreet", "city", "NE99 1XN")
   val consigneeAddress: UkAddress = UkAddress("buildingAndStreet", "city", "NE99 1XN")
   val configKey                   = "config"
+
+  val officeOfDestination: CustomsOffice      = new CustomsOffice("ABC12345", Some("Test"), Some("+44 7760663422"))
+  val officeOfDestinationNoTel: CustomsOffice = new CustomsOffice("ABC12345", Some("Test"), None)
 
   def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

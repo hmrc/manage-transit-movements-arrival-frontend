@@ -16,7 +16,10 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.Actions
+import models.MovementReferenceNumber
+import models.reference.CustomsOffice
+import pages.identification.DestinationOfficePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -25,14 +28,20 @@ import views.html.DeclarationSubmittedView
 import javax.inject.Inject
 
 class DeclarationSubmittedController @Inject() (
-  identify: IdentifierAction,
+  actions: Actions,
   cc: MessagesControllerComponents,
   view: DeclarationSubmittedView
 ) extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      Ok(view())
+      val officeOfDestination: CustomsOffice = request.userAnswers
+        .get(DestinationOfficePage)
+        .getOrElse(
+          throw new IllegalArgumentException("Office of Destination is required")
+        )
+
+      Ok(view(request.userAnswers.mrn.toString, officeOfDestination))
   }
 }

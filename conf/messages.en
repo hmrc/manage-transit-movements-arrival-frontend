@@ -647,8 +647,12 @@ incident.remove.error.required = Select yes if you want to remove incident {0}
 
 # Declaration
 
-declarationSubmitted.title = Declaration Submitted
-declarationSubmitted.heading = Declaration Submitted
-declarationSubmitted.paragraph1 = You have submitted your declaration.
-
-
+declarationSubmitted.title = Arrival notification sent
+declarationSubmitted.heading = Arrival notification sent
+declarationSubmitted.heading.2 = for Movement Reference Number (MRN)
+declarationSubmitted.what.next = What happens next
+declarationSubmitted.paragraph.1 = to find out when goods have been released.
+declarationSubmitted.paragraph.2.1 = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
+declarationSubmitted.paragraph.2.2 = If the goods are not released when expected or you have another problem, contact Customs at {0}.
+declarationSubmitted.new.arrival = Create another arrival notification
+declarationSubmitted.status.notifications = Check the status of arrival notifications

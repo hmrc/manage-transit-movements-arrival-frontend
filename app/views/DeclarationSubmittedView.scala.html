@@ -16,6 +16,7 @@
 
 @import views.html.components.Heading
 @import config.FrontendAppConfig
+@import models.reference.CustomsOffice
 
 @this(
     mainTemplate: MainTemplate,
@@ -24,17 +25,39 @@
     govukPanel: GovukPanel,
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(mrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
+
+@customsOfficeDetail = @{
+    officeOfDestination.phoneNumber match {
+        case Some(tel) => messages("declarationSubmitted.paragraph.2.1", officeOfDestination.name.getOrElse(officeOfDestination.id), tel)
+        case _         => messages("declarationSubmitted.paragraph.2.2", officeOfDestination.name.getOrElse(officeOfDestination.id))
+    }
+}
 
 @mainTemplate(
     title = messages("declarationSubmitted.title"),
-    showBackLink = true
+    showBackLink = false
 ) {
     @govukPanel(Panel(
-        title = Text(messages("declarationSubmitted.heading"))
+          title = HtmlContent(messages("declarationSubmitted.heading")),
+          content = HtmlContent(s"""${messages("declarationSubmitted.heading.2")} <strong>${mrn}</strong>""")
         )
     )
 
-    <p class="govuk-body">@messages("declarationSubmitted.paragraph1")</p>
+    <h2 class="govuk-heading-m">@messages("declarationSubmitted.what.next")</h2>
+
+    <p class="govuk-body">
+        <a href=@config.manageTransitMovementsViewArrivalsUrl class="govuk-link" id="manage-transit-movements">
+            @messages("declarationSubmitted.status.notifications")
+        </a> @messages("declarationSubmitted.paragraph.1")
+    </p>
+
+    <p class="govuk-body">@customsOfficeDetail</p>
+
+    <p class="govuk-body">
+        <a href=movement-reference-number class="govuk-link" id="new-arrival">
+            @messages("declarationSubmitted.new.arrival")
+        </a>
+    </p>
 
 }
