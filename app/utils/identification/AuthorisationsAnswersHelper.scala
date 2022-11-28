@@ -42,8 +42,7 @@ class AuthorisationsAnswersHelper(
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
-      position =>
-        val index = Index(position)
+      index =>
         buildListItem[AuthorisationDomain, AuthorisationType](
           page = AuthorisationTypePage(index),
           formatJourneyDomainModel = _.toString,

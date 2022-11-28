@@ -18,7 +18,7 @@ package utils
 
 import models.journeyDomain.Stage.AccessingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, UserAnswersReader}
-import models.{Mode, MovementReferenceNumber, RichOptionJsArray, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber, RichOptionJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import pages.sections.Section
@@ -73,7 +73,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
 
   protected def buildListItems(
     section: Section[JsArray]
-  )(block: Int => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
+  )(block: Index => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
     userAnswers
       .get(section)
       .mapWithIndex {

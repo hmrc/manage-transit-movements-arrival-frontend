@@ -64,7 +64,7 @@ object IncidentAnswersViewModel {
         val equipmentRows = userAnswers
           .get(EquipmentsSection(incidentIndex))
           .mapWithIndex {
-            (_, index) => helper.equipment(Index(index))
+            (_, index) => helper.equipment(index)
           }
 
         Section(

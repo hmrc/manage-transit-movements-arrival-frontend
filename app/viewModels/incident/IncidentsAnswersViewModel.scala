@@ -16,7 +16,7 @@
 
 package viewModels.incident
 
-import models.{Index, Mode, RichOptionJsArray, UserAnswers}
+import models.{Mode, RichOptionJsArray, UserAnswers}
 import pages.sections.incident.IncidentsSection
 import play.api.i18n.Messages
 import utils.incident.IncidentsAnswersHelper
@@ -39,7 +39,7 @@ object IncidentsAnswersViewModel {
         val incidentRows = userAnswers
           .get(IncidentsSection)
           .mapWithIndex {
-            (_, index) => helper.incident(Index(index))
+            (_, index) => helper.incident(index)
           }
 
         Section(

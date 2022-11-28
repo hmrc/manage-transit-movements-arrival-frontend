@@ -36,10 +36,8 @@ class EquipmentsAnswersHelper(
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(EquipmentsSection(incidentIndex)) {
-      position =>
-        val equipmentIndex = Index(position)
-
-        val removeRoute: Option[Call] = if (userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty && position == 0) {
+      equipmentIndex =>
+        val removeRoute: Option[Call] = if (userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty && equipmentIndex.isFirst) {
           None
         } else {
           Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
