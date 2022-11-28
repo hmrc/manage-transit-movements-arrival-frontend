@@ -17,20 +17,20 @@
 package models.journeyDomain
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
-import models.{InternationalAddress, QualifierOfIdentification}
+import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
 import models.reference.{Country, CountryCode, CustomsOffice}
+import models.{InternationalAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
 import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
-class ArrivalDomainSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator with ScalaCheckPropertyChecks {
+class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
 

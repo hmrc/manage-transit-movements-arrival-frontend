@@ -40,7 +40,7 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
         val expectedResult = AuthorisationsDomain(
-          value = Seq(
+          authorisations = Seq(
             AuthorisationDomain(
               `type` = authorisationType,
               referenceNumber = referenceNumber

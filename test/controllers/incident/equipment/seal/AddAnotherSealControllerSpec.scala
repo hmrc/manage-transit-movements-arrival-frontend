@@ -19,7 +19,7 @@ package controllers.incident.equipment.seal
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.incident.equipment.seal.routes.SealIdentificationNumberController
 import forms.AddAnotherItemFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{Index, NormalMode}
 import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +35,7 @@ import viewModels.incident.AddAnotherSealViewModel
 import viewModels.incident.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 import views.html.incident.equipment.seal.AddAnotherSealView
 
-class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
+class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new AddAnotherItemFormProvider()
 

@@ -18,7 +18,6 @@ package models.journeyDomain.incident.equipment.seal
 
 import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
-import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
 
 case class SealsDomain(seals: Seq[SealDomain])
@@ -26,10 +25,12 @@ case class SealsDomain(seals: Seq[SealDomain])
 object SealsDomain {
 
   implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[SealsDomain] =
-    SealsSection(incidentIndex, equipmentIndex).reader.flatMap {
-      case x if x.isEmpty =>
-        UserAnswersReader.fail[SealsDomain](SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)))
-      case x =>
-        x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(SealsDomain.apply)
-    }
+    SealsSection(incidentIndex, equipmentIndex).reader
+      .flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0))).map(Seq(_))
+        case x =>
+          x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _))
+      }
+      .map(SealsDomain(_))
 }

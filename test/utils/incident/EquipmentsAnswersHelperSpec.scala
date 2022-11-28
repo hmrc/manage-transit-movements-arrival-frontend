@@ -18,7 +18,7 @@ package utils.incident
 
 import base.SpecBase
 import controllers.incident.equipment._
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -28,7 +28,7 @@ import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import viewModels.ListItem
 
-class EquipmentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
 
   "EquipmentsAnswersHelper" - {
 

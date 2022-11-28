@@ -18,7 +18,7 @@ package viewModels.incident
 
 import base.SpecBase
 import controllers.incident.equipment._
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,7 +30,7 @@ import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 import viewModels.incident.EquipmentAnswersViewModel.EquipmentAnswersViewModelProvider
 import viewModels.sections.Section
 
-class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must return 3 sections" in {
     forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {

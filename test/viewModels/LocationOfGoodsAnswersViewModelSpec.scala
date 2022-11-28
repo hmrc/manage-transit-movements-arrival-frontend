@@ -17,14 +17,14 @@
 package viewModels
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.QualifierOfIdentification._
 import models.{Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods._
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
 
-class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
 
   private val sectionTitle = "Location of goods"
 

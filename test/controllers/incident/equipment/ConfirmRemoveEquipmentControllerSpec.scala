@@ -18,7 +18,7 @@ package controllers.incident.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +30,7 @@ import views.html.incident.equipment.ConfirmRemoveEquipmentView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
+class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val prefix       = "incident.equipment.remove"
   private val formProvider = new YesNoFormProvider()

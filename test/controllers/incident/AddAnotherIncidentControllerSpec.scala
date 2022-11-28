@@ -18,7 +18,7 @@ package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.reference.Country
 import models.{Index, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
@@ -38,7 +38,7 @@ import viewModels.incident.AddAnotherIncidentViewModel
 import viewModels.incident.AddAnotherIncidentViewModel.AddAnotherIncidentViewModelProvider
 import views.html.incident.AddAnotherIncidentView
 
-class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
+class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new AddAnotherItemFormProvider()
 

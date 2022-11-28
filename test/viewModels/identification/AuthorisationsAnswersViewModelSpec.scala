@@ -17,7 +17,7 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -25,7 +25,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.Link
 import viewModels.identification.AuthorisationsAnswersViewModel.AuthorisationsAnswersViewModelProvider
 
-class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "authorisations section" - {
     "must have row for each authorisation" in {

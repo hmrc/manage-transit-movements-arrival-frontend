@@ -23,7 +23,7 @@ import org.scalacheck.{Arbitrary, Gen, Shrink}
 
 import java.time._
 
-trait Generators extends UserAnswersGenerator with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
+trait Generators extends UserAnswersGenerator with ModelGenerators with ViewModelGenerators {
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 

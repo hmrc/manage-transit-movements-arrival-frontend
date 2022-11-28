@@ -17,11 +17,11 @@
 package viewModels
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 
-class ArrivalAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class ArrivalAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must return 4 sections" in {
     forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {

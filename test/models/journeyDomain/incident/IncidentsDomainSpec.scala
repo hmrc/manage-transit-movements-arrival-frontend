@@ -17,13 +17,13 @@
 package models.journeyDomain.incident
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.incident._
 
-class IncidentsDomainSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class IncidentsDomainSpec extends SpecBase with Generators {
 
   "IncidentDomainList" - {
 
@@ -38,7 +38,7 @@ class IncidentsDomainSpec extends SpecBase with Generators with ArrivalUserAnswe
 
       val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(userAnswers)
 
-      result.value.incidentsDomain.length mustBe numberOfIncidents
+      result.value.incidents.length mustBe numberOfIncidents
 
     }
 

@@ -18,11 +18,11 @@ package navigation
 
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authorisationRoutes}
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class AuthorisationsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class AuthorisationsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Authorisations Navigator" - {
 

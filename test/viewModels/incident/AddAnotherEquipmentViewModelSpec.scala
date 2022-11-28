@@ -17,14 +17,14 @@
 package viewModels.incident
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
-class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with ArrivalUserAnswersGenerator {
+class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 
