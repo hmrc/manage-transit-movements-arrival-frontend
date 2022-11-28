@@ -18,7 +18,11 @@ package models.identification.authorisation
 
 import models.{RadioModel, WithName}
 
-sealed trait AuthorisationType
+sealed trait AuthorisationType {
+
+  def asString(f: String => AuthorisationType => String): String =
+    f(AuthorisationType.prefixForDisplay)(this)
+}
 
 object AuthorisationType extends RadioModel[AuthorisationType] {
 
@@ -26,6 +30,7 @@ object AuthorisationType extends RadioModel[AuthorisationType] {
   case object ACE extends WithName("ACE") with AuthorisationType
 
   override val messageKeyPrefix: String = "identification.authorisation.authorisationType"
+  val prefixForDisplay: String          = s"$messageKeyPrefix.forDisplay"
 
   val values: Seq[AuthorisationType] = Seq(
     ACT,
