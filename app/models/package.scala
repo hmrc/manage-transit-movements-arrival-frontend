@@ -78,11 +78,12 @@ package object models {
 
     def isEmpty: Boolean = arr.value.isEmpty
 
-    def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[List[T]] =
+    def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
       arr.zipWithIndex
         .traverse[UserAnswersReader, T] {
           case (_, index) => userAnswersReader(Index(index))
         }
+        .map(_.toSeq)
   }
 
   implicit class RichOptionJsArray(arr: Option[JsArray]) {

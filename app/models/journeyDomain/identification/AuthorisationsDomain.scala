@@ -20,12 +20,11 @@ import cats.implicits._
 import controllers.identification.authorisation.routes
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
-import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.identification.AuthorisationsSection
 import play.api.mvc.Call
 
 case class AuthorisationsDomain(
-  value: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList
+  authorisations: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
@@ -35,10 +34,12 @@ case class AuthorisationsDomain(
 object AuthorisationsDomain {
 
   implicit val userAnswersReader: UserAnswersReader[AuthorisationsDomain] =
-    AuthorisationsSection.reader.flatMap {
-      case x if x.isEmpty =>
-        UserAnswersReader.fail[AuthorisationsDomain](AuthorisationTypePage(Index(0)))
-      case x =>
-        x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader).map(AuthorisationsDomain.apply)
-    }
+    AuthorisationsSection.reader
+      .flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader(AuthorisationDomain.userAnswersReader(Index(0))).map(Seq(_))
+        case x =>
+          x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader)
+      }
+      .map(AuthorisationsDomain(_))
 }

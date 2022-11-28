@@ -38,7 +38,7 @@ class IncidentsDomainSpec extends SpecBase with Generators with ArrivalUserAnswe
 
       val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(userAnswers)
 
-      result.value.incidentsDomain.length mustBe numberOfIncidents
+      result.value.incidents.length mustBe numberOfIncidents
 
     }
 

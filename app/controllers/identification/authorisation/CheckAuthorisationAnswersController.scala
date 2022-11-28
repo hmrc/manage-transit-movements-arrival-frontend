@@ -18,7 +18,7 @@ package controllers.identification.authorisation
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.{CheckMode, Index, Mode, MovementReferenceNumber}
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.AuthorisationsNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +38,7 @@ class CheckAuthorisationAnswersController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      val section = viewModelProvider(request.userAnswers, index, CheckMode).section
+      val section = viewModelProvider(request.userAnswers, index, mode).section
       Ok(view(mrn, index, mode, Seq(section)))
   }
 

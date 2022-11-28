@@ -18,7 +18,6 @@ package models.journeyDomain.incident.equipment.itemNumber
 
 import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
-import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 
 case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain])
@@ -26,10 +25,12 @@ case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain])
 object ItemNumbersDomain {
 
   implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[ItemNumbersDomain] =
-    ItemsSection(incidentIndex, equipmentIndex).reader.flatMap {
-      case x if x.isEmpty =>
-        UserAnswersReader.fail[ItemNumbersDomain](ItemNumberPage(incidentIndex, equipmentIndex, Index(0)))
-      case x =>
-        x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _)).map(ItemNumbersDomain.apply)
-    }
+    ItemsSection(incidentIndex, equipmentIndex).reader
+      .flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0))).map(Seq(_))
+        case x =>
+          x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _))
+      }
+      .map(ItemNumbersDomain(_))
 }

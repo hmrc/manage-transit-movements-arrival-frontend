@@ -23,7 +23,7 @@ import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.incident.IncidentsSection
 import play.api.mvc.Call
 
-case class IncidentsDomain(incidentsDomain: Seq[IncidentDomain]) extends JourneyDomainModel {
+case class IncidentsDomain(incidents: Seq[IncidentDomain]) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode))
@@ -31,22 +31,14 @@ case class IncidentsDomain(incidentsDomain: Seq[IncidentDomain]) extends Journey
 
 object IncidentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[IncidentsDomain] = {
-
-    val incidentsReader: UserAnswersReader[Seq[IncidentDomain]] =
-      IncidentsSection.reader.flatMap {
+  implicit val userAnswersReader: UserAnswersReader[IncidentsDomain] =
+    IncidentsSection.reader
+      .flatMap {
         case x if x.isEmpty =>
-          UserAnswersReader[IncidentDomain](
-            IncidentDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(Index(0))).map(Seq(_))
         case x =>
-          x.traverse[IncidentDomain](
-            IncidentDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[IncidentDomain](IncidentDomain.userAnswersReader)
       }
-
-    UserAnswersReader[Seq[IncidentDomain]](incidentsReader).map(IncidentsDomain(_))
-  }
+      .map(IncidentsDomain(_))
 
 }

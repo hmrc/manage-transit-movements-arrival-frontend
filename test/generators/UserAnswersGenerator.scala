@@ -16,13 +16,12 @@
 
 package generators
 
-import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.{ReaderError, UserAnswersReader}
+import models.journeyDomain.{ArrivalDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, MovementReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
-trait UserAnswersGenerator {
+trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
@@ -30,8 +29,7 @@ trait UserAnswersGenerator {
       for {
         mrn        <- arbitrary[MovementReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        initialAnswers = UserAnswers(mrn, eoriNumber)
-        answers <- buildUserAnswers[IdentificationDomain](initialAnswers) // TODO - eventually change to ArrivalDomain
+        answers    <- buildUserAnswers[ArrivalDomain](UserAnswers(mrn, eoriNumber))
       } yield answers
     }
 
