@@ -39,7 +39,7 @@ class DeclarationSubmittedController @Inject() (
       val officeOfDestination: CustomsOffice = request.userAnswers
         .get(DestinationOfficePage)
         .getOrElse(
-          throw new IllegalArgumentException("Office of Destination is required")
+          throw new IllegalStateException("Office of Destination is required")
         )
 
       Ok(view(request.userAnswers.mrn.toString, officeOfDestination))

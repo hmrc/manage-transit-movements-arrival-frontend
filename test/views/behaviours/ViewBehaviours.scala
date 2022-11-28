@@ -187,10 +187,8 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithContent(doc: Document, tag: String, expectedText: String): Unit =
     pageWithContent(doc, tag, expectedText, _ equals _)
 
-  def pageWithPartialContent(tag: String, expectedText: String): Unit = {
-    println("ACHI: " + view.toString)
+  def pageWithPartialContent(tag: String, expectedText: String): Unit =
     pageWithContent(doc, tag, expectedText, _ contains _)
-  }
 
   private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
     s"must render $tag with text $expectedText" in {
