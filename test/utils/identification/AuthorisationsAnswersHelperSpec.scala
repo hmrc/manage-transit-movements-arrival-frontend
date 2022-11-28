@@ -18,7 +18,7 @@ package utils.identification
 
 import base.SpecBase
 import controllers.identification.authorisation.routes
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.identification.authorisation.AuthorisationType._
@@ -29,7 +29,7 @@ import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
 import viewModels.ListItem
 
-class AuthorisationsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
 
   "AuthorisationsAnswersHelper" - {
 

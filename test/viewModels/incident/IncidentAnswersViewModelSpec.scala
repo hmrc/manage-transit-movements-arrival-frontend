@@ -18,7 +18,7 @@ package viewModels.incident
 
 import base.SpecBase
 import controllers.incident.equipment.routes
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ import pages.incident.{AddEndorsementPage, AddTransportEquipmentPage, ContainerI
 import viewModels.incident.IncidentAnswersViewModel.IncidentAnswersViewModelProvider
 import viewModels.sections.Section
 
-class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must return 4 sections" in {
     forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {

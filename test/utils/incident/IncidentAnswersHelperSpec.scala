@@ -22,7 +22,7 @@ import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
@@ -40,7 +40,7 @@ import pages.incident.transportMeans.{IdentificationNumberPage, IdentificationPa
 
 import java.time.LocalDate
 
-class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "IncidentAnswersHelper" - {
 

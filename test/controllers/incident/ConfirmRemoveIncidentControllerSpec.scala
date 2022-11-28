@@ -18,7 +18,7 @@ package controllers.incident
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -31,12 +31,7 @@ import views.html.incident.ConfirmRemoveIncidentView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveIncidentControllerSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with ScalaCheckPropertyChecks
-    with Generators
-    with ArrivalUserAnswersGenerator {
+class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider                    = new YesNoFormProvider()
   private val form                            = formProvider("incident.remove", incidentIndex.display)

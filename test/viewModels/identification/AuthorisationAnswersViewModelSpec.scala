@@ -17,12 +17,12 @@
 package viewModels.identification
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 
-class AuthorisationAnswersViewModelSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
 
   "authorisation section" - {
     "must have 2 rows" in {

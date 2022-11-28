@@ -17,7 +17,7 @@
 package viewModels.incident
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -27,7 +27,7 @@ import pages.incident.IncidentFlagPage
 import viewModels.incident.IncidentsAnswersViewModel.IncidentsAnswersViewModelProvider
 import viewModels.sections.Section
 
-class IncidentsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class IncidentsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val sectionTitle = "Incidents"
 

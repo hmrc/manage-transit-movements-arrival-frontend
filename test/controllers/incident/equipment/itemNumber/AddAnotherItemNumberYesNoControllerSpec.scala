@@ -18,7 +18,7 @@ package controllers.incident.equipment.itemNumber
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.{Index, NormalMode}
 import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -34,7 +34,7 @@ import viewModels.incident.AddAnotherItemNumberViewModel
 import viewModels.incident.AddAnotherItemNumberViewModel.AddAnotherItemNumberViewModelProvider
 import views.html.incident.equipment.itemNumber.AddAnotherItemNumberYesNoView
 
-class AddAnotherItemNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ArrivalUserAnswersGenerator {
+class AddAnotherItemNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new AddAnotherItemFormProvider()
 

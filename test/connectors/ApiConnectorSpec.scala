@@ -18,7 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import helper.WireMockServerHandler
 import models.UserAnswers
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -26,7 +26,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 
-class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators with ArrivalUserAnswersGenerator {
+class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
 
   val uA: UserAnswers = arbitraryArrivalAnswers(emptyUserAnswers).sample.value
 

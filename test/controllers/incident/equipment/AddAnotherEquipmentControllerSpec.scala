@@ -18,7 +18,7 @@ package controllers.incident.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.{Index, NormalMode, UserAnswers}
 import navigation.IncidentNavigatorProvider
@@ -40,12 +40,7 @@ import viewModels.incident.AddAnotherEquipmentViewModel
 import viewModels.incident.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 import views.html.incident.equipment.AddAnotherEquipmentView
 
-class AddAnotherEquipmentControllerSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with ScalaCheckPropertyChecks
-    with Generators
-    with ArrivalUserAnswersGenerator {
+class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider = new AddAnotherItemFormProvider()
 

@@ -18,7 +18,7 @@ package models.journeyDomain.incident
 
 import base.SpecBase
 import forms.Constants
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.incident.IncidentCode
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.Country
@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.incident._
 
-class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val country      = arbitrary[Country].sample.value
   private val incidentCode = arbitrary[IncidentCode].sample.value

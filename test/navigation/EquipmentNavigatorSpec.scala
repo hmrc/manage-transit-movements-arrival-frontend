@@ -17,11 +17,11 @@
 package navigation
 
 import base.SpecBase
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ArrivalUserAnswersGenerator {
+class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Equipment Navigator" - {
 

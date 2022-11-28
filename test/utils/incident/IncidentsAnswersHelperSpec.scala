@@ -18,7 +18,7 @@ package utils.incident
 
 import base.SpecBase
 import controllers.incident.routes
-import generators.{ArrivalUserAnswersGenerator, Generators}
+import generators.Generators
 import models.Mode
 import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
 import viewModels.ListItem
 
-class IncidentsAnswersHelperSpec extends SpecBase with Generators with ArrivalUserAnswersGenerator {
+class IncidentsAnswersHelperSpec extends SpecBase with Generators {
 
   "IncidentsAnswersHelper" - {
 
