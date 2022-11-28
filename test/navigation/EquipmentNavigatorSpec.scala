@@ -50,7 +50,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       val navigator         = navigatorProvider.apply(mode, incidentIndex, equipmentIndex)
 
       "when answers complete" - {
-        "must redirect to incident answers page" ignore {
+        "must redirect to incident answers page" in {
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
             answers =>
               navigator

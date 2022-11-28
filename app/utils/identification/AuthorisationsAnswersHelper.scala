@@ -23,6 +23,7 @@ import models.{Index, Mode, UserAnswers}
 import pages.identification.authorisation.AuthorisationTypePage
 import pages.sections.identification.AuthorisationsSection
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
 import viewModels.ListItem
@@ -34,7 +35,7 @@ class AuthorisationsAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "identification.authorisation",
     id = Some(s"change-authorisation-${index.display}"),
     args = index.display
@@ -45,8 +46,8 @@ class AuthorisationsAnswersHelper(
       index =>
         buildListItem[AuthorisationDomain, AuthorisationType](
           page = AuthorisationTypePage(index),
-          formatJourneyDomainModel = _.toString,
-          formatType = _.toString,
+          formatJourneyDomainModel = _.asString(formatEnumAsString),
+          formatType = _.asString(formatEnumAsString),
           removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
         )(AuthorisationDomain.userAnswersReader(index), implicitly)
     }

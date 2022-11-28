@@ -24,7 +24,7 @@ import pages.sections.identification.AuthorisationsSection
 import play.api.mvc.Call
 
 case class AuthorisationsDomain(
-  authorisations: Seq[AuthorisationDomain] // TODO this could be a nonEmptyList
+  authorisations: Seq[AuthorisationDomain]
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =

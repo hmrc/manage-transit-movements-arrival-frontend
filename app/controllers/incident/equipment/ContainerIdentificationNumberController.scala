@@ -49,7 +49,6 @@ class ContainerIdentificationNumberController @Inject() (
   private def form(incidentIndex: Index, equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
     formProvider("incident.equipment.containerIdentificationNumber", otherContainerIdentificationNumbers(incidentIndex, equipmentIndex))
 
-  // TODO - is this the ids for the entire declaration? Or just at this incident index?
   private def otherContainerIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(EquipmentsSection(incidentIndex)).length
     (0 until numberOfEquipments)
