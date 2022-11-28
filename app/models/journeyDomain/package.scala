@@ -51,7 +51,7 @@ package object journeyDomain {
       * `next` will not be run
       */
 
-    def filterMandatoryDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[B] =
+    def filterMandatoryDependent[B](predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[B] =
       a.reader(s"Reader for $a failed before reaching predicate")
         .flatMap {
           x =>
@@ -69,7 +69,7 @@ package object journeyDomain {
       * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
       * `next` will not be run
       */
-    def filterOptionalDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+    def filterOptionalDependent[B](predicate: A => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
       a.reader(s"Reader for $a failed before reaching predicate")
         .flatMap {
           x =>
