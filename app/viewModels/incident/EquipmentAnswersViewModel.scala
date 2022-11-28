@@ -48,7 +48,7 @@ object EquipmentAnswersViewModel {
         val sealRows = userAnswers
           .get(SealsSection(incidentIndex, equipmentIndex))
           .mapWithIndex {
-            (_, index) => helper.seal(Index(index))
+            (_, index) => helper.seal(index)
           }
 
         Section(
@@ -66,7 +66,7 @@ object EquipmentAnswersViewModel {
         val goodsItemNumberRows = userAnswers
           .get(ItemsSection(incidentIndex, equipmentIndex))
           .mapWithIndex {
-            (_, index) => helper.goodsItemNumber(Index(index))
+            (_, index) => helper.goodsItemNumber(index)
           }
 
         Section(

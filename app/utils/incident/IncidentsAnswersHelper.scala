@@ -50,8 +50,7 @@ class IncidentsAnswersHelper(
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(IncidentsSection) {
-      position =>
-        val index = Index(position)
+      index =>
         buildListItemWithDefault[IncidentDomain, IncidentCode](
           page = IncidentCodePage(index),
           formatJourneyDomainModel = _.asString(formatEnumAsString),

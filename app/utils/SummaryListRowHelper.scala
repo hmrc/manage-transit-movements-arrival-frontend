@@ -76,19 +76,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
       args = args: _*
     )
 
-  protected def buildRowWithNoChangeLink(
-    prefix: String,
-    answer: Content,
-    args: Any*
-  ): SummaryListRow =
-    buildSimpleRow(
-      prefix = prefix,
-      label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
-      answer = answer,
-      id = None,
-      call = None
-    )
-
   def buildSimpleRow(
     prefix: String,
     label: String,
