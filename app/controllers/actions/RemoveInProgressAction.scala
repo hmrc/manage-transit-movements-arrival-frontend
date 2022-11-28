@@ -41,7 +41,7 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
       case Some(value) =>
         val indexesToRemove = value
           .filterWithIndex {
-            (_, i) => UserAnswersReader[T](userAnswersReader(Index(i))).run(userAnswers).isLeft
+            (_, i) => userAnswersReader(Index(i)).run(userAnswers).isLeft
           }
           .map(_._2)
 
