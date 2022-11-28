@@ -32,7 +32,6 @@ object AddAnotherAuthorisationViewModel {
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
       val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-      // TODO - decide what to do with in progress authorisations (Lefts). Currently lumping them together with the completed ones (Rights).
       val listItems = helper.listItems.collect {
         case Left(value)  => value
         case Right(value) => value
