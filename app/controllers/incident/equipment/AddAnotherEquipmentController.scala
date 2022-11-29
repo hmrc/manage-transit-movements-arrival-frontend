@@ -19,7 +19,6 @@ package controllers.incident.equipment
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
@@ -75,9 +74,11 @@ class AddAnotherEquipmentController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
             case true =>
-              implicit val reader: UserAnswersReader[EquipmentDomain] =
-                EquipmentDomain.userAnswersReader(incidentIndex, Index(viewModel.numberOfTransportEquipments))
-              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode))
+              Redirect(
+                UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode)(
+                  EquipmentDomain.userAnswersReader(incidentIndex, Index(viewModel.numberOfTransportEquipments))
+                )
+              )
             case false =>
               Redirect(navigatorProvider(mode, incidentIndex).nextPage(request.userAnswers))
           }

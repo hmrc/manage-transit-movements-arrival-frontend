@@ -19,12 +19,16 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.identification.authorisation.AuthorisationType
+import models.{Index, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.identification.authorisation.AuthorisationTypePage
+import pages.sections.identification.AuthorisationSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -36,8 +40,10 @@ import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                  = new AddAnotherItemFormProvider()
-  private def form(allowMoreItems: Boolean) = formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreItems)
+  private val formProvider = new AddAnotherItemFormProvider()
+
+  private def form(viewModel: AddAnotherAuthorisationViewModel) =
+    formProvider(viewModel.prefix, viewModel.allowMoreAuthorisations)
 
   private val mode = NormalMode
 
@@ -60,12 +66,38 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
   private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxIdentificationAuthorisations - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxIdentificationAuthorisations)(listItem)
 
+  private val viewModel = arbitrary[AddAnotherAuthorisationViewModel].sample.value
+
+  private val viewModelWithNoItems          = viewModel.copy(listItems = Nil)
+  private val viewModelWithItemsNotMaxedOut = viewModel.copy(listItems = listItems)
+  private val viewModelWithItemsMaxedOut    = viewModel.copy(listItems = maxedOutListItems)
+
   "AddAnotherAuthorisation Controller" - {
+
+    "must remove any in progress authorisations" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
+
+      when(mockViewModelProvider.apply(any(), any())(any()))
+        .thenReturn(viewModelWithItemsNotMaxedOut)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addAnotherAuthorisationRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any())(any())
+      userAnswersCaptor.getValue.get(AuthorisationSection(authorisationIndex)) mustNot be(defined)
+    }
 
     "must redirect to procedure type page" - {
       "when 0 authorisations" in {
         when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(Nil))
+          .thenReturn(viewModelWithNoItems)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -83,10 +115,8 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        val allowMore = true
-
         when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+          .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -99,16 +129,12 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMore), mrn, mode, listItems, allowMore)(request, messages).toString
+          view(form(viewModelWithItemsNotMaxedOut), mrn, viewModelWithItemsNotMaxedOut)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
-        val allowMore = false
-
-        val listItems = maxedOutListItems
-
         when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+          .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -121,7 +147,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(allowMore), mrn, mode, listItems, allowMore)(request, messages).toString
+          view(form(viewModelWithItemsMaxedOut), mrn, viewModelWithItemsMaxedOut)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -129,9 +155,11 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       "when yes submitted" - {
         "must redirect to authorisation type page at next index" in {
           when(mockViewModelProvider.apply(any(), any())(any()))
-            .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+            .thenReturn(viewModelWithItemsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
+
+          val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfAuthorisations)
 
           val request = FakeRequest(POST, addAnotherAuthorisationRoute)
             .withFormUrlEncodedBody(("value", "true"))
@@ -141,14 +169,14 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.identification.authorisation.routes.AuthorisationTypeController.onPageLoad(mrn, Index(listItems.length), NormalMode).url
+            controllers.identification.authorisation.routes.AuthorisationTypeController.onPageLoad(mrn, nextIndex, NormalMode).url
         }
       }
 
       "when no submitted" - {
         "must redirect to next page" in {
           when(mockViewModelProvider.apply(any(), any())(any()))
-            .thenReturn(AddAnotherAuthorisationViewModel(listItems))
+            .thenReturn(viewModelWithItemsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
 
@@ -167,7 +195,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     "when max limit reached" - {
       "must redirect to next page" in {
         when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(maxedOutListItems))
+          .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -185,16 +213,14 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(AddAnotherAuthorisationViewModel(listItems))
-
-        val allowMore = true
+          .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, addAnotherAuthorisationRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form(allowMore).bind(Map("value" -> ""))
+        val boundForm = form(viewModelWithItemsNotMaxedOut).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
@@ -203,7 +229,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, mode, listItems, allowMore)(request, messages).toString
+          view(boundForm, mrn, viewModelWithItemsNotMaxedOut)(request, messages, frontendAppConfig).toString
       }
     }
 
