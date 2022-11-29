@@ -17,8 +17,9 @@
 package connectors
 
 import api.Conversions
+import api.Conversions.transitOperation
 import config.FrontendAppConfig
-import generated.TransitOperationType02
+import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, TransitOperationType02}
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.HeaderNames
@@ -36,10 +37,17 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
   )
 
   // TODO - Implement as per declarations
-  def createSubmission(userAnswers: UserAnswers): Either[String, String] =
+  def createSubmission(userAnswers: UserAnswers): Either[String, CC007CType] = {
+    // Create message structure
+    val message: MESSAGE_FROM_TRADERSequence = Conversions.message
+    val messageType: MessageType007          = Conversions.messageType
+    val correlationIdentifier                = Conversions.correlationIdentifier
+
     for {
       transitOperation <- Conversions.transitOperation(userAnswers)
-    } yield payloadXml(transitOperation)
+    } yield CC007CType(message, messageType, correlationIdentifier, transitOperation, ???, ???, ???, ???)
+  }
+
 
   // TODO - build out example submission
   def payloadXml(transitOperation: TransitOperationType02): String =
@@ -143,7 +151,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
 
     createSubmission(userAnswers) match {
       case Left(msg)    => throw new BadRequestException(msg)
-      case Right(value) => httpClient.POSTString(declarationUrl, value, requestHeaders)
+      case Right(value) => httpClient.POST[CC007CType, HttpResponse](declarationUrl, value, requestHeaders)  //httpClient.POST(declarationUrl, value, requestHeaders)
     }
 
   }

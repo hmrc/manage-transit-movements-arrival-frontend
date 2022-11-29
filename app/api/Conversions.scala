@@ -22,8 +22,22 @@ import models.identification.ProcedureType
 import org.joda.time.DateTime
 import pages.identification.IsSimplifiedProcedurePage
 import pages.incident.IncidentFlagPage
+import pages.sections.identification.AuthorisationsSection
 
 object Conversions {
+
+  def message: MESSAGE_FROM_TRADERSequence =
+    MESSAGE_FROM_TRADERSequence(
+      Some("manage-transit-movements-arrival-frontend"),
+      MESSAGE_1Sequence(
+        "TODO ???",
+        ApiXmlHelpers.toDate(DateTime.now().toString()),
+        "TODO ???"
+      )
+    )
+
+  def messageType: MessageType007 = MessageType007.fromString("CC007C", generated.defaultScope)
+  def correlationIdentifier       = CORRELATION_IDENTIFIERSequence(Some("TODO ???"))
 
   def transitOperation(userAnswers: UserAnswers): Either[String, TransitOperationType02] =
     for {
@@ -38,5 +52,12 @@ object Conversions {
       }),
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
+
+  def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] = {
+    for {
+      // Is JsArray - How do we read a section to build a Seq[AuthorisationType01]?
+      authSection <- userAnswers.getAsEither(AuthorisationsSection)
+    } yield ???
+  }
 
 }
