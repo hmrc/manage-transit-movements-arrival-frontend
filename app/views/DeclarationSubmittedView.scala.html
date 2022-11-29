@@ -28,9 +28,11 @@
 @(mrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
 
 @customsOfficeDetail = @{
-    officeOfDestination.phoneNumber match {
-        case Some(tel) => messages("declarationSubmitted.paragraph.2.1", officeOfDestination.name.getOrElse(officeOfDestination.id), tel)
-        case _         => messages("declarationSubmitted.paragraph.2.2", officeOfDestination.name.getOrElse(officeOfDestination.id))
+    (officeOfDestination.name, officeOfDestination.phoneNumber) match {
+        case (Some(name), Some(tel)) => messages("declarationSubmitted.paragraph.2.1", name, tel)
+        case (Some(name), None)      => messages("declarationSubmitted.paragraph.2.2", name)
+        case (None, Some(tel))       => messages("declarationSubmitted.paragraph.2.3", officeOfDestination.id, tel)
+        case _                       => messages("declarationSubmitted.paragraph.2.4", officeOfDestination.id)
     }
 }
 
@@ -55,7 +57,7 @@
     <p class="govuk-body">@customsOfficeDetail</p>
 
     <p class="govuk-body">
-        <a href=movement-reference-number class="govuk-link" id="new-arrival">
+        <a href=@controllers.routes.RedirectController.onPageLoad().url class="govuk-link" id="new-arrival">
             @messages("declarationSubmitted.new.arrival")
         </a>
     </p>

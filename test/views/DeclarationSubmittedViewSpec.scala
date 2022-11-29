@@ -53,10 +53,10 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
   behave like pageWithLink(
     id = "new-arrival",
     expectedText = "Create another arrival notification",
-    expectedHref = "movement-reference-number"
+    expectedHref = "/manage-transit-movements/arrivals"
   )
 
-  "Customs office with no telephone" - {
+  "Customs office with name and no telephone" - {
     val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoTel)(fakeRequest, messages)
 
     val doc = parseView(view)
@@ -65,6 +65,32 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
       doc,
       "p",
       s"If the goods are not released when expected or you have another problem, contact Customs at Test."
+    )
+
+  }
+
+  "Customs office with no name and a telephone" - {
+    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoNameTel)(fakeRequest, messages)
+
+    val doc = parseView(view)
+
+    behave like pageWithContent(
+      doc,
+      "p",
+      s"If the goods are not released when expected or you have another problem, contact Customs office ABC12345 on +44 7760663422."
+    )
+
+  }
+
+  "Customs office with no name and no telephone" - {
+    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoNameNoTel)(fakeRequest, messages)
+
+    val doc = parseView(view)
+
+    behave like pageWithContent(
+      doc,
+      "p",
+      s"If the goods are not released when expected or you have another problem, contact Customs office ABC12345."
     )
 
   }
