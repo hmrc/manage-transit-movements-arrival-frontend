@@ -42,6 +42,8 @@ class DeclarationSubmittedController @Inject() (
           throw new IllegalStateException("Office of Destination is required")
         )
 
+      // TODO - we will need to clear the cache once submitted
+      // Can be done as part of the submission ticket.
       Ok(view(request.userAnswers.mrn.toString, officeOfDestination))
   }
 }

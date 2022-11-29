@@ -16,6 +16,8 @@
 
 package views
 
+import models.reference.CustomsOffice
+import org.scalacheck.Gen
 import play.twirl.api.HtmlFormat
 import views.html.DeclarationSubmittedView
 import views.behaviours.PanelViewBehaviours
@@ -24,8 +26,23 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
 
   override val prefix: String = "declarationSubmitted"
 
+  val officeOfDestination: CustomsOffice            = new CustomsOffice("ABC12345", Some("Test"), Some("+44 7760663422"))
+  val officeOfDestinationNoTel: CustomsOffice       = new CustomsOffice("ABC12345", Some("Test"), None)
+  val officeOfDestinationNoNameTel: CustomsOffice   = new CustomsOffice("ABC12345", None, Some("+44 7760663422"))
+  val officeOfDestinationNoNameNoTel: CustomsOffice = new CustomsOffice("ABC12345", None, None)
+
+  val oneOfOffices = Gen
+    .oneOf(
+      officeOfDestination,
+      officeOfDestinationNoTel,
+      officeOfDestinationNoNameTel,
+      officeOfDestinationNoNameNoTel
+    )
+    .sample
+    .value
+
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestination)(fakeRequest, messages)
+    injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, oneOfOffices)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -45,16 +62,24 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
     expectedHref = "http://localhost:9485/manage-transit-movements/view-arrivals"
   )
 
-  behave like pageWithPartialContent(
-    "p",
-    s"If the goods are not released when expected or you have another problem, contact Customs at Test on +44 7760663422."
-  )
-
   behave like pageWithLink(
     id = "new-arrival",
     expectedText = "Create another arrival notification",
     expectedHref = "/manage-transit-movements/arrivals"
   )
+
+  "Customs office with name and telephone" - {
+    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestination)(fakeRequest, messages)
+
+    val doc = parseView(view)
+
+    behave like pageWithContent(
+      doc,
+      "p",
+      s"If the goods are not released when expected or you have another problem, contact Customs at Test on +44 7760663422."
+    )
+
+  }
 
   "Customs office with name and no telephone" - {
     val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoTel)(fakeRequest, messages)

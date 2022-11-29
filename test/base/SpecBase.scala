@@ -71,11 +71,6 @@ trait SpecBase
   val consigneeAddress: UkAddress = UkAddress("buildingAndStreet", "city", "NE99 1XN")
   val configKey                   = "config"
 
-  val officeOfDestination: CustomsOffice            = new CustomsOffice("ABC12345", Some("Test"), Some("+44 7760663422"))
-  val officeOfDestinationNoTel: CustomsOffice       = new CustomsOffice("ABC12345", Some("Test"), None)
-  val officeOfDestinationNoNameTel: CustomsOffice   = new CustomsOffice("ABC12345", None, Some("+44 7760663422"))
-  val officeOfDestinationNoNameNoTel: CustomsOffice = new CustomsOffice("ABC12345", None, None)
-
   def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
