@@ -16,14 +16,33 @@
 
 package viewModels.identification
 
+import config.FrontendAppConfig
+import controllers.identification.authorisation.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import utils.identification.AuthorisationsAnswersHelper
 import viewModels.ListItem
 
 import javax.inject.Inject
 
-case class AddAnotherAuthorisationViewModel(listItems: Seq[ListItem])
+case class AddAnotherAuthorisationViewModel(
+  listItems: Seq[ListItem],
+  onSubmitCall: Call
+) {
+
+  val numberOfAuthorisations: Int = listItems.length
+  val singularOrPlural: String    = if (numberOfAuthorisations == 1) "singular" else "plural"
+
+  val prefix: String = "identification.authorisation.addAnotherAuthorisation"
+
+  def title(implicit messages: Messages): String         = messages(s"$prefix.$singularOrPlural.title", numberOfAuthorisations)
+  def heading(implicit messages: Messages): String       = messages.apply(s"$prefix.$singularOrPlural.title", numberOfAuthorisations)
+  def legend(implicit messages: Messages): String        = messages(s"$prefix.label")
+  def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
+
+  def allowMoreAuthorisations(implicit config: FrontendAppConfig): Boolean = numberOfAuthorisations < config.maxIdentificationAuthorisations
+}
 
 object AddAnotherAuthorisationViewModel {
 
@@ -37,7 +56,10 @@ object AddAnotherAuthorisationViewModel {
         case Right(value) => value
       }
 
-      new AddAnotherAuthorisationViewModel(listItems)
+      new AddAnotherAuthorisationViewModel(
+        listItems,
+        routes.AddAnotherAuthorisationController.onSubmit(userAnswers.mrn, mode)
+      )
     }
   }
 }

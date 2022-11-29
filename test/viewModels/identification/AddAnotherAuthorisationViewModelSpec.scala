@@ -18,28 +18,45 @@ package viewModels.identification
 
 import base.SpecBase
 import generators.Generators
-import models.identification.authorisation.AuthorisationType
-import models.identification.authorisation.AuthorisationType._
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.authorisation._
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 
 class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  "must get list items" in {
+  "must get list items" - {
 
-    forAll(arbitrary[Mode]) {
-      mode =>
-        val userAnswers = emptyUserAnswers
-          .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACT)
-          .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 1")
-          .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.ACE)
-          .setValue(AuthorisationReferenceNumberPage(Index(0)), "List item 2")
+    "when there is one authorisation" in {
+      forAll(arbitrary[Mode]) {
+        mode =>
+          val userAnswers = arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex).sample.value
 
-        val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers, mode)
-        result.listItems.length mustBe 2
+          val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers, mode)
+          result.listItems.length mustBe 1
+          result.title mustBe "You have added 1 authorisation"
+          result.heading mustBe "You have added 1 authorisation"
+          result.legend mustBe "Do you need to add another authorisation?"
+          result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another authorisation, you need to remove one first."
+      }
+    }
+
+    "when there are multiple authorisations" in {
+      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxIdentificationAuthorisations)) {
+        (mode, numberOfAuthorisations) =>
+          val userAnswers = (0 until numberOfAuthorisations).foldLeft(emptyUserAnswers) {
+            (acc, i) =>
+              arbitraryAuthorisationAnswers(acc, Index(i)).sample.value
+          }
+
+          val result = new AddAnotherAuthorisationViewModelProvider()(userAnswers, mode)
+          result.listItems.length mustBe numberOfAuthorisations
+          result.title mustBe s"You have added $numberOfAuthorisations authorisations"
+          result.heading mustBe s"You have added $numberOfAuthorisations authorisations"
+          result.legend mustBe "Do you need to add another authorisation?"
+          result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another authorisation, you need to remove one first."
+      }
     }
   }
 
