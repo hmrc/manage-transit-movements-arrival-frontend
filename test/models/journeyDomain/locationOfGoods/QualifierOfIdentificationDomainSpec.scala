@@ -97,7 +97,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = CoordinatesDomain(
         Coordinates("latitude", "longitudes"),
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
@@ -176,7 +176,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = AddressDomain(
         InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(userAnswers)
@@ -238,7 +238,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       val expectedResult = EoriNumberDomain(
         "identificationNumber",
         None,
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
@@ -324,7 +324,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       val expectedResult = AuthorisationNumberDomain(
         "authorisationNumber",
         None,
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
@@ -408,7 +408,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = CoordinatesDomain(
         Coordinates("latitude", "longitudes"),
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
@@ -493,7 +493,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = UnlocodeDomain(
         UnLocode("code", "name"),
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
@@ -553,7 +553,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = PostalCodeDomain(
         PostalCodeAddress("streetNumber", "postalCode", Country(CountryCode("code"), "description")),
-        Some(ContactPerson("contact name", "contact telephone"))
+        Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
       val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
