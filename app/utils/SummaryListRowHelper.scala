@@ -17,7 +17,7 @@
 package utils
 
 import models.reference.CountryCode
-import models.{Address, CountryList, DynamicAddress, PostalCodeAddress}
+import models.{CountryList, DynamicAddress, PostalCodeAddress}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -34,9 +34,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     } else {
       messages("site.no").toText
     }
-
-  def formatAsAddress(address: Address): Content =
-    HtmlContent(address.toString)
 
   protected def formatAsDynamicAddress(address: DynamicAddress): Content =
     HtmlContent(address.toString)

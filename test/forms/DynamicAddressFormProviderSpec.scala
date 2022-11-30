@@ -100,7 +100,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
 
     ".postalCode" - {
 
-      val invalidKey = s"$prefix.error.postalCode.invalid"
+      val postcodeInvalidKey = s"$prefix.error.postalCode.invalid"
 
       val fieldName = PostalCode.field
 
@@ -129,7 +129,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(arg1, arg2)),
+        error = FormError(fieldName, postcodeInvalidKey, Seq(arg1, arg2)),
         length = PostalCode.length
       )
     }
@@ -203,7 +203,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
 
     ".postalCode" - {
 
-      val invalidKey = s"$prefix.error.postalCode.invalid"
+      val postcodeInvalidKey = s"$prefix.error.postalCode.invalid"
 
       val fieldName = PostalCode.field
 
@@ -231,7 +231,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(arg1, arg2)),
+        error = FormError(fieldName, postcodeInvalidKey, Seq(arg1, arg2)),
         length = PostalCode.length
       )
     }

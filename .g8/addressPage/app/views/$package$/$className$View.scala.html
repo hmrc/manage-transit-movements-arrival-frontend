@@ -15,7 +15,7 @@
  *@
 
 @import controllers.$package$.routes
-@import models.MovementReferenceNumber
+@import models.LocalReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputDynamicAddress}
 
 @this(
@@ -28,7 +28,7 @@
 
 @(
     form: Form[DynamicAddress],
-    mrn: MovementReferenceNumber,
+    lrn: LocalReferenceNumber,
     mode: Mode,
     name: String,
     isPostalCodeRequired: Boolean
@@ -37,10 +37,10 @@
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    mrn = Some(mrn)
+    lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package views.behaviours
+package models
 
-import models.UkAddress
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-trait UkAddressViewBehaviours extends AddressViewBehaviours[UkAddress] {
-  override val fields = Seq("addressLine1", "addressLine2", "postalCode")
+case class PostalCodeAddress(
+  streetNumber: String,
+  postalCode: String,
+  country: Country
+) {
+  override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
+}
+
+object PostalCodeAddress {
+  implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
 }
