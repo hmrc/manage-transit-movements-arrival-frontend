@@ -32,7 +32,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-        .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = AddressDomain(
@@ -169,7 +169,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
@@ -187,7 +187,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = AddressDomain(
@@ -202,12 +202,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(InternationalAddressPage, AddContactPersonPage)
+      val mandatoryPages: Seq[QuestionPage[_]] = Seq(AddressPage, AddContactPersonPage)
 
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")

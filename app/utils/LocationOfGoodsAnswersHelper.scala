@@ -79,10 +79,10 @@ class LocationOfGoodsAnswersHelper(
   )
 
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[InternationalAddress](
-    page = InternationalAddressPage,
+    page = AddressPage,
     formatAnswer = formatAsAddress,
-    prefix = "locationOfGoods.internationalAddress",
-    id = Some("international-address")
+    prefix = "locationOfGoods.address",
+    id = Some("address")
   )
 
   def postalCode: Option[SummaryListRow] = getAnswerAndBuildRow[PostalCodeAddress](

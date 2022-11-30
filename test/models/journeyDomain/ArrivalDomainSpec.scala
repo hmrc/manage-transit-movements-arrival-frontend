@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
-import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods.{AddContactPersonPage, AddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -80,7 +80,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(TypeOfLocationPage, AuthorisedPlace)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
             .setValue(AddContactPersonPage, false)
 
           val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
@@ -103,7 +103,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
           .setValue(AddContactPersonPage, false)
 
         val expectedResult = ArrivalTransitionDomain(

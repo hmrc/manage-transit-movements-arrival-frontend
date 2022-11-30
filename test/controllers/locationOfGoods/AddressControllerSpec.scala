@@ -24,26 +24,26 @@ import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.locationOfGoods.InternationalAddressPage
+import pages.locationOfGoods.AddressPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CountriesService
-import views.html.locationOfGoods.InternationalAddressView
+import views.html.locationOfGoods.AddressView
 
 import scala.concurrent.Future
 
-class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val testAddress = arbitrary[InternationalAddress].sample.value
   private val countryList = CountryList(Seq(testAddress.country))
 
   private val formProvider = new InternationalAddressFormProvider()
-  private val form         = formProvider("locationOfGoods.internationalAddress", countryList)
+  private val form         = formProvider("locationOfGoods.address", countryList)
 
   private val mode                           = NormalMode
-  private lazy val internationalAddressRoute = routes.InternationalAddressController.onPageLoad(mrn, mode).url
+  private lazy val internationalAddressRoute = routes.AddressController.onPageLoad(mrn, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -58,7 +58,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
-  "InternationalAddress Controller" - {
+  "Address Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -69,7 +69,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
       val request = FakeRequest(GET, internationalAddressRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[AddressView]
 
       status(result) mustEqual OK
 
@@ -82,7 +82,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers = UserAnswers(mrn, eoriNumber)
-        .setValue(InternationalAddressPage, testAddress)
+        .setValue(AddressPage, testAddress)
 
       setExistingUserAnswers(userAnswers)
 
@@ -99,7 +99,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
         )
       )
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[AddressView]
 
       status(result) mustEqual OK
 
@@ -142,7 +142,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[AddressView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode, countryList.countries)(request, messages).toString

@@ -80,7 +80,7 @@ trait UserAnswersEntryGenerators {
       case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
       case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))
       case IdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
-      case InternationalAddressPage    => arbitrary[InternationalAddress].map(Json.toJson(_))
+      case AddressPage                 => arbitrary[InternationalAddress].map(Json.toJson(_))
       case UnlocodePage                => arbitrary[UnLocode].map(Json.toJson(_))
     }
   }

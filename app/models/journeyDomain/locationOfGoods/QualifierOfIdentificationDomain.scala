@@ -45,7 +45,7 @@ object AddressDomain {
 
   implicit val userAnswersReader: UserAnswersReader[AddressDomain] =
     (
-      InternationalAddressPage.reader,
+      AddressPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((AddressDomain.apply _).tupled)
 }

@@ -22,19 +22,19 @@ import forms.InternationalAddressFormProvider
 import models.requests.DataRequest
 import models.{CountryList, InternationalAddress, Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.locationOfGoods.InternationalAddressPage
+import pages.locationOfGoods.AddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.InternationalAddressView
+import views.html.locationOfGoods.AddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InternationalAddressController @Inject() (
+class AddressController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
@@ -42,13 +42,13 @@ class InternationalAddressController @Inject() (
   formProvider: InternationalAddressFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  view: InternationalAddressView
+  view: AddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private def form(countryList: CountryList)(implicit request: DataRequest[AnyContent]): Form[InternationalAddress] =
-    formProvider("locationOfGoods.internationalAddress", countryList)
+    formProvider("locationOfGoods.address", countryList)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
@@ -56,7 +56,7 @@ class InternationalAddressController @Inject() (
       implicit request: DataRequest[AnyContent] =>
         countriesService.getTransitCountries().map {
           countryList =>
-            val preparedForm = request.userAnswers.get(InternationalAddressPage) match {
+            val preparedForm = request.userAnswers.get(AddressPage) match {
               case None        => form(countryList)
               case Some(value) => form(countryList).fill(value)
             }
@@ -77,7 +77,7 @@ class InternationalAddressController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                  InternationalAddressPage.writeToUserAnswers(value).writeToSession().navigate()
+                  AddressPage.writeToUserAnswers(value).writeToSession().navigate()
                 }
               )
         }

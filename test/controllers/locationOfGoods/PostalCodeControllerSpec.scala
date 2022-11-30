@@ -58,7 +58,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
-  "Address Controller" - {
+  "PostalCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 

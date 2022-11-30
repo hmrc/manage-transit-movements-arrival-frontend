@@ -24,7 +24,7 @@ import models.reference.{Country, CountryCode}
 import models.{InternationalAddress, QualifierOfIdentification}
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods.{AddContactPersonPage, AddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
@@ -37,7 +37,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           val userAnswers = emptyUserAnswers
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
@@ -66,7 +66,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         val userAnswers = emptyUserAnswers
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {

@@ -282,7 +282,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
     "address" - {
       "must return None" - {
-        "when InternationalAddressPage undefined" in {
+        "when AddressPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
@@ -293,10 +293,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
 
       "must return Some(Row)" - {
-        "when InternationalAddressPage defined" in {
+        "when AddressPage defined" in {
           forAll(arbitrary[InternationalAddress], arbitrary[Mode]) {
             (address, mode) =>
-              val answers = emptyUserAnswers.setValue(InternationalAddressPage, address)
+              val answers = emptyUserAnswers.setValue(AddressPage, address)
 
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.address.get
@@ -307,9 +307,9 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.InternationalAddressController.onPageLoad(answers.mrn, mode).url
+              action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "address for the location of goods"
-              action.id mustBe "international-address"
+              action.id mustBe "address"
           }
         }
       }
