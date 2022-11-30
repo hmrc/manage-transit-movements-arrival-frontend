@@ -18,18 +18,16 @@ package controllers.identification.authorisation
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.identification.authorisation.{routes => authRoutes}
 import forms.AddAnotherItemFormProvider
 import models.journeyDomain.identification.AuthorisationDomain
-import models.requests.DataRequest
 import models.{Index, Mode, MovementReferenceNumber}
-import navigation.ArrivalNavigatorProvider
+import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.sections.identification.{AuthorisationSection, AuthorisationsSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.ListItem
+import viewModels.identification.AddAnotherAuthorisationViewModel
 import viewModels.identification.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.identification.authorisation.AddAnotherAuthorisationView
 
@@ -42,43 +40,42 @@ class AddAnotherAuthorisationController @Inject() (
   removeInProgressAuthorisations: RemoveInProgressActionProvider,
   formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  config: FrontendAppConfig,
   viewModelProvider: AddAnotherAuthorisationViewModelProvider,
   view: AddAnotherAuthorisationView
-) extends FrontendBaseController
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
-  private def form(allowMoreAuthorisations: Boolean): Form[Boolean] =
-    formProvider("identification.authorisation.addAnotherAuthorisation", allowMoreAuthorisations)
+  private def form(viewModel: AddAnotherAuthorisationViewModel): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMoreAuthorisations)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
     .andThen(removeInProgressAuthorisations[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)) {
       implicit request =>
-        val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData(mode)
-        numberOfAuthorisations match {
+        val viewModel = viewModelProvider(request.userAnswers, mode)
+        viewModel.numberOfAuthorisations match {
           case 0 => Redirect(controllers.identification.routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode))
-          case _ => Ok(view(form(allowMoreAuthorisations), mrn, mode, authorisations, allowMoreAuthorisations))
+          case _ => Ok(view(form(viewModel), mrn, viewModel))
         }
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      lazy val (authorisations, numberOfAuthorisations, allowMoreAuthorisations) = viewData(mode)
-      form(allowMoreAuthorisations)
+      lazy val viewModel = viewModelProvider(request.userAnswers, mode)
+      form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, mrn, mode, authorisations, allowMoreAuthorisations)),
+          formWithErrors => BadRequest(view(formWithErrors, mrn, viewModel)),
           {
-            case true  => Redirect(authRoutes.AuthorisationTypeController.onPageLoad(mrn, Index(numberOfAuthorisations), mode))
-            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+            case true =>
+              Redirect(
+                UserAnswersNavigator
+                  .nextPage[AuthorisationDomain](request.userAnswers, mode)(AuthorisationDomain.userAnswersReader(Index(viewModel.numberOfAuthorisations)))
+              )
+            case false =>
+              Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
           }
         )
-  }
-
-  private def viewData(mode: Mode)(implicit request: DataRequest[_]): (Seq[ListItem], Int, Boolean) = {
-    val authorisations         = viewModelProvider.apply(request.userAnswers, mode).listItems
-    val numberOfAuthorisations = authorisations.length
-    (authorisations, numberOfAuthorisations, numberOfAuthorisations < config.maxIdentificationAuthorisations)
   }
 }

@@ -30,7 +30,8 @@ case class AuthorisationDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = s"${`type`.toString} - $referenceNumber"
+  def asString(f: String => AuthorisationType => String): String =
+    s"${`type`.asString(f)} - $referenceNumber"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index, mode))

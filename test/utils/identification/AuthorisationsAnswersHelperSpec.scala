@@ -25,6 +25,7 @@ import models.identification.authorisation.AuthorisationType._
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatest.Assertion
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
 import viewModels.ListItem
@@ -46,25 +47,35 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
       }
 
       "must return Some(Row)" - {
-        "when authorisation defined" in {
-          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode]) {
-            (authorisationType, referenceNumber, mode) =>
-              val answers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(index), authorisationType)
-                .setValue(AuthorisationReferenceNumberPage(index), referenceNumber)
+        "when authorisation defined" - {
 
-              val helper = AuthorisationsAnswersHelper(answers, mode)
-              val result = helper.authorisation(index).get
+          def test(authorisationType: AuthorisationType, label: String): Assertion =
+            forAll(Gen.alphaNumStr, arbitrary[Mode]) {
+              (referenceNumber, mode) =>
+                val answers = emptyUserAnswers
+                  .setValue(AuthorisationTypePage(index), authorisationType)
+                  .setValue(AuthorisationReferenceNumberPage(index), referenceNumber)
 
-              result.key.value mustBe "Authorisation 1"
-              result.value.value mustBe s"$authorisationType - $referenceNumber"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, index, mode).url
-              action.visuallyHiddenText.get mustBe "authorisation 1"
-              action.id mustBe "change-authorisation-1"
+                val helper = AuthorisationsAnswersHelper(answers, mode)
+                val result = helper.authorisation(index).get
+
+                result.key.value mustBe "Authorisation 1"
+                result.value.value mustBe s"$label - $referenceNumber"
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe routes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, index, mode).url
+                action.visuallyHiddenText.get mustBe "authorisation 1"
+                action.id mustBe "change-authorisation-1"
+            }
+
+          "when ACT" in {
+            test(AuthorisationType.ACT, "ACT")
+          }
+
+          "when ACE" in {
+            test(AuthorisationType.ACE, "ACE")
           }
         }
       }
@@ -85,24 +96,66 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
       }
 
       "when user answers populated with a complete authorisation" - {
-        "must return one list item" in {
-          forAll(arbitrary[Mode], arbitrary[AuthorisationType], Gen.alphaNumStr) {
-            (mode, authorisationType, ref) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-                .setValue(AuthorisationTypePage(Index(0)), authorisationType)
-                .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
+        "must return one list item" - {
 
-              val helper = AuthorisationsAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Seq(
-                Right(
-                  ListItem(
-                    name = s"$authorisationType - $ref",
-                    changeUrl = routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
-                    removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
+          def test(authorisationType: AuthorisationType, label: String): Assertion =
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, ref) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                  .setValue(AuthorisationTypePage(Index(0)), authorisationType)
+                  .setValue(AuthorisationReferenceNumberPage(Index(0)), ref)
+
+                val helper = AuthorisationsAnswersHelper(userAnswers, mode)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = s"$label - $ref",
+                      changeUrl = routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
+                      removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
+                    )
                   )
                 )
-              )
+            }
+
+          "when ACT" in {
+            test(AuthorisationType.ACT, "ACT")
+          }
+
+          "when ACE" in {
+            test(AuthorisationType.ACE, "ACE")
+          }
+        }
+      }
+
+      "when user answers populated with an in-progress authorisation" - {
+        "must return one list item" - {
+
+          def test(authorisationType: AuthorisationType, label: String): Assertion =
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                  .setValue(AuthorisationTypePage(Index(0)), authorisationType)
+
+                val helper = AuthorisationsAnswersHelper(userAnswers, mode)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = label,
+                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
+                      removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
+                    )
+                  )
+                )
+            }
+
+          "when ACT" in {
+            test(AuthorisationType.ACT, "ACT")
+          }
+
+          "when ACE" in {
+            test(AuthorisationType.ACE, "ACE")
           }
         }
       }

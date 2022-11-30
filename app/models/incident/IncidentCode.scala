@@ -30,7 +30,7 @@ object IncidentCode extends RadioModel[IncidentCode] {
   case object UnexpectedlyChanged extends WithName("unexpectedlyChanged") with IncidentCode
 
   override val messageKeyPrefix: String = "incident.incidentCode"
-  val prefixForDisplay: String          = "incident.incidentCode.forDisplay"
+  val prefixForDisplay: String          = s"$messageKeyPrefix.forDisplay"
 
   val values: Seq[IncidentCode] = Seq(
     DeviatedFromItinerary,

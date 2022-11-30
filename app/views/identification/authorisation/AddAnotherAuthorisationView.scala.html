@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import controllers.identification.authorisation.routes
 @import models.MovementReferenceNumber
 @import viewModels.ListItem
 @import viewModels.components.InputYesNoViewModel._
+@import viewModels.identification.AddAnotherAuthorisationViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
@@ -30,14 +32,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, authorisations: Seq[ListItem], allowMoreItems: Boolean)(implicit request: Request[_], messages: Messages)
-
-@singularOrPlural = @{
-    if (authorisations.length == 1) "singular" else "plural"
-}
+@(form: Form[Boolean], mrn: MovementReferenceNumber, viewModel: AddAnotherAuthorisationViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages(s"identification.authorisation.addAnotherAuthorisation.$singularOrPlural.title", authorisations.length),
+    title = viewModel.title,
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -45,23 +43,23 @@
     @errorSummary(form.errors)
 
     @heading(
-        heading = messages(s"identification.authorisation.addAnotherAuthorisation.$singularOrPlural.heading", authorisations.length),
+        heading = viewModel.heading,
         caption = Some(messages("site.caption.authorisations"))
     )
 
-    @listWithActions(authorisations)
+    @listWithActions(viewModel.listItems)
 
-    @formHelper(action = routes.AddAnotherAuthorisationController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(allowMoreItems) {
+        @if(viewModel.allowMoreAuthorisations) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = messages("identification.authorisation.addAnotherAuthorisation.label")
+                    legend = viewModel.legend
                 )
             )
         } else {
-            <p class="govuk-body" data-testId="maxLimit">@messages("identification.authorisation.addAnotherAuthorisation.maxLimit.label")</p>
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 
         @button(attributes = Map("id" -> "submit"))

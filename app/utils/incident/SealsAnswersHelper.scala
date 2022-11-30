@@ -37,9 +37,8 @@ class SealsAnswersHelper(
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
-      position =>
-        val sealIndex = Index(position)
-        val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && position == 0) {
+      sealIndex =>
+        val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && sealIndex.isFirst) {
           None
         } else {
           Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))

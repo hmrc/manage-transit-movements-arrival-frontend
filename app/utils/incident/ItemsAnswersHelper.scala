@@ -35,11 +35,9 @@ class ItemsAnswersHelper(
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
-      position =>
-        val itemIndex = Index(position)
-
+      itemIndex =>
         buildListItem[ItemNumberDomain, String](
-          page = ItemNumberPage(incidentIndex, equipmentIndex, Index(position)),
+          page = ItemNumberPage(incidentIndex, equipmentIndex, itemIndex),
           formatJourneyDomainModel = _.itemNumber,
           formatType = identity,
           removeRoute = Some(routes.ConfirmRemoveItemNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, itemIndex))

@@ -17,34 +17,37 @@
 package views.identification.authorisation
 
 import forms.AddAnotherItemFormProvider
-import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.identification.AddAnotherAuthorisationViewModel
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.identification.authorisation.AddAnotherAuthorisationView
 
 class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
-  private val mode: Mode = arbitrary[Mode].sample.value
-
   override def maxNumber: Int = frontendAppConfig.maxIdentificationAuthorisations
 
-  private def formProvider = new AddAnotherItemFormProvider()
+  private def formProvider(viewModel: AddAnotherAuthorisationViewModel) =
+    new AddAnotherItemFormProvider()(viewModel.prefix, viewModel.allowMoreAuthorisations)
 
-  override def form: Form[Boolean] = formProvider(prefix, allowMoreItems = true)
+  private val viewModel                         = arbitrary[AddAnotherAuthorisationViewModel].sample.value
+  private val viewModelWithIncidentsNotMaxedOut = viewModel.copy(listItems = listItems)
+  private val viewModelWithIncidentsMaxedOut    = viewModel.copy(listItems = maxedOutListItems)
+
+  override val prefix: String = viewModel.prefix
+
+  override def form: Form[Boolean] = formProvider(viewModelWithIncidentsNotMaxedOut)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAuthorisationView]
-      .apply(form, mrn, mode, listItems, allowMoreItems = true)(fakeRequest, messages)
+      .apply(form, mrn, viewModelWithIncidentsNotMaxedOut)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAuthorisationView]
-      .apply(formProvider(prefix, allowMoreItems = false), mrn, mode, maxedOutListItems, allowMoreItems = false)(fakeRequest, messages)
-
-  override val prefix: String = "identification.authorisation.addAnotherAuthorisation"
+      .apply(formProvider(viewModelWithIncidentsMaxedOut), mrn, viewModelWithIncidentsMaxedOut)(fakeRequest, messages, frontendAppConfig)
 
   behave like pageWithBackLink()
 

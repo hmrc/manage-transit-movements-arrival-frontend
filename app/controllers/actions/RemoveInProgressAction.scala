@@ -41,13 +41,13 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
       case Some(value) =>
         val indexesToRemove = value
           .filterWithIndex {
-            (_, i) => UserAnswersReader[T](userAnswersReader(Index(i))).run(userAnswers).isLeft
+            (_, i) => userAnswersReader(i).run(userAnswers).isLeft
           }
           .map(_._2)
 
         val updatedAnswers = indexesToRemove.reverse.foldLeft(userAnswers) {
           (acc, i) =>
-            acc.remove(indexedValue(Index(i))).getOrElse(acc)
+            acc.remove(indexedValue(i)).getOrElse(acc)
         }
 
         sessionRepository.set(updatedAnswers).map {
