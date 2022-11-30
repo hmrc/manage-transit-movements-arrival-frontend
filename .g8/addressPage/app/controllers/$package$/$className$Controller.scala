@@ -5,7 +5,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.reference.Country
 import models.requests.SpecificDataRequestProvider1
-import models.{DynamicAddress, LocalReferenceNumber, Mode}
+import models.{DynamicAddress, MovementReferenceNumber, Mode}
 import navigation.UserAnswersNavigator
 import pages.$package$._
 import play.api.data.Form
@@ -42,8 +42,8 @@ class $className;format="cap"$Controller @Inject()(
   private def form(isPostalCodeRequired: Boolean)(implicit request: Request): Form[DynamicAddress] =
     formProvider("$package$.$className;format="decap"$", isPostalCodeRequired, name)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
     .andThen(getMandatoryPage.getFirst(NamePage))
     .andThen(getMandatoryPage.getSecond(CountryPage))
     .async {
@@ -55,12 +55,12 @@ class $className;format="cap"$Controller @Inject()(
               case Some(value) => form(isPostalCodeRequired).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, mode, name, isPostalCodeRequired))
+            Ok(view(preparedForm, mrn, mode, name, isPostalCodeRequired))
           }
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
     .andThen(getMandatoryPage.getFirst(NamePage))
     .andThen(getMandatoryPage.getSecond(CountryPage))
     .async {
@@ -70,7 +70,7 @@ class $className;format="cap"$Controller @Inject()(
             form(isPostalCodeRequired)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, name, isPostalCodeRequired))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, name, isPostalCodeRequired))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   $className$Page.writeToUserAnswers(value).writeToSession().navigate()
