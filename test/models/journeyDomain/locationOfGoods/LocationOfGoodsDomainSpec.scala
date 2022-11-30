@@ -20,12 +20,17 @@ import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
+import models.reference.Country
 import models.{DynamicAddress, QualifierOfIdentification}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.locationOfGoods.{AddContactPersonPage, AddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods._
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
+
+  private val country = arbitrary[Country].sample.value
+  private val address = arbitrary[DynamicAddress].sample.value
 
   "LocationOfGoodsDomain" - {
 
@@ -36,14 +41,16 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           val userAnswers = emptyUserAnswers
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, address)
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
             LocationOfGoodsDomain(
               typeOfLocation = value,
               qualifierOfIdentificationDetails = AddressDomain(
-                DynamicAddress("line1", "line2", Some("postalCode")),
+                country,
+                address,
                 None
               )
             )
@@ -65,7 +72,8 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         val userAnswers = emptyUserAnswers
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
+          .setValue(CountryPage, country)
+          .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {

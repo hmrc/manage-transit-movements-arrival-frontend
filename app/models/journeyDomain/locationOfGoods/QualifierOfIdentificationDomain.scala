@@ -19,7 +19,7 @@ package models.journeyDomain.locationOfGoods
 import cats.implicits._
 import models.QualifierOfIdentification._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.reference.{CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.locationOfGoods._
 
@@ -39,12 +39,13 @@ object QualifierOfIdentificationDomain {
     }
 }
 
-case class AddressDomain(address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object AddressDomain {
 
   implicit val userAnswersReader: UserAnswersReader[AddressDomain] =
     (
+      CountryPage.reader,
       AddressPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((AddressDomain.apply _).tupled)
