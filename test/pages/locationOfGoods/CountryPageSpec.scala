@@ -16,7 +16,9 @@
 
 package pages.locationOfGoods
 
+import models.DynamicAddress
 import models.reference.Country
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class CountryPageSpec extends PageBehaviours {
@@ -28,5 +30,35 @@ class CountryPageSpec extends PageBehaviours {
     beSettable[Country](CountryPage)
 
     beRemovable[Country](CountryPage)
+
+    "cleanup" - {
+      "must remove address page" - {
+        "when answer changes" in {
+          def country = arbitrary[Country].sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, arbitrary[DynamicAddress].sample.value)
+
+          val result = userAnswers.setValue(CountryPage, country)
+
+          result.get(AddressPage) must not be defined
+        }
+      }
+
+      "must not remove address page" - {
+        "when answer does not change" in {
+          val country = arbitrary[Country].sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, arbitrary[DynamicAddress].sample.value)
+
+          val result = userAnswers.setValue(CountryPage, country)
+
+          result.get(AddressPage) must be(defined)
+        }
+      }
+    }
   }
 }
