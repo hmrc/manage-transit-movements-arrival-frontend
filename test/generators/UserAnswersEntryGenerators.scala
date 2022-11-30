@@ -75,7 +75,7 @@ trait UserAnswersEntryGenerators {
     {
       case AddAdditionalIdentifierPage => arbitrary[Boolean].map(JsBoolean)
       case AdditionalIdentifierPage    => Gen.alphaNumStr.map(JsString)
-      case AddressPage                 => arbitrary[PostalCodeAddress].map(Json.toJson(_))
+      case PostalCodePage              => arbitrary[PostalCodeAddress].map(Json.toJson(_))
       case AuthorisationNumberPage     => Gen.alphaNumStr.map(JsString)
       case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
       case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))

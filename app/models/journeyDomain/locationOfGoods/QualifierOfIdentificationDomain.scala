@@ -112,7 +112,7 @@ object PostalCodeDomain {
 
   implicit val userAnswersReader: UserAnswersReader[PostalCodeDomain] =
     (
-      AddressPage.reader,
+      PostalCodePage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((PostalCodeDomain.apply _).tupled)
 }

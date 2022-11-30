@@ -24,26 +24,26 @@ import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.locationOfGoods.AddressPage
+import pages.locationOfGoods.PostalCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CountriesService
-import views.html.locationOfGoods.AddressView
+import views.html.locationOfGoods.PostalCodeView
 
 import scala.concurrent.Future
 
-class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val testAddress = arbitrary[PostalCodeAddress].sample.value
   private val countryList = CountryList(Seq(testAddress.country))
 
   private val formProvider = new PostalCodeFormProvider()
-  private val form         = formProvider("locationOfGoods.address", countryList)
+  private val form         = formProvider("locationOfGoods.postalCode", countryList)
 
   private val mode              = NormalMode
-  private lazy val addressRoute = routes.AddressController.onPageLoad(mrn, mode).url
+  private lazy val addressRoute = routes.PostalCodeController.onPageLoad(mrn, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -69,7 +69,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val request = FakeRequest(GET, addressRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       status(result) mustEqual OK
 
@@ -82,7 +82,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers = UserAnswers(mrn, eoriNumber)
-        .setValue(AddressPage, testAddress)
+        .setValue(PostalCodePage, testAddress)
 
       setExistingUserAnswers(userAnswers)
 
@@ -98,7 +98,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         )
       )
 
-      val view = injector.instanceOf[AddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       status(result) mustEqual OK
 
@@ -140,7 +140,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode, countryList.countries)(request, messages).toString

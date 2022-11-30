@@ -43,10 +43,10 @@ POST       /:mrn/location-of-goods/un-locode                                    
 GET        /:mrn/location-of-goods/change-un-locode                                                 controllers.locationOfGoods.UnlocodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-un-locode                                                 controllers.locationOfGoods.UnlocodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:mrn/location-of-goods/postal-code                                                      controllers.locationOfGoods.AddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/location-of-goods/postal-code                                                      controllers.locationOfGoods.AddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/location-of-goods/change-postal-code                                               controllers.locationOfGoods.AddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/location-of-goods/change-postal-code                                               controllers.locationOfGoods.AddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+GET        /:mrn/location-of-goods/postal-code                                                      controllers.locationOfGoods.PostalCodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/location-of-goods/postal-code                                                      controllers.locationOfGoods.PostalCodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/location-of-goods/change-postal-code                                               controllers.locationOfGoods.PostalCodeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/location-of-goods/change-postal-code                                               controllers.locationOfGoods.PostalCodeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:mrn/location-of-goods/add-contact                                                      controllers.locationOfGoods.AddContactPersonController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/location-of-goods/add-contact                                                      controllers.locationOfGoods.AddContactPersonController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)

@@ -331,7 +331,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "when AddressPage defined" in {
           forAll(arbitrary[PostalCodeAddress], arbitrary[Mode]) {
             (address, mode) =>
-              val answers = emptyUserAnswers.setValue(AddressPage, address)
+              val answers = emptyUserAnswers.setValue(PostalCodePage, address)
 
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.postalCode.get
@@ -342,9 +342,9 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
+              action.href mustBe routes.PostalCodeController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "postal code for the location of goods"
-              action.id mustBe "address"
+              action.id mustBe "postal-code"
           }
         }
       }

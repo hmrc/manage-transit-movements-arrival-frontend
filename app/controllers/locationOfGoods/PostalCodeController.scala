@@ -21,18 +21,18 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.PostalCodeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.locationOfGoods.AddressPage
+import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.AddressView
+import views.html.locationOfGoods.PostalCodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressController @Inject() (
+class PostalCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
@@ -40,19 +40,19 @@ class AddressController @Inject() (
   formProvider: PostalCodeFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
-  view: AddressView
+  view: PostalCodeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix: String = "locationOfGoods.address"
+  private val prefix: String = "locationOfGoods.postalCode"
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       countriesService.getAddressPostcodeBasedCountries().map {
         countryList =>
           val form = formProvider(prefix, countryList)
-          val preparedForm = request.userAnswers.get(AddressPage) match {
+          val preparedForm = request.userAnswers.get(PostalCodePage) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
@@ -72,7 +72,7 @@ class AddressController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                AddressPage.writeToUserAnswers(value).writeToSession().navigate()
+                PostalCodePage.writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

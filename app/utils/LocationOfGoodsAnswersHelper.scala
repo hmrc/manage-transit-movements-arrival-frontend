@@ -86,10 +86,10 @@ class LocationOfGoodsAnswersHelper(
   )
 
   def postalCode: Option[SummaryListRow] = getAnswerAndBuildRow[PostalCodeAddress](
-    page = AddressPage,
+    page = PostalCodePage,
     formatAnswer = formatAsPostalCodeAddress,
-    prefix = "locationOfGoods.address",
-    id = Some("address")
+    prefix = "locationOfGoods.postalCode",
+    id = Some("postal-code")
   )
 
   def additionalIdentifierYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

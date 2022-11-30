@@ -23,18 +23,18 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.PostalCodeAddressViewBehaviours
-import views.html.locationOfGoods.AddressView
+import views.html.locationOfGoods.PostalCodeView
 
-class AddressViewSpec extends PostalCodeAddressViewBehaviours with Generators {
+class PostalCodeViewSpec extends PostalCodeAddressViewBehaviours with Generators {
 
   private val countryList = arbitrary[CountryList].sample.value
 
   override def form: Form[PostalCodeAddress] = new PostalCodeFormProvider()(prefix, countryList)
 
   override def applyView(form: Form[PostalCodeAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[AddressView].apply(form, mrn, NormalMode, countryList.countries)(fakeRequest, messages)
+    injector.instanceOf[PostalCodeView].apply(form, mrn, NormalMode, countryList.countries)(fakeRequest, messages)
 
-  override val prefix: String = "locationOfGoods.address"
+  override val prefix: String = "locationOfGoods.postalCode"
 
   behave like pageWithTitle()
 
