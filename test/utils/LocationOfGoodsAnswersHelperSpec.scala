@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -275,6 +275,41 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               action.href mustBe routes.UnlocodeController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "UN/LOCODE for the location of goods"
               action.id mustBe "un-locode"
+          }
+        }
+      }
+    }
+
+    "country" - {
+      "must return None" - {
+        "when CountryPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.country
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when CountryPage defined" in {
+          forAll(arbitrary[Country], arbitrary[Mode]) {
+            (country, mode) =>
+              val answers = emptyUserAnswers.setValue(CountryPage, country)
+
+              val helper = LocationOfGoodsAnswersHelper(answers, mode)
+              val result = helper.country.get
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe country.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.CountryController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustBe "country for the location of goods"
+              action.id mustBe "country"
           }
         }
       }

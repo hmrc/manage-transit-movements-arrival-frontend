@@ -256,8 +256,8 @@ locationOfGoods.country.title = In which country is the location of goods?
 locationOfGoods.country.heading = In which country is the location of goods?
 locationOfGoods.country.hint = Enter the country, like Italy or Spain.
 locationOfGoods.country.placeholder = Select a country
-locationOfGoods.country.change.hidden = location of goods country
-locationOfGoods.country.checkYourAnswersLabel = Location of goods country
+locationOfGoods.country.change.hidden = country for the location of goods
+locationOfGoods.country.checkYourAnswersLabel = Country
 locationOfGoods.country.error.required = Enter which country the location of goods is in
 
 locationOfGoods.address.title = What is the address for the location of goods?
