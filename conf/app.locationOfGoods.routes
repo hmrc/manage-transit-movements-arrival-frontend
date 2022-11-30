@@ -8,6 +8,11 @@ POST       /:mrn/location-of-goods/identification                               
 GET        /:mrn/location-of-goods/change-identification                                            controllers.locationOfGoods.QualifierOfIdentificationController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/location-of-goods/change-identification                                            controllers.locationOfGoods.QualifierOfIdentificationController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:mrn/location-of-goods/country                                                          controllers.locationOfGoods.CountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/location-of-goods/country                                                          controllers.locationOfGoods.CountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/location-of-goods/change-country                                                   controllers.locationOfGoods.CountryController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/location-of-goods/change-country                                                   controllers.locationOfGoods.CountryController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:mrn/location-of-goods/address                                                          controllers.locationOfGoods.InternationalAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/location-of-goods/address                                                          controllers.locationOfGoods.InternationalAddressController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 GET        /:mrn/location-of-goods/change-address                                                   controllers.locationOfGoods.InternationalAddressController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

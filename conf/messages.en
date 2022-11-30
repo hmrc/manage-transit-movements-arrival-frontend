@@ -252,6 +252,14 @@ locationOfGoods.customsOffice.change.hidden = customs office identifier for the 
 locationOfGoods.customsOffice.checkYourAnswersLabel = Customs office identifier
 locationOfGoods.customsOffice.error.required = Enter the customs office identifier for the location of goods
 
+locationOfGoods.country.title = In which country is the location of goods?
+locationOfGoods.country.heading = In which country is the location of goods?
+locationOfGoods.country.hint = Enter the country, like Italy or Spain.
+locationOfGoods.country.placeholder = Select a country
+locationOfGoods.country.change.hidden = location of goods country
+locationOfGoods.country.checkYourAnswersLabel = Location of goods country
+locationOfGoods.country.error.required = Enter which country the location of goods is in
+
 locationOfGoods.internationalAddress.title = What is the address for the location of goods?
 locationOfGoods.internationalAddress.heading = What is the address for the location of goods?
 locationOfGoods.internationalAddress.addressLine1 = Street name and number
