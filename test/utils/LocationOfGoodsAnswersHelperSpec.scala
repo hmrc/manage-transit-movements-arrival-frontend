@@ -20,8 +20,8 @@ import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -280,9 +280,44 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
     }
 
+    "country" - {
+      "must return None" - {
+        "when CountryPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.country
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when CountryPage defined" in {
+          forAll(arbitrary[Country], arbitrary[Mode]) {
+            (country, mode) =>
+              val answers = emptyUserAnswers.setValue(CountryPage, country)
+
+              val helper = LocationOfGoodsAnswersHelper(answers, mode)
+              val result = helper.country.get
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe country.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.CountryController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustBe "country for the location of goods"
+              action.id mustBe "country"
+          }
+        }
+      }
+    }
+
     "address" - {
       "must return None" - {
-        "when InternationalAddressPage undefined" in {
+        "when AddressPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
@@ -293,10 +328,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
 
       "must return Some(Row)" - {
-        "when InternationalAddressPage defined" in {
-          forAll(arbitrary[InternationalAddress], arbitrary[Mode]) {
+        "when AddressPage defined" in {
+          forAll(arbitrary[DynamicAddress], arbitrary[Mode]) {
             (address, mode) =>
-              val answers = emptyUserAnswers.setValue(InternationalAddressPage, address)
+              val answers = emptyUserAnswers.setValue(AddressPage, address)
 
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.address.get
@@ -307,9 +342,9 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.InternationalAddressController.onPageLoad(answers.mrn, mode).url
+              action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "address for the location of goods"
-              action.id mustBe "international-address"
+              action.id mustBe "address"
           }
         }
       }
@@ -331,7 +366,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "when AddressPage defined" in {
           forAll(arbitrary[PostalCodeAddress], arbitrary[Mode]) {
             (address, mode) =>
-              val answers = emptyUserAnswers.setValue(AddressPage, address)
+              val answers = emptyUserAnswers.setValue(PostalCodePage, address)
 
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.postalCode.get
@@ -342,9 +377,9 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
+              action.href mustBe routes.PostalCodeController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "postal code for the location of goods"
-              action.id mustBe "address"
+              action.id mustBe "postal-code"
           }
         }
       }

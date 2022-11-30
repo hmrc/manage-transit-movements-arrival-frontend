@@ -17,36 +17,36 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import models.reference.Country
-@import views.html.components.{Button, ErrorSummary, InputInternationalAddress}
+@import views.html.components.{Button, ErrorSummary, InputPostalCodeAddress}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputAddress: InputInternationalAddress,
+    inputPostalCodeAddress: InputPostalCodeAddress,
     errorSummary: ErrorSummary,
     button: Button
 )
 
 @(
-    form: Form[InternationalAddress],
+    form: Form[PostalCodeAddress],
     mrn: MovementReferenceNumber,
     mode: Mode,
     countries: Seq[Country]
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.internationalAddress.title"),
+    title = messages("locationOfGoods.postalCode.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
 
-    @formHelper(action = routes.InternationalAddressController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PostalCodeController.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputAddress(
+        @inputPostalCodeAddress(
             form = form,
-            messageKeyPrefix = "locationOfGoods.internationalAddress",
+            messageKeyPrefix = "locationOfGoods.postalCode",
             caption = Some(messages("locationOfGoods.caption")),
             countries = countries
         )

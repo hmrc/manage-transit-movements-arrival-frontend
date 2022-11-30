@@ -17,33 +17,33 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.InternationalAddressFormProvider
+import forms.PostalCodeFormProvider
 import generators.Generators
-import models.{CountryList, InternationalAddress, NormalMode, UserAnswers}
+import models.{CountryList, NormalMode, PostalCodeAddress, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.locationOfGoods.InternationalAddressPage
+import pages.locationOfGoods.PostalCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CountriesService
-import views.html.locationOfGoods.InternationalAddressView
+import views.html.locationOfGoods.PostalCodeView
 
 import scala.concurrent.Future
 
-class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val testAddress = arbitrary[InternationalAddress].sample.value
+  private val testAddress = arbitrary[PostalCodeAddress].sample.value
   private val countryList = CountryList(Seq(testAddress.country))
 
-  private val formProvider = new InternationalAddressFormProvider()
-  private val form         = formProvider("locationOfGoods.internationalAddress", countryList)
+  private val formProvider = new PostalCodeFormProvider()
+  private val form         = formProvider("locationOfGoods.postalCode", countryList)
 
-  private val mode                           = NormalMode
-  private lazy val internationalAddressRoute = routes.InternationalAddressController.onPageLoad(mrn, mode).url
+  private val mode              = NormalMode
+  private lazy val addressRoute = routes.PostalCodeController.onPageLoad(mrn, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -58,18 +58,18 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
-  "InternationalAddress Controller" - {
+  "PostalCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, internationalAddressRoute)
+      val request = FakeRequest(GET, addressRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       status(result) mustEqual OK
 
@@ -79,27 +79,26 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers = UserAnswers(mrn, eoriNumber)
-        .setValue(InternationalAddressPage, testAddress)
+        .setValue(PostalCodePage, testAddress)
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, internationalAddressRoute)
+      val request = FakeRequest(GET, addressRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(
         Map(
-          "addressLine1" -> testAddress.line1,
-          "addressLine2" -> testAddress.line2,
+          "streetNumber" -> testAddress.streetNumber,
           "postalCode"   -> testAddress.postalCode,
           "country"      -> testAddress.country.code.code
         )
       )
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       status(result) mustEqual OK
 
@@ -109,15 +108,14 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, internationalAddressRoute)
+      val request = FakeRequest(POST, addressRoute)
         .withFormUrlEncodedBody(
-          ("addressLine1", testAddress.line1),
-          ("addressLine2", testAddress.line2),
+          ("streetNumber", testAddress.streetNumber),
           ("postalCode", testAddress.postalCode),
           ("country", testAddress.country.code.code)
         )
@@ -131,18 +129,18 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, internationalAddressRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addressRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[InternationalAddressView]
+      val view = injector.instanceOf[PostalCodeView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, mode, countryList.countries)(request, messages).toString
@@ -152,7 +150,7 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, internationalAddressRoute)
+      val request = FakeRequest(GET, addressRoute)
 
       val result = route(app, request).value
 
@@ -165,8 +163,12 @@ class InternationalAddressControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, internationalAddressRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addressRoute)
+        .withFormUrlEncodedBody(
+          ("streetNumber", testAddress.streetNumber),
+          ("postalCode", testAddress.postalCode),
+          ("country", testAddress.country.code.code)
+        )
 
       val result = route(app, request).value
 

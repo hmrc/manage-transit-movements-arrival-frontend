@@ -18,10 +18,13 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.PostalCodeFormProvider
-import models.{Mode, MovementReferenceNumber}
+import forms.DynamicAddressFormProvider
+import models.reference.Country
+import models.requests.SpecificDataRequestProvider1
+import models.{DynamicAddress, Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.locationOfGoods.AddressPage
+import pages.locationOfGoods.{AddressPage, CountryPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,7 +40,8 @@ class AddressController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
-  formProvider: PostalCodeFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: DynamicAddressFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: AddressView
@@ -47,34 +51,45 @@ class AddressController @Inject() (
 
   private val prefix: String = "locationOfGoods.address"
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      countriesService.getAddressPostcodeBasedCountries().map {
-        countryList =>
-          val form = formProvider(prefix, countryList)
-          val preparedForm = request.userAnswers.get(AddressPage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  private type Request = SpecificDataRequestProvider1[Country]#SpecificDataRequest[_]
+  private def country(implicit request: Request): Country = request.arg
 
-          Ok(view(preparedForm, mrn, mode, countryList.countries))
-      }
-  }
+  private def form(isPostalCodeRequired: Boolean)(implicit request: Request): Form[DynamicAddress] =
+    formProvider(prefix, isPostalCodeRequired)
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      countriesService.getAddressPostcodeBasedCountries().flatMap {
-        countryList =>
-          val form = formProvider(prefix, countryList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                AddressPage.writeToUserAnswers(value).writeToSession().navigate()
-              }
-            )
-      }
-  }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(CountryPage))
+    .async {
+      implicit request =>
+        countriesService.doesCountryRequireZip(country).map {
+          isPostalCodeRequired =>
+            val preparedForm = request.userAnswers.get(AddressPage) match {
+              case None        => form(isPostalCodeRequired)
+              case Some(value) => form(isPostalCodeRequired).fill(value)
+            }
+
+            Ok(view(preparedForm, mrn, mode, isPostalCodeRequired))
+        }
+    }
+
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(CountryPage))
+    .async {
+      implicit request =>
+        countriesService.doesCountryRequireZip(country).flatMap {
+          isPostalCodeRequired =>
+            form(isPostalCodeRequired)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, isPostalCodeRequired))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  AddressPage.writeToUserAnswers(value).writeToSession().navigate()
+                }
+              )
+
+        }
+    }
 }

@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package views.behaviours
+package pages.locationOfGoods
 
-import models.UkAddress
+import models.PostalCodeAddress
+import pages.behaviours.PageBehaviours
 
-trait UkAddressViewBehaviours extends AddressViewBehaviours[UkAddress] {
-  override val fields = Seq("addressLine1", "addressLine2", "postalCode")
+class PostalCodePageSpec extends PageBehaviours {
+
+  "PostalCodePage" - {
+
+    beRetrievable[PostalCodeAddress](PostalCodePage)
+
+    beSettable[PostalCodeAddress](PostalCodePage)
+
+    beRemovable[PostalCodeAddress](PostalCodePage)
+  }
 }

@@ -22,7 +22,7 @@ import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
 import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
-import models.{Coordinates, DynamicAddress, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
@@ -75,12 +75,13 @@ trait UserAnswersEntryGenerators {
     {
       case AddAdditionalIdentifierPage => arbitrary[Boolean].map(JsBoolean)
       case AdditionalIdentifierPage    => Gen.alphaNumStr.map(JsString)
-      case AddressPage                 => arbitrary[PostalCodeAddress].map(Json.toJson(_))
+      case PostalCodePage              => arbitrary[PostalCodeAddress].map(Json.toJson(_))
       case AuthorisationNumberPage     => Gen.alphaNumStr.map(JsString)
       case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
       case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))
       case IdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
-      case InternationalAddressPage    => arbitrary[InternationalAddress].map(Json.toJson(_))
+      case CountryPage                 => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage                 => arbitrary[DynamicAddress].map(Json.toJson(_))
       case UnlocodePage                => arbitrary[UnLocode].map(Json.toJson(_))
     }
   }

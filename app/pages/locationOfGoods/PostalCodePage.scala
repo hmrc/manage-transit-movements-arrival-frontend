@@ -16,17 +16,19 @@
 
 package pages.locationOfGoods
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import controllers.locationOfGoods.routes
+import models.{Mode, PostalCodeAddress, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class InternationalAddressPageSpec extends PageBehaviours {
+case object PostalCodePage extends QuestionPage[PostalCodeAddress] {
 
-  "InternationalAddressPage" - {
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-    beRetrievable[InternationalAddress](InternationalAddressPage)
+  override def toString: String = "postalCode"
 
-    beSettable[InternationalAddress](InternationalAddressPage)
-
-    beRemovable[InternationalAddress](InternationalAddressPage)
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.PostalCodeController.onPageLoad(userAnswers.mrn, mode))
 }

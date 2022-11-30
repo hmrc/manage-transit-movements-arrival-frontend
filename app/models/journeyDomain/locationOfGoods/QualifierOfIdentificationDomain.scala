@@ -19,8 +19,8 @@ package models.journeyDomain.locationOfGoods
 import cats.implicits._
 import models.QualifierOfIdentification._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -39,13 +39,14 @@ object QualifierOfIdentificationDomain {
     }
 }
 
-case class AddressDomain(address: InternationalAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object AddressDomain {
 
   implicit val userAnswersReader: UserAnswersReader[AddressDomain] =
     (
-      InternationalAddressPage.reader,
+      CountryPage.reader,
+      AddressPage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((AddressDomain.apply _).tupled)
 }
@@ -112,7 +113,7 @@ object PostalCodeDomain {
 
   implicit val userAnswersReader: UserAnswersReader[PostalCodeDomain] =
     (
-      AddressPage.reader,
+      PostalCodePage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((PostalCodeDomain.apply _).tupled)
 }

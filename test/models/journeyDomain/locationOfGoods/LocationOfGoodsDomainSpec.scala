@@ -20,13 +20,17 @@ import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CountryCode}
-import models.{InternationalAddress, QualifierOfIdentification}
+import models.reference.Country
+import models.{DynamicAddress, QualifierOfIdentification}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods._
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
+
+  private val country = arbitrary[Country].sample.value
+  private val address = arbitrary[DynamicAddress].sample.value
 
   "LocationOfGoodsDomain" - {
 
@@ -37,14 +41,16 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           val userAnswers = emptyUserAnswers
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, address)
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
             LocationOfGoodsDomain(
               typeOfLocation = value,
               qualifierOfIdentificationDetails = AddressDomain(
-                InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+                country,
+                address,
                 None
               )
             )
@@ -66,7 +72,8 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         val userAnswers = emptyUserAnswers
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(CountryPage, country)
+          .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {
