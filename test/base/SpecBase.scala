@@ -17,6 +17,7 @@
 package base
 
 import config.FrontendAppConfig
+import models.reference.CustomsOffice
 import models.{EoriNumber, Index, MovementReferenceNumber, UkAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec

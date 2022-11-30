@@ -87,7 +87,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        routes.DeclarationSubmittedController.onPageLoad().url
+        routes.DeclarationSubmittedController.onPageLoad(mrn).url
 
     }
 
