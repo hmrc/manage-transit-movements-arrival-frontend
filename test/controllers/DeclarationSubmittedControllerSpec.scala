@@ -68,7 +68,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
       }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" - {
+    "must redirect to Session Expired for a GET" - {
       "when no existing data is found" in {
         setNoExistingUserAnswers()
 
