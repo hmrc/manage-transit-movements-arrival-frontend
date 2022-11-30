@@ -20,7 +20,7 @@ import cats.implicits._
 import models.QualifierOfIdentification._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain
@@ -39,7 +39,7 @@ object QualifierOfIdentificationDomain {
     }
 }
 
-case class AddressDomain(address: InternationalAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class AddressDomain(address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object AddressDomain {
 

@@ -20,8 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CountryCode}
-import models.{InternationalAddress, QualifierOfIdentification}
+import models.{DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Gen
 import pages.QuestionPage
 import pages.locationOfGoods.{AddContactPersonPage, AddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
@@ -37,14 +36,14 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           val userAnswers = emptyUserAnswers
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
             LocationOfGoodsDomain(
               typeOfLocation = value,
               qualifierOfIdentificationDetails = AddressDomain(
-                InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+                DynamicAddress("line1", "line2", Some("postalCode")),
                 None
               )
             )
@@ -66,7 +65,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         val userAnswers = emptyUserAnswers
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {

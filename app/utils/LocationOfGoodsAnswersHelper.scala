@@ -18,7 +18,7 @@ package utils
 
 import models.locationOfGoods.TypeOfLocation
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -78,9 +78,9 @@ class LocationOfGoodsAnswersHelper(
     id = Some("un-locode")
   )
 
-  def address: Option[SummaryListRow] = getAnswerAndBuildRow[InternationalAddress](
+  def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
     page = AddressPage,
-    formatAnswer = formatAsAddress,
+    formatAnswer = formatAsDynamicAddress,
     prefix = "locationOfGoods.address",
     id = Some("address")
   )

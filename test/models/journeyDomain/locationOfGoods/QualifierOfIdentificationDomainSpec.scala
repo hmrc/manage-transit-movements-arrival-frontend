@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.QuestionPage
 import pages.locationOfGoods._
 
@@ -32,11 +32,11 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = AddressDomain(
-        InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+        DynamicAddress("line1", "line2", Some("postalCode")),
         None
       )
 
@@ -169,13 +169,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, "contact name")
         .setValue(ContactPersonTelephonePage, "contact telephone")
 
       val expectedResult = AddressDomain(
-        InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+        DynamicAddress("line1", "line2", Some("postalCode")),
         Some(ContactPersonDomain("contact name", "contact telephone"))
       )
 
@@ -187,11 +187,11 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+        .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
         .setValue(AddContactPersonPage, false)
 
       val expectedResult = AddressDomain(
-        InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+        DynamicAddress("line1", "line2", Some("postalCode")),
         None
       )
 
@@ -207,7 +207,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, "contact name")
           .setValue(ContactPersonTelephonePage, "contact telephone")

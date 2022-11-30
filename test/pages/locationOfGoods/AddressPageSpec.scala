@@ -16,17 +16,17 @@
 
 package pages.locationOfGoods
 
-import models.InternationalAddress
+import models.DynamicAddress
 import pages.behaviours.PageBehaviours
 
 class AddressPageSpec extends PageBehaviours {
 
   "AddressPage" - {
 
-    beRetrievable[InternationalAddress](AddressPage)
+    beRetrievable[DynamicAddress](AddressPage)
 
-    beSettable[InternationalAddress](AddressPage)
+    beSettable[DynamicAddress](AddressPage)
 
-    beRemovable[InternationalAddress](AddressPage)
+    beRemovable[DynamicAddress](AddressPage)
   }
 }

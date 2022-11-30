@@ -22,8 +22,8 @@ import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{InternationalAddress, QualifierOfIdentification}
+import models.reference.CustomsOffice
+import models.{DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
@@ -80,7 +80,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(TypeOfLocationPage, AuthorisedPlace)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
             .setValue(AddContactPersonPage, false)
 
           val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
@@ -103,7 +103,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(AddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(AddressPage, DynamicAddress("line1", "line2", Some("postalCode")))
           .setValue(AddContactPersonPage, false)
 
         val expectedResult = ArrivalTransitionDomain(
@@ -117,7 +117,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           LocationOfGoodsDomain(
             typeOfLocation = AuthorisedPlace,
             qualifierOfIdentificationDetails = AddressDomain(
-              address = InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+              address = DynamicAddress("line1", "line2", Some("postalCode")),
               contactPerson = None
             )
           )

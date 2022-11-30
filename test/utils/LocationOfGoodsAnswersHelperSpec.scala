@@ -21,7 +21,7 @@ import controllers.locationOfGoods.routes
 import generators.Generators
 import models.locationOfGoods.TypeOfLocation
 import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -294,7 +294,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
       "must return Some(Row)" - {
         "when AddressPage defined" in {
-          forAll(arbitrary[InternationalAddress], arbitrary[Mode]) {
+          forAll(arbitrary[DynamicAddress], arbitrary[Mode]) {
             (address, mode) =>
               val answers = emptyUserAnswers.setValue(AddressPage, address)
 

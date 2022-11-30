@@ -18,11 +18,12 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.InternationalAddressFormProvider
-import models.requests.DataRequest
-import models.{CountryList, InternationalAddress, Mode, MovementReferenceNumber}
+import forms.DynamicAddressFormProvider
+import models.reference.Country
+import models.requests.SpecificDataRequestProvider1
+import models.{DynamicAddress, Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.locationOfGoods.AddressPage
+import pages.locationOfGoods.{AddressPage, CountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +40,8 @@ class AddressController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
-  formProvider: InternationalAddressFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: DynamicAddressFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: AddressView
@@ -47,39 +49,47 @@ class AddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(countryList: CountryList)(implicit request: DataRequest[AnyContent]): Form[InternationalAddress] =
-    formProvider("locationOfGoods.address", countryList)
+  private val prefix: String = "locationOfGoods.address"
+
+  private type Request = SpecificDataRequestProvider1[Country]#SpecificDataRequest[_]
+  private def country(implicit request: Request): Country = request.arg
+
+  private def form(isPostalCodeRequired: Boolean)(implicit request: Request): Form[DynamicAddress] =
+    formProvider(prefix, isPostalCodeRequired)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
+    .andThen(getMandatoryPage(CountryPage))
     .async {
-      implicit request: DataRequest[AnyContent] =>
-        countriesService.getTransitCountries().map {
-          countryList =>
+      implicit request =>
+        countriesService.doesCountryRequireZip(country).map {
+          isPostalCodeRequired =>
             val preparedForm = request.userAnswers.get(AddressPage) match {
-              case None        => form(countryList)
-              case Some(value) => form(countryList).fill(value)
+              case None        => form(isPostalCodeRequired)
+              case Some(value) => form(isPostalCodeRequired).fill(value)
             }
 
-            Ok(view(preparedForm, mrn, mode, countryList.countries))
+            Ok(view(preparedForm, mrn, mode, isPostalCodeRequired))
         }
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
+    .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        countriesService.getTransitCountries().flatMap {
-          countryList =>
-            form(countryList)
+        countriesService.doesCountryRequireZip(country).flatMap {
+          isPostalCodeRequired =>
+            form(isPostalCodeRequired)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, isPostalCodeRequired))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   AddressPage.writeToUserAnswers(value).writeToSession().navigate()
                 }
               )
+
         }
     }
 }
