@@ -40,7 +40,8 @@
     title = messages("declarationSubmitted.title"),
     showBackLink = false
 ) {
-    @govukPanel(Panel(
+    @govukPanel(
+        Panel(
           title = HtmlContent(messages("declarationSubmitted.heading")),
           content = HtmlContent(s"""${messages("declarationSubmitted.heading.2")} <strong>${mrn}</strong>""")
         )

@@ -16,34 +16,35 @@
 
 package controllers
 
-import controllers.actions.Actions
+import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import models.MovementReferenceNumber
-import models.reference.CustomsOffice
 import pages.identification.DestinationOfficePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationSubmittedView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class DeclarationSubmittedController @Inject() (
+  sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   cc: MessagesControllerComponents,
   view: DeclarationSubmittedView
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      val officeOfDestination: CustomsOffice = request.userAnswers
-        .get(DestinationOfficePage)
-        .getOrElse(
-          throw new IllegalStateException("Office of Destination is required")
-        )
-
-      // TODO - we will need to clear the cache once submitted
-      // Can be done as part of the submission ticket.
-      Ok(view(request.userAnswers.mrn.toString, officeOfDestination))
-  }
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(DestinationOfficePage))
+    .async {
+      implicit request =>
+        sessionRepository.set(request.userAnswers.purge).map {
+          _ => Ok(view(request.userAnswers.mrn.toString, request.arg))
+        }
+    }
 }
