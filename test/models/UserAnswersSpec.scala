@@ -17,12 +17,15 @@
 package models
 
 import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.identification.DestinationOfficePage
 import play.api.libs.json.{JsPath, Json}
 
 import scala.util.Try
 
-class UserAnswersSpec extends SpecBase {
+class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val testPageAnswer  = "foo"
   private val testPageAnswer2 = "bar"
@@ -90,6 +93,29 @@ class UserAnswersSpec extends SpecBase {
           )
 
         result mustBe UserAnswers(mrn, eoriNumber, data, result.lastUpdated, id = emptyUserAnswers.id)
+      }
+    }
+
+    "purge" - {
+      "when destination office exists" - {
+        "must keep the destination office and remove everything else" in {
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
+            userAnswers =>
+              val destinationOffice = userAnswers.getValue(DestinationOfficePage)
+              val result            = userAnswers.purge
+              result.data mustBe emptyUserAnswers.setValue(DestinationOfficePage, destinationOffice).data
+          }
+        }
+      }
+
+      "when destination office does not exist" - {
+        "must return empty json object" in {
+          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
+            userAnswers =>
+              val result = userAnswers.removeValue(DestinationOfficePage).purge
+              result.data mustBe Json.obj()
+          }
+        }
       }
     }
   }

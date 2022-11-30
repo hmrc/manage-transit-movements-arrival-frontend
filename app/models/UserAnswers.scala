@@ -17,6 +17,7 @@
 package models
 
 import pages._
+import pages.identification.DestinationOfficePage
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -78,6 +79,12 @@ final case class UserAnswers(
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
   }
+
+  def purge: UserAnswers =
+    data.transform(DestinationOfficePage.path.json.pickBranch) match {
+      case JsSuccess(value, _) => this.copy(data = value)
+      case JsError(_)          => this.copy(data = Json.obj())
+    }
 }
 
 object UserAnswers {
