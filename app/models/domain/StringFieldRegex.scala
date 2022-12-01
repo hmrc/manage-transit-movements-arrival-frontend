@@ -30,10 +30,7 @@ object StringFieldRegex {
   val telephoneNumberCharacterRegex: Regex = "^[0-9+ ]+$".r
   val telephoneNumberFormatRegex: Regex    = "^\\+[0-9 ]+$".r
 
-  val postalCodeRegex: Regex = "^[a-zA-Z\\s*0-9]*$".r
-  val ukPostCodeRegex: Regex = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$".r
-
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s*0-9]*$".r
+  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
 
   val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
   val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
