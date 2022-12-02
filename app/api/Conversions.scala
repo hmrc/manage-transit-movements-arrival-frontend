@@ -19,10 +19,12 @@ package api
 import generated._
 import models.UserAnswers
 import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import org.joda.time.DateTime
 import pages.identification.IsSimplifiedProcedurePage
 import pages.incident.IncidentFlagPage
 import pages.sections.identification.AuthorisationsSection
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
 object Conversions {
 
@@ -53,11 +55,30 @@ object Conversions {
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
 
-  def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] = {
-    for {
-      // Is JsArray - How do we read a section to build a Seq[AuthorisationType01]?
-      authSection <- userAnswers.getAsEither(AuthorisationsSection)
-    } yield ???
+  case class Authorisation(authorisationReferenceNumber: String, authorisationType: AuthorisationType)
+
+  object Authorisation {
+    implicit val jsonFormat = Json.format[Authorisation]
   }
 
+  def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =
+    for {
+      authSection <- userAnswers.getAsEither(AuthorisationsSection)
+      result <- {
+        authSection.validate[Seq[Authorisation]] match {
+          case JsSuccess(authorisations, _) =>
+            Right(
+              authorisations.map(
+                authorisation =>
+                  AuthorisationType01(
+                    authorisations.indexOf(authorisation).toString,
+                    authorisation.authorisationReferenceNumber,
+                    authorisation.authorisationType.toString
+                  )
+              )
+            )
+          case JsError(errors) => Left(errors.toString)
+        }
+      }
+    } yield result
 }

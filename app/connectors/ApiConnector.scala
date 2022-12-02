@@ -23,6 +23,7 @@ import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, Trans
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.HeaderNames
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
 import scalaxb.`package`.toXML
 
@@ -36,7 +37,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     HeaderNames.CONTENT_TYPE -> "application/xml"
   )
 
-  // TODO - Implement as per declarations
+  // TODO - Build object from user answers
   def createSubmission(userAnswers: UserAnswers): Either[String, CC007CType] = {
     // Create message structure
     val message: MESSAGE_FROM_TRADERSequence = Conversions.message
@@ -48,7 +49,6 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     } yield CC007CType(message, messageType, correlationIdentifier, transitOperation, ???, ???, ???, ???)
   }
 
-
   // TODO - build out example submission
   def payloadXml(transitOperation: TransitOperationType02): String =
     (<ncts:CC007C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
@@ -56,9 +56,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
       <preparationDateAndTime>2007-10-26T07:36:28</preparationDateAndTime>
       <messageIdentification>token</messageIdentification>
       <messageType>CC007C</messageType>
-      <correlationIdentifier>token</correlationIdentifier>
-      {toXML[TransitOperationType02](transitOperation, "TransitOperation", generated.defaultScope)}
-      <Authorisation>
+      <correlationIdentifier>token</correlationIdentifier>{toXML[TransitOperationType02](transitOperation, "TransitOperation", generated.defaultScope)}<Authorisation>
         <sequenceNumber>123</sequenceNumber>
         <type>3344</type>
         <referenceNumber>token</referenceNumber>
@@ -150,10 +148,11 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     val declarationUrl = s"${appConfig.apiUrl}/movements/arrivals"
 
     createSubmission(userAnswers) match {
-      case Left(msg)    => throw new BadRequestException(msg)
-      case Right(value) => httpClient.POST[CC007CType, HttpResponse](declarationUrl, value, requestHeaders)  //httpClient.POST(declarationUrl, value, requestHeaders)
+      case Left(msg) => throw new BadRequestException(msg)
+      case Right(value) =>
+        val payload: String = toXML[CC007CType](value, "CC007C", generated.defaultScope).toString
+        httpClient.POSTString(declarationUrl, payload, requestHeaders)
     }
 
   }
-
 }
