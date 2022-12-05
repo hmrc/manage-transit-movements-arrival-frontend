@@ -17,9 +17,10 @@
 package api
 
 import generated._
-import models.UserAnswers
+import models.{DynamicAddress, UserAnswers}
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
+import models.reference.Country
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
@@ -117,6 +118,7 @@ object Conversions {
       gnss                      <- userAnswers.getOptional(CoordinatesPage)
       identificationNumber      <- userAnswers.getOptional(IdentificationNumberPage)
       address                   <- userAnswers.getOptional(AddressPage)
+      country                   <- userAnswers.getOptional(CountryPage)
       contactPersonName         <- userAnswers.getOptional(ContactPersonNamePage)
       contactPersonTel          <- userAnswers.getOptional(ContactPersonTelephonePage)
     } yield ConsignmentType01(
@@ -137,14 +139,36 @@ object Conversions {
         identificationNumber.map(
           ident => EconomicOperatorType03(ident)
         ),
-        None,
-        address.map(
-          a => PostcodeAddressType02(Some(a.streetNumber), a.postalCode, a.country.code.code)
-        ),
+        getAddressNoPostcode(address, country),
+        getAddressWithPostcode(address, country),
         contactPersonName.map(
           name => ContactPersonType06(name, contactPersonTel.getOrElse(throw new IllegalStateException("Telephone must be provided if a contact is present")))
         )
       ),
       Seq.empty // TODO - build out incidents
+    )
+
+  private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
+    address.flatMap(
+      a =>
+        a.postalCode match {
+          case Some(_) => None
+          case _ =>
+            Some(
+              AddressType14(a.numberAndStreet, None, a.city, country.getOrElse(throw new IllegalStateException("Country is required")).code.code)
+            )
+        }
+    )
+
+  private def getAddressWithPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[PostcodeAddressType02] =
+    address.flatMap(
+      a =>
+        a.postalCode match {
+          case Some(postCode) =>
+            Some(
+              PostcodeAddressType02(Some(a.numberAndStreet), postCode, country.getOrElse(throw new IllegalStateException("Country is required")).code.code)
+            )
+          case _ => None
+        }
     )
 }

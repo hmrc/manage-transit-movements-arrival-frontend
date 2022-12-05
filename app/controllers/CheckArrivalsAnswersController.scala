@@ -56,7 +56,7 @@ class CheckArrivalsAnswersController @Inject() (
         apiService.submitDeclaration(request.userAnswers).map {
           case response if is2xx(response.status) =>
             logger.debug(s"Declaration submitted: $mrn")
-            Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad())
+            Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
           case response if is4xx(response.status) =>
             logger.debug(s"\n\n\nDeclaration submission failed for $mrn : ${response.body}\n\n\n")
             InternalServerError("Something went wrong")
