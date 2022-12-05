@@ -16,23 +16,35 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
+import models.MovementReferenceNumber
+import pages.identification.DestinationOfficePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationSubmittedView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class DeclarationSubmittedController @Inject() (
-  identify: IdentifierAction,
+  sessionRepository: SessionRepository,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   cc: MessagesControllerComponents,
   view: DeclarationSubmittedView
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
-    implicit request =>
-      Ok(view())
-  }
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(DestinationOfficePage))
+    .async {
+      implicit request =>
+        sessionRepository.set(request.userAnswers.purge).map {
+          _ => Ok(view(request.userAnswers.mrn.toString, request.arg))
+        }
+    }
 }

@@ -42,7 +42,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val country     = arbitrary[Country].sample.value
 
   private val formProvider                        = new DynamicAddressFormProvider()
-  private def form(isPostalCodeRequired: Boolean) = formProvider("incident.location.address", isPostalCodeRequired, index)
+  private def form(isPostalCodeRequired: Boolean) = formProvider("incident.location.address", isPostalCodeRequired)
 
   private val mode              = NormalMode
   private lazy val addressRoute = routes.AddressController.onPageLoad(mrn, mode, index).url

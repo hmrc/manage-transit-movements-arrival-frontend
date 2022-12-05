@@ -16,25 +16,50 @@
 
 @import views.html.components.Heading
 @import config.FrontendAppConfig
+@import models.reference.CustomsOffice
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     config: FrontendAppConfig,
-    govukPanel: GovukPanel,
+    govukPanel: GovukPanel
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(mrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
+
+@customsOfficeDetail = @{
+    (officeOfDestination.name, officeOfDestination.phoneNumber) match {
+        case (Some(name), Some(tel)) => messages("declarationSubmitted.paragraph.2.1", name, tel)
+        case (Some(name), None)      => messages("declarationSubmitted.paragraph.2.2", name)
+        case (None, Some(tel))       => messages("declarationSubmitted.paragraph.2.3", officeOfDestination.id, tel)
+        case _                       => messages("declarationSubmitted.paragraph.2.4", officeOfDestination.id)
+    }
+}
 
 @mainTemplate(
     title = messages("declarationSubmitted.title"),
-    showBackLink = true
+    showBackLink = false
 ) {
-    @govukPanel(Panel(
-        title = Text(messages("declarationSubmitted.heading"))
+    @govukPanel(
+        Panel(
+          title = HtmlContent(messages("declarationSubmitted.heading")),
+          content = HtmlContent(s"""${messages("declarationSubmitted.heading.2")} <strong>${mrn}</strong>""")
         )
     )
 
-    <p class="govuk-body">@messages("declarationSubmitted.paragraph1")</p>
+    <h2 class="govuk-heading-m">@messages("declarationSubmitted.what.next")</h2>
+
+    <p class="govuk-body">
+        <a href=@config.manageTransitMovementsViewArrivalsUrl class="govuk-link" id="manage-transit-movements">@messages("declarationSubmitted.status.notifications")</a>
+        @messages("declarationSubmitted.paragraph.1")
+    </p>
+
+    <p class="govuk-body">@customsOfficeDetail</p>
+
+    <p class="govuk-body">
+        <a href=@controllers.routes.RedirectController.onPageLoad().url class="govuk-link" id="new-arrival">
+            @messages("declarationSubmitted.new.arrival")
+        </a>
+    </p>
 
 }

@@ -61,7 +61,7 @@ class CheckArrivalsAnswersController @Inject() (
             logger.debug(s"\n\n\nDeclaration submission failed for $mrn : ${response.body}\n\n\n")
             InternalServerError("Something went wrong")
           case ex =>
-            logger.error(s"\n\n\nDeclaration submission failed for $mrn : ${ex.body}\n\n\n")
+            logger.debug(s"\n\n\nDeclaration submission failed for $mrn : ${ex.body}\n\n\n")
             InternalServerError("Something went wrong")
         }
     }

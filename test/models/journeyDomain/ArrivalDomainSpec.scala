@@ -22,17 +22,21 @@ import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{InternationalAddress, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice}
+import models.{DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
-import pages.locationOfGoods.{AddContactPersonPage, InternationalAddressPage, QualifierOfIdentificationPage, TypeOfLocationPage}
+import pages.locationOfGoods.{AddContactPersonPage, AddressPage, CountryPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
+  private val country           = arbitrary[Country].sample.value
+  private val address           = arbitrary[DynamicAddress].sample.value
+  private val idNumber          = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
 
@@ -76,11 +80,12 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
           val userAnswers = emptyUserAnswers
             .setValue(DestinationOfficePage, destinationOffice)
-            .setValue(IdentificationNumberPage, "identificationNumber")
+            .setValue(IdentificationNumberPage, idNumber)
             .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(TypeOfLocationPage, AuthorisedPlace)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-            .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, address)
             .setValue(AddContactPersonPage, false)
 
           val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
@@ -99,25 +104,27 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
+          .setValue(IdentificationNumberPage, idNumber)
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, AuthorisedPlace)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
-          .setValue(InternationalAddressPage, InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")))
+          .setValue(CountryPage, country)
+          .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
 
         val expectedResult = ArrivalTransitionDomain(
           IdentificationDomain(
             userAnswers.mrn,
             destinationOffice = destinationOffice,
-            identificationNumber = "identificationNumber",
+            identificationNumber = idNumber,
             procedureType = ProcedureType.Normal,
             authorisations = None
           ),
           LocationOfGoodsDomain(
             typeOfLocation = AuthorisedPlace,
             qualifierOfIdentificationDetails = AddressDomain(
-              address = InternationalAddress("line1", "line2", "postalCode", Country(CountryCode("GB"), "description")),
+              country = country,
+              address = address,
               contactPerson = None
             )
           )

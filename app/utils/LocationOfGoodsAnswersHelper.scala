@@ -17,8 +17,8 @@
 package utils
 
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{CustomsOffice, UnLocode}
-import models.{Coordinates, InternationalAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
+import models.reference.{Country, CustomsOffice, UnLocode}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -78,18 +78,25 @@ class LocationOfGoodsAnswersHelper(
     id = Some("un-locode")
   )
 
-  def address: Option[SummaryListRow] = getAnswerAndBuildRow[InternationalAddress](
-    page = InternationalAddressPage,
-    formatAnswer = formatAsAddress,
-    prefix = "locationOfGoods.internationalAddress",
-    id = Some("international-address")
+  def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryPage,
+    formatAnswer = formatAsText,
+    prefix = "locationOfGoods.country",
+    id = Some("country")
+  )
+
+  def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
+    page = AddressPage,
+    formatAnswer = formatAsDynamicAddress,
+    prefix = "locationOfGoods.address",
+    id = Some("address")
   )
 
   def postalCode: Option[SummaryListRow] = getAnswerAndBuildRow[PostalCodeAddress](
-    page = AddressPage,
+    page = PostalCodePage,
     formatAnswer = formatAsPostalCodeAddress,
-    prefix = "locationOfGoods.address",
-    id = Some("address")
+    prefix = "locationOfGoods.postalCode",
+    id = Some("postal-code")
   )
 
   def additionalIdentifierYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

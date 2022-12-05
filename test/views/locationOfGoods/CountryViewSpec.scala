@@ -16,22 +16,25 @@
 
 package views.locationOfGoods
 
-import forms.DynamicAddressFormProvider
-import generators.Generators
-import models.{DynamicAddress, NormalMode}
+import forms.CountryFormProvider
+import models.reference.Country
+import models.{CountryList, NormalMode}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.DynamicAddressViewBehaviours
-import views.html.locationOfGoods.AddressView
+import views.behaviours.InputSelectViewBehaviours
+import views.html.locationOfGoods.CountryView
 
-class AddressViewSpec extends DynamicAddressViewBehaviours with Generators {
+class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
-  override def form: Form[DynamicAddress] = new DynamicAddressFormProvider()(prefix, isPostalCodeRequired)
+  override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
 
-  override def applyView(form: Form[DynamicAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[AddressView].apply(form, mrn, NormalMode, isPostalCodeRequired)(fakeRequest, messages)
+  override def applyView(form: Form[Country]): HtmlFormat.Appendable =
+    injector.instanceOf[CountryView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "locationOfGoods.address"
+  implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
+
+  override val prefix: String = "locationOfGoods.country"
 
   behave like pageWithTitle()
 
@@ -41,7 +44,9 @@ class AddressViewSpec extends DynamicAddressViewBehaviours with Generators {
 
   behave like pageWithHeading()
 
-  behave like pageWithAddressInput()
+  behave like pageWithSelect()
+
+  behave like pageWithHint("Enter the country, like Italy or Spain.")
 
   behave like pageWithSubmitButton("Continue")
 }

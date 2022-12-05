@@ -17,18 +17,27 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.{InternationalAddress, Mode, UserAnswers}
+import models.reference.Country
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object InternationalAddressPage extends QuestionPage[InternationalAddress] {
+import scala.util.Try
+
+case object CountryPage extends QuestionPage[Country] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "internationalAddress"
+  override def toString: String = "country"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.InternationalAddressController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.CountryController.onPageLoad(userAnswers.mrn, mode))
+
+  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(AddressPage)
+      case None    => super.cleanup(value, userAnswers)
+    }
 }

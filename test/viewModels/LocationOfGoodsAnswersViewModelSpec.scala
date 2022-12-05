@@ -276,7 +276,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       val qualifier = QualifierOfIdentification.Address
 
       "with no contact person" - {
-        "must have 4 rows" in {
+        "must have 5 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, false)
@@ -286,14 +286,14 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
               section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 4
+              section.rows.size mustBe 5
               section.addAnotherLink must not be defined
           }
         }
       }
 
       "with contact person" - {
-        "must have 6 rows" in {
+        "must have 7 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, true)
@@ -303,7 +303,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
               section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 6
+              section.rows.size mustBe 7
               section.addAnotherLink must not be defined
           }
         }
