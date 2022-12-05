@@ -17,15 +17,15 @@
 package connectors
 
 import api.Conversions
-import api.Conversions.transitOperation
+import api.Conversions.scope
 import config.FrontendAppConfig
-import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, TransitOperationType02}
+import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.HeaderNames
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
+import scalaxb.DataRecord
 import scalaxb.`package`.toXML
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,120 +37,40 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     HeaderNames.CONTENT_TYPE -> "application/xml"
   )
 
-  // TODO - Build object from user answers
-  def createSubmission(userAnswers: UserAnswers): Either[String, CC007CType] = {
-    // Create message structure
+  def createPayload(userAnswers: UserAnswers): Either[String, CC007CType] = {
     val message: MESSAGE_FROM_TRADERSequence = Conversions.message
     val messageType: MessageType007          = Conversions.messageType
     val correlationIdentifier                = Conversions.correlationIdentifier
 
     for {
-      transitOperation <- Conversions.transitOperation(userAnswers)
-    } yield CC007CType(message, messageType, correlationIdentifier, transitOperation, ???, ???, ???, ???)
+      transitOperation           <- Conversions.transitOperation(userAnswers)
+      authorisations             <- Conversions.authorisations(userAnswers)
+      customsOfficeOfDestination <- Conversions.customsOfficeOfDestination(userAnswers)
+      traderAtDestination        <- Conversions.traderAtDestination(userAnswers)
+      consignment                <- Conversions.consignment(userAnswers)
+    } yield CC007CType(
+      message,
+      messageType,
+      correlationIdentifier,
+      transitOperation,
+      authorisations,
+      customsOfficeOfDestination,
+      traderAtDestination,
+      consignment,
+      attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+    )
   }
-
-  // TODO - build out example submission
-  def payloadXml(transitOperation: TransitOperationType02): String =
-    (<ncts:CC007C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
-      <messageRecipient>token</messageRecipient>
-      <preparationDateAndTime>2007-10-26T07:36:28</preparationDateAndTime>
-      <messageIdentification>token</messageIdentification>
-      <messageType>CC007C</messageType>
-      <correlationIdentifier>token</correlationIdentifier>{toXML[TransitOperationType02](transitOperation, "TransitOperation", generated.defaultScope)}<Authorisation>
-        <sequenceNumber>123</sequenceNumber>
-        <type>3344</type>
-        <referenceNumber>token</referenceNumber>
-      </Authorisation>
-      <CustomsOfficeOfDestinationActual>
-        <referenceNumber>GB123456</referenceNumber>
-      </CustomsOfficeOfDestinationActual>
-      <TraderAtDestination>
-        <identificationNumber>ezv3Z</identificationNumber>
-        <communicationLanguageAtDestination>sa</communicationLanguageAtDestination>
-      </TraderAtDestination>
-      <Consignment>
-        <LocationOfGoods>
-          <typeOfLocation>A</typeOfLocation>
-          <qualifierOfIdentification>A</qualifierOfIdentification>
-          <authorisationNumber>token</authorisationNumber>
-          <additionalIdentifier>1234</additionalIdentifier>
-          <UNLocode>token</UNLocode>
-          <CustomsOffice>
-            <referenceNumber>AB123456</referenceNumber>
-          </CustomsOffice>
-          <EconomicOperator>
-            <identificationNumber>ezv3Z</identificationNumber>
-          </EconomicOperator>
-          <Address>
-            <streetAndNumber>token</streetAndNumber>
-            <postcode>token</postcode>
-            <city>token</city>
-            <country>GB</country>
-          </Address>
-          <PostcodeAddress>
-            <houseNumber>token</houseNumber>
-            <postcode>token</postcode>
-            <country>SA</country>
-          </PostcodeAddress>
-          <ContactPerson>
-            <name>token</name>
-            <phoneNumber>token</phoneNumber>
-            <eMailAddress>sandeep@gmail.com</eMailAddress>
-          </ContactPerson>
-        </LocationOfGoods>
-        <Incident>
-          <sequenceNumber>12345</sequenceNumber>
-          <code>1</code>
-          <text>token</text>
-          <Endorsement>
-            <date>2022-07-02</date>
-            <authority>token</authority>
-            <place>token</place>
-            <country>GB</country>
-          </Endorsement>
-          <Location>
-            <qualifierOfIdentification>A</qualifierOfIdentification>
-            <UNLocode>token</UNLocode>
-            <country>SA</country>
-            <Address>
-              <streetAndNumber>token</streetAndNumber>
-              <postcode>token</postcode>
-              <city>token</city>
-            </Address>
-          </Location>
-          <TransportEquipment>
-            <sequenceNumber>12345</sequenceNumber>
-            <containerIdentificationNumber>ezv3Z</containerIdentificationNumber>
-            <numberOfSeals>2345</numberOfSeals>
-            <Seal>
-              <sequenceNumber>12345</sequenceNumber>
-              <identifier>token</identifier>
-            </Seal>
-            <GoodsReference>
-              <sequenceNumber>12345</sequenceNumber>
-              <declarationGoodsItemNumber>12</declarationGoodsItemNumber>
-            </GoodsReference>
-          </TransportEquipment>
-          <Transhipment>
-            <containerIndicator>0</containerIndicator>
-            <TransportMeans>
-              <typeOfIdentification>12</typeOfIdentification>
-              <identificationNumber>ezv3Z</identificationNumber>
-              <nationality>GB</nationality>
-            </TransportMeans>
-          </Transhipment>
-        </Incident>
-      </Consignment>
-    </ncts:CC007C>).mkString
 
   def submitDeclaration(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
     val declarationUrl = s"${appConfig.apiUrl}/movements/arrivals"
 
-    createSubmission(userAnswers) match {
+    createPayload(userAnswers) match {
       case Left(msg) => throw new BadRequestException(msg)
-      case Right(value) =>
-        val payload: String = toXML[CC007CType](value, "CC007C", generated.defaultScope).toString
+      case Right(submissionModel) =>
+        val payload: String = toXML[CC007CType](submissionModel, "ncts:CC007C", scope).toString
+
+        println(s"\n\n\n\nPAYLOAD:  $payload \n\n\n\n")
         httpClient.POSTString(declarationUrl, payload, requestHeaders)
     }
 

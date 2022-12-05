@@ -16,17 +16,39 @@
 
 package models
 
-sealed trait QualifierOfIdentification
+sealed trait QualifierOfIdentification {
+  val code: String
+}
 
 object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
 
-  case object CustomsOffice extends WithName("customsOffice") with QualifierOfIdentification
-  case object EoriNumber extends WithName("eoriNumber") with QualifierOfIdentification
-  case object AuthorisationNumber extends WithName("authorisationNumber") with QualifierOfIdentification
-  case object Coordinates extends WithName("coordinates") with QualifierOfIdentification
-  case object Unlocode extends WithName("unlocode") with QualifierOfIdentification
-  case object Address extends WithName("address") with QualifierOfIdentification
-  case object PostalCode extends WithName("postalCode") with QualifierOfIdentification
+  case object CustomsOffice extends WithName("customsOffice") with QualifierOfIdentification {
+    override val code: String = "V"
+  }
+
+  case object EoriNumber extends WithName("eoriNumber") with QualifierOfIdentification {
+    override val code: String = "X"
+  }
+
+  case object AuthorisationNumber extends WithName("authorisationNumber") with QualifierOfIdentification {
+    override val code: String = "Y"
+  }
+
+  case object Coordinates extends WithName("coordinates") with QualifierOfIdentification {
+    override val code: String = "W"
+  }
+
+  case object Unlocode extends WithName("unlocode") with QualifierOfIdentification {
+    override val code: String = "U"
+  }
+
+  case object Address extends WithName("address") with QualifierOfIdentification {
+    override val code: String = "Z"
+  }
+
+  case object PostalCode extends WithName("postalCode") with QualifierOfIdentification {
+    override val code: String = "T"
+  }
 
   override val messageKeyPrefix: String = "qualifierOfIdentification"
 

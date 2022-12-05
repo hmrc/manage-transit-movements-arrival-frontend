@@ -47,9 +47,7 @@ final case class UserAnswers(
       .optionNoError(Reads.at(page.path))
       .reads(data)
       .getOrElse(None)
-      .toRight(
-        "Something went wrong"
-      )
+      .toRight("Something went wrong")
 
   def get[A](gettable: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(gettable.path)).reads(data).getOrElse(None)

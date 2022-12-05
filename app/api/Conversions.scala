@@ -21,25 +21,34 @@ import models.UserAnswers
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import org.joda.time.DateTime
-import pages.identification.IsSimplifiedProcedurePage
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident.IncidentFlagPage
+import pages.locationOfGoods._
 import pages.sections.identification.AuthorisationsSection
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
+import scala.xml.NamespaceBinding
+
 object Conversions {
+
+  val scope: NamespaceBinding              = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
+  val formatterNoMillis: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
 
   def message: MESSAGE_FROM_TRADERSequence =
     MESSAGE_FROM_TRADERSequence(
-      Some("manage-transit-movements-arrival-frontend"),
+      None,
       MESSAGE_1Sequence(
-        "TODO ???",
-        ApiXmlHelpers.toDate(DateTime.now().toString()),
-        "TODO ???"
+        "NCTS",
+        ApiXmlHelpers.toDate(DateTime.now().toString(formatterNoMillis)),
+        "CC007C" // TODO - check this with API team? What should this be set to?
       )
     )
 
-  def messageType: MessageType007 = MessageType007.fromString("CC007C", generated.defaultScope)
-  def correlationIdentifier       = CORRELATION_IDENTIFIERSequence(Some("TODO ???"))
+  def messageType: MessageType007 = MessageType007.fromString("CC007C", scope)
+
+  // TODO - Raise with API team as a random guid is 36 in length and blows the 35 char limit imposed by the API schema
+  def correlationIdentifier = CORRELATION_IDENTIFIERSequence(Some(java.util.UUID.randomUUID.toString.replace("-", "")))
 
   def transitOperation(userAnswers: UserAnswers): Either[String, TransitOperationType02] =
     for {
@@ -63,22 +72,79 @@ object Conversions {
 
   def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =
     for {
-      authSection <- userAnswers.getAsEither(AuthorisationsSection)
+      authSection <- userAnswers.getOptional(AuthorisationsSection)
       result <- {
-        authSection.validate[Seq[Authorisation]] match {
-          case JsSuccess(authorisations, _) =>
-            Right(
-              authorisations.map(
-                authorisation =>
-                  AuthorisationType01(
-                    authorisations.indexOf(authorisation).toString,
-                    authorisation.authorisationReferenceNumber,
-                    authorisation.authorisationType.toString
+        authSection match {
+          case Some(section) =>
+            section.validate[Seq[Authorisation]] match {
+              case JsSuccess(authorisations, _) =>
+                Right(
+                  authorisations.map(
+                    authorisation =>
+                      AuthorisationType01(
+                        authorisations.indexOf(authorisation).toString,
+                        authorisation.authorisationType.toString,
+                        authorisation.authorisationReferenceNumber
+                      )
                   )
-              )
-            )
-          case JsError(errors) => Left(errors.toString)
+                )
+              case JsError(errors) =>
+                Left(errors.toString)
+            }
+          case None => Right(Seq.empty)
         }
       }
     } yield result
+
+  def customsOfficeOfDestination(userAnswers: UserAnswers): Either[String, CustomsOfficeOfDestinationActualType03] =
+    for {
+      customsOfficeOfDestination <- userAnswers.getAsEither(DestinationOfficePage)
+    } yield CustomsOfficeOfDestinationActualType03(customsOfficeOfDestination.id)
+
+  def traderAtDestination(userAnswers: UserAnswers): Either[String, TraderAtDestinationType01] =
+    for {
+      traderAtDestination <- userAnswers.getAsEither(IdentificationNumberPage)
+    } yield TraderAtDestinationType01(traderAtDestination)
+
+  def consignment(userAnswers: UserAnswers): Either[String, ConsignmentType01] =
+    for {
+      typeOfLocation            <- userAnswers.getAsEither(TypeOfLocationPage)
+      qualifierOfIdentification <- userAnswers.getAsEither(QualifierOfIdentificationPage)
+      authorisationNumber       <- userAnswers.getOptional(AuthorisationNumberPage)
+      additionalIdentifier      <- userAnswers.getOptional(AdditionalIdentifierPage)
+      unlocode                  <- userAnswers.getOptional(UnlocodePage)
+      customsOffice             <- userAnswers.getOptional(CustomsOfficePage)
+      gnss                      <- userAnswers.getOptional(CoordinatesPage)
+      identificationNumber      <- userAnswers.getOptional(IdentificationNumberPage)
+      address                   <- userAnswers.getOptional(AddressPage)
+      contactPersonName         <- userAnswers.getOptional(ContactPersonNamePage)
+      contactPersonTel          <- userAnswers.getOptional(ContactPersonTelephonePage)
+    } yield ConsignmentType01(
+      LocationOfGoodsType01(
+        typeOfLocation.code,
+        qualifierOfIdentification.code,
+        authorisationNumber,
+        additionalIdentifier,
+        unlocode.map(
+          code => code.name
+        ),
+        customsOffice.map(
+          co => CustomsOfficeType01(co.id)
+        ),
+        gnss.map(
+          coordinates => GNSSType(coordinates.latitude, coordinates.longitude)
+        ),
+        identificationNumber.map(
+          ident => EconomicOperatorType03(ident)
+        ),
+        None,
+        address.map(
+          a => PostcodeAddressType02(Some(a.streetNumber), a.postalCode, a.country.code.code)
+        ),
+        contactPersonName.map(
+          name => ContactPersonType06(name, contactPersonTel.getOrElse(throw new IllegalStateException("Telephone must be provided if a contact is present")))
+        )
+      ),
+      Seq.empty // TODO - build out incidents
+    )
 }
