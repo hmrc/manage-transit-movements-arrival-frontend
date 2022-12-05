@@ -64,7 +64,7 @@ lazy val root = (project in file("."))
     scalaVersion    := "2.13.8",
     resolvers += Resolver.jcenterRepo,
     Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("javascripts/ctc.js", "javascripts/accessible-autocomplete.js", "javascripts/autocomplete.js"))
+      "javascripts/application.js" -> group(Seq("javascripts/ctc.js"))
     ),
     uglifyCompressOptions          := Seq("unused=false", "dead_code=false", "warnings=false"),
     Assets / pipelineStages := Seq(digest, concat, uglify),
