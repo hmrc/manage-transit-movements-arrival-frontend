@@ -19,7 +19,7 @@ package models
 import pages._
 import pages.identification.DestinationOfficePage
 import play.api.libs.json._
-import queries.Gettable
+import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.LocalDateTime
@@ -71,6 +71,14 @@ final case class UserAnswers(
       case _             => updatedData flatMap cleanup
     }
   }
+
+  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] =
+    data.setObject(page.path, Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(copy(data = jsValue))
+      case JsError(errors) =>
+        Failure(JsResultException(errors))
+    }
 
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)

@@ -68,11 +68,8 @@ object Conversions {
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
 
-  case class Authorisation(authorisationReferenceNumber: String, authorisationType: AuthorisationType)
-
-  object Authorisation {
-    implicit val jsonFormat = Json.format[Authorisation]
-  }
+  // TODO revisit cache and add index at authorisation level
+  implicit val jsonFormat = Json.format[AuthorisationType01]
 
   def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =
     for {
@@ -80,41 +77,14 @@ object Conversions {
       result <- {
         authSection match {
           case Some(section) =>
-            section.validate[Seq[Authorisation]] match {
-              case JsSuccess(authorisations, _) =>
-                Right(
-                  authorisations.map(
-                    authorisation =>
-                      AuthorisationType01(
-                        authorisations.indexOf(authorisation).toString,
-                        authorisation.authorisationType.toString,
-                        authorisation.authorisationReferenceNumber
-                      )
-                  )
-                )
-              case JsError(errors) =>
-                Left(errors.toString)
+            section.validate[Seq[AuthorisationType01]] match {
+              case JsSuccess(authorisations, _) => Right(authorisations)
+              case JsError(errors)              => Left(errors.toString)
             }
           case None => Right(Seq.empty)
         }
       }
     } yield result
-
-  // TODO - can we rewrite using domain models?
-  def authorisations2(userAnswers: UserAnswers): Either[ReaderError, Seq[AuthorisationType01]] = {
-    for {
-      domain <- UserAnswersReader[AuthorisationsDomain].run(userAnswers)
-    } yield {
-      domain.authorisations.map(
-        authorisation =>
-          AuthorisationType01(
-            domain.authorisations.indexOf(authorisation).toString,
-            authorisation.`type`.toString,
-            authorisation.referenceNumber
-          )
-      )
-    }
-  }
 
   def customsOfficeOfDestination(userAnswers: UserAnswers): Either[String, CustomsOfficeOfDestinationActualType03] =
     for {

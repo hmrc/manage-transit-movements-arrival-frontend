@@ -28,7 +28,7 @@ case class AuthorisationTypePage(index: Index) extends QuestionPage[Authorisatio
 
   override def path: JsPath = AuthorisationSection(index).path \ toString
 
-  override def toString: String = "authorisationType"
+  override def toString: String = "typeValue"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, index, mode))

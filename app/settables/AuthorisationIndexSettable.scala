@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package settables
 
-import controllers.identification.authorisation.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import models.Index
 import pages.sections.identification.AuthorisationSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Settable
 
-case class AuthorisationReferenceNumberPage(index: Index) extends QuestionPage[String] {
+case class AuthorisationIndexSettable(index: Index) extends Settable[Int] {
 
   override def path: JsPath = AuthorisationSection(index).path \ toString
 
-  override def toString: String = "referenceNumber"
+  override def toString: String = "sequenceNumber"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode))
 }
