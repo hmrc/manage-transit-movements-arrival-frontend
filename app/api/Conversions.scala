@@ -20,6 +20,8 @@ import generated._
 import models.{DynamicAddress, UserAnswers}
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
+import models.journeyDomain.{EitherType, ReaderError, UserAnswersReader}
+import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain}
 import models.reference.Country
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
@@ -27,6 +29,7 @@ import pages.identification.{DestinationOfficePage, IdentificationNumberPage, Is
 import pages.incident.IncidentFlagPage
 import pages.locationOfGoods._
 import pages.sections.identification.AuthorisationsSection
+import pages.sections.incident.{IncidentSection, IncidentsSection}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
 import scala.xml.NamespaceBinding
@@ -48,8 +51,8 @@ object Conversions {
 
   def messageType: MessageType007 = MessageType007.fromString("CC007C", scope)
 
-  // TODO - Raise with API team as a random guid is 36 in length and blows the 35 char limit imposed by the API schema
-  def correlationIdentifier = CORRELATION_IDENTIFIERSequence(Some(java.util.UUID.randomUUID.toString.replace("-", "")))
+  // TODO - What should this be?
+  def correlationIdentifier = CORRELATION_IDENTIFIERSequence(None)
 
   def transitOperation(userAnswers: UserAnswers): Either[String, TransitOperationType02] =
     for {
@@ -97,6 +100,22 @@ object Conversions {
       }
     } yield result
 
+  // TODO - can we rewrite using domain models?
+  def authorisations2(userAnswers: UserAnswers): Either[ReaderError, Seq[AuthorisationType01]] = {
+    for {
+      domain <- UserAnswersReader[AuthorisationsDomain].run(userAnswers)
+    } yield {
+      domain.authorisations.map(
+        authorisation =>
+          AuthorisationType01(
+            domain.authorisations.indexOf(authorisation).toString,
+            authorisation.`type`.toString,
+            authorisation.referenceNumber
+          )
+      )
+    }
+  }
+
   def customsOfficeOfDestination(userAnswers: UserAnswers): Either[String, CustomsOfficeOfDestinationActualType03] =
     for {
       customsOfficeOfDestination <- userAnswers.getAsEither(DestinationOfficePage)
@@ -142,10 +161,29 @@ object Conversions {
         getAddressNoPostcode(address, country),
         getAddressWithPostcode(address, country),
         contactPersonName.map(
-          name => ContactPersonType06(name, contactPersonTel.getOrElse(throw new IllegalStateException("Telephone must be provided if a contact is present")))
+          name =>
+            ContactPersonType06(name,
+                                contactPersonTel.getOrElse(
+                                  throw new IllegalStateException("Telephone must be provided if a contact is present")
+                                )
+            )
         )
       ),
       Seq.empty // TODO - build out incidents
+    )
+
+  // TODO incidents impl - from domain objects?
+  private def incidents(userAnswers: UserAnswers): Either[String, IncidentType01] =
+    for {
+      incidents <- userAnswers.getOptional(IncidentsSection)
+    } yield IncidentType01(
+      sequenceNumber = ???,
+      code = ???,
+      text = ???,
+      Endorsement = ???,
+      Location = ???,
+      TransportEquipment = ???,
+      Transhipment = ???
     )
 
   private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
@@ -155,7 +193,16 @@ object Conversions {
           case Some(_) => None
           case _ =>
             Some(
-              AddressType14(a.numberAndStreet, None, a.city, country.getOrElse(throw new IllegalStateException("Country is required")).code.code)
+              AddressType14(a.numberAndStreet,
+                            None,
+                            a.city,
+                            country
+                              .getOrElse(
+                                throw new IllegalStateException("Country is required")
+                              )
+                              .code
+                              .code
+              )
             )
         }
     )
@@ -166,7 +213,15 @@ object Conversions {
         a.postalCode match {
           case Some(postCode) =>
             Some(
-              PostcodeAddressType02(Some(a.numberAndStreet), postCode, country.getOrElse(throw new IllegalStateException("Country is required")).code.code)
+              PostcodeAddressType02(Some(a.numberAndStreet),
+                                    postCode,
+                                    country
+                                      .getOrElse(
+                                        throw new IllegalStateException("Country is required")
+                                      )
+                                      .code
+                                      .code
+              )
             )
           case _ => None
         }
