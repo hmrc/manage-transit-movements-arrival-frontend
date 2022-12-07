@@ -17,19 +17,16 @@
 package api
 
 import generated._
-import models.{DynamicAddress, UserAnswers}
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
-import models.journeyDomain.{EitherType, ReaderError, UserAnswersReader}
-import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain}
 import models.reference.Country
+import models.{DynamicAddress, UserAnswers}
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident.IncidentFlagPage
 import pages.locationOfGoods._
 import pages.sections.identification.AuthorisationsSection
-import pages.sections.incident.{IncidentSection, IncidentsSection}
+import pages.sections.incident.IncidentsSection
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
 import scala.xml.NamespaceBinding
@@ -68,7 +65,7 @@ object Conversions {
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
 
-  implicit val jsonFormat = Json.format[AuthorisationType01]
+  implicit val authorisationType01Format = Json.format[AuthorisationType01]
 
   def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =
     for {
@@ -142,28 +139,20 @@ object Conversions {
     )
 
   // TODO incidents impl - from domain objects?
-//  private def incidents(userAnswers: UserAnswers): Either[String, IncidentType01] =
-//    for {
-//      incidentsSection <- userAnswers.getOptional(IncidentsSection)
-//      result <- {
-//        incidentsSection match {
-//          case Some(incident) => incident.validate[Seq[IncidentType01]]match {
-//            case JsSuccess(incidents, _) => Right(incidents)
-//            case JsError
-//          }
-//          case None =>
-//        }
-//      }
-//    } yield result
-//    } yield IncidentType01(
-//      sequenceNumber = ???,
-//      code = ???,
-//      text = ???,
-//      Endorsement = ???,
-//      Location = ???,
-//      TransportEquipment = ???,
-//      Transhipment = ???
-//    )
+  private def incidents(userAnswers: UserAnswers): Either[String, Seq[IncidentType01]] =
+    for {
+      incidentsSection <- userAnswers.getOptional(IncidentsSection)
+    } yield Seq(
+      IncidentType01(
+        sequenceNumber = ???,
+        code = ???,
+        text = ???,
+        Endorsement = ???,
+        Location = ???,
+        TransportEquipment = ???,
+        Transhipment = ???
+      )
+    )
 
   private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
     address.flatMap(
