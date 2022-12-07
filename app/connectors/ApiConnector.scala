@@ -41,10 +41,10 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     val message: MESSAGE_FROM_TRADERSequence = Conversions.message
     val messageType: MessageType007          = Conversions.messageType
     val correlationIdentifier                = Conversions.correlationIdentifier
+    val authorisations                       = Conversions.authorisations(userAnswers)
 
     for {
       transitOperation           <- Conversions.transitOperation(userAnswers)
-      authorisations             <- Conversions.authorisations(userAnswers)
       customsOfficeOfDestination <- Conversions.customsOfficeOfDestination(userAnswers)
       traderAtDestination        <- Conversions.traderAtDestination(userAnswers)
       consignment                <- Conversions.consignment(userAnswers)

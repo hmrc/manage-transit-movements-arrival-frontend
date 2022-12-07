@@ -18,6 +18,9 @@ package api
 
 import generated._
 import models.identification.ProcedureType
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.identification.AuthorisationsDomain
+import models.journeyDomain.incident.IncidentsDomain
 import models.reference.Country
 import models.{DynamicAddress, UserAnswers}
 import org.joda.time.DateTime
@@ -25,9 +28,7 @@ import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident.IncidentFlagPage
 import pages.locationOfGoods._
-import pages.sections.identification.AuthorisationsSection
 import pages.sections.incident.IncidentsSection
-import play.api.libs.json.{JsError, JsSuccess, Json}
 
 import scala.xml.NamespaceBinding
 
@@ -65,22 +66,18 @@ object Conversions {
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
 
-  implicit val authorisationType01Format = Json.format[AuthorisationType01]
-
-  def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =
+  def authorisations(userAnswers: UserAnswers): Seq[AuthorisationType01] = {
     for {
-      authSection <- userAnswers.getOptional(AuthorisationsSection)
-      result <- {
-        authSection match {
-          case Some(section) =>
-            section.validate[Seq[AuthorisationType01]] match {
-              case JsSuccess(authorisations, _) => Right(authorisations)
-              case JsError(errors)              => Left(errors.toString)
-            }
-          case None => Right(Seq.empty)
-        }
-      }
-    } yield result
+      domain <- UserAnswersReader[AuthorisationsDomain].run(userAnswers).toOption
+    } yield domain.authorisations.map(
+      authorisation =>
+        AuthorisationType01(
+          domain.authorisations.indexOf(authorisation).toString,
+          authorisation.`type`.toString,
+          authorisation.referenceNumber
+        )
+    )
+  }.getOrElse(Seq.empty)
 
   def customsOfficeOfDestination(userAnswers: UserAnswers): Either[String, CustomsOfficeOfDestinationActualType03] =
     for {
@@ -139,20 +136,22 @@ object Conversions {
     )
 
   // TODO incidents impl - from domain objects?
-  private def incidents(userAnswers: UserAnswers): Either[String, Seq[IncidentType01]] =
+  private def incidents(userAnswers: UserAnswers): Seq[IncidentType01] = {
     for {
-      incidentsSection <- userAnswers.getOptional(IncidentsSection)
-    } yield Seq(
-      IncidentType01(
-        sequenceNumber = ???,
-        code = ???,
-        text = ???,
-        Endorsement = ???,
-        Location = ???,
-        TransportEquipment = ???,
-        Transhipment = ???
-      )
+      domain <- UserAnswersReader[IncidentsDomain].run(userAnswers).toOption
+    } yield domain.incidents.map(
+      incident =>
+        IncidentType01(
+          sequenceNumber = domain.incidents.indexOf(incident).toString,
+          code = ???,
+          text = ???,
+          Endorsement = ???,
+          Location = ???,
+          TransportEquipment = ???,
+          Transhipment = ???
+        )
     )
+  }.getOrElse(Seq.empty)
 
   private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
     address.flatMap(
