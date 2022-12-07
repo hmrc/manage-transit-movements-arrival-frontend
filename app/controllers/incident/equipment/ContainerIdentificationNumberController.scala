@@ -82,7 +82,7 @@ class ContainerIdentificationNumberController @Inject() (
                   request.userAnswers.set(EquipmentIndexSettable(incidentIndex, equipmentIndex), equipmentIndex.position.toString)
                 )
               _        <- sessionRepository.set(ua)
-              redirect <- ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession().navigate()
+              redirect <- ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession(ua).navigate()
             } yield redirect
           }
         )

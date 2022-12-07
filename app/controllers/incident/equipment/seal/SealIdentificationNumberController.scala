@@ -102,7 +102,7 @@ class SealIdentificationNumberController @Inject() (
                     request.userAnswers.set(SealIndexSettable(incidentIndex, equipmentIndex, sealIndex), sealIndex.position.toString)
                   )
                 _        <- sessionRepository.set(ua)
-                redirect <- SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
+                redirect <- SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).writeToUserAnswers(value).writeToSession(ua).navigate()
               } yield redirect
             }
           )

@@ -22,7 +22,6 @@ import forms.ItemNumberFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{ItemNumberNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.itemNumber.ItemNumberPage
-import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -74,7 +73,7 @@ class ItemNumberController @Inject() (
                     request.userAnswers.set(ItemIndexSettable(incidentIndex, equipmentIndex, itemNumberIndex), itemNumberIndex.position.toString)
                   )
                 _        <- sessionRepository.set(ua)
-                redirect <- ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession().navigate()
+                redirect <- ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession(ua).navigate()
               } yield redirect
             }
           )

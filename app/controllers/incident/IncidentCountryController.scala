@@ -78,7 +78,7 @@ class IncidentCountryController @Inject() (
                       request.userAnswers.set(IncidentIndexSettable(index), index.position.toString)
                     )
                   _        <- sessionRepository.set(ua)
-                  redirect <- IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                  redirect <- IncidentCountryPage(index).writeToUserAnswers(value).writeToSession(ua).navigate()
                 } yield redirect
               }
             )
