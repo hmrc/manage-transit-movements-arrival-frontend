@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import settables.SealIndexSettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.seal.SealIdentificationNumberView
 
@@ -95,7 +96,14 @@ class SealIdentificationNumberController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, sealIndex, p, args: _*))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, sealIndex)
-              SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
+              for {
+                ua <- Future
+                  .fromTry(
+                    request.userAnswers.set(SealIndexSettable(incidentIndex, equipmentIndex, sealIndex), sealIndex.position.toString)
+                  )
+                _        <- sessionRepository.set(ua)
+                redirect <- SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).writeToUserAnswers(value).writeToSession().navigate()
+              } yield redirect
             }
           )
     }

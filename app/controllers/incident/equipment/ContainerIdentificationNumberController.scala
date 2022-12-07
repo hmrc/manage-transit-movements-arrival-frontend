@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import settables.EquipmentIndexSettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.ContainerIdentificationNumberView
 
@@ -75,7 +76,14 @@ class ContainerIdentificationNumberController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex)
-            ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession().navigate()
+            for {
+              ua <- Future
+                .fromTry(
+                  request.userAnswers.set(EquipmentIndexSettable(incidentIndex, equipmentIndex), equipmentIndex.position.toString)
+                )
+              _        <- sessionRepository.set(ua)
+              redirect <- ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).writeToUserAnswers(value).writeToSession().navigate()
+            } yield redirect
           }
         )
   }

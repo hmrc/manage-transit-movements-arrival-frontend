@@ -142,18 +142,28 @@ object Conversions {
     )
 
   // TODO incidents impl - from domain objects?
-  private def incidents(userAnswers: UserAnswers): Either[String, IncidentType01] =
-    for {
-      incidents <- userAnswers.getOptional(IncidentsSection)
-    } yield IncidentType01(
-      sequenceNumber = ???,
-      code = ???,
-      text = ???,
-      Endorsement = ???,
-      Location = ???,
-      TransportEquipment = ???,
-      Transhipment = ???
-    )
+//  private def incidents(userAnswers: UserAnswers): Either[String, IncidentType01] =
+//    for {
+//      incidentsSection <- userAnswers.getOptional(IncidentsSection)
+//      result <- {
+//        incidentsSection match {
+//          case Some(incident) => incident.validate[Seq[IncidentType01]]match {
+//            case JsSuccess(incidents, _) => Right(incidents)
+//            case JsError
+//          }
+//          case None =>
+//        }
+//      }
+//    } yield result
+//    } yield IncidentType01(
+//      sequenceNumber = ???,
+//      code = ???,
+//      text = ???,
+//      Endorsement = ???,
+//      Location = ???,
+//      TransportEquipment = ???,
+//      Transhipment = ???
+//    )
 
   private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
     address.flatMap(

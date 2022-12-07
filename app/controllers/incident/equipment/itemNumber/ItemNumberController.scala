@@ -22,9 +22,11 @@ import forms.ItemNumberFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{ItemNumberNavigatorProvider, UserAnswersNavigator}
 import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import settables.ItemIndexSettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.itemNumber.ItemNumberView
 
@@ -65,7 +67,15 @@ class ItemNumberController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
-              ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession().navigate()
+
+              for {
+                ua <- Future
+                  .fromTry(
+                    request.userAnswers.set(ItemIndexSettable(incidentIndex, equipmentIndex, itemNumberIndex), itemNumberIndex.position.toString)
+                  )
+                _        <- sessionRepository.set(ua)
+                redirect <- ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession().navigate()
+              } yield redirect
             }
           )
     }
