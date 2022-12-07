@@ -65,13 +65,14 @@ class AuthorisationTypeController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            Future
-              .fromTry(
-                request.userAnswers.set(AuthorisationIndexSettable(index), index.position)
-              )
-              .flatMap(
-                _ => AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigate()
-              )
+            for {
+              ua <- Future
+                .fromTry(
+                  request.userAnswers.set(AuthorisationIndexSettable(index), index.position.toString)
+                )
+              _        <- sessionRepository.set(ua)
+              redirect <- AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession(ua).navigate()
+            } yield redirect
           }
         )
   }

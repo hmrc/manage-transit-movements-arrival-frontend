@@ -68,7 +68,6 @@ object Conversions {
       incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
     )
 
-  // TODO revisit cache and add index at authorisation level
   implicit val jsonFormat = Json.format[AuthorisationType01]
 
   def authorisations(userAnswers: UserAnswers): Either[String, Seq[AuthorisationType01]] =

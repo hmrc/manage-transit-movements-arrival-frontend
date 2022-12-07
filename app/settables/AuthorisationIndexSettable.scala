@@ -21,7 +21,7 @@ import pages.sections.identification.AuthorisationSection
 import play.api.libs.json.JsPath
 import queries.Settable
 
-case class AuthorisationIndexSettable(index: Index) extends Settable[Int] {
+case class AuthorisationIndexSettable(index: Index) extends Settable[String] {
 
   override def path: JsPath = AuthorisationSection(index).path \ toString
 
