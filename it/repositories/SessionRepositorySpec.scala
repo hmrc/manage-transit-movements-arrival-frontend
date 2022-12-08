@@ -98,15 +98,15 @@ class SessionRepositorySpec
       "must create new document when given valid UserAnswers when an MRN is already defined" in {
 
         val userAnswer1 = UserAnswers(
-          MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get,
+          MovementReferenceNumber("25GBPFWZK2VBLUPJM5").get,
           EoriNumber("EoriNumber1"),
           Json.obj("foo" -> "bar")
         )
 
         val userAnswer2 = UserAnswers(
-          MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get,
+          MovementReferenceNumber("25GBPFWZK2VBLUPJM5").get,
           EoriNumber("EoriNumber2"),
-          Json.obj("foo" -> "bar")
+          Json.obj("bar" -> "foo")
         )
 
         val setResult1 = repository.set(userAnswer1).futureValue
