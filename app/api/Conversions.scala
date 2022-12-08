@@ -18,17 +18,12 @@ package api
 
 import generated._
 import models.identification.ProcedureType
-import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.identification.AuthorisationsDomain
-import models.journeyDomain.incident.IncidentsDomain
-import models.reference.Country
-import models.{DynamicAddress, UserAnswers}
+import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.incident.{IncidentAddressLocationDomain, IncidentCoordinatesLocationDomain, IncidentUnLocodeLocationDomain, IncidentsDomain}
+import models.journeyDomain.locationOfGoods._
+import models.reference.CustomsOffice
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
-import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.IncidentFlagPage
-import pages.locationOfGoods._
-import pages.sections.incident.IncidentsSection
 
 import scala.xml.NamespaceBinding
 
@@ -52,145 +47,106 @@ object Conversions {
   // TODO - What should this be?
   def correlationIdentifier = CORRELATION_IDENTIFIERSequence(None)
 
-  def transitOperation(userAnswers: UserAnswers): Either[String, TransitOperationType02] =
-    for {
-      sp           <- userAnswers.getAsEither(IsSimplifiedProcedurePage)
-      incidentFlag <- userAnswers.getAsEither(IncidentFlagPage)
-    } yield TransitOperationType02(
-      userAnswers.mrn.toString,
+  def transitOperation(domain: IdentificationDomain, incidents: Boolean): TransitOperationType02 =
+    TransitOperationType02(
+      domain.mrn.toString,
       arrivalNotificationDateAndTime = ApiXmlHelpers.toDate(DateTime.now().toString()),
-      simplifiedProcedure = ApiXmlHelpers.boolToFlag(sp match {
+      simplifiedProcedure = ApiXmlHelpers.boolToFlag(domain.procedureType match {
         case ProcedureType.Simplified => true
         case _                        => false
       }),
-      incidentFlag = ApiXmlHelpers.boolToFlag(incidentFlag)
+      incidentFlag = ApiXmlHelpers.boolToFlag(incidents)
     )
 
-  def authorisations(userAnswers: UserAnswers): Seq[AuthorisationType01] = {
-    for {
-      domain <- UserAnswersReader[AuthorisationsDomain].run(userAnswers).toOption
-    } yield domain.authorisations.map(
-      authorisation =>
-        AuthorisationType01(
-          domain.authorisations.indexOf(authorisation).toString,
-          authorisation.`type`.toString,
-          authorisation.referenceNumber
-        )
-    )
-  }.getOrElse(Seq.empty)
+  def authorisations(domain: Option[AuthorisationsDomain]): Seq[AuthorisationType01] =
+    domain
+      .map(
+        authorisation =>
+          authorisation.authorisations.map(
+            a =>
+              AuthorisationType01(
+                authorisation.authorisations.indexOf(a).toString,
+                a.`type`.toString,
+                a.referenceNumber
+              )
+          )
+      )
+      .getOrElse(Seq.empty)
 
-  def customsOfficeOfDestination(userAnswers: UserAnswers): Either[String, CustomsOfficeOfDestinationActualType03] =
-    for {
-      customsOfficeOfDestination <- userAnswers.getAsEither(DestinationOfficePage)
-    } yield CustomsOfficeOfDestinationActualType03(customsOfficeOfDestination.id)
+  def customsOfficeOfDestination(customsOffice: CustomsOffice): CustomsOfficeOfDestinationActualType03 =
+    CustomsOfficeOfDestinationActualType03(customsOffice.id)
 
-  def traderAtDestination(userAnswers: UserAnswers): Either[String, TraderAtDestinationType01] =
-    for {
-      traderAtDestination <- userAnswers.getAsEither(IdentificationNumberPage)
-    } yield TraderAtDestinationType01(traderAtDestination)
+  def traderAtDestination(identificationDomain: IdentificationDomain): TraderAtDestinationType01 =
+    TraderAtDestinationType01(identificationDomain.identificationNumber)
 
-  def consignment(userAnswers: UserAnswers): Either[String, ConsignmentType01] =
-    for {
-      typeOfLocation            <- userAnswers.getAsEither(TypeOfLocationPage)
-      qualifierOfIdentification <- userAnswers.getAsEither(QualifierOfIdentificationPage)
-      authorisationNumber       <- userAnswers.getOptional(AuthorisationNumberPage)
-      additionalIdentifier      <- userAnswers.getOptional(AdditionalIdentifierPage)
-      unlocode                  <- userAnswers.getOptional(UnlocodePage)
-      customsOffice             <- userAnswers.getOptional(CustomsOfficePage)
-      gnss                      <- userAnswers.getOptional(CoordinatesPage)
-      identificationNumber      <- userAnswers.getOptional(IdentificationNumberPage)
-      address                   <- userAnswers.getOptional(AddressPage)
-      country                   <- userAnswers.getOptional(CountryPage)
-      contactPersonName         <- userAnswers.getOptional(ContactPersonNamePage)
-      contactPersonTel          <- userAnswers.getOptional(ContactPersonTelephonePage)
-    } yield ConsignmentType01(
+  def consignment(domain: LocationOfGoodsDomain): ConsignmentType01 =
+    ConsignmentType01(
       LocationOfGoodsType01(
-        typeOfLocation.code,
-        qualifierOfIdentification.code,
-        authorisationNumber,
-        additionalIdentifier,
-        unlocode.map(
-          code => code.name
-        ),
-        customsOffice.map(
-          co => CustomsOfficeType01(co.id)
-        ),
-        gnss.map(
-          coordinates => GNSSType(coordinates.latitude, coordinates.longitude)
-        ),
-        identificationNumber.map(
-          ident => EconomicOperatorType03(ident)
-        ),
-        getAddressNoPostcode(address, country),
-        getAddressWithPostcode(address, country),
-        contactPersonName.map(
-          name =>
-            ContactPersonType06(name,
-                                contactPersonTel.getOrElse(
-                                  throw new IllegalStateException("Telephone must be provided if a contact is present")
-                                )
-            )
+        domain.typeOfLocation.code,
+        domain.qualifierOfIdentificationDetails.qualifierOfIdentification,
+        domain.qualifierOfIdentificationDetails match {
+          case AuthorisationNumberDomain(authorisationNumber, _, _) => Some(authorisationNumber)
+          case _                                                    => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case AuthorisationNumberDomain(_, additionalIdentifier, _) => additionalIdentifier
+          case _                                                     => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case UnlocodeDomain(code, _) => Some(code.unLocodeExtendedCode)
+          case _                       => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case CustomsOfficeDomain(customsOffice) => Some(CustomsOfficeType01(customsOffice.id))
+          case _                                  => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case CoordinatesDomain(coordinates, _) => Some(GNSSType(coordinates.latitude, coordinates.longitude))
+          case _                                 => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case EoriNumberDomain(eoriNumber, _, _) => Some(EconomicOperatorType03(eoriNumber))
+          case _                                  => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case AddressDomain(country, address, _) =>
+            Some(AddressType14(address.numberAndStreet, address.postalCode, address.city, country.code.code))
+          case _ => None
+        },
+        domain.qualifierOfIdentificationDetails match {
+          case PostalCodeDomain(address, _) =>
+            Some(PostcodeAddressType02(Some(address.streetNumber), address.postalCode, address.country.code.code))
+          case _ => None
+        },
+        domain.qualifierOfIdentificationDetails.contactPerson.map(
+          p => ContactPersonType06(p.name, p.phoneNumber)
         )
       ),
-      Seq.empty // TODO - build out incidents
+      Seq.empty // TODO incidents
     )
 
   // TODO incidents impl - from domain objects?
-  private def incidents(userAnswers: UserAnswers): Seq[IncidentType01] = {
-    for {
-      domain <- UserAnswersReader[IncidentsDomain].run(userAnswers).toOption
-    } yield domain.incidents.map(
+  def incidentsSection(domain: IncidentsDomain): Seq[IncidentType01] =
+    domain.incidents.map(
       incident =>
         IncidentType01(
           sequenceNumber = domain.incidents.indexOf(incident).toString,
-          code = ???,
-          text = ???,
-          Endorsement = ???,
-          Location = ???,
+          code = incident.incidentCode.code,
+          text = incident.incidentText,
+          Endorsement = incident.endorsement.map(
+            e =>
+              EndorsementType01(ApiXmlHelpers.toDate(e.date.toString), e.authority, e.location, e.country.code.code)
+          ),
+          Location = incident.location match {
+            case IncidentCoordinatesLocationDomain(coordinates) =>
+              LocationType01(incident.location.code, None, "GB", Some(GNSSType.apply(coordinates.latitude, coordinates.longitude)))
+            case IncidentUnLocodeLocationDomain(unLocode) =>
+              LocationType01(incident.location.code, Some(unLocode.unLocodeExtendedCode), "GB", None)
+            case IncidentAddressLocationDomain(address) =>
+              LocationType01(incident.location.code, None, "GB", None, Some(AddressType01(address.numberAndStreet, address.postalCode, address.city)))
+          },
           TransportEquipment = ???,
           Transhipment = ???
         )
-    )
-  }.getOrElse(Seq.empty)
-
-  private def getAddressNoPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[AddressType14] =
-    address.flatMap(
-      a =>
-        a.postalCode match {
-          case Some(_) => None
-          case _ =>
-            Some(
-              AddressType14(a.numberAndStreet,
-                            None,
-                            a.city,
-                            country
-                              .getOrElse(
-                                throw new IllegalStateException("Country is required")
-                              )
-                              .code
-                              .code
-              )
-            )
-        }
-    )
-
-  private def getAddressWithPostcode(address: Option[DynamicAddress], country: Option[Country]): Option[PostcodeAddressType02] =
-    address.flatMap(
-      a =>
-        a.postalCode match {
-          case Some(postCode) =>
-            Some(
-              PostcodeAddressType02(Some(a.numberAndStreet),
-                                    postCode,
-                                    country
-                                      .getOrElse(
-                                        throw new IllegalStateException("Country is required")
-                                      )
-                                      .code
-                                      .code
-              )
-            )
-          case _ => None
-        }
     )
 }
