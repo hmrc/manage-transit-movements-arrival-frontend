@@ -23,7 +23,7 @@ import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
 sealed trait IncidentLocationDomain {
-  val code:String
+  val code: String
 }
 
 object IncidentLocationDomain {

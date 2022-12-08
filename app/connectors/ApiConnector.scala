@@ -49,7 +49,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
       val authorisations                       = Conversions.authorisations(arrivalDomain.identification.authorisations)
       val customsOfficeOfDestination           = Conversions.customsOfficeOfDestination(arrivalDomain.identification.destinationOffice)
       val traderAtDestination                  = Conversions.traderAtDestination(arrivalDomain.identification)
-      val consignment                          = Conversions.consignment(arrivalDomain.locationOfGoods)
+      val consignment                          = Conversions.consignment(arrivalDomain)
 
       CC007CType(
         message,

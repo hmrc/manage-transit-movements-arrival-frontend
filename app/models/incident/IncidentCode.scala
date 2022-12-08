@@ -27,18 +27,23 @@ object IncidentCode extends RadioModel[IncidentCode] {
   case object DeviatedFromItinerary extends WithName("deviatedFromItinerary") with IncidentCode {
     override val code: String = "1"
   }
+
   case object SealsBrokenOrTampered extends WithName("sealsBrokenOrTampered") with IncidentCode {
     override val code: String = "2"
   }
+
   case object TransferredToAnotherTransport extends WithName("transferredToAnotherTransport") with IncidentCode {
     override val code: String = "3"
   }
+
   case object PartiallyOrFullyUnloaded extends WithName("partiallyOrFullyUnloaded") with IncidentCode {
     override val code: String = "4"
   }
+
   case object CarrierUnableToComply extends WithName("carrierUnableToComply") with IncidentCode {
     override val code: String = "5"
   }
+
   case object UnexpectedlyChanged extends WithName("unexpectedlyChanged") with IncidentCode {
     override val code: String = "6"
   }

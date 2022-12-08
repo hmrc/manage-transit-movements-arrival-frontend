@@ -18,6 +18,7 @@ package api
 
 import generated._
 import models.identification.ProcedureType
+import models.journeyDomain.{ArrivalDomain, ArrivalPostTransitionDomain}
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident.{IncidentAddressLocationDomain, IncidentCoordinatesLocationDomain, IncidentUnLocodeLocationDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods._
@@ -79,74 +80,77 @@ object Conversions {
   def traderAtDestination(identificationDomain: IdentificationDomain): TraderAtDestinationType01 =
     TraderAtDestinationType01(identificationDomain.identificationNumber)
 
-  def consignment(domain: LocationOfGoodsDomain): ConsignmentType01 =
+  def consignment(domain: ArrivalPostTransitionDomain): ConsignmentType01 =
     ConsignmentType01(
       LocationOfGoodsType01(
-        domain.typeOfLocation.code,
-        domain.qualifierOfIdentificationDetails.qualifierOfIdentification,
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.typeOfLocation.code,
+        domain.locationOfGoods.qualifierOfIdentificationDetails.qualifierOfIdentification,
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case AuthorisationNumberDomain(authorisationNumber, _, _) => Some(authorisationNumber)
           case _                                                    => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case AuthorisationNumberDomain(_, additionalIdentifier, _) => additionalIdentifier
           case _                                                     => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case UnlocodeDomain(code, _) => Some(code.unLocodeExtendedCode)
           case _                       => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case CustomsOfficeDomain(customsOffice) => Some(CustomsOfficeType01(customsOffice.id))
           case _                                  => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case CoordinatesDomain(coordinates, _) => Some(GNSSType(coordinates.latitude, coordinates.longitude))
           case _                                 => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case EoriNumberDomain(eoriNumber, _, _) => Some(EconomicOperatorType03(eoriNumber))
           case _                                  => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case AddressDomain(country, address, _) =>
             Some(AddressType14(address.numberAndStreet, address.postalCode, address.city, country.code.code))
           case _ => None
         },
-        domain.qualifierOfIdentificationDetails match {
+        domain.locationOfGoods.qualifierOfIdentificationDetails match {
           case PostalCodeDomain(address, _) =>
             Some(PostcodeAddressType02(Some(address.streetNumber), address.postalCode, address.country.code.code))
           case _ => None
         },
-        domain.qualifierOfIdentificationDetails.contactPerson.map(
+        domain.locationOfGoods.qualifierOfIdentificationDetails.contactPerson.map(
           p => ContactPersonType06(p.name, p.phoneNumber)
         )
       ),
-      Seq.empty // TODO incidents
+      incidentsSection(domain.incidents)
     )
 
-  // TODO incidents impl - from domain objects?
-  def incidentsSection(domain: IncidentsDomain): Seq[IncidentType01] =
-    domain.incidents.map(
-      incident =>
-        IncidentType01(
-          sequenceNumber = domain.incidents.indexOf(incident).toString,
-          code = incident.incidentCode.code,
-          text = incident.incidentText,
-          Endorsement = incident.endorsement.map(
-            e =>
-              EndorsementType01(ApiXmlHelpers.toDate(e.date.toString), e.authority, e.location, e.country.code.code)
-          ),
-          Location = incident.location match {
-            case IncidentCoordinatesLocationDomain(coordinates) =>
-              LocationType01(incident.location.code, None, "GB", Some(GNSSType.apply(coordinates.latitude, coordinates.longitude)))
-            case IncidentUnLocodeLocationDomain(unLocode) =>
-              LocationType01(incident.location.code, Some(unLocode.unLocodeExtendedCode), "GB", None)
-            case IncidentAddressLocationDomain(address) =>
-              LocationType01(incident.location.code, None, "GB", None, Some(AddressType01(address.numberAndStreet, address.postalCode, address.city)))
-          },
-          TransportEquipment = ???,
-          Transhipment = ???
-        )
-    )
+  private def incidentsSection(domain: Option[IncidentsDomain]): Seq[IncidentType01] =
+    domain
+      .map(
+        incidentsDomain =>
+          incidentsDomain.incidents.map(
+            incident =>
+              IncidentType01(
+                sequenceNumber = incidentsDomain.incidents.indexOf(incident).toString,
+                code = incident.incidentCode.code,
+                text = incident.incidentText,
+                Endorsement = incident.endorsement.map(
+                  e => EndorsementType01(ApiXmlHelpers.toDate(e.date.toString), e.authority, e.location, e.country.code.code)
+                ),
+                Location = incident.location match {
+                  case IncidentCoordinatesLocationDomain(coordinates) =>
+                    LocationType01(incident.location.code, None, "GB", Some(GNSSType.apply(coordinates.latitude, coordinates.longitude)))
+                  case IncidentUnLocodeLocationDomain(unLocode) =>
+                    LocationType01(incident.location.code, Some(unLocode.unLocodeExtendedCode), "GB", None)
+                  case IncidentAddressLocationDomain(address) =>
+                    LocationType01(incident.location.code, None, "GB", None, Some(AddressType01(address.numberAndStreet, address.postalCode, address.city)))
+                },
+                TransportEquipment = ???, // TODO - handle equipment loops
+                Transhipment = None
+              )
+          )
+      )
+      .getOrElse(Seq.empty)
 }
