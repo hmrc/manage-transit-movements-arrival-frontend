@@ -49,7 +49,7 @@ trait SpecBase
     with EitherValues {
 
   val eoriNumber: EoriNumber       = EoriNumber("GB123456")
-  val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
+  val mrn: MovementReferenceNumber = MovementReferenceNumber("50", "WO", "CSY9MHXJWAB2", "K")
 
   val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj())
 

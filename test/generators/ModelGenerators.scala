@@ -136,14 +136,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       for {
-        year <- Gen
-          .choose(0, 99)
-          .map(
-            y => f"$y%02d"
-          )
-        country <- Gen.pick(2, 'A' to 'Z')
-        serial  <- Gen.pick(13, ('A' to 'Z') ++ ('0' to '9'))
-      } yield MovementReferenceNumber(year, country.mkString, serial.mkString)
+        year        <- Gen.choose(24, 39)
+        country     <- Gen.pick(2, 'A' to 'Z')
+        serial      <- Gen.pick(12, ('A' to 'Z') ++ ('0' to '9'))
+        serialAlpha <- Gen.pick(1, 'J' to 'M')
+      } yield MovementReferenceNumber(year.toString, country.mkString, serial.mkString, serialAlpha.mkString)
     }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =

@@ -32,9 +32,9 @@ class MovementReferenceNumberSpec extends SpecBase with Generators with EitherVa
 
     "must bind from a url" in {
 
-      val mrn = MovementReferenceNumber("99IT9876AB88901209")
+      val mrn = MovementReferenceNumber("64NFNDKVOKT4K70SM7")
 
-      val result = pathBindable.bind("mrn", "99IT9876AB88901209")
+      val result = pathBindable.bind("mrn", "64NFNDKVOKT4K70SM7")
 
       result.value mustEqual mrn.value
     }
@@ -129,14 +129,55 @@ class MovementReferenceNumberSpec extends SpecBase with Generators with EitherVa
       }
     }
 
-    "must build from a valid MRN" in {
+    "must not build from a valid legacy P4 MRN" in {
 
-      MovementReferenceNumber("99IT9876AB88901209").value mustEqual MovementReferenceNumber("99", "IT", "9876AB8890120")
-      MovementReferenceNumber("18GB0000601001EB15").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EB1")
-      MovementReferenceNumber("18GB0000601001EBD1").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EBD")
-      MovementReferenceNumber("18IT02110010006A10").value mustEqual MovementReferenceNumber("18", "IT", "02110010006A1")
-      MovementReferenceNumber("18IT021100100069F4").value mustEqual MovementReferenceNumber("18", "IT", "021100100069F")
-      MovementReferenceNumber("18GB0000601001EBB5").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EBB")
+      MovementReferenceNumber("99IT9876AB88901209") mustBe None
+      MovementReferenceNumber("18GB0000601001EB15") mustBe None
+      MovementReferenceNumber("18GB0000601001EBD1") mustBe None
+      MovementReferenceNumber("18IT02110010006A10") mustBe None
+      MovementReferenceNumber("18IT021100100069F4") mustBe None
+      MovementReferenceNumber("18GB0000601001EBB5") mustBe None
+    }
+
+    "must build from a valid P5 MRN" - {
+
+      "when GB MRN" in {
+
+        MovementReferenceNumber("24GB1FR25DIMDJF1M4").value mustEqual MovementReferenceNumber("24", "GB", "1FR25DIMDJF1", "M")
+        MovementReferenceNumber("29GBQHFCG83AJEB0K1").value mustEqual MovementReferenceNumber("29", "GB", "QHFCG83AJEB0", "K")
+        MovementReferenceNumber("24GBXGY3OS021F7BL6").value mustEqual MovementReferenceNumber("24", "GB", "XGY3OS021F7B", "L")
+        MovementReferenceNumber("27GBFN4IVUIDWI3SJ3").value mustEqual MovementReferenceNumber("27", "GB", "FN4IVUIDWI3S", "J")
+        MovementReferenceNumber("28GBMK4FBCA8TSVQK0").value mustEqual MovementReferenceNumber("28", "GB", "MK4FBCA8TSVQ", "K")
+      }
+
+      "when XI MRN" in {
+
+        MovementReferenceNumber("25XIKQDYH3A6DLFFL0").value mustEqual MovementReferenceNumber("25", "XI", "KQDYH3A6DLFF", "L")
+        MovementReferenceNumber("28XI5WOLUSGUJGNEM3").value mustEqual MovementReferenceNumber("28", "XI", "5WOLUSGUJGNE", "M")
+        MovementReferenceNumber("24XIFHAHUUPWDLWLM4").value mustEqual MovementReferenceNumber("24", "XI", "FHAHUUPWDLWL", "M")
+        MovementReferenceNumber("24XISXD4QHSFPAKGJ8").value mustEqual MovementReferenceNumber("24", "XI", "SXD4QHSFPAKG", "J")
+        MovementReferenceNumber("29XIPGOACVNEDKNGK6").value mustEqual MovementReferenceNumber("29", "XI", "PGOACVNEDKNG", "K")
+      }
+
+      "when random MRN" in {
+
+        MovementReferenceNumber("24JYQDJQPLYSUMP4M1").value mustEqual MovementReferenceNumber("24", "JY", "QDJQPLYSUMP4", "M")
+        MovementReferenceNumber("27RUNUC6ZY3D45ERJ2").value mustEqual MovementReferenceNumber("27", "RU", "NUC6ZY3D45ER", "J")
+        MovementReferenceNumber("28WTRCT5JYVRKLECK7").value mustEqual MovementReferenceNumber("28", "WT", "RCT5JYVRKLEC", "K")
+        MovementReferenceNumber("28YEOUDY04UAEFM8K3").value mustEqual MovementReferenceNumber("28", "YE", "OUDY04UAEFM8", "K")
+        MovementReferenceNumber("28GZ10PU0ITMV1TBJ4").value mustEqual MovementReferenceNumber("28", "GZ", "10PU0ITMV1TB", "J")
+
+        MovementReferenceNumber("88KIFZKXMEQ9XEMEK2").value mustEqual MovementReferenceNumber("88", "KI", "FZKXMEQ9XEME", "K")
+        MovementReferenceNumber("42LWUQOH5LI0ZR44J7").value mustEqual MovementReferenceNumber("42", "LW", "UQOH5LI0ZR44", "J")
+        MovementReferenceNumber("48RRNN8C8YPDVKUXM3").value mustEqual MovementReferenceNumber("48", "RR", "NN8C8YPDVKUX", "M")
+        MovementReferenceNumber("91KV6RYHUKGGSQXWL3").value mustEqual MovementReferenceNumber("91", "KV", "6RYHUKGGSQXW", "L")
+        MovementReferenceNumber("39NDRTTOXOAS2IJCK5").value mustEqual MovementReferenceNumber("39", "ND", "RTTOXOAS2IJC", "K")
+        MovementReferenceNumber("38DFIPMZGTAM9TPWK4").value mustEqual MovementReferenceNumber("38", "DF", "IPMZGTAM9TPW", "K")
+        MovementReferenceNumber("77QCCUFGXJSQHVKDM2").value mustEqual MovementReferenceNumber("77", "QC", "CUFGXJSQHVKD", "M")
+        MovementReferenceNumber("63CC7SE1ZHX62XJEL7").value mustEqual MovementReferenceNumber("63", "CC", "7SE1ZHX62XJE", "L")
+        MovementReferenceNumber("97NJWKXI6PTY3JYLM2").value mustEqual MovementReferenceNumber("97", "NJ", "WKXI6PTY3JYL", "M")
+        MovementReferenceNumber("35UMHKWMX5YVGTNQK3").value mustEqual MovementReferenceNumber("35", "UM", "HKWMX5YVGTNQ", "K")
+      }
     }
 
     "must treat .apply and .toString as dual" in {

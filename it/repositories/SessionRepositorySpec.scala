@@ -42,8 +42,8 @@ class SessionRepositorySpec
 
   override protected def repository = new SessionRepository(mongoComponent, config)
 
-  private val userAnswers1 = UserAnswers(MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"))
-  private val userAnswers2 = UserAnswers(MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"))
+  private val userAnswers1 = UserAnswers(MovementReferenceNumber("24GB1FR25DIMDJF1M4").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"))
+  private val userAnswers2 = UserAnswers(MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,7 +57,7 @@ class SessionRepositorySpec
 
       "must return UserAnswers when given an MovementReferenceNumber and EoriNumber" in {
 
-        val result = repository.get("99IT9876AB88901209", EoriNumber("EoriNumber1")).futureValue
+        val result = repository.get("24GB1FR25DIMDJF1M4", EoriNumber("EoriNumber1")).futureValue
 
         result.value.id mustBe userAnswers1.id
         result.value.eoriNumber mustBe userAnswers1.eoriNumber
@@ -66,14 +66,14 @@ class SessionRepositorySpec
 
       "must return None when no UserAnswers match MovementReferenceNumber" in {
 
-        val result = repository.get("18GB0000601001EBD1", EoriNumber("EoriNumber1")).futureValue
+        val result = repository.get("25XIKQDYH3A6DLFFL0", EoriNumber("EoriNumber1")).futureValue
 
         result mustBe None
       }
 
       "must return None when no UserAnswers match EoriNumber" in {
 
-        val result = repository.get("99IT9876AB88901209", EoriNumber("InvalidEori")).futureValue
+        val result = repository.get("24GB1FR25DIMDJF1M4", EoriNumber("InvalidEori")).futureValue
 
         result mustBe None
       }
@@ -83,11 +83,11 @@ class SessionRepositorySpec
 
       "must create new document when given valid UserAnswers" in {
 
-        val userAnswers = UserAnswers(MovementReferenceNumber("18GB0000601001EBD1").get, EoriNumber("EoriNumber3"), Json.obj("foo" -> "bar"))
+        val userAnswers = UserAnswers(MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get, EoriNumber("EoriNumber3"), Json.obj("foo" -> "bar"))
 
         val setResult = repository.set(userAnswers).futureValue
 
-        val getResult = repository.get("18GB0000601001EBD1", EoriNumber("EoriNumber3")).futureValue.value
+        val getResult = repository.get("25XIKQDYH3A6DLFFL0", EoriNumber("EoriNumber3")).futureValue.value
 
         setResult mustBe true
         getResult.id mustBe userAnswers.id
@@ -98,13 +98,13 @@ class SessionRepositorySpec
       "must create new document when given valid UserAnswers when an MRN is already defined" in {
 
         val userAnswer1 = UserAnswers(
-          MovementReferenceNumber("18GB0000601001EBD1").get,
+          MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get,
           EoriNumber("EoriNumber1"),
           Json.obj("foo" -> "bar")
         )
 
         val userAnswer2 = UserAnswers(
-          MovementReferenceNumber("18GB0000601001EBD1").get,
+          MovementReferenceNumber("25XIKQDYH3A6DLFFL0").get,
           EoriNumber("EoriNumber2"),
           Json.obj("foo" -> "bar")
         )
@@ -121,11 +121,11 @@ class SessionRepositorySpec
 
       "must remove document when given a valid MovementReferenceNumber and EoriNumber" in {
 
-        repository.get("99IT9876AB88901209", EoriNumber("EoriNumber1")).futureValue mustBe defined
+        repository.get("24GB1FR25DIMDJF1M4", EoriNumber("EoriNumber1")).futureValue mustBe defined
 
-        repository.remove("99IT9876AB88901209", EoriNumber("EoriNumber1")).futureValue
+        repository.remove("24GB1FR25DIMDJF1M4", EoriNumber("EoriNumber1")).futureValue
 
-        repository.get("99IT9876AB88901209", EoriNumber("EoriNumber1")).futureValue must not be defined
+        repository.get("24GB1FR25DIMDJF1M4", EoriNumber("EoriNumber1")).futureValue must not be defined
       }
     }
   }

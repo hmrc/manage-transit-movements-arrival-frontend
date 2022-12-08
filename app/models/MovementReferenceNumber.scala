@@ -22,13 +22,13 @@ import play.api.mvc.PathBindable
 
 import scala.math.pow
 
-final case class MovementReferenceNumber(year: String, countryCode: String, serial: String) {
+final case class MovementReferenceNumber(year: String, countryCode: String, serial: String, serialAlpha: String) {
 
-  override def toString: String = s"$year$countryCode$serial$checkCharacter"
+  override def toString: String = s"$year$countryCode$serial$serialAlpha$checkCharacter"
 
   val checkCharacter: String = {
 
-    val input = s"$year$countryCode$serial"
+    val input = s"$year$countryCode$serial$serialAlpha"
 
     val remainder = input.zipWithIndex.map {
       case (character, index) =>
@@ -46,13 +46,12 @@ object MovementReferenceNumber {
     val validCharactersRegex = """^[a-zA-Z0-9 ]*$"""
   }
 
-  // TODO - verify MRN regex from API XSD '([0-1][0-9]|[2][0-4])[A-Z]{2}[A-Z0-9]{13}[0-9]|([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]'
-  private val mrnFormat = """^(\d{2})([A-Z]{2})([A-Z0-9]{13})(\d)$""".r
+  private val mrnFormat = """^([2][4-9]|[3-9][0-9])([A-Z]{2})([A-Z0-9]{12})([J-M])(\d)$""".r
 
   def apply(input: String): Option[MovementReferenceNumber] =
     input.replaceAll("\\s", "") match {
-      case mrnFormat(year, countryCode, serial, checkCharacter) =>
-        val mrn = MovementReferenceNumber(year, countryCode, serial)
+      case mrnFormat(year, countryCode, serial, serialAlpha, checkCharacter) =>
+        val mrn = MovementReferenceNumber(year, countryCode, serial, serialAlpha)
 
         if (mrn.checkCharacter == checkCharacter) {
           Some(mrn)
