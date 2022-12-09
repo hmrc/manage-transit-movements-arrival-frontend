@@ -18,13 +18,16 @@ package api
 
 import generated._
 import models.identification.ProcedureType
-import models.journeyDomain.{ArrivalDomain, ArrivalPostTransitionDomain}
+import models.journeyDomain.ArrivalPostTransitionDomain
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
-import models.journeyDomain.incident.{IncidentAddressLocationDomain, IncidentCoordinatesLocationDomain, IncidentUnLocodeLocationDomain, IncidentsDomain}
+import models.journeyDomain.incident._
+import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.locationOfGoods._
 import models.reference.CustomsOffice
+import models.{Index, UserAnswers}
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import pages.incident.ContainerIndicatorYesNoPage
 
 import scala.xml.NamespaceBinding
 
@@ -80,7 +83,7 @@ object Conversions {
   def traderAtDestination(identificationDomain: IdentificationDomain): TraderAtDestinationType01 =
     TraderAtDestinationType01(identificationDomain.identificationNumber)
 
-  def consignment(domain: ArrivalPostTransitionDomain): ConsignmentType01 =
+  def consignment(domain: ArrivalPostTransitionDomain, userAnswers: UserAnswers): ConsignmentType01 =
     ConsignmentType01(
       LocationOfGoodsType01(
         domain.locationOfGoods.typeOfLocation.code,
@@ -123,17 +126,20 @@ object Conversions {
           p => ContactPersonType06(p.name, p.phoneNumber)
         )
       ),
-      incidentsSection(domain.incidents)
+      incidentsSection(domain.incidents, userAnswers)
     )
 
-  private def incidentsSection(domain: Option[IncidentsDomain]): Seq[IncidentType01] =
+  private def incidentsSection(domain: Option[IncidentsDomain], userAnswers: UserAnswers): Seq[IncidentType01] =
     domain
       .map(
         incidentsDomain =>
-          incidentsDomain.incidents.map(
+          incidentsDomain.incidents.map {
             incident =>
+              val index: Int                  = incidentsDomain.incidents.indexOf(incident)
+              val containerIndicator: Boolean = userAnswers.get(ContainerIndicatorYesNoPage(Index(index))).isDefined
+
               IncidentType01(
-                sequenceNumber = incidentsDomain.incidents.indexOf(incident).toString,
+                sequenceNumber = index.toString,
                 code = incident.incidentCode.code,
                 text = incident.incidentText,
                 Endorsement = incident.endorsement.map(
@@ -147,10 +153,47 @@ object Conversions {
                   case IncidentAddressLocationDomain(address) =>
                     LocationType01(incident.location.code, None, "GB", None, Some(AddressType01(address.numberAndStreet, address.postalCode, address.city)))
                 },
-                TransportEquipment = ???, // TODO - handle equipment loops
-                Transhipment = None
+                TransportEquipment = transportEquipmentSection(incident.equipments),
+                Transhipment = transportEquipmentSection(incident.transportMeans, containerIndicator)
               )
-          )
+          }
       )
       .getOrElse(Seq.empty)
+
+  private def transportEquipmentSection(domain: EquipmentsDomain) =
+    domain.equipments.map(
+      equipment =>
+        TransportEquipmentType01(
+          domain.equipments.indexOf(equipment).toString,
+          equipment.containerId,
+          Some(BigInt(equipment.seals.seals.size)),
+          equipment.seals.seals.map(
+            seal =>
+              SealType05(
+                equipment.seals.seals.indexOf(seal).toString,
+                seal.identificationNumber
+              )
+          ),
+          equipment.itemNumbers.itemNumbers.map(
+            goodsReference =>
+              GoodsReferenceType01(
+                equipment.itemNumbers.itemNumbers.indexOf(goodsReference).toString,
+                BigInt(goodsReference.itemNumber)
+              )
+          )
+        )
+    )
+
+  private def transportEquipmentSection(domain: Option[TransportMeansDomain], containerIndicator: Boolean) =
+    domain.map(
+      transportMeans =>
+        TranshipmentType01(
+          ApiXmlHelpers.boolToFlag(containerIndicator),
+          TransportMeansType01(
+            transportMeans.identificationType.code,
+            transportMeans.identificationNumber,
+            transportMeans.nationality.code
+          )
+        )
+    )
 }
