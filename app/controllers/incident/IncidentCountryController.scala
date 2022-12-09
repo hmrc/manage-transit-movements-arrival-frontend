@@ -21,13 +21,11 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import pages.identification.authorisation.AuthorisationTypePage
 import pages.incident.IncidentCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CountriesService
-import settables.IncidentIndexSettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.IncidentCountryView
 
@@ -72,14 +70,7 @@ class IncidentCountryController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
               value => {
                 implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                for {
-                  ua <- Future
-                    .fromTry(
-                      request.userAnswers.set(IncidentIndexSettable(index), index.position.toString)
-                    )
-                  _        <- sessionRepository.set(ua)
-                  redirect <- IncidentCountryPage(index).writeToUserAnswers(value).writeToSession(ua).navigate()
-                } yield redirect
+                IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()
               }
             )
       }

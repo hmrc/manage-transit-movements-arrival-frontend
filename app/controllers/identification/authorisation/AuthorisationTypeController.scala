@@ -26,7 +26,6 @@ import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import settables.AuthorisationIndexSettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.authorisation.AuthorisationTypeView
 
@@ -65,14 +64,7 @@ class AuthorisationTypeController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            for {
-              ua <- Future
-                .fromTry(
-                  request.userAnswers.set(AuthorisationIndexSettable(index), index.position.toString)
-                )
-              _        <- sessionRepository.set(ua)
-              redirect <- AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession(ua).navigate()
-            } yield redirect
+            AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }
