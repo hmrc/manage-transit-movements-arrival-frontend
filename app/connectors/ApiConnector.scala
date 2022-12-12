@@ -72,8 +72,6 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
       case Left(msg) => throw new BadRequestException(msg.toString)
       case Right(submissionModel) =>
         val payload: String = toXML[CC007CType](submissionModel, "ncts:CC007C", scope).toString
-
-        println(s"\n\n\n\nPAYLOAD:  $payload \n\n\n\n")
         httpClient.POSTString(declarationUrl, payload, requestHeaders)
     }
 

@@ -570,7 +570,7 @@ incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
 
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
-incident.equipment.itemNumber.hint = This will be 5 characters long, for example 54123.
+incident.equipment.itemNumber.hint = This will be 4 characters long, for example 1234.
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
