@@ -21,7 +21,7 @@ import api.Conversions.scope
 import config.FrontendAppConfig
 import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
-import models.journeyDomain.{ArrivalDomain, ArrivalPostTransitionDomain, UserAnswersReader}
+import models.journeyDomain.{ArrivalPostTransitionDomain, UserAnswersReader}
 import play.api.Logging
 import play.api.http.HeaderNames
 import scalaxb.DataRecord
