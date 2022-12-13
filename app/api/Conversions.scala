@@ -187,7 +187,7 @@ object Conversions {
                     )
                 },
                 TransportEquipment = transportEquipmentSection(incident.equipments),
-                Transhipment = transportEquipmentSection(incident.transportMeans, containerIndicator)
+                Transhipment = transportMeansSection(incident.transportMeans, containerIndicator)
               )
           }
       )
@@ -217,7 +217,7 @@ object Conversions {
         )
     )
 
-  private def transportEquipmentSection(domain: Option[TransportMeansDomain], containerIndicator: Boolean) =
+  private def transportMeansSection(domain: Option[TransportMeansDomain], containerIndicator: Boolean) =
     domain.map(
       transportMeans =>
         TranshipmentType01(
