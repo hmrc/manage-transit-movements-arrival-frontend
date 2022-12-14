@@ -38,7 +38,7 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   private val mode                               = NormalMode
   private lazy val sealIdentificationNumberRoute = routes.ItemNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex).url
 
-  private val testString = "54321"
+  private val testString = "1234"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

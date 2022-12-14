@@ -23,7 +23,10 @@ import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.locationOfGoods._
 
-trait QualifierOfIdentificationDomain
+trait QualifierOfIdentificationDomain {
+  val qualifierOfIdentification: String
+  val contactPerson: Option[ContactPersonDomain]
+}
 
 object QualifierOfIdentificationDomain {
 
@@ -39,7 +42,9 @@ object QualifierOfIdentificationDomain {
     }
 }
 
-case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "Z"
+}
 
 object AddressDomain {
 
@@ -52,7 +57,9 @@ object AddressDomain {
 }
 
 case class EoriNumberDomain(eoriNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPersonDomain])
-    extends QualifierOfIdentificationDomain
+    extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "X"
+}
 
 object EoriNumberDomain {
 
@@ -65,7 +72,9 @@ object EoriNumberDomain {
 }
 
 case class AuthorisationNumberDomain(authorisationNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPersonDomain])
-    extends QualifierOfIdentificationDomain
+    extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "Y"
+}
 
 object AuthorisationNumberDomain {
 
@@ -77,7 +86,9 @@ object AuthorisationNumberDomain {
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
 
-case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "W"
+}
 
 object CoordinatesDomain {
 
@@ -88,7 +99,10 @@ object CoordinatesDomain {
     ).tupled.map((CoordinatesDomain.apply _).tupled)
 }
 
-case class CustomsOfficeDomain(customsOffice: CustomsOffice) extends QualifierOfIdentificationDomain
+case class CustomsOfficeDomain(customsOffice: CustomsOffice) extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String          = "V"
+  override val contactPerson: Option[ContactPersonDomain] = None
+}
 
 object CustomsOfficeDomain {
 
@@ -96,7 +110,9 @@ object CustomsOfficeDomain {
     CustomsOfficePage.reader.map(CustomsOfficeDomain(_))
 }
 
-case class UnlocodeDomain(code: UnLocode, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class UnlocodeDomain(code: UnLocode, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "U"
+}
 
 object UnlocodeDomain {
 
@@ -107,7 +123,9 @@ object UnlocodeDomain {
     ).tupled.map((UnlocodeDomain.apply _).tupled)
 }
 
-case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
+case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
+  override val qualifierOfIdentification: String = "T"
+}
 
 object PostalCodeDomain {
 

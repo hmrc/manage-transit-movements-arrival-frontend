@@ -27,7 +27,7 @@ case class AuthorisationReferenceNumberPage(index: Index) extends QuestionPage[S
 
   override def path: JsPath = AuthorisationSection(index).path \ toString
 
-  override def toString: String = "authorisationReferenceNumber"
+  override def toString: String = "referenceNumber"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode))

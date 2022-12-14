@@ -22,7 +22,9 @@ import models.reference.UnLocode
 import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
-sealed trait IncidentLocationDomain
+sealed trait IncidentLocationDomain {
+  val code: String
+}
 
 object IncidentLocationDomain {
 
@@ -39,7 +41,9 @@ object IncidentLocationDomain {
 
 }
 
-case class IncidentCoordinatesLocationDomain(coordinates: Coordinates) extends IncidentLocationDomain
+case class IncidentCoordinatesLocationDomain(coordinates: Coordinates) extends IncidentLocationDomain {
+  override val code: String = "W"
+}
 
 object IncidentCoordinatesLocationDomain {
 
@@ -47,7 +51,9 @@ object IncidentCoordinatesLocationDomain {
     CoordinatesPage(index).reader.map(IncidentCoordinatesLocationDomain(_))
 }
 
-case class IncidentUnLocodeLocationDomain(unLocode: UnLocode) extends IncidentLocationDomain
+case class IncidentUnLocodeLocationDomain(unLocode: UnLocode) extends IncidentLocationDomain {
+  override val code: String = "U"
+}
 
 object IncidentUnLocodeLocationDomain {
 
@@ -55,7 +61,9 @@ object IncidentUnLocodeLocationDomain {
     UnLocodePage(index).reader.map(IncidentUnLocodeLocationDomain(_))
 }
 
-case class IncidentAddressLocationDomain(address: DynamicAddress) extends IncidentLocationDomain
+case class IncidentAddressLocationDomain(address: DynamicAddress) extends IncidentLocationDomain {
+  override val code: String = "Z"
+}
 
 object IncidentAddressLocationDomain {
 

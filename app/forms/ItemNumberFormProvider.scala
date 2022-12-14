@@ -19,9 +19,9 @@ package forms
 import forms.Constants.itemNumberLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.numericRegex
+import play.api.data.Form
 
 import javax.inject.Inject
-import play.api.data.Form
 
 class ItemNumberFormProvider @Inject() extends Mappings {
 

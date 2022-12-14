@@ -55,13 +55,13 @@ class CheckArrivalsAnswersController @Inject() (
       implicit request =>
         apiService.submitDeclaration(request.userAnswers).map {
           case response if is2xx(response.status) =>
-            logger.debug(s"Declaration submitted: ${mrn.toString}")
+            logger.debug(s"Declaration submitted: $mrn")
             Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
           case response if is4xx(response.status) =>
-            logger.debug(s"Declaration submission failed for ${mrn.toString} : ${response.body}")
-            BadRequest
+            logger.debug(s"\n\n\nDeclaration submission failed for $mrn : ${response.body}\n\n\n")
+            InternalServerError("Something went wrong")
           case ex =>
-            logger.error(s"Declaration submission failed for ${mrn.toString} : ${ex.body}")
+            logger.debug(s"\n\n\nDeclaration submission failed for $mrn : ${ex.body}\n\n\n")
             InternalServerError("Something went wrong")
         }
     }

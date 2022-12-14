@@ -18,14 +18,27 @@ package models.locationOfGoods
 
 import models.{RadioModel, WithName}
 
-sealed trait TypeOfLocation
+sealed trait TypeOfLocation {
+  val code: String
+}
 
 object TypeOfLocation extends RadioModel[TypeOfLocation] {
 
-  case object AuthorisedPlace extends WithName("authorisedPlace") with TypeOfLocation
-  case object DesignatedLocation extends WithName("designatedLocation") with TypeOfLocation
-  case object ApprovedPlace extends WithName("approvedPlace") with TypeOfLocation
-  case object Other extends WithName("other") with TypeOfLocation
+  case object DesignatedLocation extends WithName("designatedLocation") with TypeOfLocation {
+    override val code: String = "A"
+  }
+
+  case object AuthorisedPlace extends WithName("authorisedPlace") with TypeOfLocation {
+    override val code: String = "B"
+  }
+
+  case object ApprovedPlace extends WithName("approvedPlace") with TypeOfLocation {
+    override val code: String = "C"
+  }
+
+  case object Other extends WithName("other") with TypeOfLocation {
+    override val code: String = "D"
+  }
 
   override val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
