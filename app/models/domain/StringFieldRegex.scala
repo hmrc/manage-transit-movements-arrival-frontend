@@ -24,7 +24,6 @@ object StringFieldRegex {
   val stringFieldRegexAsterisk: Regex = "[\\sa-zA-Z0-9&'*/.\\-? ]*".r
   val alphaNumericRegex: Regex        = "^[a-zA-Z0-9]*$".r
   val numericRegex: Regex             = "^[0-9]*$".r
-  val itemNumberRegex: Regex          = "^[1-9][0-9]{0,2}|[1][0-9]{3}".r
 
   val eoriNumberRegex: Regex = "^(?i)(gb|xi)[0-9]*$".r
 

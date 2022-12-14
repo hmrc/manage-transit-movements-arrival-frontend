@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.itemNumberLength
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.itemNumberRegex
+import models.domain.StringFieldRegex.numericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class ItemNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             exactLength(itemNumberLength, s"$prefix.error.length"),
-            regexp(itemNumberRegex, s"$prefix.error.invalidCharacters")
+            regexp(numericRegex, s"$prefix.error.invalidCharacters")
           )
         )
     )
