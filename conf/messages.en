@@ -225,11 +225,11 @@ locationOfGoods.contactPersonTelephone.heading = What is {0}’s telephone numbe
 locationOfGoods.contactPersonTelephone.hintText = For international numbers include the country code.
 locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = Contact telephone number
 locationOfGoods.contactPersonTelephone.change.hidden = contact telephone number for the location of goods
-locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s telephone number.
+locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s telephone number
 locationOfGoods.contactPersonTelephone.error.invalidCharacter = {0}’s telephone number must only include numbers 0 to 9 and a plus sign
 locationOfGoods.contactPersonTelephone.error.invalidFormat = {0}’s telephone number must start with a plus sign
-locationOfGoods.contactPersonTelephone.error.maxLength = {0}’s telephone number must be {1} characters or less.
-locationOfGoods.contactPersonTelephone.error.minLength = {0}’s telephone number must be {1} characters or more.
+locationOfGoods.contactPersonTelephone.error.maxLength = {0}’s telephone number must be {1} characters or less
+locationOfGoods.contactPersonTelephone.error.minLength = {0}’s telephone number must be {1} characters or more
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
