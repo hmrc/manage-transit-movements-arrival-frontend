@@ -27,9 +27,8 @@ class DateFormProviderSpec extends DateBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
 
   private val (minDate, minDateAsString) = (LocalDate.of(2020: Int, 12: Int, 31: Int), "31 December 2020")
-  private val maxDate                    = LocalDate.now(ZoneOffset.UTC)
-  private val zone                       = ZoneOffset.UTC
-  private val clock                      = Clock.systemDefaultZone.withZone(zone)
+  private val clock                      = Clock.systemUTC()
+  private val maxDate                    = LocalDate.now(clock)
   private val form                       = new DateFormProvider(clock)(prefix, minDate)
 
   ".value" - {
@@ -38,7 +37,7 @@ class DateFormProviderSpec extends DateBehaviours {
 
     val validData = datesBetween(
       min = minDate,
-      max = LocalDate.now(zone)
+      max = maxDate
     )
 
     behave like dateField(form, "value", validData)

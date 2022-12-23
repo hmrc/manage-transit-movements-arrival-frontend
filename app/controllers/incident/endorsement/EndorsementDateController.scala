@@ -23,15 +23,18 @@ import forms.DateFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.endorsement.EndorsementDatePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.endorsement.EndorsementDateView
 
-import javax.inject.Inject
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class EndorsementDateController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
@@ -45,8 +48,8 @@ class EndorsementDateController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val minDate = appConfig.endorsementDateMin
-  private val form    = formProvider("incident.endorsement.date", minDate)
+  private val minDate: LocalDate    = appConfig.endorsementDateMin
+  private def form: Form[LocalDate] = formProvider("incident.endorsement.date", minDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
