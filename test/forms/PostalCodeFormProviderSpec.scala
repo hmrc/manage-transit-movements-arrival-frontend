@@ -55,7 +55,7 @@ class PostalCodeFormProviderSpec extends StringFieldBehaviours with SpecBase {
       form = form,
       fieldName = fieldName,
       maxLength = StreetNumber.length,
-      lengthError = FormError(fieldName, lengthStreetNumberKey, Seq(StreetNumber.arg.capitalize, StreetNumber.length))
+      lengthError = FormError(fieldName, lengthStreetNumberKey, Seq(StreetNumber.arg, StreetNumber.length))
     )
 
     behave like mandatoryTrimmedField(
@@ -67,7 +67,7 @@ class PostalCodeFormProviderSpec extends StringFieldBehaviours with SpecBase {
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidStreetNumberKey, Seq(StreetNumber.arg.capitalize)),
+      error = FormError(fieldName, invalidStreetNumberKey, Seq(StreetNumber.arg)),
       length = StreetNumber.length
     )
   }
@@ -88,7 +88,7 @@ class PostalCodeFormProviderSpec extends StringFieldBehaviours with SpecBase {
       form = form,
       fieldName = fieldName,
       maxLength = PostalCode.length,
-      lengthError = FormError(fieldName, lengthPostalCodeKey, Seq(PostalCode.length)),
+      lengthError = FormError(fieldName, lengthPostalCodeKey, Seq(PostalCode.arg, PostalCode.length)),
       gen = invalidPostalOverLength
     )
 
@@ -101,7 +101,7 @@ class PostalCodeFormProviderSpec extends StringFieldBehaviours with SpecBase {
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidPostalCodeKey, Seq()),
+      error = FormError(fieldName, invalidPostalCodeKey, Seq(PostalCode.arg)),
       length = PostalCode.length
     )
   }
