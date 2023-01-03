@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.endorsement.EndorsementDateView
 
@@ -43,13 +44,15 @@ class EndorsementDateController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: EndorsementDateView,
-  appConfig: FrontendAppConfig
+  appConfig: FrontendAppConfig,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val minDate: LocalDate    = appConfig.endorsementDateMin
-  private def form: Form[LocalDate] = formProvider("incident.endorsement.date", minDate)
+  private val maxDate: LocalDate    = dateTimeService.yesterday
+  private def form: Form[LocalDate] = formProvider("incident.endorsement.date", minDate, maxDate)
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

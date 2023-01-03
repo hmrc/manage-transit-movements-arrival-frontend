@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,12 @@
 
 package utils
 
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime, OffsetDateTime}
 
 object Format {
 
-  val dateFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("yyyyMMdd")
-  def dateFormatted(date: LocalDate): String         = date.format(dateFormatter)
-  def dateFormatted(dateTime: LocalDateTime): String = dateTime.format(dateFormatter)
-
-  val timeFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("HHmm")
-  def timeFormatted(time: LocalTime): String         = time.format(timeFormatter)
-  def timeFormatted(dateTime: LocalDateTime): String = dateTime.format(timeFormatter)
-
-  def dateFormattedForHeader(dateTime: OffsetDateTime): String =
-    dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
+  implicit class RichLocalDate(localDate: LocalDate) {
+    def formatAsString: String = localDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+  }
 }

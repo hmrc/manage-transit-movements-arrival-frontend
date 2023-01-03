@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,26 @@
 package services
 
 import com.google.inject.Singleton
-import utils.Format
 
-import java.time.{Clock, LocalDateTime}
+import java.time.{Clock, LocalDate, LocalDateTime}
 import javax.inject.Inject
 
 @Singleton
 class DateTimeServiceImpl @Inject() (clock: Clock) extends DateTimeService {
 
-  def currentDateTime: LocalDateTime = LocalDateTime.now(clock)
+  def today: LocalDate = LocalDate.now(clock)
 
-  def dateFormatted: String = currentDateTime.format(Format.dateFormatter)
+  def yesterday: LocalDate = today.minusDays(1)
+
+  def now: LocalDateTime = LocalDateTime.now(clock)
 }
 
 trait DateTimeService {
 
-  def currentDateTime: LocalDateTime
+  def today: LocalDate
 
-  def dateFormatted: String
+  def yesterday: LocalDate
+
+  def now: LocalDateTime
 
 }

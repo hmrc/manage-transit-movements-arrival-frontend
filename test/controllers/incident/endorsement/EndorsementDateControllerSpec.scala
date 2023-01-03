@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -27,22 +28,23 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DateTimeService
 import views.html.incident.endorsement.EndorsementDateView
 
-import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val dateTimeService = injector.instanceOf[DateTimeService]
 
   private val minDate = frontendAppConfig.endorsementDateMin
-  private val zone    = ZoneOffset.UTC
-  private val clock   = Clock.systemDefaultZone.withZone(zone)
+  private val maxDate = dateTimeService.yesterday
 
-  private val formProvider              = new DateFormProvider(clock)
-  private val form                      = formProvider("incident.endorsement.date", minDate)
+  private val formProvider              = new DateFormProvider()
+  private val form                      = formProvider("incident.endorsement.date", minDate, maxDate)
   private val mode                      = NormalMode
   private lazy val endorsementDateRoute = routes.EndorsementDateController.onPageLoad(mrn, index, mode).url
-  private val date                      = LocalDate.now
+  private val date                      = datesBetween(minDate, maxDate).sample.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

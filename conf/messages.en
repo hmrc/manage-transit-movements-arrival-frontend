@@ -400,7 +400,7 @@ incident.endorsement.date.error.required.all = Enter the date the endorsement wa
 incident.endorsement.date.error.required.two = The endorsement date must include a {0} and {1}
 incident.endorsement.date.error.required = The endorsement date must include a {0}
 incident.endorsement.date.error.invalid = The endorsement date must only include numbers 0 to 9 //TODO: Content reassessing invalid error for date pages. New ticket expected.
-incident.endorsement.date.error.min.date = The endorsement date must be after {0}
+incident.endorsement.date.error.min.date = The endorsement date must be on or after {0}
 incident.endorsement.date.error.max.date = The endorsement date must be before today’s date
 
 incident.endorsement.authority.title = What authority made the endorsement?
