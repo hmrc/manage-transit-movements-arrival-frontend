@@ -41,18 +41,10 @@ class DateTimeServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
           val dataTimeService1 = new DateTimeServiceImpl(clock1)
           val dataTimeService2 = new DateTimeServiceImpl(clock2)
 
-          val duration = Duration.between(dataTimeService1.currentDateTime, dataTimeService2.currentDateTime)
+          val duration = Duration.between(dataTimeService1.now, dataTimeService2.now)
 
           duration.toHours mustEqual hour
       }
-    }
-  }
-
-  "dateFormatted" - {
-
-    "must return a string of 8 digits" in {
-      new DateTimeServiceImpl(Clock.systemUTC).dateFormatted.matches("\\d{8}") mustBe true
-
     }
   }
 

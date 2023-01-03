@@ -20,18 +20,20 @@ import forms.DateFormProvider
 import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import services.DateTimeService
 import views.behaviours.DateInputViewBehaviours
 import views.html.incident.endorsement.EndorsementDateView
 
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 class EndorsementDateViewSpec extends DateInputViewBehaviours {
 
-  private val minDate = frontendAppConfig.endorsementDateMin
-  private val zone    = ZoneOffset.UTC
-  private val clock   = Clock.systemDefaultZone.withZone(zone)
+  private val dateTimeService = injector.instanceOf[DateTimeService]
 
-  override def form: Form[LocalDate] = new DateFormProvider(clock)(prefix, minDate)
+  private val minDate = frontendAppConfig.endorsementDateMin
+  private val maxDate = dateTimeService.yesterday
+
+  override def form: Form[LocalDate] = new DateFormProvider()(prefix, minDate, maxDate)
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
     injector.instanceOf[EndorsementDateView].apply(form, mrn, Index(0), NormalMode)(fakeRequest, messages)

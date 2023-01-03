@@ -22,9 +22,9 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import utils.Format.RichLocalDate
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -43,10 +43,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsText[T](answer: T): Content = s"$answer".toText
 
-  def formatAsDate(answer: LocalDate): Content = {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-    answer.format(formatter).toText
-  }
+  def formatAsDate(answer: LocalDate): Content = answer.formatAsString.toText
 
   def formatAsCountry(countryList: CountryList)(answer: CountryCode): Content =
     s"${countryList.getCountry(answer).map(_.description).getOrElse(answer.code)}".toText
