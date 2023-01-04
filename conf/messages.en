@@ -197,10 +197,10 @@ locationOfGoods.postalCode.checkYourAnswersLabel = Postal code
 locationOfGoods.postalCode.change.hidden = postal code for the location of goods
 locationOfGoods.postalCode.error.streetNumber.required = Enter the street number for the location of goods
 locationOfGoods.postalCode.error.streetNumber.invalidCharacters = The street number must only include numbers 0 to 9 and letters a to z
-locationOfGoods.postalCode.error.streetNumber.length = The street number must be 6 characters or less
+locationOfGoods.postalCode.error.streetNumber.length = The {0} must be {1} characters or less
 locationOfGoods.postalCode.error.postalCode.required = Enter the postal code for the location of goods
 locationOfGoods.postalCode.error.postalCode.invalidCharacters = The postal code must only include letters a to z, numbers 0 to 9 and spaces
-locationOfGoods.postalCode.error.postalCode.length = The postal code must be 9 characters or less
+locationOfGoods.postalCode.error.postalCode.length = The {0} must be {1} characters or less
 locationOfGoods.postalCode.error.country.required = Enter the country for the location of goods
 
 locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
