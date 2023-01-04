@@ -155,7 +155,7 @@ trait UserAnswersEntryGenerators {
   private def generateIncidentEquipmentItemNumberAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.incident.equipment.itemNumber._
     {
-      case ItemNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
+      case ItemNumberPage(_, _, _) => Gen.numStr.map(JsString)
     }
   }
 
