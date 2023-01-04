@@ -52,8 +52,8 @@ class EndorsementDateController @Inject() (
     with Logging {
 
   private def form: Form[LocalDate] = {
-    val minDate: LocalDate    = appConfig.endorsementDateMin
-    val maxDate: LocalDate    = dateTimeService.yesterday
+    val minDate: LocalDate = appConfig.endorsementDateMin
+    val maxDate: LocalDate = dateTimeService.yesterday
 
     logger.info(s"Min date is $minDate")
     logger.info(s"Max date is $maxDate")
