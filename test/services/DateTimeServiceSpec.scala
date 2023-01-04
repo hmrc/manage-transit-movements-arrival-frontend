@@ -38,8 +38,8 @@ class DateTimeServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
           val clock1: Clock = Clock.system(ZoneId.of(firstZoneId))
           val clock2: Clock = Clock.system(ZoneId.of(secondZoneId))
 
-          val dataTimeService1 = new DateTimeServiceImpl(clock1)
-          val dataTimeService2 = new DateTimeServiceImpl(clock2)
+          val dataTimeService1 = new DateTimeService(clock1)
+          val dataTimeService2 = new DateTimeService(clock2)
 
           val duration = Duration.between(dataTimeService1.now, dataTimeService2.now)
 
