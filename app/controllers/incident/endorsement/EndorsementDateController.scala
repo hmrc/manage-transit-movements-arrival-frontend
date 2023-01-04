@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
+import logging.Logging
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.endorsement.EndorsementDatePage
@@ -32,10 +33,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.endorsement.EndorsementDateView
 
 import java.time.LocalDate
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
 class EndorsementDateController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
@@ -48,11 +48,20 @@ class EndorsementDateController @Inject() (
   dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  private val minDate: LocalDate    = appConfig.endorsementDateMin
-  private val maxDate: LocalDate    = dateTimeService.yesterday
-  private def form: Form[LocalDate] = formProvider("incident.endorsement.date", minDate, maxDate)
+  private def form: Form[LocalDate] = {
+    val minDate: LocalDate = appConfig.endorsementDateMin
+    val maxDate: LocalDate = dateTimeService.yesterday
+
+    logger.info(s"Min date is $minDate")
+    logger.info(s"Max date is $maxDate")
+    logger.info(s"Today is ${dateTimeService.today}")
+    logger.info(s"Now is ${dateTimeService.now}")
+
+    formProvider("incident.endorsement.date", minDate, maxDate)
+  }
 
   def onPageLoad(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>

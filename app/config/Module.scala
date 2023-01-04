@@ -19,7 +19,6 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
-import services.{DateTimeService, DateTimeServiceImpl}
 
 import java.time.Clock
 
@@ -46,7 +45,6 @@ class Module extends AbstractModule {
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[RemoveInProgressActionProvider]).to(classOf[RemoveInProgressActionProviderImpl])
 
-    bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemUTC)
   }
 }

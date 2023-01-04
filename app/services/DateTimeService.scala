@@ -16,27 +16,14 @@
 
 package services
 
-import com.google.inject.Singleton
-
 import java.time.{Clock, LocalDate, LocalDateTime}
 import javax.inject.Inject
 
-@Singleton
-class DateTimeServiceImpl @Inject() (clock: Clock) extends DateTimeService {
+class DateTimeService @Inject() (clock: Clock) {
 
   def today: LocalDate = LocalDate.now(clock)
 
   def yesterday: LocalDate = today.minusDays(1)
 
   def now: LocalDateTime = LocalDateTime.now(clock)
-}
-
-trait DateTimeService {
-
-  def today: LocalDate
-
-  def yesterday: LocalDate
-
-  def now: LocalDateTime
-
 }
