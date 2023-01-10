@@ -39,7 +39,7 @@ class CheckEquipmentAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Arrivals - Incidents")
+  behave like pageWithSectionCaption("Arrivals - Transport equipment")
 
   behave like pageWithHeading()
 

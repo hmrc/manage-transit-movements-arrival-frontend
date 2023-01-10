@@ -1,7 +1,3 @@
-site.day.capitalized = Day
-site.month.capitalized = Month
-site.year.capitalized = Year
-
 site.delete = Remove
 site.edit = Change
 site.delete.hidden = Remove {0}
@@ -17,7 +13,6 @@ site.youMust = You must
 site.section = This section is
 
 site.caption = Arrivals
-site.caption.authorisations = Arrivals - Authorisations
 
 date.day.capitalized = Day
 date.month.capitalized = Month
@@ -58,13 +53,6 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab)
 
-concurrent.authorisation = authorisation
-concurrent.remove.error.title = Sorry, there is a problem with this {0}
-concurrent.remove.error.heading = Sorry, there is a problem with this {0}
-concurrent.remove.error.paragraph = You will need to answer some questions again.
-concurrent.remove.error.noAuthorisation.link.text = Go back to add authorisations?
-concurrent.remove.error.multipleAuthorisation.link.text = Go back to you have added authorisations
-
 movementReferenceNumber.title = What is the Movement Reference Number (MRN)?
 movementReferenceNumber.heading = What is the Movement Reference Number (MRN)?
 movementReferenceNumber.hintText = This will be 18 characters long and include both letters and numbers.
@@ -104,6 +92,8 @@ arrivals.checkYourAnswers.equipments.addOrRemove = Add or remove transport equip
 arrivals.checkYourAnswers.endorsement.subheading = Endorsements
 arrivals.checkYourAnswers.transportMeans.subheading = Replacement means of transport
 
+# Identification
+
 identification.destinationOffice.title = Where is the office of destination?
 identification.destinationOffice.heading = Where is the office of destination?
 identification.destinationOffice.hint = Enter the office location or code, like Wien-Flughafen or AT330200.
@@ -120,6 +110,10 @@ identification.isSimplifiedProcedure.simplified = Simplified - authorised consig
 identification.isSimplifiedProcedure.checkYourAnswersLabel = Procedure type
 identification.isSimplifiedProcedure.change.hidden = procedure type
 identification.isSimplifiedProcedure.error.required = Select the type of procedure you’re using
+
+# Identification - Authorisation
+
+identification.authorisation.caption = Arrivals - Authorisations
 
 identification.authorisation.addAnotherAuthorisation.singular.title = You have added {0} authorisation
 identification.authorisation.addAnotherAuthorisation.singular.heading = You have added {0} authorisation
@@ -169,7 +163,7 @@ identification.identificationNumber.error.invalidCharacters = The EORI number or
 identification.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 identification.identificationNumber.change.hidden = consignee EORI number or Trader Identification Number (TIN)
 
-#location of goods
+# Location of goods
 
 locationOfGoods.caption = Arrivals - Location of goods
 
@@ -316,7 +310,7 @@ locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to a
 locationOfGoods.addAdditionalIdentifier.change.hidden = if you want to add an additional identifier for the location of goods
 locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add an additional identifier for the location of goods
 
-# Incidents and Endorsements
+# Incident
 
 incident.checkAnswers.title = Check your answers
 incident.checkAnswers.heading = Check your answers
@@ -472,6 +466,8 @@ incident.location.address.error.required = Enter the {0} for the incident
 incident.location.address.error.length = The {0} must be {1} characters or less
 
 # Incident - Equipment
+
+incident.equipment.caption = Arrivals - Transport equipment
 
 incident.equipment.label = Transport equipment {0}
 incident.equipment.change.hidden = transport equipment {0}
