@@ -20,7 +20,7 @@ import models.Coordinates
 
 trait CoordinatesViewBehaviours extends QuestionViewBehaviours[Coordinates] {
 
-  val fields = Seq("latitude", "longitude")
+  val fields: Seq[String] = Seq("latitude", "longitude")
 
   def pageWithCoordinatesInput(): Unit =
     "page with a coordinates input" - {
@@ -39,17 +39,13 @@ trait CoordinatesViewBehaviours extends QuestionViewBehaviours[Coordinates] {
           }
         }
 
-        "must not render an error summary" in {
-          assertNotRenderedById(doc, "error-summary-title")
-        }
+        behave like pageWithoutErrorSummary()
       }
 
       for (field <- fields)
         s"when rendered with an error for field '$field'" - {
 
-          "must show an error summary" in {
-            assertRenderedById(docWithError(field), "error-summary-title")
-          }
+          behave like pageWithErrorSummary(field)
 
           s"must show an error in the label for field '$field'" in {
             val formGroupError = getElementByClass(docWithError(field), "govuk-form-group--error")
