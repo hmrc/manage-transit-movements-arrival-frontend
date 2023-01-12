@@ -42,6 +42,16 @@ trait PostalCodeAddressViewBehaviours extends QuestionViewBehaviours[PostalCodeA
         behave like pageWithoutErrorSummary()
       }
 
-      behave like pageWithFieldErrorSummary(fields)
+      for (field <- fields)
+        s"when rendered with an error for field '$field'" - {
+
+          behave like pageWithErrorSummary(field)
+
+          s"must show an error in the label for field '$field'" in {
+            val formGroupError = getElementByClass(docWithError(field), "govuk-form-group--error")
+            formGroupError.getElementsByClass("govuk-label").first().attr("for") mustBe field
+            formGroupError.getElementsByClass("govuk-error-message").first().id() mustBe s"$field-error"
+          }
+        }
     }
 }

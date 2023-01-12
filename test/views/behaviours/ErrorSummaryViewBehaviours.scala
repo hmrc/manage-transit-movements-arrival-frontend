@@ -21,35 +21,22 @@ import org.jsoup.nodes.Document
 trait ErrorSummaryViewBehaviours[T] {
   this: QuestionViewBehaviours[T] =>
 
-  def pageWithErrorSummary(): Unit =
-    "when rendered with an error" - {
+  def pageWithErrorSummary(field: String = "value"): Unit = {
+    val doc = docWithError(field)
+    s"when rendered with an error for $field" - {
       "must show an error summary" in {
-        assertRenderedByClass(docWithError(), "govuk-error-summary")
+        assertRenderedByClass(doc, "govuk-error-summary")
       }
 
       "must show an error in the value field's label" in {
-        val errorSpan = docWithError().getElementsByClass("govuk-error-message").first
+        val errorSpan = doc.getElementsByClass("govuk-error-message").first
         assertElementContainsText(errorSpan, s"${messages("error.title.prefix")} ${messages(errorMessage)}")
       }
     }
+  }
 
   def pageWithoutErrorSummary(document: Document = doc): Unit =
     "must not render an error summary" in {
       assertNotRenderedByClass(document, "govuk-error-summary")
     }
-
-  def pageWithFieldErrorSummary(fields: Seq[String]): Unit =
-    for (field <- fields)
-      s"when rendered with an error for field '$field'" - {
-
-        "must show an error summary" in {
-          assertRenderedByClass(docWithError(), "govuk-error-summary")
-        }
-
-        s"must show an error in the label for field '$field'" in {
-          val formGroupError = getElementByClass(docWithError(field), "govuk-form-group--error")
-          formGroupError.getElementsByClass("govuk-label").first().attr("for") mustBe field
-          formGroupError.getElementsByClass("govuk-error-message").first().id() mustBe s"$field-error"
-        }
-      }
 }

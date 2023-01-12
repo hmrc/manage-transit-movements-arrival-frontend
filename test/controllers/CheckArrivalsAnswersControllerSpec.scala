@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -44,8 +45,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
   "Check your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val sampleSections = listWithMaxLength[Section]().sample.value
-
+      val sampleSections = arbitrary[List[Section]].sample.value
       when(mockViewModelProvider.apply(any())(any())).thenReturn(ArrivalAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)

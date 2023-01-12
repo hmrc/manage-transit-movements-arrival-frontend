@@ -22,6 +22,7 @@ import models.NormalMode
 import navigation.IncidentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -47,7 +48,7 @@ class CheckIncidentAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      val sampleSections = listWithMaxLength[Section]().sample.value
+      val sampleSections = arbitrary[List[Section]].sample.value
 
       when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(IncidentAnswersViewModel(sampleSections))
