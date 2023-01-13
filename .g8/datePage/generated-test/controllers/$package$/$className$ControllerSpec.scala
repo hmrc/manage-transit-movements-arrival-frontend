@@ -1,7 +1,7 @@
 package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.DateformProvider
+import forms.DateFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.$navRoute$
@@ -26,7 +26,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val minDate = dateTimeService.yesterday
   private val maxDate = dateTimeService.today
 
-  private val formProvider = new DateformProvider()
+  private val formProvider = new DateFormProvider()
   private val form         = formProvider("$package$.$className;format="decap"$", minDate, maxDate)
   private val mode         = NormalMode
   private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url

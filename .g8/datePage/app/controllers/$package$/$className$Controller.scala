@@ -2,7 +2,7 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DateformProvider
+import forms.DateFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import navigation.Navigator
@@ -23,7 +23,7 @@ class $className;format="cap"$Controller @Inject()(
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: $navRoute$NavigatorProvider,
-  formProvider: DateformProvider,
+  formProvider: DateFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View,
