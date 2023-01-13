@@ -1,7 +1,8 @@
 package views.$package$
 
-import forms.$formProvider$
+import forms.DateFormProvider
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DateInputViewBehaviours
@@ -10,11 +11,10 @@ import java.time.{Clock, LocalDate, ZoneOffset}
 
 class $className$ViewSpec extends DateInputViewBehaviours {
 
-  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
-  private val zone                       = ZoneOffset.UTC
-  private val clock                      = Clock.systemDefaultZone.withZone(zone)
+  private val minDate = arbitrary[LocalDate].sample.value
+  private val maxDate = arbitrary[LocalDate].sample.value
 
-  override def form: Form[LocalDate] = new $formProvider$(clock)(prefix, minDate)
+  override def form: Form[LocalDate] = new DateFormProvider()(prefix, minDate, maxDate)
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
     injector.instanceOf[$className$View].apply(form, mrn, NormalMode)(fakeRequest, messages)

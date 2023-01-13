@@ -20,36 +20,35 @@
 @import views.utils.ViewUtils._
 
 @this(
-        inputText: InputText,
-        govukFieldset: GovukFieldset
+    inputText: InputText,
+    govukFieldset: GovukFieldset
 )
 
 @(
-        form: Form[Coordinates],
-        messageKeyPrefix: String,
-        caption: Option[String],
-        headingArgs: Any*
+    form: Form[Coordinates],
+    messageKeyPrefix: String,
+    caption: Option[String],
+    headingArgs: Any*
 )(implicit messages: Messages)
 
 @html = {
-
     <p class="govuk-hint">@messages(s"$messageKeyPrefix.hintText")</p>
 
-@inputText(
-    field = form("latitude"),
-    inputTextType = MultiTextInput(
-        label = messages(s"$messageKeyPrefix.latitude")
-    ),
-    inputClass = Some("govuk-!-width-two-thirds")
-)
+    @inputText(
+        field = form("latitude"),
+        inputTextType = MultiTextInput(
+            label = messages(s"$messageKeyPrefix.latitude")
+        ),
+        inputClass = Some("govuk-!-width-two-thirds")
+    )
 
-@inputText(
-    field = form("longitude"),
-    inputTextType = MultiTextInput(
-        label = messages(s"$messageKeyPrefix.longitude")
-    ),
-    inputClass = Some("govuk-!-width-two-thirds")
-)
+    @inputText(
+        field = form("longitude"),
+        inputTextType = MultiTextInput(
+            label = messages(s"$messageKeyPrefix.longitude")
+        ),
+        inputClass = Some("govuk-!-width-two-thirds")
+    )
 }
 
 @fieldset = @{
@@ -59,21 +58,8 @@
 }
 
 @govukFieldset(
-    caption match {
-        case Some(x) => {
-            fieldset.withHeadingAndCaption(
-                heading = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
-                caption = Text(x)
-            )
-        }
-        case None => {
-            fieldset.copy(
-                legend = Some(Legend(
-                    content = Text(messages(s"$messageKeyPrefix.heading", headingArgs: _*)),
-                    classes = LegendSize.XL,
-                    isPageHeading = true
-                ))
-            )
-        }
-    }
+    fieldset.withHeadingAndCaption(
+        heading = messages(s"$messageKeyPrefix.heading", headingArgs: _*),
+        caption = caption
+    )
 )

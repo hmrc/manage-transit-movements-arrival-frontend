@@ -2,7 +2,7 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.$formProvider$
+import forms.DateFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import navigation.Navigator
@@ -11,6 +11,7 @@ import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$package$.$className$View
 
@@ -19,17 +20,23 @@ import scala.concurrent.{ExecutionContext, Future}
 import java.time.LocalDate
 
 class $className;format="cap"$Controller @Inject()(
-    override val messagesApi: MessagesApi,
-    implicit val sessionRepository: SessionRepository,
-    navigatorProvider: $navRoute$NavigatorProvider,
-    formProvider: $formProvider$,
-    actions: Actions,
-    val controllerComponents: MessagesControllerComponents,
-    view: $className$View
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
+  navigatorProvider: $navRoute$NavigatorProvider,
+  formProvider: DateFormProvider,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  view: $className$View,
+  dateTimeService: DateTimeService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
-  private val form = formProvider("$package$.$className;format="decap"$", minDate)
+  private def form: Form[LocalDate] = {
+    val minDate: LocalDate = dateTimeService.yesterday
+    val maxDate: LocalDate = dateTimeService.today
+    formProvider("$package$.$className;format="decap"$", minDate, maxDate)
+  }
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
@@ -48,7 +55,7 @@ class $className;format="cap"$Controller @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
         value => {
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-          $className$Page.writeToUserAnswers(value).writeToSession().navigate ()
+          $className$Page.writeToUserAnswers(value).writeToSession().navigate()
         }
       )
   }
