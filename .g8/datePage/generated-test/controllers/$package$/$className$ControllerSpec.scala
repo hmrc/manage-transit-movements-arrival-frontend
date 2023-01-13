@@ -14,18 +14,20 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$package$.$className$View
 import navigation.{$navRoute$NavigatorProvider, Navigator}
+import services.DateTimeService
 
 import java.time.{Clock, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val minDate = LocalDate.of(2020: Int, 12: Int, 31: Int) //"31 December 2020"
-  private val zone    = ZoneOffset.UTC
-  private val clock   = Clock.systemDefaultZone.withZone(zone)
+  private val dateTimeService = injector.instanceOf[DateTimeService]
 
-  private val formProvider = new $formProvider$(clock)
-  private val form         = formProvider("$package$.$className;format="decap"$", minDate)
+  private val minDate = dateTimeService.yesterday
+  private val maxDate = dateTimeService.today
+
+  private val formProvider = new $formProvider$()
+  private val form         = formProvider("$package$.$className;format="decap"$", minDate, maxDate)
   private val mode         = NormalMode
   private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
   private val date                        = LocalDate.now
