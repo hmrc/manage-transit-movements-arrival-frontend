@@ -25,7 +25,7 @@ class ItemNumberFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
-  val exactLength    = 4
+  val maxLength      = 4
 
   val form = new ItemNumberFormProvider()(prefix)
 
@@ -36,14 +36,14 @@ class ItemNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithLength(exactLength)
+      stringsWithLength(maxLength)
     )
 
-    behave like fieldWithExactLength(
+    behave like fieldWithMaxLength(
       form,
       fieldName,
-      exactLength = exactLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(exactLength))
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

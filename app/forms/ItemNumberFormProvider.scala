@@ -30,7 +30,7 @@ class ItemNumberFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            exactLength(itemNumberLength, s"$prefix.error.length"),
+            maxLength(itemNumberLength, s"$prefix.error.length"),
             regexp(numericRegex, s"$prefix.error.invalidCharacters")
           )
         )
