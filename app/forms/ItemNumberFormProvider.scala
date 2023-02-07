@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.itemNumberLength
+import forms.Constants.{itemNumberLength, itemNumberMax}
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.numericRegex
 import play.api.data.Form
@@ -30,8 +30,10 @@ class ItemNumberFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            exactLength(itemNumberLength, s"$prefix.error.length"),
-            regexp(numericRegex, s"$prefix.error.invalidCharacters")
+            maxLength(itemNumberLength, s"$prefix.error.length"),
+            regexp(numericRegex, s"$prefix.error.invalidCharacters"),
+            minimumIntValue(0, s"$prefix.error.range"),
+            maximumIntValue(itemNumberMax, s"$prefix.error.range")
           )
         )
     )

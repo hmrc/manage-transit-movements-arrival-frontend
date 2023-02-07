@@ -20,12 +20,18 @@ import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
+import scala.collection.immutable.ArraySeq
+
 class ItemNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
-  val exactLength    = 4
+  val rangeKey       = s"$prefix.error.range"
+  val maxLength      = 4
+  val maxLengthValue = 9999
+  val maxValue       = 1999
+  val minValue       = 1
 
   val form = new ItemNumberFormProvider()(prefix)
 
@@ -36,20 +42,35 @@ class ItemNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithLength(exactLength)
+      stringsWithLength(maxLength)
     )
 
-    behave like fieldWithExactLength(
+    behave like fieldWithMaxLength(
       form,
       fieldName,
-      exactLength = exactLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(exactLength))
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like stringFieldWithMaximumIntValue(
+      form,
+      fieldName,
+      maxValue,
+      maxLengthValue,
+      FormError(fieldName, rangeKey, ArraySeq(maxValue))
+    )
+
+    behave like stringFieldWithMinimumIntValue(
+      form,
+      fieldName,
+      minValue,
+      FormError(fieldName, rangeKey, ArraySeq(minValue - 1))
     )
   }
 }

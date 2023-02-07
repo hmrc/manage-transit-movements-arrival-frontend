@@ -566,11 +566,12 @@ incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
 
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
-incident.equipment.itemNumber.hint = This will be 4 characters long, for example 1234.
+incident.equipment.itemNumber.hint = This can be up to 4 numbers long.
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
-incident.equipment.itemNumber.error.length = The goods item number must be 4 characters long
+incident.equipment.itemNumber.error.length = The goods item number must be 4 characters or less
+incident.equipment.itemNumber.error.range = The goods item number must be more than 0 and less than 2000
 
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.heading = You have added {0} goods item number
