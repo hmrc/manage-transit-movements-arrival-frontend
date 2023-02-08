@@ -44,7 +44,7 @@
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("identification.identificationNumber.heading"),
                 caption = Some(messages("site.caption")),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("identification.identificationNumber.paragraph")}</p>"""),
+                additionalHtml = messages("identification.identificationNumber.paragraph").toParagraph,
             ),
             hint = Some(messages("identification.identificationNumber.hint")),
             inputClass = InputSize.Width20

@@ -44,7 +44,7 @@
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("incident.incidentFlag.heading"),
                 caption = Some(messages("incident.caption")),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("incident.incidentFlag.paragraph")}</p>""")
+                additionalHtml = messages("incident.incidentFlag.paragraph").toParagraph
             )
         )
 
