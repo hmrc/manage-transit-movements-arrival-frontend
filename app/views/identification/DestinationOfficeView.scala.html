@@ -45,7 +45,7 @@
             field = form("value"),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("identification.destinationOffice.heading"),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("identification.destinationOffice.paragraph")}</p>"""),
+                additionalHtml = messages("identification.destinationOffice.paragraph").toParagraph,
                 caption = Some(messages("site.caption"))
             ),
             hint = Some(messages("identification.destinationOffice.hint")),
