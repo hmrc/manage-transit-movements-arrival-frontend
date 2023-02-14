@@ -50,6 +50,13 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
       args = args: _*
     )
 
+  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
+    userAnswers
+      .get(section)
+      .mapWithIndex {
+        (_, index) => f(index)
+      }
+
   def getAnswerAndBuildSectionRow[A <: JourneyDomainModel](
     formatAnswer: A => Content,
     prefix: String,

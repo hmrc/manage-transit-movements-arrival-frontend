@@ -25,6 +25,7 @@ import pages.incident._
 import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import pages.incident.transportMeans._
+import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -38,6 +39,9 @@ class IncidentAnswersHelper(
   incidentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
+
+  def equipments: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(EquipmentsSection(incidentIndex))(equipment)
 
   def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
     formatAnswer = _.asString.toText,

@@ -20,6 +20,7 @@ import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.sections.incident.{ItemsSection, SealsSection}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
@@ -60,12 +61,18 @@ class EquipmentAnswersHelper(
     id = Some("change-add-goods-item-numbers")
   )
 
+  def seals: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(SealsSection(incidentIndex, equipmentIndex))(seal)
+
   def seal(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
     formatAnswer = formatAsText,
     prefix = "incident.equipment.seal",
     id = Some(s"change-seal-${index.display}"),
     args = index.display
   )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, index))
+
+  def goodsItemNumbers: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(ItemsSection(incidentIndex, equipmentIndex))(goodsItemNumber)
 
   def goodsItemNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ItemNumberDomain](
     formatAnswer = formatAsText,

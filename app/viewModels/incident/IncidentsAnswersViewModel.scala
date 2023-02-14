@@ -16,8 +16,7 @@
 
 package viewModels.incident
 
-import models.{Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.incident.IncidentsSection
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.incident.IncidentsAnswersHelper
 import viewModels.Link
@@ -35,23 +34,15 @@ object IncidentsAnswersViewModel {
 
       val helper = IncidentsAnswersHelper(userAnswers, mode)
 
-      val section = {
-        val incidentRows = userAnswers
-          .get(IncidentsSection)
-          .mapWithIndex {
-            (_, index) => helper.incident(index)
-          }
-
-        Section(
-          sectionTitle = messages("arrivals.checkYourAnswers.incidents.subheading"),
-          rows = helper.incidentFlag.toList ++ incidentRows,
-          addAnotherLink = Link(
-            id = "add-or-remove-incidents",
-            text = messages("arrivals.checkYourAnswers.incidents.addOrRemove"),
-            href = controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode).url
-          )
+      val section = Section(
+        sectionTitle = messages("arrivals.checkYourAnswers.incidents.subheading"),
+        rows = helper.incidentFlag.toList ++ helper.incidents,
+        addAnotherLink = Link(
+          id = "add-or-remove-incidents",
+          text = messages("arrivals.checkYourAnswers.incidents.addOrRemove"),
+          href = controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode).url
         )
-      }
+      )
 
       IncidentsAnswersViewModel(section)
     }

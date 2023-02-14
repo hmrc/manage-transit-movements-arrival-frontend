@@ -16,8 +16,7 @@
 
 package viewModels.identification
 
-import models.{Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.identification.AuthorisationsSection
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.AuthorisationsAnswersHelper
 import viewModels.Link
@@ -37,11 +36,7 @@ object AuthorisationsAnswersViewModel {
 
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
-        rows = userAnswers
-          .get(AuthorisationsSection)
-          .mapWithIndex {
-            (_, index) => helper.authorisation(index)
-          },
+        rows = helper.authorisations,
         addAnotherLink = Link(
           id = "add-or-remove-authorisations",
           text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),

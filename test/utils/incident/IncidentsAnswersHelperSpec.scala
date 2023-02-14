@@ -19,18 +19,50 @@ package utils.incident
 import base.SpecBase
 import controllers.incident.routes
 import generators.Generators
-import models.Mode
 import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
 import models.reference.Country
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
 import viewModels.ListItem
 
 class IncidentsAnswersHelperSpec extends SpecBase with Generators {
 
   "IncidentsAnswersHelper" - {
+
+    "incidents" - {
+      "must return no rows" - {
+        "when no incidents defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.incidents
+              result mustBe Nil
+          }
+        }
+      }
+
+      "must return rows" - {
+        "when incidents defined" in {
+          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxIncidents)) {
+            (mode, count) =>
+              val userAnswersGen = (0 until count).foldLeft(Gen.const(emptyUserAnswers)) {
+                (acc, i) =>
+                  acc.flatMap(arbitraryIncidentAnswers(_, Index(i)))
+              }
+              forAll(userAnswersGen) {
+                userAnswers =>
+                  val helper = IncidentsAnswersHelper(userAnswers, mode)
+                  val result = helper.incidents
+                  result.size mustBe count
+              }
+          }
+        }
+      }
+    }
 
     "incident" - {
       "must return None" - {
