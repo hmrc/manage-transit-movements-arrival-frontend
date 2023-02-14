@@ -34,6 +34,9 @@ class AuthorisationsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
+  def authorisations: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AuthorisationsSection)(authorisation)
+
   def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
     formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "identification.authorisation",

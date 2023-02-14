@@ -34,6 +34,9 @@ class IncidentsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
+  def incidents: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(IncidentsSection)(incident)
+
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
     formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "incident",

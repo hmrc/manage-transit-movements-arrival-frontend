@@ -21,7 +21,7 @@ import controllers.incident.equipment.itemNumber.{routes => goodsItemNumberRoute
 import controllers.incident.equipment.seal.{routes => sealRoutes}
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import generators.Generators
-import models.Mode
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,6 +32,37 @@ import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage,
 class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "EquipmentAnswersHelper" - {
+
+    "seals" - {
+      "must return no rows" - {
+        "when no seals defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.seals
+              result mustBe Nil
+          }
+        }
+      }
+
+      "must return rows" - {
+        "when seals defined" in {
+          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
+            (mode, count) =>
+              val userAnswersGen = (0 until count).foldLeft(Gen.const(emptyUserAnswers)) {
+                (acc, i) =>
+                  acc.flatMap(arbitrarySealAnswers(_, incidentIndex, equipmentIndex, Index(i)))
+              }
+              forAll(userAnswersGen) {
+                userAnswers =>
+                  val helper = EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                  val result = helper.seals
+                  result.size mustBe count
+              }
+          }
+        }
+      }
+    }
 
     "seal" - {
       "must return None" - {
@@ -64,6 +95,37 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.href mustBe sealRoutes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex).url
               action.visuallyHiddenText.get mustBe "seal 1"
               action.id mustBe "change-seal-1"
+          }
+        }
+      }
+    }
+
+    "goodsItemNumbers" - {
+      "must return no rows" - {
+        "when no goods item numbers defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.goodsItemNumbers
+              result mustBe Nil
+          }
+        }
+      }
+
+      "must return rows" - {
+        "when goods item numbers defined" in {
+          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxNumberOfItems)) {
+            (mode, count) =>
+              val userAnswersGen = (0 until count).foldLeft(Gen.const(emptyUserAnswers)) {
+                (acc, i) =>
+                  acc.flatMap(arbitraryItemNumberAnswers(_, incidentIndex, equipmentIndex, Index(i)))
+              }
+              forAll(userAnswersGen) {
+                userAnswers =>
+                  val helper = EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                  val result = helper.goodsItemNumbers
+                  result.size mustBe count
+              }
           }
         }
       }

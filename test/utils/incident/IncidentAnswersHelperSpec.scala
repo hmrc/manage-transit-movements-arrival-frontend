@@ -28,7 +28,7 @@ import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.reference.{Country, Nationality, UnLocode}
-import models.{Coordinates, DynamicAddress, Mode, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -43,6 +43,37 @@ import java.time.LocalDate
 class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "IncidentAnswersHelper" - {
+
+    "equipments" - {
+      "must return no rows" - {
+        "when no equipments defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.equipments
+              result mustBe Nil
+          }
+        }
+      }
+
+      "must return rows" - {
+        "when equipments defined" in {
+          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxTransportEquipments)) {
+            (mode, count) =>
+              val userAnswersGen = (0 until count).foldLeft(Gen.const(emptyUserAnswers)) {
+                (acc, i) =>
+                  acc.flatMap(arbitraryEquipmentAnswers(_, incidentIndex, Index(i)))
+              }
+              forAll(userAnswersGen) {
+                userAnswers =>
+                  val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
+                  val result = helper.equipments
+                  result.size mustBe count
+              }
+          }
+        }
+      }
+    }
 
     "equipment" - {
       "must return None" - {

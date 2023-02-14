@@ -16,8 +16,7 @@
 
 package viewModels.incident
 
-import models.{Index, Mode, RichOptionJsArray, UserAnswers}
-import pages.sections.incident.EquipmentsSection
+import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.incident.IncidentAnswersHelper
 import viewModels.Link
@@ -60,23 +59,15 @@ object IncidentAnswersViewModel {
         ).flatten
       )
 
-      val equipmentsSection = {
-        val equipmentRows = userAnswers
-          .get(EquipmentsSection(incidentIndex))
-          .mapWithIndex {
-            (_, index) => helper.equipment(index)
-          }
-
-        Section(
-          sectionTitle = messages("arrivals.checkYourAnswers.equipments.subheading"),
-          rows = helper.transportEquipmentYesNo.toList ++ equipmentRows,
-          addAnotherLink = Link(
-            id = "add-or-remove-transport-equipment",
-            text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
-            href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
-          )
+      val equipmentsSection = Section(
+        sectionTitle = messages("arrivals.checkYourAnswers.equipments.subheading"),
+        rows = helper.transportEquipmentYesNo.toList ++ helper.equipments,
+        addAnotherLink = Link(
+          id = "add-or-remove-transport-equipment",
+          text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
+          href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
         )
-      }
+      )
 
       val transportMeansSection = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.transportMeans.subheading"),

@@ -34,6 +34,37 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
 
   "AuthorisationsAnswersHelper" - {
 
+    "authorisations" - {
+      "must return no rows" - {
+        "when no authorisations defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = AuthorisationsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.authorisations
+              result mustBe Nil
+          }
+        }
+      }
+
+      "must return rows" - {
+        "when authorisations defined" in {
+          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxIdentificationAuthorisations)) {
+            (mode, count) =>
+              val userAnswersGen = (0 until count).foldLeft(Gen.const(emptyUserAnswers)) {
+                (acc, i) =>
+                  acc.flatMap(arbitraryAuthorisationAnswers(_, Index(i)))
+              }
+              forAll(userAnswersGen) {
+                userAnswers =>
+                  val helper = AuthorisationsAnswersHelper(userAnswers, mode)
+                  val result = helper.authorisations
+                  result.size mustBe count
+              }
+          }
+        }
+      }
+    }
+
     "authorisation" - {
       "must return None" - {
         "when authorisation undefined" in {
