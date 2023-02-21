@@ -16,8 +16,8 @@
 
 package connectors
 
-import api.Conversions
-import api.Conversions.scope
+import api.Header.scope
+import api.{Conversions, Header, TransitOperation}
 import config.FrontendAppConfig
 import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
@@ -42,10 +42,10 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     for {
       arrivalDomain <- UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
     } yield {
-      val message: MESSAGE_FROM_TRADERSequence = Conversions.message
-      val messageType: MessageType007          = Conversions.messageType
-      val correlationIdentifier                = Conversions.correlationIdentifier
-      val transitOperation                     = Conversions.transitOperation(arrivalDomain.identification, arrivalDomain.incidents.isDefined)
+      val message: MESSAGE_FROM_TRADERSequence = Header.message
+      val messageType: MessageType007          = Header.messageType
+      val correlationIdentifier                = Header.correlationIdentifier
+      val transitOperation                     = TransitOperation.transform(userAnswers)
       val authorisations                       = Conversions.authorisations(arrivalDomain.identification.authorisations)
       val customsOfficeOfDestination           = Conversions.customsOfficeOfDestination(arrivalDomain.identification.destinationOffice)
       val traderAtDestination                  = Conversions.traderAtDestination(arrivalDomain.identification)

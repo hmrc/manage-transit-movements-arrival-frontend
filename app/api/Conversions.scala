@@ -17,7 +17,6 @@
 package api
 
 import generated._
-import models.identification.ProcedureType
 import models.journeyDomain.ArrivalPostTransitionDomain
 import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident._
@@ -25,42 +24,9 @@ import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.locationOfGoods._
 import models.reference.CustomsOffice
 import models.{Index, UserAnswers}
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import pages.incident.ContainerIndicatorYesNoPage
 
-import scala.xml.NamespaceBinding
-
 object Conversions {
-
-  val scope: NamespaceBinding              = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
-  val formatterNoMillis: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
-
-  def message: MESSAGE_FROM_TRADERSequence =
-    MESSAGE_FROM_TRADERSequence(
-      None,
-      MESSAGE_1Sequence(
-        "NCTS",
-        ApiXmlHelpers.toDate(DateTime.now().toString(formatterNoMillis)),
-        "CC007C" // TODO - check this with API team? What should this be set to?
-      )
-    )
-
-  def messageType: MessageType007 = MessageType007.fromString("CC007C", scope)
-
-  // TODO - What should this be?
-  def correlationIdentifier = CORRELATION_IDENTIFIERSequence(None)
-
-  def transitOperation(domain: IdentificationDomain, incidents: Boolean): TransitOperationType02 =
-    TransitOperationType02(
-      domain.mrn.toString,
-      arrivalNotificationDateAndTime = ApiXmlHelpers.toDate(DateTime.now().toString()),
-      simplifiedProcedure = ApiXmlHelpers.boolToFlag(domain.procedureType match {
-        case ProcedureType.Simplified => true
-        case _                        => false
-      }),
-      incidentFlag = ApiXmlHelpers.boolToFlag(incidents)
-    )
 
   def authorisations(domain: Option[AuthorisationsDomain]): Seq[AuthorisationType01] =
     domain
