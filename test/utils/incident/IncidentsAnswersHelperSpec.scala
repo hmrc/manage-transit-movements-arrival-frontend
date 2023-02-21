@@ -79,7 +79,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
       }
 
       "must return Some(Link)" - {
-        "when seals array is non-empty" in {
+        "when incidents array is non-empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(IncidentSection(Index(0)), Json.obj("foo" -> "bar"))

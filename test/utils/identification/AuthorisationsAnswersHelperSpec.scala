@@ -80,7 +80,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
       }
 
       "must return Some(Link)" - {
-        "when seals array is non-empty" in {
+        "when authorisations array is non-empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(AuthorisationSection(Index(0)), Json.obj("foo" -> "bar"))
