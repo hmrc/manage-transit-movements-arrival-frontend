@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
-import viewModels.ListItem
+import viewModels.{Link, ListItem}
 
 class IncidentsAnswersHelper(
   userAnswers: UserAnswers,
@@ -43,6 +43,14 @@ class IncidentsAnswersHelper(
     id = Some(s"change-incident-${index.display}"),
     args = index.display
   )(IncidentDomain.userAnswersReader(index))
+
+  def addOrRemoveIncidents: Option[Link] = buildLink(IncidentsSection) {
+    Link(
+      id = "add-or-remove-incidents",
+      text = messages("arrivals.checkYourAnswers.incidents.addOrRemove"),
+      href = controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode).url
+    )
+  }
 
   def incidentFlag: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = IncidentFlagPage,

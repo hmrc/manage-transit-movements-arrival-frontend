@@ -16,11 +16,9 @@
 
 package viewModels.incident
 
-import controllers.incident.equipment._
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.incident.EquipmentAnswersHelper
-import viewModels.Link
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -46,21 +44,13 @@ object EquipmentAnswersViewModel {
       val sealsSection = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.seals.subheading"),
         rows = helper.sealsYesNo.toList ++ helper.seals,
-        addAnotherLink = Link(
-          id = "add-or-remove-seals",
-          text = messages("arrivals.checkYourAnswers.seals.addOrRemove"),
-          href = seal.routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
-        )
+        addAnotherLink = helper.addOrRemoveSeals
       )
 
       val goodsItemNumbersSection = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.goodsItemNumbers.subheading"),
         rows = helper.goodsItemNumbersYesNo.toList ++ helper.goodsItemNumbers,
-        addAnotherLink = Link(
-          id = "add-or-remove-goods-item-numbers",
-          text = messages("arrivals.checkYourAnswers.goodsItemNumbers.addOrRemove"),
-          href = itemNumber.routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
-        )
+        addAnotherLink = helper.addOrRemoveGoodsItemNumber
       )
 
       new EquipmentAnswersViewModel(Seq(containerSection, sealsSection, goodsItemNumbersSection))

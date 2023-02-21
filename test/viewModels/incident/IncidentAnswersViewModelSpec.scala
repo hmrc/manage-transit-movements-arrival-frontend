@@ -17,17 +17,14 @@
 package viewModels.incident
 
 import base.SpecBase
-import controllers.incident.equipment.routes
 import generators.Generators
 import models.incident.IncidentCode
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.{AddEndorsementPage, AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
 import viewModels.incident.IncidentAnswersViewModel.IncidentAnswersViewModelProvider
-import viewModels.sections.Section
 
 class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -110,13 +107,6 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
   "equipments section" - {
     val sectionTitle = "Transport equipment"
 
-    def checkAddAnotherLink(section: Section, userAnswers: UserAnswers, mode: Mode): Assertion = {
-      val addOrRemoveLink = section.addAnotherLink.value
-      addOrRemoveLink.text mustBe "Add or remove transport equipment"
-      addOrRemoveLink.id mustBe "add-or-remove-transport-equipment"
-      addOrRemoveLink.href mustBe routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
-    }
-
     "when incident code is 1 or 5" - {
       "must have 0 rows" in {
         forAll(arbitrary[IncidentCode](arbitrary1Or5IncidentCode)) {
@@ -128,7 +118,7 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
                 val equipmentsSection = sections(2)
                 equipmentsSection.sectionTitle.get mustBe sectionTitle
                 equipmentsSection.rows.size mustBe 0
-                checkAddAnotherLink(equipmentsSection, userAnswers, mode)
+                equipmentsSection.addAnotherLink must not be defined
             }
         }
       }
@@ -151,7 +141,7 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
                     val equipmentsSection = sections(2)
                     equipmentsSection.sectionTitle.get mustBe sectionTitle
                     equipmentsSection.rows.size mustBe 1
-                    checkAddAnotherLink(equipmentsSection, userAnswers, mode)
+                    equipmentsSection.addAnotherLink must not be defined
                 }
             }
           }
@@ -176,7 +166,7 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
                     val equipmentsSection = sections(2)
                     equipmentsSection.sectionTitle.get mustBe sectionTitle
                     equipmentsSection.rows.size mustBe 1 + numberOfTransportEquipments
-                    checkAddAnotherLink(equipmentsSection, userAnswers, mode)
+                    equipmentsSection.addAnotherLink must be(defined)
                 }
             }
           }
@@ -198,7 +188,7 @@ class IncidentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
                   val equipmentsSection = sections(2)
                   equipmentsSection.sectionTitle.get mustBe sectionTitle
                   equipmentsSection.rows.size mustBe numberOfTransportEquipments
-                  checkAddAnotherLink(equipmentsSection, userAnswers, mode)
+                  equipmentsSection.addAnotherLink must be(defined)
               }
           }
         }

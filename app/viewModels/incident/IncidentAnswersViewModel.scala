@@ -62,11 +62,7 @@ object IncidentAnswersViewModel {
       val equipmentsSection = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.equipments.subheading"),
         rows = helper.transportEquipmentYesNo.toList ++ helper.equipments,
-        addAnotherLink = Link(
-          id = "add-or-remove-transport-equipment",
-          text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
-          href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
-        )
+        addAnotherLink = helper.addOrRemoveEquipments
       )
 
       val transportMeansSection = Section(
