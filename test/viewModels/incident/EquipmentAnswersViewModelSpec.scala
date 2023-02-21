@@ -17,18 +17,15 @@
 package viewModels.incident
 
 import base.SpecBase
-import controllers.incident.equipment._
 import generators.Generators
 import models.incident.IncidentCode
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
 import viewModels.incident.EquipmentAnswersViewModel.EquipmentAnswersViewModelProvider
-import viewModels.sections.Section
 
 class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -155,14 +152,6 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
   "seals section" - {
     val sectionTitle = "Seals"
 
-    def checkAddAnotherLink(section: Section, userAnswers: UserAnswers, mode: Mode): Assertion = {
-      val addOrRemoveSealsLink = section.addAnotherLink.value
-      addOrRemoveSealsLink.text mustBe "Add or remove seals"
-      addOrRemoveSealsLink.id mustBe "add-or-remove-seals"
-      addOrRemoveSealsLink.href mustBe
-        seal.routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
-    }
-
     "when adding seals" - {
       "must return 1 row plus a row for each seal" in {
         forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxSeals)) {
@@ -178,7 +167,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 val sealsSection = sections(1)
                 sealsSection.sectionTitle.get mustBe sectionTitle
                 sealsSection.rows.size mustBe 1 + numberOfSeals
-                checkAddAnotherLink(sealsSection, userAnswers, mode)
+                sealsSection.addAnotherLink must be(defined)
             }
         }
       }
@@ -193,7 +182,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             val sealsSection = sections(1)
             sealsSection.sectionTitle.get mustBe sectionTitle
             sealsSection.rows.size mustBe 1
-            checkAddAnotherLink(sealsSection, userAnswers, mode)
+            sealsSection.addAnotherLink must not be defined
         }
       }
     }
@@ -201,14 +190,6 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
 
   "goods item numbers section" - {
     val sectionTitle = "Goods item numbers"
-
-    def checkAddAnotherLink(section: Section, userAnswers: UserAnswers, mode: Mode): Assertion = {
-      val addOrRemoveGoodsItemNumbersLink = section.addAnotherLink.value
-      addOrRemoveGoodsItemNumbersLink.text mustBe "Add or remove goods item numbers"
-      addOrRemoveGoodsItemNumbersLink.id mustBe "add-or-remove-goods-item-numbers"
-      addOrRemoveGoodsItemNumbersLink.href mustBe
-        itemNumber.routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
-    }
 
     "when adding goods item numbers" - {
       "must return 1 row plus a row for each goods item number" in {
@@ -225,7 +206,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 val goodsItemNumbersSection = sections(2)
                 goodsItemNumbersSection.sectionTitle.get mustBe sectionTitle
                 goodsItemNumbersSection.rows.size mustBe 1 + numberOfGoodsItemNumbers
-                checkAddAnotherLink(goodsItemNumbersSection, userAnswers, mode)
+                goodsItemNumbersSection.addAnotherLink must be(defined)
             }
         }
       }
@@ -240,7 +221,7 @@ class EquipmentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             val goodsItemNumbersSection = sections(2)
             goodsItemNumbersSection.sectionTitle.get mustBe sectionTitle
             goodsItemNumbersSection.rows.size mustBe 1
-            checkAddAnotherLink(goodsItemNumbersSection, userAnswers, mode)
+            goodsItemNumbersSection.addAnotherLink must not be defined
         }
       }
     }

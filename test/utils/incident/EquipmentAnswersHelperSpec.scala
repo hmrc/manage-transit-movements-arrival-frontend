@@ -19,6 +19,7 @@ package utils.incident
 import base.SpecBase
 import controllers.incident.equipment.itemNumber.{routes => goodsItemNumberRoutes}
 import controllers.incident.equipment.seal.{routes => sealRoutes}
+import controllers.incident.equipment.itemNumber.{routes => itemRoutes}
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import generators.Generators
 import models.{Index, Mode}
@@ -28,6 +29,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
+import pages.sections.incident.{ItemSection, SealSection}
+import play.api.libs.json.Json
 
 class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -100,6 +103,34 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "addOrRemoveSeals" - {
+      "must return None" - {
+        "when seals array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.addOrRemoveSeals
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when seals array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(SealSection(incidentIndex, equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+              val result  = helper.addOrRemoveSeals.get
+
+              result.id mustBe "add-or-remove-seals"
+              result.text mustBe "Add or remove seals"
+              result.href mustBe sealRoutes.AddAnotherSealController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
+          }
+        }
+      }
+    }
+
     "goodsItemNumbers" - {
       "must return no rows" - {
         "when no goods item numbers defined" in {
@@ -164,6 +195,34 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 .url
               action.visuallyHiddenText.get mustBe "goods item number 1"
               action.id mustBe "change-goods-item-number-1"
+          }
+        }
+      }
+    }
+
+    "addOrRemoveGoodsItemNumber" - {
+      "must return None" - {
+        "when goodsItemNumber array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = EquipmentAnswersHelper(emptyUserAnswers, mode, incidentIndex, equipmentIndex)
+              val result = helper.addOrRemoveGoodsItemNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when goodsItemNumber array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(ItemSection(incidentIndex, equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
+              val result  = helper.addOrRemoveGoodsItemNumber.get
+
+              result.id mustBe "add-or-remove-goods-item-numbers"
+              result.text mustBe "Add or remove goods item numbers"
+              result.href mustBe itemRoutes.AddAnotherItemNumberYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
           }
         }
       }

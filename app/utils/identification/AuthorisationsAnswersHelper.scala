@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
-import viewModels.ListItem
+import viewModels.{Link, ListItem}
 
 class AuthorisationsAnswersHelper(
   userAnswers: UserAnswers,
@@ -43,6 +43,14 @@ class AuthorisationsAnswersHelper(
     id = Some(s"change-authorisation-${index.display}"),
     args = index.display
   )(AuthorisationDomain.userAnswersReader(index))
+
+  def addOrRemoveAuthorisation: Option[Link] = buildLink(AuthorisationsSection) {
+    Link(
+      id = "add-or-remove-authorisations",
+      text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
+      href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
+    )
+  }
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {

@@ -18,12 +18,15 @@ package utils.incident
 
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
+import controllers.incident.equipment.seal.{routes => sealRoutes}
+import controllers.incident.equipment.itemNumber.{routes => itemRoutes}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.sections.incident.{ItemsSection, SealsSection}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
+import viewModels.Link
 
 class EquipmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -71,6 +74,14 @@ class EquipmentAnswersHelper(
     args = index.display
   )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, index))
 
+  def addOrRemoveSeals: Option[Link] = buildLink(SealsSection(incidentIndex, equipmentIndex)) {
+    Link(
+      id = "add-or-remove-seals",
+      text = messages("arrivals.checkYourAnswers.seals.addOrRemove"),
+      href = sealRoutes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+    )
+  }
+
   def goodsItemNumbers: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(ItemsSection(incidentIndex, equipmentIndex))(goodsItemNumber)
 
@@ -80,6 +91,14 @@ class EquipmentAnswersHelper(
     id = Some(s"change-goods-item-number-${index.display}"),
     args = index.display
   )(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, index))
+
+  def addOrRemoveGoodsItemNumber: Option[Link] = buildLink(ItemsSection(incidentIndex, equipmentIndex)) {
+    Link(
+      id = "add-or-remove-goods-item-numbers",
+      text = messages("arrivals.checkYourAnswers.goodsItemNumbers.addOrRemove"),
+      href = itemRoutes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
+    )
+  }
 
 }
 

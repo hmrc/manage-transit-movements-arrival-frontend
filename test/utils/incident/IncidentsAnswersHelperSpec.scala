@@ -27,6 +27,8 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
+import pages.sections.incident.IncidentSection
+import play.api.libs.json.Json
 import viewModels.ListItem
 
 class IncidentsAnswersHelperSpec extends SpecBase with Generators {
@@ -59,6 +61,34 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
                   val result = helper.incidents
                   result.size mustBe count
               }
+          }
+        }
+      }
+    }
+
+    "addOrRemoveIncidents" - {
+      "must return None" - {
+        "when incidents array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addOrRemoveIncidents
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when seals array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(IncidentSection(Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = IncidentsAnswersHelper(answers, mode)
+              val result  = helper.addOrRemoveIncidents.get
+
+              result.id mustBe "add-or-remove-incidents"
+              result.text mustBe "Add or remove incidents"
+              result.href mustBe routes.AddAnotherIncidentController.onPageLoad(answers.mrn, mode).url
           }
         }
       }

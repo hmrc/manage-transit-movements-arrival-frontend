@@ -19,7 +19,6 @@ package viewModels.identification
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.AuthorisationsAnswersHelper
-import viewModels.Link
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -37,11 +36,7 @@ object AuthorisationsAnswersViewModel {
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
         rows = helper.authorisations,
-        addAnotherLink = Link(
-          id = "add-or-remove-authorisations",
-          text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
-          href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
-        )
+        addAnotherLink = helper.addOrRemoveAuthorisation
       )
 
       new AuthorisationsAnswersViewModel(section)

@@ -37,11 +37,7 @@ object IncidentsAnswersViewModel {
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.incidents.subheading"),
         rows = helper.incidentFlag.toList ++ helper.incidents,
-        addAnotherLink = Link(
-          id = "add-or-remove-incidents",
-          text = messages("arrivals.checkYourAnswers.incidents.addOrRemove"),
-          href = controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode).url
-        )
+        addAnotherLink = helper.addOrRemoveIncidents
       )
 
       IncidentsAnswersViewModel(section)

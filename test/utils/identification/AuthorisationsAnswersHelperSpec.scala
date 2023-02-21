@@ -28,6 +28,8 @@ import org.scalacheck.Gen
 import org.scalatest.Assertion
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
+import pages.sections.identification.AuthorisationSection
+import play.api.libs.json.Json
 import viewModels.ListItem
 
 class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
@@ -60,6 +62,34 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                   val result = helper.authorisations
                   result.size mustBe count
               }
+          }
+        }
+      }
+    }
+
+    "addOrRemoveAuthorisations" - {
+      "must return None" - {
+        "when authorisations array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = AuthorisationsAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addOrRemoveAuthorisation
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when seals array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AuthorisationSection(Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = AuthorisationsAnswersHelper(answers, mode)
+              val result  = helper.addOrRemoveAuthorisation.get
+
+              result.id mustBe "add-or-remove-authorisations"
+              result.text mustBe "Add or remove authorisations"
+              result.href mustBe routes.AddAnotherAuthorisationController.onPageLoad(answers.mrn, mode).url
           }
         }
       }

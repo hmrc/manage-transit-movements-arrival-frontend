@@ -37,6 +37,8 @@ import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryP
 import pages.incident.equipment.ContainerIdentificationNumberYesNoPage
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 import pages.incident.transportMeans.{IdentificationNumberPage, IdentificationPage, TransportNationalityPage}
+import pages.sections.incident.EquipmentSection
+import play.api.libs.json.Json
 
 import java.time.LocalDate
 
@@ -131,6 +133,34 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.href mustBe equipmentRoutes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
               action.visuallyHiddenText.get mustBe "transport equipment 1"
               action.id mustBe "change-transport-equipment-1"
+          }
+        }
+      }
+    }
+
+    "addOrRemoveEquipments" - {
+      "must return None" - {
+        "when equipments array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
+              val result = helper.addOrRemoveEquipments
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when equipments array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(EquipmentSection(incidentIndex, Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = IncidentAnswersHelper(answers, mode, incidentIndex)
+              val result  = helper.addOrRemoveEquipments.get
+
+              result.id mustBe "add-or-remove-transport-equipment"
+              result.text mustBe "Add or remove transport equipment"
+              result.href mustBe equipmentRoutes.AddAnotherEquipmentController.onPageLoad(answers.mrn, mode, incidentIndex).url
           }
         }
       }

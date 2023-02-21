@@ -22,7 +22,6 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.Link
 import viewModels.identification.AuthorisationsAnswersViewModel.AuthorisationsAnswersViewModelProvider
 
 class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -42,11 +41,7 @@ class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
               section.sectionTitle.get mustBe "Authorisations"
               section.rows.size mustBe numberOfAuthorisations
-              section.addAnotherLink.get mustBe Link(
-                "add-or-remove-authorisations",
-                "Add or remove authorisations",
-                controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
-              )
+              section.addAnotherLink must be(defined)
           }
       }
     }
