@@ -25,30 +25,7 @@ import scala.language.implicitConversions
 package object api {
 
   lazy val identificationPath: JsPath = __ \ "identification"
-
-  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
-
-  lazy val traderDetailsPath: JsPath = __ \ "traderDetails"
-  lazy val consignmentPath: JsPath   = traderDetailsPath \ "consignment"
-
-  lazy val routeDetailsPath: JsPath = __ \ "routeDetails"
-
-  lazy val transportDetailsPath: JsPath     = __ \ "transportDetails"
-  lazy val preRequisitesPath: JsPath        = transportDetailsPath \ "preRequisites"
-  lazy val authorisationsPath: JsPath       = transportDetailsPath \ "authorisationsAndLimit" \ "authorisations"
-  lazy val equipmentsAndChargesPath: JsPath = transportDetailsPath \ "equipmentsAndCharges"
-  lazy val equipmentsPath: JsPath           = equipmentsAndChargesPath \ "equipments"
-
-  lazy val guaranteesPath: JsPath = __ \ "guaranteeDetails"
-
-  lazy val reducedDatasetIndicatorReads: Reads[Boolean] =
-    (consignmentPath \ "approvedOperator").readWithDefault[Boolean](false)
-
-  lazy val inlandModeReads: Reads[String] =
-    (transportDetailsPath \ "inlandMode").read[String]
-
-  lazy val borderModeOfTransportReads: Reads[Option[String]] =
-    (transportDetailsPath \ "borderModeOfTransport").readNullable[String]
+  lazy val authorisationsPath: JsPath = __ \ "authorisations"
 
   implicit class RichJsPath(path: JsPath) {
 

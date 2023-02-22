@@ -22,7 +22,7 @@ import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 import scala.xml.NamespaceBinding
 
-object Header extends {
+object Header {
 
   val scope: NamespaceBinding              = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
   val formatterNoMillis: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")

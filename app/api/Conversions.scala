@@ -18,36 +18,13 @@ package api
 
 import generated._
 import models.journeyDomain.ArrivalPostTransitionDomain
-import models.journeyDomain.identification.{AuthorisationsDomain, IdentificationDomain}
 import models.journeyDomain.incident._
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.locationOfGoods._
-import models.reference.CustomsOffice
 import models.{Index, UserAnswers}
 import pages.incident.ContainerIndicatorYesNoPage
 
 object Conversions {
-
-  def authorisations(domain: Option[AuthorisationsDomain]): Seq[AuthorisationType01] =
-    domain
-      .map(
-        authorisation =>
-          authorisation.authorisations.map(
-            a =>
-              AuthorisationType01(
-                authorisation.authorisations.indexOf(a).toString,
-                a.`type`.toString,
-                a.referenceNumber
-              )
-          )
-      )
-      .getOrElse(Seq.empty)
-
-  def customsOfficeOfDestination(customsOffice: CustomsOffice): CustomsOfficeOfDestinationActualType03 =
-    CustomsOfficeOfDestinationActualType03(customsOffice.id)
-
-  def traderAtDestination(identificationDomain: IdentificationDomain): TraderAtDestinationType01 =
-    TraderAtDestinationType01(identificationDomain.identificationNumber)
 
   def consignment(domain: ArrivalPostTransitionDomain, userAnswers: UserAnswers): ConsignmentType01 =
     ConsignmentType01(
