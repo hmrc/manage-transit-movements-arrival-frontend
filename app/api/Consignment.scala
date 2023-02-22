@@ -87,10 +87,11 @@ object gNSSType {
   implicit val reads: Reads[GNSSType] = (
     (__ \ "???").read[String] and
       (__ \ "???").read[String]
-  ).apply {
+    ).apply {
     (x, y) =>
       GNSSType(x, y)
   }
+}
 
 object incidentType01 {
 
