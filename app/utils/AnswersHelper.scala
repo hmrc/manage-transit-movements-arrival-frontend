@@ -18,7 +18,7 @@ package utils
 
 import models.journeyDomain.Stage.AccessingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, UserAnswersReader}
-import models.{Index, Mode, MovementReferenceNumber, RichOptionJsArray, UserAnswers}
+import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichOptionJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import pages.sections.Section
@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import viewModels.ListItem
+import viewModels.{Link, ListItem}
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -154,4 +154,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
             )
         }
     }
+
+  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
+    if (userAnswers.get(section).exists(_.nonEmpty)) Some(link) else None
 }

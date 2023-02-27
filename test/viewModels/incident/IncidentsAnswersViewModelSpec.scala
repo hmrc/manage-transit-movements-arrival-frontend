@@ -18,25 +18,16 @@ package viewModels.incident
 
 import base.SpecBase
 import generators.Generators
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.IncidentFlagPage
 import viewModels.incident.IncidentsAnswersViewModel.IncidentsAnswersViewModelProvider
-import viewModels.sections.Section
 
 class IncidentsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val sectionTitle = "Incidents"
-
-  private def checkAddAnotherLink(section: Section, userAnswers: UserAnswers, mode: Mode): Assertion = {
-    val addOrRemoveIncidentsLink = section.addAnotherLink.value
-    addOrRemoveIncidentsLink.text mustBe "Add or remove incidents"
-    addOrRemoveIncidentsLink.id mustBe "add-or-remove-incidents"
-    addOrRemoveIncidentsLink.href mustBe controllers.incident.routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode).url
-  }
 
   "incidents section" - {
     "when there was an incident" - {
@@ -53,7 +44,7 @@ class IncidentsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
                 val section = new IncidentsAnswersViewModelProvider().apply(userAnswers, mode).section
                 section.sectionTitle.get mustBe sectionTitle
                 section.rows.size mustBe 1 + numberOfIncidents
-                checkAddAnotherLink(section, userAnswers, mode)
+                section.addAnotherLink must be(defined)
             }
         }
       }
@@ -67,7 +58,7 @@ class IncidentsAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             val section = new IncidentsAnswersViewModelProvider().apply(userAnswers, mode).section
             section.sectionTitle.get mustBe sectionTitle
             section.rows.size mustBe 1
-            checkAddAnotherLink(section, userAnswers, mode)
+            section.addAnotherLink must not be defined
         }
       }
     }

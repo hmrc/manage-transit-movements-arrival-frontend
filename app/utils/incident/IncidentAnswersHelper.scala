@@ -30,6 +30,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
+import viewModels.Link
 
 import java.time.LocalDate
 
@@ -49,6 +50,14 @@ class IncidentAnswersHelper(
     id = Some(s"change-transport-equipment-${index.display}"),
     args = index.display
   )(EquipmentDomain.userAnswersReader(incidentIndex, index))
+
+  def addOrRemoveEquipments: Option[Link] = buildLink(EquipmentsSection(incidentIndex)) {
+    Link(
+      id = "add-or-remove-transport-equipment",
+      text = messages("arrivals.checkYourAnswers.equipments.addOrRemove"),
+      href = controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
+    )
+  }
 
   def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = IncidentCountryPage(incidentIndex),
