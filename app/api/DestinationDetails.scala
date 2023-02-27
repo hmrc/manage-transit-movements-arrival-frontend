@@ -33,7 +33,7 @@ object DestinationDetails {
 object customsOfficeOfDestinationActualType03 {
 
   def reads: Reads[CustomsOfficeOfDestinationActualType03] =
-    (identificationPath \ "destinationOffice")
+    (identificationPath \ "destinationOffice" \ "id")
       .read[String]
       .map(
         x => CustomsOfficeOfDestinationActualType03(x)

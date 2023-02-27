@@ -17,7 +17,7 @@
 package connectors
 
 import api.Header.scope
-import api.{Authorisations, Conversions, DestinationDetails, Header, TransitOperation}
+import api.{Authorisations, Consignment, DestinationDetails, Header, TransitOperation}
 import config.FrontendAppConfig
 import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
@@ -49,7 +49,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
       val authorisations                       = Authorisations.transform(userAnswers)
       val customsOfficeOfDestination           = DestinationDetails.customsOfficeOfDestination(userAnswers)
       val traderAtDestination                  = DestinationDetails.traderAtDestination(userAnswers)
-      val consignment                          = Conversions.consignment(arrivalDomain, userAnswers)
+      val consignment                          = Consignment.transform(userAnswers)
 
       CC007CType(
         message,

@@ -17,84 +17,12 @@
 package api
 
 import generated._
-import models.journeyDomain.ArrivalPostTransitionDomain
 import models.journeyDomain.incident._
 import models.journeyDomain.incident.equipment.EquipmentsDomain
-import models.journeyDomain.locationOfGoods._
 import models.{Index, UserAnswers}
 import pages.incident.ContainerIndicatorYesNoPage
 
 object Conversions {
-
-  def consignment(domain: ArrivalPostTransitionDomain, userAnswers: UserAnswers): ConsignmentType01 =
-    ConsignmentType01(
-      LocationOfGoods = LocationOfGoodsType01(
-        typeOfLocation = domain.locationOfGoods.typeOfLocation.code,
-        qualifierOfIdentification = domain.locationOfGoods.qualifierOfIdentificationDetails.qualifierOfIdentification,
-        authorisationNumber = authorisationNumber(domain),
-        additionalIdentifier = additionalIdentifier(domain),
-        UNLocode = unLocodeExtendedCode(domain),
-        CustomsOffice = customsOffice(domain),
-        GNSS = coordinatesGNSSType(domain),
-        EconomicOperator = economicOperator(domain),
-        Address = addressNoPostcode(domain),
-        PostcodeAddress = addressWithPostcode(domain),
-        ContactPerson = domain.locationOfGoods.qualifierOfIdentificationDetails.contactPerson.map(
-          p => ContactPersonType06(p.name, p.phoneNumber)
-        )
-      ),
-      Incident = incidentsSection(domain.incidents, userAnswers)
-    )
-
-  private def authorisationNumber(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case AuthorisationNumberDomain(authorisationNumber, _, _) => Some(authorisationNumber)
-      case _                                                    => None
-    }
-
-  private def additionalIdentifier(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case AuthorisationNumberDomain(_, additionalIdentifier, _) => additionalIdentifier
-      case _                                                     => None
-    }
-
-  private def unLocodeExtendedCode(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case UnlocodeDomain(code, _) => Some(code.unLocodeExtendedCode)
-      case _                       => None
-    }
-
-  private def customsOffice(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case CustomsOfficeDomain(customsOffice) => Some(CustomsOfficeType01(customsOffice.id))
-      case _                                  => None
-    }
-
-  private def coordinatesGNSSType(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case CoordinatesDomain(coordinates, _) => Some(GNSSType(coordinates.latitude, coordinates.longitude))
-      case _                                 => None
-    }
-
-  private def economicOperator(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case EoriNumberDomain(eoriNumber, _, _) => Some(EconomicOperatorType03(eoriNumber))
-      case _                                  => None
-    }
-
-  private def addressNoPostcode(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case AddressDomain(country, address, _) =>
-        Some(AddressType14(address.numberAndStreet, address.postalCode, address.city, country.code.code))
-      case _ => None
-    }
-
-  private def addressWithPostcode(domain: ArrivalPostTransitionDomain) =
-    domain.locationOfGoods.qualifierOfIdentificationDetails match {
-      case PostalCodeDomain(address, _) =>
-        Some(PostcodeAddressType02(Some(address.streetNumber), address.postalCode, address.country.code.code))
-      case _ => None
-    }
 
   private def incidentsSection(domain: Option[IncidentsDomain], userAnswers: UserAnswers): Seq[IncidentType01] =
     domain
