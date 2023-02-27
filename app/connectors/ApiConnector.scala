@@ -38,42 +38,35 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     HeaderNames.CONTENT_TYPE -> "application/xml"
   )
 
-  def createPayload(userAnswers: UserAnswers): Either[Object, CC007CType] =
-    for {
-      arrivalDomain <- UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
-    } yield {
-      val message: MESSAGE_FROM_TRADERSequence = Header.message
-      val messageType: MessageType007          = Header.messageType
-      val correlationIdentifier                = Header.correlationIdentifier
-      val transitOperation                     = TransitOperation.transform(userAnswers)
-      val authorisations                       = Authorisations.transform(userAnswers)
-      val customsOfficeOfDestination           = DestinationDetails.customsOfficeOfDestination(userAnswers)
-      val traderAtDestination                  = DestinationDetails.traderAtDestination(userAnswers)
-      val consignment                          = Consignment.transform(userAnswers)
+  def createPayload(userAnswers: UserAnswers): CC007CType = {
+    val message: MESSAGE_FROM_TRADERSequence = Header.message
+    val messageType: MessageType007          = Header.messageType
+    val correlationIdentifier                = Header.correlationIdentifier
+    val transitOperation                     = TransitOperation.transform(userAnswers)
+    val authorisations                       = Authorisations.transform(userAnswers)
+    val customsOfficeOfDestination           = DestinationDetails.customsOfficeOfDestination(userAnswers)
+    val traderAtDestination                  = DestinationDetails.traderAtDestination(userAnswers)
+    val consignment                          = Consignment.transform(userAnswers)
 
-      CC007CType(
-        message,
-        messageType,
-        correlationIdentifier,
-        transitOperation,
-        authorisations,
-        customsOfficeOfDestination,
-        traderAtDestination,
-        consignment,
-        attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
-      )
-    }
+    CC007CType(
+      message,
+      messageType,
+      correlationIdentifier,
+      transitOperation,
+      authorisations,
+      customsOfficeOfDestination,
+      traderAtDestination,
+      consignment,
+      attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+    )
+  }
 
   def submitDeclaration(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
-    val declarationUrl = s"${appConfig.apiUrl}/movements/arrivals"
+    val declarationUrl  = s"${appConfig.apiUrl}/movements/arrivals"
+    val payload: String = toXML[CC007CType](createPayload(userAnswers), "ncts:CC007C", scope).toString
 
-    createPayload(userAnswers) match {
-      case Left(msg) => throw new BadRequestException(msg.toString)
-      case Right(submissionModel) =>
-        val payload: String = toXML[CC007CType](submissionModel, "ncts:CC007C", scope).toString
-        httpClient.POSTString(declarationUrl, payload, requestHeaders)
-    }
+    httpClient.POSTString(declarationUrl, payload, requestHeaders)
 
   }
 }
