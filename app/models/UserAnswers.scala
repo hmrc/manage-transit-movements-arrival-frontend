@@ -110,4 +110,5 @@ object UserAnswers {
     )(unlift(UserAnswers.unapply))
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
+
 }
