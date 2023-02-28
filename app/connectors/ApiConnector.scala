@@ -21,12 +21,11 @@ import api.{Authorisations, Consignment, DestinationDetails, Header, TransitOper
 import config.FrontendAppConfig
 import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
-import models.journeyDomain.{ArrivalPostTransitionDomain, UserAnswersReader}
 import play.api.Logging
 import play.api.http.HeaderNames
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,6 +64,8 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
 
     val declarationUrl  = s"${appConfig.apiUrl}/movements/arrivals"
     val payload: String = toXML[CC007CType](createPayload(userAnswers), "ncts:CC007C", scope).toString
+
+    logger.debug(s"ApiConnector::submitDeclaration payload: $payload")
 
     httpClient.POSTString(declarationUrl, payload, requestHeaders)
 

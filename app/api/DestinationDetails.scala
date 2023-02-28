@@ -18,7 +18,7 @@ package api
 
 import generated.{CustomsOfficeOfDestinationActualType03, TraderAtDestinationType01}
 import models.UserAnswers
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.Reads
 
 object DestinationDetails {
 

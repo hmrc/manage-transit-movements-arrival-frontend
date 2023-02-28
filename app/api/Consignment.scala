@@ -19,7 +19,7 @@ package api
 import generated._
 import models.UserAnswers
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{__, Reads}
 
 object Consignment {
 
@@ -121,7 +121,7 @@ object addressType01 {
     (__ \ "address" \ "numberAndStreet").readNullable[String] and
       (__ \ "address" \ "postalCode").readNullable[String] and
       (__ \ "address" \ "city").readNullable[String]
-    ).tupled.map {
+  ).tupled.map {
     case (Some(streetAndNumber), postcode, Some(city)) =>
       Some(AddressType01(streetAndNumber, postcode, city))
     case _ => None
@@ -165,15 +165,25 @@ object contactPersonType06 {
 
 object incidentType01 {
 
+  private lazy val convertIncidentCode: String => String = {
+    case "deviatedFromItinerary"         => "1"
+    case "sealsBrokenOrTampered"         => "2"
+    case "transferredToAnotherTransport" => "3"
+    case "partiallyOrFullyUnloaded"      => "4"
+    case "carrierUnableToComply"         => "5"
+    case "unexpectedlyChanged"           => "6"
+    case _                               => throw new Exception("Invalid incident code")
+  }
+
   def reads(index: Int): Reads[IncidentType01] = (
     (index.toString: Reads[String]) and
-      (__ \ "incidentCode").read[String] and
+      (__ \ "incidentCode").read[String].map(convertIncidentCode) and
       (__ \ "incidentText").read[String] and
       (__ \ "endorsement").readNullable[EndorsementType01](endorsementType01.reads) and
       __.read[LocationType01](locationType01.reads) and
-      __.readArray[TransportEquipmentType01](transportEquipmentType01.reads) and
-      (__ \ "???").readNullable[TranshipmentType01](transhipmentType01.reads)
-    ).apply {
+      (__ \ "equipments").readArray[TransportEquipmentType01](transportEquipmentType01.reads) and
+      __.read[Option[TranshipmentType01]](transhipmentType01.reads)
+  ).apply {
     (a, b, c, d, e, f, g) =>
       IncidentType01(
         sequenceNumber = a,
@@ -191,10 +201,10 @@ object incidentType01 {
 object endorsementType01 {
 
   def reads: Reads[EndorsementType01] = (
-  (__ \ "date").read[String] and
-    (__ \ "authority").read[String] and
-    (__ \ "place").read[String] and
-    (__ \ "country" \ "code").read[String]
+    (__ \ "date").read[String] and
+      (__ \ "authority").read[String] and
+      (__ \ "location").read[String] and
+      (__ \ "country" \ "code").read[String]
   ).apply {
     (a, b, c, d) =>
       EndorsementType01(
@@ -218,10 +228,10 @@ object locationType01 {
 
   def reads: Reads[LocationType01] = (
     (__ \ "qualifierOfIdentification").read[String].map(convertQualifierOfIdentification) and
-      (__ \ "unLocode").readNullable[String] and
-      (__ \ "country" \ "code").read[String] and
+      (__ \ "unLocode" \ "unLocodeExtendedCode").readNullable[String] and
+      (__ \ "incidentCountry" \ "code").read[String] and
       (__ \ "coordinates").readNullable[GNSSType](gnssType.reads) and
-      (__ \ "address").read[Option[AddressType01]](addressType01.reads)
+      __.read[Option[AddressType01]](addressType01.reads)
   ).apply {
     (a, b, c, d, e) =>
       LocationType01(
@@ -238,11 +248,11 @@ object locationType01 {
 object transportEquipmentType01 {
 
   def apply(
-             sequenceNumber: String,
-             containerIdentificationNumber: Option[String],
-             Seal: Seq[SealType05],
-             GoodsReference: Seq[GoodsReferenceType01]
-           ): TransportEquipmentType01 =
+    sequenceNumber: String,
+    containerIdentificationNumber: Option[String],
+    Seal: Seq[SealType05],
+    GoodsReference: Seq[GoodsReferenceType01]
+  ): TransportEquipmentType01 =
     TransportEquipmentType01(sequenceNumber, containerIdentificationNumber, Some(Seal.length), Seal, GoodsReference)
 
   def reads(index: Int): Reads[TransportEquipmentType01] = (
@@ -250,15 +260,17 @@ object transportEquipmentType01 {
       (__ \ "containerIdentificationNumber").readNullable[String] and
       (__ \ "seals").readArray[SealType05](sealType05.reads) and
       (__ \ "itemNumbers").readArray[GoodsReferenceType01](goodsReferenceType01.reads)
-    )(transportEquipmentType01.apply _)
+  )(transportEquipmentType01.apply _)
+
 }
 
 object sealType05 {
 
   def reads(index: Int): Reads[SealType05] = (
     (index.toString: Reads[String]) and
-      (__ \ "identificationNumber").read[String]
-    )(SealType05.apply _)
+      (__ \ "sealIdentificationNumber").read[String]
+  )(SealType05.apply _)
+
 }
 
 object goodsReferenceType01 {
@@ -266,22 +278,49 @@ object goodsReferenceType01 {
   def reads(index: Int): Reads[GoodsReferenceType01] = (
     (index.toString: Reads[String]) and
       (__ \ "itemNumber").read[String].map(BigInt(_))
-    )(GoodsReferenceType02.apply _)
+  )(GoodsReferenceType01.apply _)
+
 }
 
 object transhipmentType01 {
 
-  def reads: Reads[TranshipmentType01] = (
+  def reads: Reads[Option[TranshipmentType01]] = (
     (__ \ "containerIndicatorYesNo").readWithDefault[Boolean](false) and
       (__ \ "transportMeans").readNullable[TransportMeansType01](transportMeansType01.reads)
-    ).apply {
-    (a, b) =>
-      TranshipmentType01(
-        a,
-        TransportMeans = b
+  ).apply {
+    (containerIndicator, transportMeans) =>
+      transportMeans.map(
+        x =>
+          TranshipmentType01(
+            containerIndicator = containerIndicator,
+            TransportMeans = x
+          )
       )
   }
 
 }
 
+object transportMeansType01 {
 
+  lazy val convertTypeOfIdentification: String => String = {
+    case "imoShipIdNumber"        => "10"
+    case "seaGoingVessel"         => "11"
+    case "wagonNumber"            => "20"
+    case "trainNumber"            => "21"
+    case "regNumberRoadVehicle"   => "30"
+    case "regNumberRoadTrailer"   => "31"
+    case "iataFlightNumber"       => "40"
+    case "regNumberAircraft"      => "41"
+    case "europeanVesselIdNumber" => "80"
+    case "inlandWaterwaysVehicle" => "81"
+    case "unknown"                => "99"
+    case _                        => throw new Exception("Invalid type of identification value")
+  }
+
+  def reads: Reads[TransportMeansType01] = (
+    (__ \ "identification").read[String].map(convertTypeOfIdentification) and
+      (__ \ "identificationNumber").read[String] and
+      (__ \ "transportNationality" \ "code").read[String]
+  )(TransportMeansType01.apply _)
+
+}
