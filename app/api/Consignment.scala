@@ -16,7 +16,7 @@
 
 package api
 
-import generated._
+import generated.{EndorsementType01, _}
 import models.UserAnswers
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, Reads}
@@ -33,13 +33,7 @@ object consignmentType01 {
   implicit val reads: Reads[ConsignmentType01] = (
     (__ \ "locationOfGoods").read[LocationOfGoodsType01](locationOfGoodsType01.reads) and
       (__ \ "incidents").readArray[IncidentType01](incidentType01.reads)
-  ).apply {
-    (locationOfGoods, incident) =>
-      ConsignmentType01(
-        LocationOfGoods = locationOfGoods,
-        Incident = incident
-      )
-  }
+  )(ConsignmentType01.apply _)
 
 }
 
@@ -74,7 +68,7 @@ object locationOfGoodsType01 {
       (__ \ "qualifierOfIdentificationDetails" \ "coordinates").readNullable[GNSSType](gnssType.reads) and
       (__ \ "qualifierOfIdentificationDetails" \ "identificationNumber").readNullable[EconomicOperatorType03](economicOperatorType03.reads) and
       (__ \ "qualifierOfIdentificationDetails").read[Option[AddressType14]](addressType14.reads) and
-      (__ \ "qualifierOfIdentificationDetails").read[Option[PostcodeAddressType02]](postcodeAddressType02.reads) and
+      (__ \ "qualifierOfIdentificationDetails" \ "postalCode").readNullable[PostcodeAddressType02](postcodeAddressType02.reads) and
       (__ \ "contactPerson").readNullable[ContactPersonType06](contactPersonType06.reads)
   )(LocationOfGoodsType01.apply _)
 
@@ -117,29 +111,21 @@ object addressType14 {
 
 object addressType01 {
 
-  implicit val reads: Reads[Option[AddressType01]] = (
-    (__ \ "address" \ "numberAndStreet").readNullable[String] and
-      (__ \ "address" \ "postalCode").readNullable[String] and
-      (__ \ "address" \ "city").readNullable[String]
-  ).tupled.map {
-    case (Some(streetAndNumber), postcode, Some(city)) =>
-      Some(AddressType01(streetAndNumber, postcode, city))
-    case _ => None
-  }
+  implicit val reads: Reads[AddressType01] = (
+    (__ \ "numberAndStreet").read[String] and
+      (__ \ "postalCode").readNullable[String] and
+      (__ \ "city").read[String]
+  )(AddressType01.apply _)
 
 }
 
 object postcodeAddressType02 {
 
-  implicit val reads: Reads[Option[PostcodeAddressType02]] = (
-    (__ \ "postalCode" \ "streetNumber").readNullable[String] and
-      (__ \ "postalCode" \ "postalCode").readNullable[String] and
-      (__ \ "postalCode" \ "country" \ "code").readNullable[String]
-  ).tupled.map {
-    case (streetAndNumber, Some(postcode), Some(country)) =>
-      Some(PostcodeAddressType02(streetAndNumber, postcode, country))
-    case _ => None
-  }
+  implicit val reads: Reads[PostcodeAddressType02] = (
+    (__ \ "streetNumber").readNullable[String] and
+      (__ \ "postalCode").read[String] and
+      (__ \ "country" \ "code").read[String]
+  )(PostcodeAddressType02.apply _)
 
 }
 
@@ -183,37 +169,18 @@ object incidentType01 {
       __.read[LocationType01](locationType01.reads) and
       (__ \ "equipments").readArray[TransportEquipmentType01](transportEquipmentType01.reads) and
       __.read[Option[TranshipmentType01]](transhipmentType01.reads)
-  ).apply {
-    (a, b, c, d, e, f, g) =>
-      IncidentType01(
-        sequenceNumber = a,
-        code = b,
-        text = c,
-        Endorsement = d,
-        Location = e,
-        TransportEquipment = f,
-        Transhipment = g
-      )
-  }
+  )(IncidentType01.apply _)
 
 }
 
 object endorsementType01 {
 
   def reads: Reads[EndorsementType01] = (
-    (__ \ "date").read[String] and
+    (__ \ "date").read[String].map(stringToXMLGregorianCalendar) and
       (__ \ "authority").read[String] and
       (__ \ "location").read[String] and
       (__ \ "country" \ "code").read[String]
-  ).apply {
-    (a, b, c, d) =>
-      EndorsementType01(
-        date = a,
-        authority = b,
-        place = c,
-        country = d
-      )
-  }
+  )(EndorsementType01.apply _)
 
 }
 
@@ -231,17 +198,8 @@ object locationType01 {
       (__ \ "unLocode" \ "unLocodeExtendedCode").readNullable[String] and
       (__ \ "incidentCountry" \ "code").read[String] and
       (__ \ "coordinates").readNullable[GNSSType](gnssType.reads) and
-      __.read[Option[AddressType01]](addressType01.reads)
-  ).apply {
-    (a, b, c, d, e) =>
-      LocationType01(
-        qualifierOfIdentification = a,
-        UNLocode = b,
-        country = c,
-        GNSS = d,
-        Address = e
-      )
-  }
+      (__ \ "address").readNullable[AddressType01](addressType01.reads)
+  )(LocationType01.apply _)
 
 }
 
