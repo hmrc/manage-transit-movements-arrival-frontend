@@ -46,14 +46,14 @@ object consignmentType01 {
 object locationOfGoodsType01 {
 
   private lazy val convertQualifierOfIdentification: String => String = {
-    case "postalCode"              => "T"
-    case "unlocode"                => "U"
-    case "customsOfficeIdentifier" => "V"
-    case "coordinates"             => "W"
-    case "eoriNumber"              => "X"
-    case "authorisationNumber"     => "Y"
-    case "address"                 => "Z"
-    case _                         => throw new Exception("Invalid qualifier of identification value")
+    case "postalCode"          => "T"
+    case "unlocode"            => "U"
+    case "customsOffice"       => "V"
+    case "coordinates"         => "W"
+    case "eoriNumber"          => "X"
+    case "authorisationNumber" => "Y"
+    case "address"             => "Z"
+    case _                     => throw new Exception("Invalid qualifier of identification value")
   }
 
   private lazy val convertTypeOfLocation: String => String = {
@@ -69,10 +69,10 @@ object locationOfGoodsType01 {
       (__ \ "qualifierOfIdentification").read[String].map(convertQualifierOfIdentification) and
       (__ \ "qualifierOfIdentificationDetails" \ "authorisationNumber").readNullable[String] and
       (__ \ "qualifierOfIdentificationDetails" \ "additionalIdentifier").readNullable[String] and
-      (__ \ "qualifierOfIdentificationDetails" \ "unLocode").readNullable[String] and
+      (__ \ "qualifierOfIdentificationDetails" \ "unlocode" \ "unLocodeExtendedCode").readNullable[String] and
       (__ \ "qualifierOfIdentificationDetails" \ "customsOffice").readNullable[CustomsOfficeType01](customsOfficeType01.reads) and
       (__ \ "qualifierOfIdentificationDetails" \ "coordinates").readNullable[GNSSType](gnssType.reads) and
-      (__ \ "qualifierOfIdentificationDetails" \ "eori").readNullable[EconomicOperatorType03](economicOperatorType03.reads) and
+      (__ \ "qualifierOfIdentificationDetails" \ "identificationNumber").readNullable[EconomicOperatorType03](economicOperatorType03.reads) and
       (__ \ "qualifierOfIdentificationDetails").read[Option[AddressType14]](addressType14.reads) and
       (__ \ "qualifierOfIdentificationDetails").read[Option[PostcodeAddressType02]](postcodeAddressType02.reads) and
       (__ \ "contactPerson").readNullable[ContactPersonType06](contactPersonType06.reads)
@@ -132,9 +132,9 @@ object addressType01 {
 object postcodeAddressType02 {
 
   implicit val reads: Reads[Option[PostcodeAddressType02]] = (
-    (__ \ "address" \ "numberAndStreet").readNullable[String] and
-      (__ \ "address" \ "postalCode").readNullable[String] and
-      (__ \ "country" \ "code").readNullable[String]
+    (__ \ "postalCode" \ "streetNumber").readNullable[String] and
+      (__ \ "postalCode" \ "postalCode").readNullable[String] and
+      (__ \ "postalCode" \ "country" \ "code").readNullable[String]
   ).tupled.map {
     case (streetAndNumber, Some(postcode), Some(country)) =>
       Some(PostcodeAddressType02(streetAndNumber, postcode, country))
