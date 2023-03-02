@@ -19,7 +19,6 @@ package viewModels.incident
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.incident.IncidentAnswersHelper
-import viewModels.Link
 import viewModels.sections.Section
 
 import javax.inject.Inject

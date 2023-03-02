@@ -63,8 +63,8 @@ class ConversionsSpec extends SpecBase with AppWithDefaultMockFixtures with Gene
         val converted = Conversions.message
 
         val expected = MESSAGE_FROM_TRADERSequence(
-          None,
-          MESSAGE_1Sequence(
+          messageSender = Some("NCTS"),
+          messagE_1Sequence2 = MESSAGE_1Sequence(
             messageRecipient = "NCTS",
             preparationDateAndTime = converted.messagE_1Sequence2.preparationDateAndTime,
             messageIdentification = "CC007C"

@@ -38,11 +38,11 @@ object Conversions {
 
   def message: MESSAGE_FROM_TRADERSequence =
     MESSAGE_FROM_TRADERSequence(
-      None,
-      MESSAGE_1Sequence(
-        "NCTS",
-        ApiXmlHelpers.toDate(DateTime.now().toString(formatterNoMillis)),
-        "CC007C" // TODO - check this with API team? What should this be set to?
+      messageSender = Some("NCTS"),
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "NCTS",
+        preparationDateAndTime = ApiXmlHelpers.toDate(DateTime.now().toString(formatterNoMillis)),
+        messageIdentification = "CC007C" // TODO - check this with API team? What should this be set to?
       )
     )
 
