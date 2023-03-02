@@ -29,8 +29,8 @@ object Header {
 
   def message: MESSAGE_FROM_TRADERSequence =
     MESSAGE_FROM_TRADERSequence(
-      None,
-      MESSAGE_1Sequence(
+      messageSender = Some("NCTS"),
+      messagE_1Sequence2 = MESSAGE_1Sequence(
         messageRecipient = "NCTS",
         preparationDateAndTime = DateTime.now().toString(formatterNoMillis),
         messageIdentification = "CC007C" // TODO - check this with API team? What should this be set to?

@@ -20,7 +20,6 @@ import scalaxb.XMLCalendar
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
-import scala.language.implicitConversions
 
 package object api {
 
