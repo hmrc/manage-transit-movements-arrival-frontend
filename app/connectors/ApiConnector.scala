@@ -16,17 +16,16 @@
 
 package connectors
 
-import api.Conversions
-import api.Conversions.scope
+import api.Header.scope
+import api.{Authorisations, Consignment, DestinationDetails, Header, TransitOperation}
 import config.FrontendAppConfig
 import generated.{CC007CType, MESSAGE_FROM_TRADERSequence, MessageType007, PhaseIDtype}
 import models.UserAnswers
-import models.journeyDomain.{ArrivalPostTransitionDomain, UserAnswersReader}
 import play.api.Logging
 import play.api.http.HeaderNames
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,42 +37,37 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     HeaderNames.CONTENT_TYPE -> "application/xml"
   )
 
-  def createPayload(userAnswers: UserAnswers): Either[Object, CC007CType] =
-    for {
-      arrivalDomain <- UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
-    } yield {
-      val message: MESSAGE_FROM_TRADERSequence = Conversions.message
-      val messageType: MessageType007          = Conversions.messageType
-      val correlationIdentifier                = Conversions.correlationIdentifier
-      val transitOperation                     = Conversions.transitOperation(arrivalDomain.identification, arrivalDomain.incidents.isDefined)
-      val authorisations                       = Conversions.authorisations(arrivalDomain.identification.authorisations)
-      val customsOfficeOfDestination           = Conversions.customsOfficeOfDestination(arrivalDomain.identification.destinationOffice)
-      val traderAtDestination                  = Conversions.traderAtDestination(arrivalDomain.identification)
-      val consignment                          = Conversions.consignment(arrivalDomain, userAnswers)
+  def createPayload(userAnswers: UserAnswers): CC007CType = {
+    val message: MESSAGE_FROM_TRADERSequence = Header.message
+    val messageType: MessageType007          = Header.messageType
+    val correlationIdentifier                = Header.correlationIdentifier
+    val transitOperation                     = TransitOperation.transform(userAnswers)
+    val authorisations                       = Authorisations.transform(userAnswers)
+    val customsOfficeOfDestination           = DestinationDetails.customsOfficeOfDestination(userAnswers)
+    val traderAtDestination                  = DestinationDetails.traderAtDestination(userAnswers)
+    val consignment                          = Consignment.transform(userAnswers)
 
-      CC007CType(
-        message,
-        messageType,
-        correlationIdentifier,
-        transitOperation,
-        authorisations,
-        customsOfficeOfDestination,
-        traderAtDestination,
-        consignment,
-        attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
-      )
-    }
+    CC007CType(
+      message,
+      messageType,
+      correlationIdentifier,
+      transitOperation,
+      authorisations,
+      customsOfficeOfDestination,
+      traderAtDestination,
+      consignment,
+      attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+    )
+  }
 
   def submitDeclaration(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
-    val declarationUrl = s"${appConfig.apiUrl}/movements/arrivals"
+    val declarationUrl  = s"${appConfig.apiUrl}/movements/arrivals"
+    val payload: String = toXML[CC007CType](createPayload(userAnswers), "ncts:CC007C", scope).toString
 
-    createPayload(userAnswers) match {
-      case Left(msg) => throw new BadRequestException(msg.toString)
-      case Right(submissionModel) =>
-        val payload: String = toXML[CC007CType](submissionModel, "ncts:CC007C", scope).toString
-        httpClient.POSTString(declarationUrl, payload, requestHeaders)
-    }
+    logger.debug(s"ApiConnector::submitDeclaration payload: $payload")
+
+    httpClient.POSTString(declarationUrl, payload, requestHeaders)
 
   }
 }
