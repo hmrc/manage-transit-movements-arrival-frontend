@@ -24,6 +24,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
+import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,12 +39,16 @@ class SessionRepositorySpec
     with OptionValues
     with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
-  private val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  private val config: FrontendAppConfig        = app.injector.instanceOf[FrontendAppConfig]
+  private val dateTimeService: DateTimeService = app.injector.instanceOf[DateTimeService]
 
-  override protected def repository = new SessionRepository(mongoComponent, config)
+  override protected def repository = new SessionRepository(mongoComponent, config, dateTimeService)
 
-  private val userAnswers1 = UserAnswers(MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"))
-  private val userAnswers2 = UserAnswers(MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"))
+  private val userAnswers1 =
+    UserAnswers(MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"), dateTimeService.now)
+
+  private val userAnswers2 =
+    UserAnswers(MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"), dateTimeService.now)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

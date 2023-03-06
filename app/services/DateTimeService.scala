@@ -16,7 +16,7 @@
 
 package services
 
-import java.time.{Clock, LocalDate, LocalDateTime}
+import java.time.{Clock, Instant, LocalDate}
 import javax.inject.Inject
 
 class DateTimeService @Inject() (clock: Clock) {
@@ -25,5 +25,5 @@ class DateTimeService @Inject() (clock: Clock) {
 
   def yesterday: LocalDate = today.minusDays(1)
 
-  def now: LocalDateTime = LocalDateTime.now(clock)
+  def now: Instant = Instant.now(clock)
 }

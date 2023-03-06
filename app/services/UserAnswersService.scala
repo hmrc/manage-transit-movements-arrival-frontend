@@ -23,11 +23,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersService @Inject() (
-  sessionRepository: SessionRepository
+  sessionRepository: SessionRepository,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext) {
 
   def getOrCreateUserAnswers(eoriNumber: EoriNumber, movementReferenceNumber: MovementReferenceNumber): Future[UserAnswers] =
     sessionRepository.get(movementReferenceNumber.toString, eoriNumber) map {
-      _ getOrElse UserAnswers(movementReferenceNumber, eoriNumber)
+      _ getOrElse UserAnswers(movementReferenceNumber, eoriNumber, lastUpdated = dateTimeService.now)
     }
 }

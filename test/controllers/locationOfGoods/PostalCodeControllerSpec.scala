@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CountriesService
+import services.{CountriesService, DateTimeService}
 import views.html.locationOfGoods.PostalCodeView
 
 import scala.concurrent.Future
@@ -46,9 +46,11 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   private lazy val addressRoute = routes.PostalCodeController.onPageLoad(mrn, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
+  private lazy val mockDateTimeService: DateTimeService   = mock[DateTimeService]
 
   override def beforeEach(): Unit = {
     reset(mockCountriesService)
+    reset(mockDateTimeService)
     super.beforeEach()
   }
 
@@ -56,6 +58,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
+      .overrides(bind(classOf[DateTimeService]).toInstance(mockDateTimeService))
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "PostalCode Controller" - {
@@ -81,7 +84,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
-      val userAnswers = UserAnswers(mrn, eoriNumber)
+      val userAnswers = UserAnswers(mrn, eoriNumber, lastUpdated = mockDateTimeService.now)
         .setValue(PostalCodePage, testAddress)
 
       setExistingUserAnswers(userAnswers)
