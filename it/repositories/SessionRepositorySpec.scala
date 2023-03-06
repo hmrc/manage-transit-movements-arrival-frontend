@@ -42,7 +42,7 @@ class SessionRepositorySpec
   private val config: FrontendAppConfig        = app.injector.instanceOf[FrontendAppConfig]
   private val dateTimeService: DateTimeService = app.injector.instanceOf[DateTimeService]
 
-  override protected def repository = new SessionRepository(mongoComponent, config, dateTimeService)
+  override protected val repository = new SessionRepository(mongoComponent, config, dateTimeService)
 
   private val userAnswers1 =
     UserAnswers(MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"), dateTimeService.now)
@@ -88,7 +88,12 @@ class SessionRepositorySpec
 
       "must create new document when given valid UserAnswers" in {
 
-        val userAnswers = UserAnswers(MovementReferenceNumber("18GB0000601001EBD1").get, EoriNumber("EoriNumber3"), Json.obj("foo" -> "bar"))
+        val userAnswers = UserAnswers(
+          MovementReferenceNumber("18GB0000601001EBD1").get,
+          EoriNumber("EoriNumber3"),
+          Json.obj("foo" -> "bar"),
+          dateTimeService.now
+        )
 
         val setResult = repository.set(userAnswers).futureValue
 
@@ -105,13 +110,15 @@ class SessionRepositorySpec
         val userAnswer1 = UserAnswers(
           MovementReferenceNumber("18GB0000601001EBD1").get,
           EoriNumber("EoriNumber1"),
-          Json.obj("foo" -> "bar")
+          Json.obj("foo" -> "bar"),
+          dateTimeService.now
         )
 
         val userAnswer2 = UserAnswers(
           MovementReferenceNumber("18GB0000601001EBD1").get,
           EoriNumber("EoriNumber2"),
-          Json.obj("foo" -> "bar")
+          Json.obj("foo" -> "bar"),
+          dateTimeService.now
         )
 
         val setResult1 = repository.set(userAnswer1).futureValue
