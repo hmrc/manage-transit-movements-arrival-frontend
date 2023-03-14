@@ -59,7 +59,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, ProcedureType.radioItems, mode)(request, messages).toString
+        view(form, mrn, ProcedureType.values, mode)(request, messages).toString
 
     }
 
@@ -79,7 +79,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, ProcedureType.radioItems, mode)(request, messages).toString
+        view(filledForm, mrn, ProcedureType.values, mode)(request, messages).toString
 
     }
 
@@ -115,7 +115,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
       val view = injector.instanceOf[IsSimplifiedProcedureView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, ProcedureType.radioItems, mode)(request, messages).toString
+        view(boundForm, mrn, ProcedureType.values, mode)(request, messages).toString
 
     }
 

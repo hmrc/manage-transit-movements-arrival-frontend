@@ -16,16 +16,17 @@
 
 package models.incident.transportMeans
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 import play.api.i18n.Messages
 
-sealed trait Identification {
+sealed trait Identification extends Radioable[Identification] {
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
   val code: String
 
   def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
 }
 
-object Identification extends RadioModel[Identification] {
+object Identification extends EnumerableType[Identification] {
 
   case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification {
     override val code: String = "11"
@@ -71,7 +72,7 @@ object Identification extends RadioModel[Identification] {
     override val code: String = "99"
   }
 
-  override val messageKeyPrefix: String = "incident.transportMeans.identification"
+  val messageKeyPrefix: String = "incident.transportMeans.identification"
 
   val values: Seq[Identification] = Seq(
     SeaGoingVessel,

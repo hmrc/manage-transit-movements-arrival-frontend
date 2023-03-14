@@ -16,13 +16,14 @@
 
 package models.incident
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait IncidentCode {
+sealed trait IncidentCode extends Radioable[IncidentCode] {
+  override val messageKeyPrefix: String = IncidentCode.messageKeyPrefix
   val code: String
 }
 
-object IncidentCode extends RadioModel[IncidentCode] {
+object IncidentCode extends EnumerableType[IncidentCode] {
 
   case object DeviatedFromItinerary extends WithName("deviatedFromItinerary") with IncidentCode {
     override val code: String = "1"
@@ -48,8 +49,8 @@ object IncidentCode extends RadioModel[IncidentCode] {
     override val code: String = "6"
   }
 
-  override val messageKeyPrefix: String = "incident.incidentCode"
-  val prefixForDisplay: String          = s"$messageKeyPrefix.forDisplay"
+  val messageKeyPrefix: String = "incident.incidentCode"
+  val prefixForDisplay: String = s"$messageKeyPrefix.forDisplay"
 
   val values: Seq[IncidentCode] = Seq(
     DeviatedFromItinerary,

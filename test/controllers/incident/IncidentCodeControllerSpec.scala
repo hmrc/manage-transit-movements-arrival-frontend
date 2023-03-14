@@ -59,7 +59,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
+        view(form, mrn, IncidentCode.values, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
+        view(filledForm, mrn, IncidentCode.values, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,7 +111,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, IncidentCode.radioItems, mode, index)(request, messages).toString
+        view(boundForm, mrn, IncidentCode.values, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

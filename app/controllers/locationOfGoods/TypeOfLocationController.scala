@@ -53,7 +53,7 @@ class TypeOfLocationController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, TypeOfLocation.radioItems, mode))
+      Ok(view(preparedForm, mrn, TypeOfLocation.values, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -61,7 +61,7 @@ class TypeOfLocationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, TypeOfLocation.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, TypeOfLocation.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()

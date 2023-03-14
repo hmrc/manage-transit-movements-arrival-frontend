@@ -16,13 +16,14 @@
 
 package models.locationOfGoods
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait TypeOfLocation {
+sealed trait TypeOfLocation extends Radioable[TypeOfLocation] {
+  override val messageKeyPrefix: String = TypeOfLocation.messageKeyPrefix
   val code: String
 }
 
-object TypeOfLocation extends RadioModel[TypeOfLocation] {
+object TypeOfLocation extends EnumerableType[TypeOfLocation] {
 
   case object DesignatedLocation extends WithName("designatedLocation") with TypeOfLocation {
     override val code: String = "A"
@@ -40,7 +41,7 @@ object TypeOfLocation extends RadioModel[TypeOfLocation] {
     override val code: String = "D"
   }
 
-  override val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
+  val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
   val values: Seq[TypeOfLocation] = Seq(
     AuthorisedPlace,

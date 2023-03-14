@@ -16,11 +16,12 @@
 
 package models
 
-sealed trait QualifierOfIdentification {
+sealed trait QualifierOfIdentification extends Radioable[QualifierOfIdentification] {
+  override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
   val code: String
 }
 
-object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
+object QualifierOfIdentification extends EnumerableType[QualifierOfIdentification] {
 
   case object CustomsOffice extends WithName("customsOffice") with QualifierOfIdentification {
     override val code: String = "V"
@@ -50,7 +51,7 @@ object QualifierOfIdentification extends RadioModel[QualifierOfIdentification] {
     override val code: String = "T"
   }
 
-  override val messageKeyPrefix: String = "qualifierOfIdentification"
+  val messageKeyPrefix: String = "qualifierOfIdentification"
 
   val values: Seq[QualifierOfIdentification] = Seq(
     CustomsOffice,

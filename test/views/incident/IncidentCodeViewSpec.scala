@@ -30,12 +30,12 @@ class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
   override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
-    injector.instanceOf[IncidentCodeView].apply(form, mrn, IncidentCode.radioItems, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
 
   override val prefix: String = "incident.incidentCode"
 
   override def radioItems(fieldId: String, checkedValue: Option[IncidentCode] = None): Seq[RadioItem] =
-    IncidentCode.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[IncidentCode] = IncidentCode.values
 
