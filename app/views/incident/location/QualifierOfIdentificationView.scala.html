@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, radios: (String, Option[QualifierOfIdentification]) => Seq[RadioItem], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[QualifierOfIdentification], mrn: MovementReferenceNumber, qualifiers: Seq[QualifierOfIdentification], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.location.qualifierOfIdentification.title"),
@@ -43,7 +43,7 @@
 
         @inputRadio(
             field = form("value"),
-            radioItems = fieldId => radios(fieldId, form.value),
+            radioItems = fieldId => qualifiers.toRadioItems(fieldId, form.value),
             radioType = Radio(
                 heading = messages("incident.location.qualifierOfIdentification.heading"),
                 caption = Some(messages("incident.caption"))

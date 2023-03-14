@@ -22,10 +22,9 @@ import forms.EnumerableFormProvider
 import models.{Index, Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.QualifierOfIdentificationPage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.location.QualifierOfIdentificationView
 
@@ -46,9 +45,6 @@ class QualifierOfIdentificationController @Inject() (
 
   private val form = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
 
-  private def radioItems(implicit messages: Messages): (String, Option[QualifierOfIdentification]) => Seq[RadioItem] =
-    QualifierOfIdentification.locationValues.asRadioItems()
-
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage(index)) match {
@@ -56,7 +52,7 @@ class QualifierOfIdentificationController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, radioItems, mode, index))
+      Ok(view(preparedForm, mrn, QualifierOfIdentification.locationValues, mode, index))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
@@ -64,7 +60,7 @@ class QualifierOfIdentificationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, radioItems, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.locationValues, mode, index))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             QualifierOfIdentificationPage(index).writeToUserAnswers(value).writeToSession().navigate()

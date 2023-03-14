@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package models.identification
+package models
 
-import models.{EnumerableType, Radioable, WithName}
+trait EnumerableType[T] extends Enumerable.Implicits {
 
-sealed trait ProcedureType extends Radioable[ProcedureType] {
-  override val messageKeyPrefix: String = ProcedureType.messageKeyPrefix
-}
+  val values: Seq[T]
 
-object ProcedureType extends EnumerableType[ProcedureType] {
-
-  case object Normal extends WithName("normal") with ProcedureType
-  case object Simplified extends WithName("simplified") with ProcedureType
-
-  val messageKeyPrefix: String = "identification.isSimplifiedProcedure"
-
-  val values: Seq[ProcedureType] = Seq(
-    Normal,
-    Simplified
-  )
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }

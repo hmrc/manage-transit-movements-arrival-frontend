@@ -53,7 +53,7 @@ class IsSimplifiedProcedureController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, ProcedureType.radioItems, mode))
+      Ok(view(preparedForm, mrn, ProcedureType.values, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -61,7 +61,7 @@ class IsSimplifiedProcedureController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession().navigate()

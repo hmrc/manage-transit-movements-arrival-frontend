@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[AuthorisationType], mrn: MovementReferenceNumber, index: Index, radios: (String, Option[AuthorisationType]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[AuthorisationType], mrn: MovementReferenceNumber, index: Index, authorisationTypes: Seq[AuthorisationType], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.authorisation.authorisationType.title"),
@@ -42,7 +42,7 @@
 
         @inputRadio(
             field = form("value"),
-            radioItems = fieldId => radios(fieldId, form.value),
+            radioItems = fieldId => authorisationTypes.toRadioItems(fieldId, form.value),
             radioType = Radio(
                 heading = messages("identification.authorisation.authorisationType.heading"),
                 caption = Some(messages("identification.authorisation.caption"))

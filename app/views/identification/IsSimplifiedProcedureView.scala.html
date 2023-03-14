@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[ProcedureType], mrn: MovementReferenceNumber, radios: (String, Option[ProcedureType]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[ProcedureType], mrn: MovementReferenceNumber, procedureTypes: Seq[ProcedureType], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.isSimplifiedProcedure.title"),
@@ -42,7 +42,7 @@
 
         @inputRadio(
             field = form("value"),
-            radioItems = fieldId => radios(fieldId, form.value),
+            radioItems = fieldId => procedureTypes.toRadioItems(fieldId, form.value),
             radioType = Radio(
                 heading = messages("identification.isSimplifiedProcedure.heading"),
                 caption = Some(messages("site.caption"))

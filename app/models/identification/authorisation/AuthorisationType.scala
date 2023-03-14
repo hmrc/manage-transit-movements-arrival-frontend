@@ -16,21 +16,23 @@
 
 package models.identification.authorisation
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait AuthorisationType {
+sealed trait AuthorisationType extends Radioable[AuthorisationType] {
+
+  override val messageKeyPrefix: String = AuthorisationType.messageKeyPrefix
 
   def asString(f: String => AuthorisationType => String): String =
     f(AuthorisationType.prefixForDisplay)(this)
 }
 
-object AuthorisationType extends RadioModel[AuthorisationType] {
+object AuthorisationType extends EnumerableType[AuthorisationType] {
 
   case object ACT extends WithName("ACT") with AuthorisationType
   case object ACE extends WithName("ACE") with AuthorisationType
 
-  override val messageKeyPrefix: String = "identification.authorisation.authorisationType"
-  val prefixForDisplay: String          = s"$messageKeyPrefix.forDisplay"
+  val messageKeyPrefix: String = "identification.authorisation.authorisationType"
+  val prefixForDisplay: String = s"$messageKeyPrefix.forDisplay"
 
   val values: Seq[AuthorisationType] = Seq(
     ACT,

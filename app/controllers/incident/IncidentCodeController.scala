@@ -53,7 +53,7 @@ class IncidentCodeController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, IncidentCode.radioItems, mode, index))
+      Ok(view(preparedForm, mrn, IncidentCode.values, mode, index))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
@@ -61,7 +61,7 @@ class IncidentCodeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, IncidentCode.radioItems, mode, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, IncidentCode.values, mode, index))),
           value => {
             implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             IncidentCodePage(index).writeToUserAnswers(value).writeToSession().navigate()

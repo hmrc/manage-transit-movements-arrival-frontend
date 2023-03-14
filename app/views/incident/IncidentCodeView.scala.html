@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[IncidentCode], mrn: MovementReferenceNumber, radios: (String, Option[IncidentCode]) => Seq[RadioItem], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[IncidentCode], mrn: MovementReferenceNumber, incidentCodes: Seq[IncidentCode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentCode.title"),
@@ -42,7 +42,7 @@
 
         @inputRadio(
             field = form("value"),
-            radioItems = fieldId => radios(fieldId, form.value),
+            radioItems = fieldId => incidentCodes.toRadioItems(fieldId, form.value),
             radioType = Radio(
                 heading = messages("incident.incidentCode.heading"),
                 caption = Some(messages("incident.caption"))

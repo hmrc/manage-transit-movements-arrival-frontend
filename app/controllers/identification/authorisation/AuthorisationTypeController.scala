@@ -53,7 +53,7 @@ class AuthorisationTypeController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, index, AuthorisationType.radioItems, mode))
+      Ok(view(preparedForm, mrn, index, AuthorisationType.values, mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -61,7 +61,7 @@ class AuthorisationTypeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, AuthorisationType.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             AuthorisationTypePage(index).writeToUserAnswers(value).writeToSession().navigate()

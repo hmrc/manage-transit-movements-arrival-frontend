@@ -27,8 +27,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.html.incident.location.QualifierOfIdentificationView
 
 import scala.concurrent.Future
@@ -49,12 +47,6 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
     "must return OK and the correct view for a GET" in {
 
-      val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
-        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = false),
-        RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
-      )
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, qualifierOfIdentificationRoute)
@@ -66,7 +58,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, (_, _) => radioItems, mode, index)(request, messages).toString
+        view(form, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -74,24 +66,18 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       val userAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
       setExistingUserAnswers(userAnswers)
 
-      val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
-        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = true),
-        RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
-      )
-
       val request = FakeRequest(GET, qualifierOfIdentificationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.values.head.toString))
+      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.Coordinates.toString))
 
       val view = injector.instanceOf[QualifierOfIdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, (_, _) => radioItems, mode, index)(request, messages).toString
+        view(filledForm, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -112,12 +98,6 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val radioItems: Seq[RadioItem] = Seq(
-        RadioItem(content = "UN/LOCODE".toText, id = Some("value"), value = Some("unlocode"), checked = false),
-        RadioItem(content = "Coordinates".toText, id = Some("value_1"), value = Some("coordinates"), checked = false),
-        RadioItem(content = "Address".toText, id = Some("value_2"), value = Some("address"), checked = false)
-      )
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, qualifierOfIdentificationRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -130,7 +110,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, (_, _) => radioItems, mode, index)(request, messages).toString
+        view(boundForm, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

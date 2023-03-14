@@ -29,12 +29,12 @@ class QualifierOfIdentificationViewSpec extends RadioViewBehaviours[QualifierOfI
   override def form: Form[QualifierOfIdentification] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[QualifierOfIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[QualifierOfIdentificationView].apply(form, mrn, QualifierOfIdentification.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[QualifierOfIdentificationView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.qualifierOfIdentification"
 
   override def radioItems(fieldId: String, checkedValue: Option[QualifierOfIdentification] = None): Seq[RadioItem] =
-    QualifierOfIdentification.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[QualifierOfIdentification] = QualifierOfIdentification.values
 

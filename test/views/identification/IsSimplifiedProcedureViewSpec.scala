@@ -30,12 +30,12 @@ class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {
   override def form: Form[ProcedureType] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[ProcedureType]): HtmlFormat.Appendable =
-    injector.instanceOf[IsSimplifiedProcedureView].apply(form, mrn, ProcedureType.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IsSimplifiedProcedureView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "identification.isSimplifiedProcedure"
 
   override def radioItems(fieldId: String, checkedValue: Option[ProcedureType] = None): Seq[RadioItem] =
-    ProcedureType.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[ProcedureType] = ProcedureType.values
 
