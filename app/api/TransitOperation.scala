@@ -18,9 +18,11 @@ package api
 
 import generated.TransitOperationType02
 import models.UserAnswers
-import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, Reads}
+import utils.Format.formatterNoMillis
+
+import java.time.LocalDateTime
 
 object TransitOperation {
 
@@ -42,7 +44,7 @@ object transitOperationType02 {
     (isSimplified, isIncident) =>
       TransitOperationType02(
         MRN = mrn,
-        arrivalNotificationDateAndTime = DateTime.now().toString(),
+        arrivalNotificationDateAndTime = LocalDateTime.now().format(formatterNoMillis),
         simplifiedProcedure = isSimplified,
         incidentFlag = isIncident
       )

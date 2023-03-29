@@ -19,20 +19,21 @@ package api
 import generated.{CORRELATION_IDENTIFIERSequence, MESSAGE_1Sequence, MESSAGE_FROM_TRADERSequence, MessageType007}
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import utils.Format.formatterNoMillis
 
+import java.time.LocalDateTime
 import scala.xml.NamespaceBinding
 
 object Header {
 
-  val scope: NamespaceBinding              = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
-  val formatterNoMillis: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
+  val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
 
   def message: MESSAGE_FROM_TRADERSequence =
     MESSAGE_FROM_TRADERSequence(
       messageSender = Some("NCTS"),
       messagE_1Sequence2 = MESSAGE_1Sequence(
         messageRecipient = "NCTS",
-        preparationDateAndTime = DateTime.now().toString(formatterNoMillis),
+        preparationDateAndTime = LocalDateTime.now().format(formatterNoMillis),
         messageIdentification = "CC007C" // TODO - check this with API team? What should this be set to?
       )
     )
