@@ -83,7 +83,7 @@ object UserAnswers {
         (__ \ "_id").read[Id]
     )(UserAnswers.apply _)
 
-  implicit lazy val writes: OWrites[UserAnswers] =
+  implicit lazy val writes: Writes[UserAnswers] =
     (
       (__ \ "movementReferenceNumber").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
@@ -92,7 +92,5 @@ object UserAnswers {
         (__ \ "arrivalId").writeNullable[ArrivalId] and
         (__ \ "_id").write[Id]
     )(unlift(UserAnswers.unapply))
-
-  implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 
 }

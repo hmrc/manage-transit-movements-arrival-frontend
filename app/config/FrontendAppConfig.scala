@@ -87,4 +87,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   )
 
   lazy val apiUrl = configuration.get[Service]("microservice.services.common-transit-convention-traders").baseUrl
+
+  lazy val cacheUrl: String = configuration.get[Service]("microservice.services.manage-transit-movements-arrival-cache").fullServiceUrl
 }

@@ -18,6 +18,7 @@ package services
 
 import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,8 +28,8 @@ class UserAnswersService @Inject() (
   dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext) {
 
-  def getOrCreateUserAnswers(eoriNumber: EoriNumber, movementReferenceNumber: MovementReferenceNumber): Future[UserAnswers] =
-    sessionRepository.get(movementReferenceNumber.toString, eoriNumber) map {
+  def getOrCreateUserAnswers(eoriNumber: EoriNumber, movementReferenceNumber: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[UserAnswers] =
+    sessionRepository.get(movementReferenceNumber.toString) map {
       _ getOrElse UserAnswers(movementReferenceNumber, eoriNumber, lastUpdated = dateTimeService.now)
     }
 }

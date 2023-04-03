@@ -24,6 +24,8 @@ import play.api.Logging
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,6 +52,7 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
             acc.remove(indexedValue(i)).getOrElse(acc)
         }
 
+        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
         sessionRepository.set(updatedAnswers).map {
           _ => Right(request.copy(userAnswers = updatedAnswers))
         }
