@@ -18,10 +18,9 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{MovementReferenceNumber, NormalMode, UserAnswers}
+import models.{MovementReferenceNumber, NormalMode}
 import navigation.ArrivalNavigatorProvider
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.inject.bind
@@ -30,7 +29,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
 import views.html.identification.MovementReferenceNumberView
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 
 import scala.concurrent.Future
 
