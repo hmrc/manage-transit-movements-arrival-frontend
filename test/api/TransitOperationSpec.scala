@@ -32,7 +32,7 @@ class TransitOperationSpec extends SpecBase {
         val json: JsValue = Json.parse(s"""
              |{
              |  "_id" : "c8fdf8a7-1c77-4d25-991d-2a0881e05062",
-             |  "movementReferenceNumber" : "${mrn.toString}",
+             |  "mrn" : "${mrn.toString}",
              |  "eoriNumber" : "GB1234567",
              |  "data" : {
              |    "identification" : {

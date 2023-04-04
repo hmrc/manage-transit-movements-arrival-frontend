@@ -50,7 +50,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       val eoriNumber          = EoriNumber("123")
       val existingUserAnswers = emptyUserAnswers.copy(eoriNumber = eoriNumber)
-      when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(existingUserAnswers))
+      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(existingUserAnswers))
 
       val userAnswersService = app.injector.instanceOf[UserAnswersService]
       userAnswersService.getOrCreateUserAnswers(eoriNumber, mrn).futureValue mustBe existingUserAnswers
@@ -60,7 +60,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(None)
+      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None)
 
       val userAnswersService  = app.injector.instanceOf[UserAnswersService]
       val result: UserAnswers = userAnswersService.getOrCreateUserAnswers(eoriNumber, mrn).futureValue

@@ -17,8 +17,6 @@
 package api
 
 import generated.{CORRELATION_IDENTIFIERSequence, MESSAGE_1Sequence, MESSAGE_FROM_TRADERSequence, MessageType007}
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import utils.Format.formatterNoMillis
 
 import java.time.LocalDateTime

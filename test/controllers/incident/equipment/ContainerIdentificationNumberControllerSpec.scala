@@ -86,7 +86,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val request = FakeRequest(POST, containerIdentificationNumberRoute(index))
           .withFormUrlEncodedBody(("value", validAnswer))
@@ -103,7 +103,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
         val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), validAnswer)
         setExistingUserAnswers(userAnswers)
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val request = FakeRequest(POST, containerIdentificationNumberRoute(index))
           .withFormUrlEncodedBody(("value", validAnswer))

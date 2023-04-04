@@ -17,7 +17,7 @@
 package base
 
 import config.FrontendAppConfig
-import models.{EoriNumber, Index, MovementReferenceNumber, UserAnswers}
+import models.{EoriNumber, Id, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -35,7 +35,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
-import java.time.Instant
 
 trait SpecBase
     extends AnyFreeSpec
@@ -52,7 +51,7 @@ trait SpecBase
   val eoriNumber: EoriNumber       = EoriNumber("GB123456")
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
 
-  val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), Instant.now())
+  val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
 
   val authorisationIndex: Index = Index(0)
   val incidentIndex: Index      = Index(0)

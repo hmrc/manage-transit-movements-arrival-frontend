@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class CacheConnector @Inject() (
     http.GET[UserAnswers](url).map {
       userAnswers => Some(userAnswers)
     } recover {
-      case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
+      case e: NotFoundException => None
     }
   }
 

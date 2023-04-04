@@ -22,10 +22,10 @@ import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -35,7 +35,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
@@ -77,7 +76,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
 
       "where there are no existing answers for this MRN" in {
 
-        when(sessionRepository.get(any(), any())) thenReturn Future.successful(None)
+        when(sessionRepository.get(any())(any())) thenReturn Future.successful(None)
 
         harness(mrn, request => request.userAnswers must not be defined)
       }
@@ -87,7 +86,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
 
       "when there are existing answers for this MRN" in {
 
-        when(sessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(mrn, eoriNumber, lastUpdated = Instant.now)))
+        when(sessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(mrn, eoriNumber)))
 
         harness(mrn, request => request.userAnswers mustBe defined)
       }

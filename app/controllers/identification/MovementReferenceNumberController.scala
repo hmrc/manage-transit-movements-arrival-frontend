@@ -18,7 +18,7 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,12 +56,22 @@ class MovementReferenceNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          value =>
-            for {
-              userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
-              _           <- sessionRepository.set(userAnswers)
-            } yield Redirect(navigatorProvider(mode).nextPage(userAnswers))
+          value => {
+            def getOrCreateUserAnswers(): Future[Option[UserAnswers]] =
+              sessionRepository.get(value.toString).flatMap {
+                case None =>
+                  sessionRepository.put(value.toString).flatMap {
+                    _ => sessionRepository.get(value.toString)
+                  }
+                case someUserAnswers =>
+                  Future.successful(someUserAnswers)
+              }
+
+            getOrCreateUserAnswers().map {
+              case Some(userAnswers) => Redirect(navigatorProvider(mode).nextPage(userAnswers))
+              case None              => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+            }
+          }
         )
   }
-
 }

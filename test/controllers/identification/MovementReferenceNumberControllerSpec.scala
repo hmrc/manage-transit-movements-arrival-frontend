@@ -22,7 +22,7 @@ import models.{MovementReferenceNumber, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
 import views.html.identification.MovementReferenceNumberView
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 
 import scala.concurrent.Future
 
@@ -75,10 +76,8 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must redirect to the next page when valid data is submitted and sessionRepository returns UserAnswers value as Some(_)" in {
 
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.getOrCreateUserAnswers(any(), any())) thenReturn Future.successful(emptyUserAnswers)
+      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None) thenReturn Future.successful(Some(emptyUserAnswers))
+      when(mockSessionRepository.put(any())(any())) thenReturn Future.successful(true)
 
       setNoExistingUserAnswers()
 
@@ -89,10 +88,8 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-      userAnswersCaptor.getValue.mrn mustBe mrn
-      userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
+      verify(mockSessionRepository, times(2)).get(eqTo(mrn.toString))(any())
+      verify(mockSessionRepository, times(1)).put(eqTo(mrn.toString))(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

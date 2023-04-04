@@ -78,7 +78,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
     }
 
     "must redirect to the next page when valid data is submitted and call to remove authorisation" in {
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
         .setValue(AuthorisationTypePage(index), authType)
@@ -97,7 +97,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
         controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
       userAnswersCaptor.getValue.get(AuthorisationSection(authorisationIndex)) mustNot be(defined)
     }
 
@@ -119,7 +119,7 @@ class ConfirmRemoveAuthorisationControllerSpec extends SpecBase with AppWithDefa
       redirectLocation(result).value mustEqual
         controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
 
-      verify(mockSessionRepository, never()).set(any())
+      verify(mockSessionRepository, never()).set(any())(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
