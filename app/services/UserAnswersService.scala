@@ -30,6 +30,6 @@ class UserAnswersService @Inject() (
 
   def getOrCreateUserAnswers(eoriNumber: EoriNumber, movementReferenceNumber: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[UserAnswers] =
     sessionRepository.get(movementReferenceNumber.toString) map {
-      _ getOrElse UserAnswers(movementReferenceNumber, eoriNumber)
+      (_: Option[UserAnswers]) getOrElse UserAnswers(movementReferenceNumber, eoriNumber)
     }
 }

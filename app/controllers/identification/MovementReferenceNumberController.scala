@@ -56,22 +56,11 @@ class MovementReferenceNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          value => {
-            def getOrCreateUserAnswers(): Future[Option[UserAnswers]] =
-              sessionRepository.get(value.toString).flatMap {
-                case None =>
-                  sessionRepository.put(value.toString).flatMap {
-                    _ => sessionRepository.get(value.toString)
-                  }
-                case someUserAnswers =>
-                  Future.successful(someUserAnswers)
-              }
-
-            getOrCreateUserAnswers().map {
-              case Some(userAnswers) => Redirect(navigatorProvider(mode).nextPage(userAnswers))
-              case None              => Redirect(controllers.routes.ErrorController.technicalDifficulties())
-            }
-          }
+          value =>
+            for {
+              userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
+              _: Boolean  <- sessionRepository.put(value.toString)
+            } yield Redirect(navigatorProvider(mode).nextPage(userAnswers))
         )
   }
 }
