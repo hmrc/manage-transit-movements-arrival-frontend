@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,19 +40,19 @@ class CacheConnector @Inject() (
     http.GET[UserAnswers](url).map {
       userAnswers => Some(userAnswers)
     } recover {
-      case e: NotFoundException => None
+      case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
     }
   }
 
   def post(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.mrn.toString}"
+    val url = s"$baseUrl/user-answers/${userAnswers.mrn}"
 
     http.POST[UserAnswers, HttpResponse](url, userAnswers).map(_.status == OK)
   }
 
   def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-
     val url = s"$baseUrl/user-answers/${userAnswers.mrn}/lock"
+
     http
       .GET[HttpResponse](url)
       .map {
@@ -60,8 +61,8 @@ class CacheConnector @Inject() (
   }
 
   def deleteLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-
     val url = s"$baseUrl/user-answers/${userAnswers.mrn}/lock"
+
     http
       .DELETE[HttpResponse](url)
       .map {

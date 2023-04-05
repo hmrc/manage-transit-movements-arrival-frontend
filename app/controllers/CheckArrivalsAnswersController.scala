@@ -17,12 +17,12 @@
 package controllers
 
 import com.google.inject.Inject
+import connectors.SubmissionConnector
 import controllers.actions.Actions
 import logging.Logging
 import models.MovementReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.ApiService
 import uk.gov.hmrc.http.HttpReads.{is2xx, is4xx}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
@@ -36,7 +36,7 @@ class CheckArrivalsAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
-  apiService: ApiService
+  submissionConnector: SubmissionConnector
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with Logging
@@ -48,18 +48,20 @@ class CheckArrivalsAnswersController @Inject() (
       Ok(view(mrn, sections))
   }
 
-  // TODO - check dependant tasks completed in actions?
   def onSubmit(mrn: MovementReferenceNumber): Action[AnyContent] = actions
     .requireData(mrn)
     .async {
       implicit request =>
-        apiService.submitDeclaration(request.userAnswers).map {
+        submissionConnector.post(mrn.toString).map {
           case response if is2xx(response.status) =>
+            logger.debug(s"CheckArrivalsAnswersController:onSubmit: success ${response.status}: ${response.body}")
             Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
           case response if is4xx(response.status) =>
-            Redirect(controllers.routes.ErrorController.badRequest())
-          case ex =>
-            Redirect(controllers.routes.ErrorController.technicalDifficulties())
+            logger.warn(s"CheckArrivalsAnswersController:onSubmit: bad request: ${response.status}: ${response.body}")
+            BadRequest(response.body)
+          case e =>
+            logger.warn(s"CheckArrivalsAnswersController:onSubmit: something went wrong: ${e.status}-${e.body}")
+            InternalServerError(e.body)
         }
     }
 

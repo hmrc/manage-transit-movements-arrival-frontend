@@ -78,8 +78,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val maxNumberOfItems: Int                = configuration.get[Int]("limits.maxNumberOfItems")
   lazy val maxTransportEquipments: Int          = configuration.get[Int]("limits.maxTransportEquipments")
 
-  lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
-
   lazy val endorsementDateMin: LocalDate = LocalDate.of(
     configuration.get[Int]("dates.endorsementDateMin.year"),
     configuration.get[Int]("dates.endorsementDateMin.month"),

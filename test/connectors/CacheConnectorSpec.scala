@@ -64,7 +64,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
         connector.get(mrn.toString).futureValue mustBe Some(userAnswers)
       }
 
-      "return None when no cached data found for provided mrn.toString" in {
+      "return None when no cached data found for provided mrn" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(notFound())
