@@ -48,9 +48,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
-  lazy val baseDestinationUrl: String = configuration.get[Service]("microservice.services.destination").baseUrl
-  lazy val destinationUrl: String     = configuration.get[Service]("microservice.services.destination").fullServiceUrl
-
   lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl
 
   lazy val timeoutSeconds: Int   = configuration.get[Int]("session.timeoutSeconds")
@@ -83,8 +80,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Int]("dates.endorsementDateMin.month"),
     configuration.get[Int]("dates.endorsementDateMin.day")
   )
-
-  lazy val apiUrl = configuration.get[Service]("microservice.services.common-transit-convention-traders").baseUrl
 
   lazy val cacheUrl: String = configuration.get[Service]("microservice.services.manage-transit-movements-arrival-cache").fullServiceUrl
 }
