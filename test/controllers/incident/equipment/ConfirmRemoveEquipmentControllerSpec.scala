@@ -60,7 +60,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
       forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
         userAnswers =>
           reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
           setExistingUserAnswers(userAnswers)
 
@@ -75,7 +75,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
             routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
           userAnswersCaptor.getValue.get(EquipmentSection(incidentIndex, equipmentIndex)) mustNot be(defined)
       }
     }
@@ -96,7 +96,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
       redirectLocation(result).value mustEqual
         routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
 
-      verify(mockSessionRepository, never()).set(any())
+      verify(mockSessionRepository, never()).set(any())(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

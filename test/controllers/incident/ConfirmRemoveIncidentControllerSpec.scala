@@ -61,7 +61,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
 
         userAnswers =>
           reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
           setExistingUserAnswers(userAnswers)
 
@@ -76,7 +76,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
           redirectLocation(result).value mustEqual routes.AddAnotherIncidentController.onPageLoad(mrn, mode).url
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
           userAnswersCaptor.getValue.get(IncidentSection(incidentIndex)) mustNot be(defined)
       }
     }

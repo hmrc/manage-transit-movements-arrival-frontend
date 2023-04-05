@@ -75,7 +75,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to the next page when valid data is submitted and call to remove a seal" in {
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
         .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), identificationNumber)
@@ -93,7 +93,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
         routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
       userAnswersCaptor.getValue.get(SealSection(incidentIndex, equipmentIndex, sealIndex)) mustNot be(defined)
     }
 
@@ -114,7 +114,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual
         routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
-      verify(mockSessionRepository, never()).set(any())
+      verify(mockSessionRepository, never()).set(any())(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

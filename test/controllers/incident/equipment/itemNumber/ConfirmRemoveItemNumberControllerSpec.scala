@@ -76,7 +76,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must redirect to the next page when valid data is submitted and call to remove item" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
         .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), itemNumber)
@@ -95,7 +95,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
         routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
       userAnswersCaptor.getValue.get(ItemSection(incidentIndex, equipmentIndex, itemNumberIndex)) mustNot be(defined)
     }
 
@@ -116,7 +116,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
       redirectLocation(result).value mustEqual
         routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex).url
 
-      verify(mockSessionRepository, never()).set(any())
+      verify(mockSessionRepository, never()).set(any())(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

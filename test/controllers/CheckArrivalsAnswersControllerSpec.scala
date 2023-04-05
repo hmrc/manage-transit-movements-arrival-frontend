@@ -17,6 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.SubmissionConnector
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -25,7 +26,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.ApiService
 import viewModels.ArrivalAnswersViewModel
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import viewModels.sections.Section
@@ -33,14 +33,14 @@ import views.html.CheckArrivalsAnswersView
 
 class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[ArrivalAnswersViewModelProvider]
-  private val mockApiService: ApiService = mock[ApiService]
+  private lazy val mockViewModelProvider                   = mock[ArrivalAnswersViewModelProvider]
+  private val mockSubmissionConnector: SubmissionConnector = mock[SubmissionConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[ApiService]).toInstance(mockApiService))
+      .overrides(bind(classOf[SubmissionConnector]).toInstance(mockSubmissionConnector))
 
   "Check your Answers Controller" - {
 
@@ -77,7 +77,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must redirect to Declaration Submitted Controller" in {
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockApiService.submitDeclaration(any())(any()))
+      when(mockSubmissionConnector.post(any())(any()))
         .thenReturn(response(OK))
 
       val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)

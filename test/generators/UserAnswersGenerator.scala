@@ -27,8 +27,6 @@ import models.{EoriNumber, Index, MovementReferenceNumber, RichJsObject, UserAns
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
-import java.time.Instant
-
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
@@ -37,7 +35,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
       for {
         mrn        <- arbitrary[MovementReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        answers    <- buildUserAnswers[ArrivalDomain](UserAnswers(mrn, eoriNumber, lastUpdated = Instant.now()))
+        answers    <- buildUserAnswers[ArrivalDomain](UserAnswers(mrn, eoriNumber))
       } yield answers
     }
 

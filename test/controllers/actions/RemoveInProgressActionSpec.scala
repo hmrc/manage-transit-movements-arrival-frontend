@@ -72,7 +72,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
     "when array has only completed items" - {
       "must return original request" in {
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
@@ -87,14 +87,14 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         whenReady(futureResult) {
           r =>
             r.value mustBe request
-            verify(mockSessionRepository).set(eqTo(userAnswers))
+            verify(mockSessionRepository).set(eqTo(userAnswers))(any())
         }
       }
     }
 
     "when array has in progress items" - {
       "must strip these out and update user answers" in {
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(Index(0)), arbitrary[AuthorisationType].sample.value)
@@ -119,7 +119,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         whenReady(futureResult) {
           r =>
             r.value.userAnswers mustBe expectedAnswers
-            verify(mockSessionRepository).set(eqTo(expectedAnswers))
+            verify(mockSessionRepository).set(eqTo(expectedAnswers))(any())
         }
       }
     }

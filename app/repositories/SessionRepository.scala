@@ -16,83 +16,25 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.{EoriNumber, UserAnswers}
-import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}
-import org.mongodb.scala.model._
-import services.DateTimeService
-import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import connectors.CacheConnector
+import models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
 
-import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class SessionRepository @Inject() (
-  mongoComponent: MongoComponent,
-  appConfig: FrontendAppConfig,
-  dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext)
-    extends PlayMongoRepository[UserAnswers](
-      mongoComponent = mongoComponent,
-      collectionName = "user-answers",
-      domainFormat = UserAnswers.format,
-      indexes = SessionRepository.indexes(appConfig)
-    ) {
+  cacheConnector: CacheConnector
+) {
 
-  def get(movementReferenceNumber: String, eoriNumber: EoriNumber): Future[Option[UserAnswers]] = {
-    val filter = Filters.and(
-      Filters.eq("movementReferenceNumber", movementReferenceNumber),
-      Filters.eq("eoriNumber", eoriNumber.value)
-    )
-    val update = Updates.set("lastUpdated", dateTimeService.now)
+  def get(mrn: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+    cacheConnector.get(mrn)
 
-    collection
-      .findOneAndUpdate(filter, update, FindOneAndUpdateOptions().upsert(false))
-      .toFutureOption()
-  }
+  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
+    cacheConnector.post(userAnswers)
 
-  def set(userAnswers: UserAnswers): Future[Boolean] = {
-    val filter = Filters.and(
-      Filters.eq("movementReferenceNumber", userAnswers.mrn.toString),
-      Filters.eq("eoriNumber", userAnswers.eoriNumber.value)
-    )
-    val updatedUserAnswers = userAnswers.copy(lastUpdated = dateTimeService.now)
-
-    collection
-      .replaceOne(filter, updatedUserAnswers, ReplaceOptions().upsert(true))
-      .toFuture()
-      .map(_.wasAcknowledged())
-  }
-
-  def remove(movementReferenceNumber: String, eoriNumber: EoriNumber): Future[Boolean] = {
-    val filter = Filters.and(
-      Filters.eq("movementReferenceNumber", movementReferenceNumber),
-      Filters.eq("eoriNumber", eoriNumber.value)
-    )
-
-    collection
-      .deleteOne(filter)
-      .toFuture()
-      .map(_.wasAcknowledged())
-  }
-}
-
-object SessionRepository {
-
-  def indexes(appConfig: FrontendAppConfig): Seq[IndexModel] = {
-    val userAnswersLastUpdatedIndex: IndexModel = IndexModel(
-      keys = Indexes.ascending("lastUpdated"),
-      indexOptions = IndexOptions().name("user-answers-last-updated-index").expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
-    )
-
-    val eoriNumberAndMrnCompoundIndex: IndexModel = IndexModel(
-      keys = compoundIndex(ascending("eoriNumber"), ascending("movementReferenceNumber")),
-      indexOptions = IndexOptions().name("eoriNumber-mrn-index")
-    )
-
-    Seq(userAnswersLastUpdatedIndex, eoriNumberAndMrnCompoundIndex)
-  }
+  def put(mrn: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    cacheConnector.put(mrn)
 
 }

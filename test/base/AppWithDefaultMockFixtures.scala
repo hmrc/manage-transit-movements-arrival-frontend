@@ -38,7 +38,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
 
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
   }
 
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]

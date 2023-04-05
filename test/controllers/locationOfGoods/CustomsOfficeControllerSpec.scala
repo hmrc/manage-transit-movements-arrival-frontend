@@ -94,7 +94,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

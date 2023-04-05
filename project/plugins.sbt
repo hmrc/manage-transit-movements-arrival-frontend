@@ -23,5 +23,3 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.3")
 addSbtPlugin("uk.gov.hmrc" % "sbt-accessibility-linter" % "0.33.0")
 
 addSbtPlugin("io.github.irundaia" % "sbt-sassify" % "1.5.2")
-
-addSbtPlugin("org.scalaxb" % "sbt-scalaxb" % "1.8.0")

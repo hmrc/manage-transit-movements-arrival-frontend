@@ -46,7 +46,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
           forAll(arbitraryArrivalAnswers(initialAnswers)) {
             userAnswers =>
               reset(mockSessionRepository)
-              when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+              when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
               setExistingUserAnswers(userAnswers)
 
@@ -62,7 +62,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
                 view(mrn.toString, customsOffice)(request, messages).toString
 
               val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-              verify(mockSessionRepository).set(userAnswersCaptor.capture())
+              verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
               userAnswersCaptor.getValue.data mustBe emptyUserAnswers.setValue(DestinationOfficePage, customsOffice).data
           }
       }

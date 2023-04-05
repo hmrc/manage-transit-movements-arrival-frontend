@@ -18,12 +18,11 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
 
@@ -36,7 +35,6 @@ class MovementReferenceNumberController @Inject() (
   navigatorProvider: ArrivalNavigatorProvider,
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
-  userAnswersService: UserAnswersService,
   val controllerComponents: MessagesControllerComponents,
   view: MovementReferenceNumberView
 )(implicit ec: ExecutionContext)
@@ -56,12 +54,22 @@ class MovementReferenceNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          value =>
-            for {
-              userAnswers <- userAnswersService.getOrCreateUserAnswers(request.eoriNumber, value)
-              _           <- sessionRepository.set(userAnswers)
-            } yield Redirect(navigatorProvider(mode).nextPage(userAnswers))
+          value => {
+            def getOrCreateUserAnswers(): Future[Option[UserAnswers]] =
+              sessionRepository.get(value.toString).flatMap {
+                case None =>
+                  sessionRepository.put(value.toString).flatMap {
+                    _ => sessionRepository.get(value.toString)
+                  }
+                case someUserAnswers =>
+                  Future.successful(someUserAnswers)
+              }
+
+            getOrCreateUserAnswers().map {
+              case Some(userAnswers) => Redirect(navigatorProvider(mode).nextPage(userAnswers))
+              case None              => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+            }
+          }
         )
   }
-
 }
