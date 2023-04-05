@@ -21,13 +21,12 @@ import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, NormalMode}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
 import views.html.identification.MovementReferenceNumberView
 
 import scala.concurrent.Future
@@ -41,18 +40,10 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
   private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad(mode).url
 
-  private lazy val mockUserAnswersService = mock[UserAnswersService]
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
-      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUserAnswersService)
-  }
 
   "MovementReferenceNumber Controller" - {
 

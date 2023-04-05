@@ -23,7 +23,6 @@ import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
 
@@ -36,7 +35,6 @@ class MovementReferenceNumberController @Inject() (
   navigatorProvider: ArrivalNavigatorProvider,
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
-  userAnswersService: UserAnswersService,
   val controllerComponents: MessagesControllerComponents,
   view: MovementReferenceNumberView
 )(implicit ec: ExecutionContext)
