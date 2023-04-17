@@ -51,7 +51,7 @@ object ViewUtils {
       }
 
     def withLegend(label: String, legendIsVisible: Boolean = true): Radios = {
-      val legendClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
+      val legendClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden govuk-!-display-inline"
       radios.copy(
         fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = legendClass, isPageHeading = false))))
       )
