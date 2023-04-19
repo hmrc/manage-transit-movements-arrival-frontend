@@ -35,7 +35,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val nationality2: Nationality = Nationality("Code2", "Desc2")
   val nationality3: Nationality = Nationality("Code3", "Desc3")
 
-  val nationalities: Seq[Nationality] = Seq(nationality2, nationality1, nationality3)
+  val nationalities: List[Nationality] = List(nationality2, nationality1, nationality3)
 
   val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
 

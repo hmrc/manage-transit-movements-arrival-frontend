@@ -19,7 +19,7 @@ package models
 import models.reference.Nationality
 import play.api.libs.json.{Format, Json}
 
-case class TransportAggregateData(nationalities: Seq[Nationality])
+case class TransportAggregateData(nationalities: List[Nationality])
 
 object TransportAggregateData {
 
