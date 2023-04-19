@@ -28,7 +28,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val mode         = NormalMode
 
   private val mock$serviceName$: $serviceName$ = mock[$serviceName$]
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, mode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -52,7 +52,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
+        view(form, mrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -72,7 +72,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
+        view(filledForm, mrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -107,7 +107,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
+        view(boundForm, mrn, $referenceClass;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

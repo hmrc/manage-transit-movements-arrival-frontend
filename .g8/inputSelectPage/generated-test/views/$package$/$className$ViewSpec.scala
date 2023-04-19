@@ -14,7 +14,7 @@ class $className$ViewSpec extends InputSelectViewBehaviours[$referenceClass$] {
   override def form: Form[$referenceClass$] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[$referenceClass$]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[$referenceClass$] = arbitrary$referenceClass$
 
