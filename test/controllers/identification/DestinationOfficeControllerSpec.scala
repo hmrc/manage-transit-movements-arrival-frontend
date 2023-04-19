@@ -17,9 +17,9 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CustomsOfficeFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{CustomsOfficeList, NormalMode}
+import models.{NormalMode, SelectableList}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val customsOffice1    = arbitraryCustomsOffice.arbitrary.sample.get
   private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  private val customsOfficeList = SelectableList(Seq(customsOffice1, customsOffice2))
 
-  private val formProvider = new CustomsOfficeFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("identification.destinationOffice", customsOfficeList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(form, mrn, customsOfficeList.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(filledForm, mrn, customsOfficeList.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -124,7 +124,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, customsOfficeList.customsOffices, mode)(request, messages).toString
+        view(boundForm, mrn, customsOfficeList.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

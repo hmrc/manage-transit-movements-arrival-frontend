@@ -2,10 +2,9 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.$formProvider$
+import forms.SelectableFormProvider
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.$navRoute$
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -13,43 +12,44 @@ import repositories.SessionRepository
 import services.$serviceName$
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$package$.$className$View
-import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class $className$Controller @Inject()(
-   override val messagesApi: MessagesApi,
-   implicit val sessionRepository: SessionRepository,
-   navigatorProvider: $navRoute$NavigatorProvider,
-   actions: Actions,
-   formProvider: $formProvider$,
-   service: $serviceName$,
-   val controllerComponents: MessagesControllerComponents,
-   view: $className$View
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
+  navigatorProvider: $navRoute$NavigatorProvider,
+  actions: Actions,
+  formProvider: SelectableFormProvider,
+  service: $serviceName$,
+  val controllerComponents: MessagesControllerComponents,
+  view: $className$View
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+  private val prefix: String = "$package$.$className;format="decap"$"
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.map {
-        $referenceListClass;format="decap"$ =>
-          val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
+        $referenceClass;format="decap"$List =>
+          val form = formProvider(prefix, $referenceClass;format="decap"$List)
           val preparedForm = request.userAnswers.get($className$Page) match {
             case None => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))
+          Ok(view(preparedForm, mrn, $referenceClass;format="decap"$List.values, mode))
       }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.flatMap {
-        $referenceListClass;format="decap"$ =>
-          val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
+        $referenceClass;format="decap"$List =>
+          val form = formProvider(prefix, $referenceClass;format="decap"$List)
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $referenceClass;format="decap"$List.values, mode))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
               $className$Page.writeToUserAnswers(value).writeToSession().navigate()

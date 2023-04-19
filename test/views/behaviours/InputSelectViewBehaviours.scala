@@ -17,7 +17,7 @@
 package views.behaviours
 
 import generators.Generators
-import models.reference.Selectable
+import models.Selectable
 import org.scalacheck.Arbitrary
 
 trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[T] with Generators {

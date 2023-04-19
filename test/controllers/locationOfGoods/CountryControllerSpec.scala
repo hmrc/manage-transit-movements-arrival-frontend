@@ -17,9 +17,9 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CountryFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{CountryList, NormalMode}
+import models.{NormalMode, SelectableList}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   private val country1    = arbitraryCountry.arbitrary.sample.value
   private val country2    = arbitraryCountry.arbitrary.sample.value
-  private val countryList = CountryList(Seq(country1, country2))
+  private val countryList = SelectableList(Seq(country1, country2))
 
-  private val formProvider = new CountryFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("locationOfGoods.country", countryList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, countryList.countries, mode)(request, messages).toString
+        view(form, mrn, countryList.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, countryList.countries, mode)(request, messages).toString
+        view(filledForm, mrn, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, countryList.countries, mode)(request, messages).toString
+        view(boundForm, mrn, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

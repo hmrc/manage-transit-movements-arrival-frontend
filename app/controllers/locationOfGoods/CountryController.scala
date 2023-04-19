@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CountryFormProvider
+import forms.SelectableFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.CountryPage
@@ -37,7 +37,7 @@ class CountryController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
-  formProvider: CountryFormProvider,
+  formProvider: SelectableFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView
@@ -57,7 +57,7 @@ class CountryController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, countryList.countries, mode))
+          Ok(view(preparedForm, mrn, countryList.values, mode))
       }
   }
 
@@ -69,7 +69,7 @@ class CountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.values, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 CountryPage.writeToUserAnswers(value).writeToSession().navigate()

@@ -1,8 +1,8 @@
 package pages.$package$
 
 import controllers.$package$.routes
-import models.{Mode, UserAnswers}
 import models.reference.$referenceClass$
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.$pageSection$
 import play.api.libs.json.JsPath

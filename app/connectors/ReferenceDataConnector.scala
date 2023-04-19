@@ -17,16 +17,17 @@
 package connectors
 
 import config.FrontendAppConfig
+import logging.Logging
 import metrics.{MetricsService, Monitors}
-import models.NationalityList
-import models.reference.{Country, CountryCode, CustomsOffice, UnLocode}
+import models.TransportAggregateData
+import models.reference._
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) extends Logging {
 
   def getCustomsOffices()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
     val serviceUrl = s"${config.referenceDataUrl}/customs-offices"
@@ -52,9 +53,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     }
   }
 
-  def getTransportData()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NationalityList] = {
+  def getTransportData()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[TransportAggregateData] = {
     val serviceUrl = s"${config.referenceDataUrl}/transport"
-    http.GET[NationalityList](serviceUrl, headers = version2Header)
+    http.GET[TransportAggregateData](serviceUrl, headers = version2Header)
   }
 
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[UnLocode]] = {

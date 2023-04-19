@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.UnLocodeFormProvider
+import forms.SelectableFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.UnlocodePage
@@ -36,7 +36,7 @@ class UnlocodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
-  formProvider: UnLocodeFormProvider,
+  formProvider: SelectableFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   service: UnLocodeService,
@@ -52,14 +52,11 @@ class UnlocodeController @Inject() (
         service.getUnLocodes().map {
           unLocodeList =>
             val form = formProvider("locationOfGoods.unlocode", unLocodeList)
-            val preparedForm = request.userAnswers
-              .get(UnlocodePage)
-              .flatMap(
-                x => unLocodeList.getUnLocode(x.unLocodeExtendedCode)
-              )
-              .map(form.fill)
-              .getOrElse(form)
-            Ok(view(preparedForm, mrn, unLocodeList.unLocodes, mode))
+            val preparedForm = request.userAnswers.get(UnlocodePage) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
+            Ok(view(preparedForm, mrn, unLocodeList.values, mode))
         }
     }
 
@@ -73,7 +70,7 @@ class UnlocodeController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, unLocodeList.unLocodes, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, unLocodeList.values, mode))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   UnlocodePage.writeToUserAnswers(value).writeToSession().navigate()

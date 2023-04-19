@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
-import models.NationalityList
+import models.TransportAggregateData
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -263,8 +263,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(transportDataJson))
         )
 
-        val expectedResult = NationalityList(
-          Seq(
+        val expectedResult = TransportAggregateData(
+          List(
             Nationality("GB", "United Kingdom"),
             Nationality("AD", "Andorra")
           )

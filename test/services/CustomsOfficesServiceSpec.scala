@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.CustomsOfficeList
+import models.SelectableList
 import models.reference.{CountryCode, CustomsOffice}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -37,7 +37,6 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val xiCustomsOffice2: CustomsOffice      = CustomsOffice("4", None, None)
   val gbCustomsOffices: Seq[CustomsOffice] = Seq(gbCustomsOffice1, gbCustomsOffice2)
   val xiCustomsOffices: Seq[CustomsOffice] = Seq(xiCustomsOffice1, xiCustomsOffice2)
-  val customsOffices: CustomsOfficeList    = CustomsOfficeList(gbCustomsOffices ++ xiCustomsOffices)
 
   val service = new CustomsOfficesService(mockRefDataConnector)
 
@@ -54,7 +53,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any())).thenReturn(Future.successful(gbCustomsOffices))
 
       service.getCustomsOfficesOfArrival.futureValue mustBe
-        CustomsOfficeList(Seq(xiCustomsOffice2, gbCustomsOffice2, xiCustomsOffice1, gbCustomsOffice1))
+        SelectableList(Seq(xiCustomsOffice2, gbCustomsOffice2, xiCustomsOffice1, gbCustomsOffice1))
 
       verify(mockRefDataConnector).getCustomsOfficesForCountry(eqTo(CountryCode("XI")))(any(), any())
       verify(mockRefDataConnector).getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any())

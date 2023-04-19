@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.CountryList
+import models.SelectableList
 import models.reference.{Country, CountryCode}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,26 +26,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
+  def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     getCountries(Nil)
 
-  def getTransitCountries()(implicit hc: HeaderCarrier): Future[CountryList] = {
+  def getTransitCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] = {
     val queryParameters = Seq("membership" -> "ctc")
     getCountries(queryParameters)
   }
 
-  def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
+  def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getAddressPostcodeBasedCountries()
       .map(sort)
 
-  private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[CountryList] =
+  private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries(queryParameters)
       .map(sort)
 
-  private def sort(countries: Seq[Country]): CountryList =
-    CountryList(countries.sortBy(_.description.toLowerCase))
+  private def sort(countries: Seq[Country]): SelectableList[Country] =
+    SelectableList(countries.sortBy(_.description.toLowerCase))
 
   def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
     getCountriesWithoutZip().map(!_.contains(country.code))

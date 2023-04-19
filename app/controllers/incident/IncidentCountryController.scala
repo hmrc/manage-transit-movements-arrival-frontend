@@ -18,7 +18,7 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CountryFormProvider
+import forms.SelectableFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentCountryPage
@@ -37,7 +37,7 @@ class IncidentCountryController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: CountryFormProvider,
+  formProvider: SelectableFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: IncidentCountryView
@@ -55,7 +55,7 @@ class IncidentCountryController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, countryList.countries, mode, index))
+          Ok(view(preparedForm, mrn, countryList.values, mode, index))
       }
   }
 
@@ -67,7 +67,7 @@ class IncidentCountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.countries, mode, index))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.values, mode, index))),
               value => {
                 implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 IncidentCountryPage(index).writeToUserAnswers(value).writeToSession().navigate()

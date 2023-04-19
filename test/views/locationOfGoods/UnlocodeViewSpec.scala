@@ -16,9 +16,9 @@
 
 package views.locationOfGoods
 
-import forms.UnLocodeFormProvider
+import forms.SelectableFormProvider
 import models.reference.UnLocode
-import models.{NormalMode, UnLocodeList}
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,7 +29,7 @@ class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
 
   override val prefix: String = "locationOfGoods.unlocode"
 
-  override def form: Form[UnLocode] = new UnLocodeFormProvider()(prefix, UnLocodeList(values))
+  override def form: Form[UnLocode] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
     injector.instanceOf[UnlocodeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)

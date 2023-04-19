@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.CountryList
-import models.reference.Country
-import play.api.data.Form
+import models.reference.Nationality
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+case class TransportAggregateData(nationalities: List[Nationality])
 
-class CountryFormProvider @Inject() extends Mappings {
+object TransportAggregateData {
 
-  def apply(prefix: String, countryList: CountryList): Form[Country] =
-    Form(
-      "value" -> country(countryList, s"$prefix.error.required")
-    )
+  implicit val format: Format[TransportAggregateData] = Json.format[TransportAggregateData]
 }
