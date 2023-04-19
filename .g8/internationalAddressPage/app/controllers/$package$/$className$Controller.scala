@@ -54,7 +54,7 @@ class $className;format="cap"$Controller @Inject()(
               case Some(value) => form(countryList).fill(value)
             }
 
-            Ok(view(preparedForm, mrn, mode, countryList.countries, name))
+            Ok(view(preparedForm, mrn, mode, countryList.values, name))
           }
     }
 
@@ -68,7 +68,7 @@ class $className;format="cap"$Controller @Inject()(
             form(countryList)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.countries, name))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, countryList.values, name))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   $className$Page.writeToUserAnswers(value).writeToSession().navigate ()

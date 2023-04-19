@@ -18,7 +18,7 @@ package controllers.incident.location
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.UnLocodeFormProvider
+import forms.SelectableFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.UnLocodePage
@@ -37,7 +37,7 @@ class UnLocodeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: UnLocodeFormProvider,
+  formProvider: SelectableFormProvider,
   service: UnLocodeService,
   val controllerComponents: MessagesControllerComponents,
   view: UnLocodeView
@@ -55,7 +55,7 @@ class UnLocodeController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, unLocodeList.unLocodes, mode, index))
+          Ok(view(preparedForm, mrn, unLocodeList.values, mode, index))
       }
   }
 
@@ -67,7 +67,7 @@ class UnLocodeController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, unLocodeList.unLocodes, mode, index))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, unLocodeList.values, mode, index))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 UnLocodePage(index).writeToUserAnswers(value).writeToSession().navigate()

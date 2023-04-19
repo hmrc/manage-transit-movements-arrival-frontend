@@ -18,7 +18,7 @@ package controllers.incident.transportMeans
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.NationalityFormProvider
+import forms.SelectableFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.transportMeans.TransportNationalityPage
@@ -37,7 +37,7 @@ class TransportNationalityController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: NationalityFormProvider,
+  formProvider: SelectableFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: TransportNationalityView
@@ -55,7 +55,7 @@ class TransportNationalityController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, nationalityList.nationalities, mode, incidentIndex))
+          Ok(view(preparedForm, mrn, nationalityList.values, mode, incidentIndex))
       }
   }
 
@@ -67,7 +67,7 @@ class TransportNationalityController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, nationalityList.nationalities, mode, incidentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, nationalityList.values, mode, incidentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
                 TransportNationalityPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()

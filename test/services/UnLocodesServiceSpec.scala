@@ -18,13 +18,13 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.UnLocodeList
+import models.SelectableList
 import models.reference.UnLocode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UnLocodesServiceSpec extends SpecBase with BeforeAndAfterEach {
@@ -50,7 +50,7 @@ class UnLocodesServiceSpec extends SpecBase with BeforeAndAfterEach {
           .thenReturn(Future.successful(unLocodes))
 
         service.getUnLocodes().futureValue mustBe
-          UnLocodeList(Seq(unLocode1, unLocode2))
+          SelectableList(Seq(unLocode1, unLocode2))
 
         verify(mockRefDataConnector).getUnLocodes()(any(), any())
       }

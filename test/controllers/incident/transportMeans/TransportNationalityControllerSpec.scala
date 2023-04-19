@@ -17,9 +17,9 @@
 package controllers.incident.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.NationalityFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{NationalityList, NormalMode}
+import models.{NormalMode, SelectableList}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val nationality1    = arbitraryNationality.arbitrary.sample.get
   private val nationality2    = arbitraryNationality.arbitrary.sample.get
-  private val nationalityList = NationalityList(Seq(nationality1, nationality2))
+  private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
-  private val formProvider = new NationalityFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("incident.transportMeans.transportNationality", nationalityList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, nationalityList.nationalities, mode, incidentIndex)(request, messages).toString
+        view(form, mrn, nationalityList.values, mode, incidentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, nationalityList.nationalities, mode, incidentIndex)(request, messages).toString
+        view(filledForm, mrn, nationalityList.values, mode, incidentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, nationalityList.nationalities, mode, incidentIndex)(request, messages).toString
+        view(boundForm, mrn, nationalityList.values, mode, incidentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -16,19 +16,18 @@
 
 package views.identification
 
-import forms.CustomsOfficeFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import forms.SelectableFormProvider
 import models.reference.CustomsOffice
-import models.CustomsOfficeList
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.identification.DestinationOfficeView
 
 class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
 
-  override def form: Form[CustomsOffice] = new CustomsOfficeFormProvider()(prefix, CustomsOfficeList(values))
+  override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[DestinationOfficeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)

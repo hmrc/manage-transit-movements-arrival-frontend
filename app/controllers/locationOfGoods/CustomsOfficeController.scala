@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CustomsOfficeFormProvider
+import forms.SelectableFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.CustomsOfficePage
@@ -37,7 +37,7 @@ class CustomsOfficeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
-  formProvider: CustomsOfficeFormProvider,
+  formProvider: SelectableFormProvider,
   service: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeView
@@ -55,7 +55,7 @@ class CustomsOfficeController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, customsOfficeList.customsOffices, mode))
+          Ok(view(preparedForm, mrn, customsOfficeList.values, mode))
       }
   }
 
@@ -67,7 +67,7 @@ class CustomsOfficeController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.customsOffices, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.values, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 CustomsOfficePage.writeToUserAnswers(value).writeToSession().navigate()

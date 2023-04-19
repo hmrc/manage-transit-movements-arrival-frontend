@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  *@
 
 @import controllers.$package$.routes
-@import models.MovementReferenceNumber
+@import models.LocalReferenceNumber
 @import models.reference.$referenceClass$
-@import models.reference.Selectable
-@import models.reference.Selectable._
+@import models.Selectable
+@import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import viewModels.components.InputSelectViewModel._
+@import viewmodels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 
 @this(
@@ -31,15 +31,15 @@
     button: Button
 )
 
-@(form: Form[$referenceClass$], mrn: MovementReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[$referenceClass$], lrn: LocalReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    mrn = Some(mrn)
+    lrn = lrn
 ) {
 
-    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(mrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -48,7 +48,7 @@
             selectType = OrdinarySelect(
                 heading = messages("$package$.$className;format="decap"$.heading")
             ),
-            hint = Some(messages("$package$.$className;format="decap"$.hintText")),
+            hint = Some(messages("$package$.$className;format="decap"$.hint")),
             selectItems = $referenceClassPlural;format="decap"$.toSelectItems(form.value),
             placeholder = messages("$package$.$className;format="decap"$.placeholder")
         )

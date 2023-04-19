@@ -17,22 +17,24 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.CustomsOfficeList
-import play.api.data.FormError
 import generators.Generators
+import models.SelectableList
+import models.reference.CustomsOffice
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import play.api.data.FormError
 
-class CustomsOfficeFormProviderSpec extends StringFieldBehaviours with Generators {
+class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
-  private val maxLength   = 8
 
-  private val customsOffice1    = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  private val selectable1    = arbitrary[CustomsOffice].sample.value
+  private val selectable2    = arbitrary[CustomsOffice].sample.value
+  private val selectableList = SelectableList(Seq(selectable1, selectable2))
+  private val arg            = Gen.alphaNumStr.sample.value
 
-  private val form = new CustomsOfficeFormProvider()(prefix, customsOfficeList)
+  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
 
   ".value" - {
 
@@ -41,23 +43,23 @@ class CustomsOfficeFormProviderSpec extends StringFieldBehaviours with Generator
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      nonEmptyString
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(arg))
     )
 
-    "not bind if customs office id does not exist in the customsOfficeList" in {
+    "not bind if value does not exist in the list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a customsOffice id which is in the list" in {
-      val boundForm = form.bind(Map("value" -> customsOffice1.id))
+    "bind a value which is in the list" in {
+      val boundForm = form.bind(Map("value" -> selectable1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
-import models.{CountryList, CustomsOfficeList, Enumerable, MovementReferenceNumber, NationalityList, UnLocodeList}
+import models.{Enumerable, MovementReferenceNumber, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -80,32 +79,10 @@ trait Mappings extends Formatters with Constraints {
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
     of(spacelessStringFormatter(errorKey))
 
-  protected def country(
-    countryList: CountryList,
+  protected def selectable[T <: Selectable](
+    selectableList: SelectableList[T],
     errorKey: String = "error.required",
     args: Seq[Any] = Seq.empty
-  ): FieldMapping[Country] =
-    of(countryFormatter(countryList, errorKey, args))
-
-  protected def customsOffice(
-    customsOfficeList: CustomsOfficeList,
-    errorKey: String = "error.required",
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[CustomsOffice] =
-    of(customsOfficeFormatter(customsOfficeList, errorKey, args))
-
-  protected def unLocode(
-    unLocodeList: UnLocodeList,
-    errorKey: String = "error.required",
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[UnLocode] =
-    of(unLocodeFormatter(unLocodeList, errorKey, args))
-
-  protected def nationality(
-    nationalityList: NationalityList,
-    errorKey: String = "error.required",
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[Nationality] =
-    of(nationalityFormatter(nationalityList, errorKey, args))
-
+  ): FieldMapping[T] =
+    of(selectableFormatter[T](selectableList, errorKey, args))
 }

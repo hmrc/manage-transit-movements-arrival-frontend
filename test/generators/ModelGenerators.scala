@@ -155,12 +155,11 @@ trait ModelGenerators {
       } yield CustomsOffice(id, Some(name), phoneNumber)
     }
 
-  implicit lazy val arbitraryCustomsOfficeList: Arbitrary[CustomsOfficeList] =
-    Arbitrary {
-      for {
-        customsOffices <- listWithMaxLength[CustomsOffice]()
-      } yield CustomsOfficeList(customsOffices)
-    }
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
+  }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
@@ -188,12 +187,6 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
     Gen.oneOf(NormalMode, CheckMode)
-  }
-
-  implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
-    for {
-      countries <- listWithMaxLength[Country]()
-    } yield CountryList(countries)
   }
 
   implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {

@@ -19,7 +19,7 @@ class $className$ViewSpec extends InternationalAddressViewBehaviours with Genera
   override def form: Form[InternationalAddress] = new $formProvider$()(prefix, addressHolderName, countryList)
 
   override def applyView(form: Form[InternationalAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, mrn, NormalMode, countryList.countries, addressHolderName)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, mrn, NormalMode, countryList.values, addressHolderName)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 
