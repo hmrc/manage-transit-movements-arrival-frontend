@@ -18,6 +18,8 @@ package navigation
 
 import base.SpecBase
 import controllers.identification.authorisation.{routes => authorisationRoutes}
+import controllers.locationOfGoods.routes.TypeOfLocationController
+
 import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,7 +40,7 @@ class AuthorisationNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(authorisationRoutes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, authorisationIndex, mode))
+                .mustBe(TypeOfLocationController.onPageLoad(answers.mrn, mode))
           }
         }
       }

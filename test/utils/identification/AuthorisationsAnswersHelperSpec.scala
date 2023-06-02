@@ -18,6 +18,7 @@ package utils.identification
 
 import base.SpecBase
 import controllers.identification.authorisation.routes
+import controllers.locationOfGoods.routes.TypeOfLocationController
 import generators.Generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
@@ -126,7 +127,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
-                action.href mustBe routes.CheckAuthorisationAnswersController.onPageLoad(answers.mrn, index, mode).url
+                action.href mustBe TypeOfLocationController.onPageLoad(answers.mrn, mode).url
                 action.visuallyHiddenText.get mustBe "authorisation 1"
                 action.id mustBe "change-authorisation-1"
             }
@@ -172,7 +173,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                   Right(
                     ListItem(
                       name = s"$label - $ref",
-                      changeUrl = routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
+                      changeUrl = TypeOfLocationController.onPageLoad(userAnswers.mrn, mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )
                   )
