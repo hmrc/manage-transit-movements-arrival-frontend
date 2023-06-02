@@ -19,6 +19,7 @@ package utils.identification
 import base.SpecBase
 import controllers.identification.authorisation.routes
 import controllers.locationOfGoods.routes.TypeOfLocationController
+import controllers.identification.authorisation.routes.AuthorisationReferenceNumberController
 import generators.Generators
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
@@ -69,31 +70,31 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
     }
 
     "addOrRemoveAuthorisations" - {
-      "must return None" - {
-        "when authorisations array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = AuthorisationsAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.addOrRemoveAuthorisation
-              result mustBe None
-          }
-        }
-      }
+//      "must return None" - {
+//        "when authorisations array is empty" in {
+//          forAll(arbitrary[Mode]) {
+//            mode =>
+//              val helper = AuthorisationsAnswersHelper(emptyUserAnswers, mode)
+//              val result = helper.addOrRemoveAuthorisation
+//              result mustBe None
+//          }
+//        }
+//      }
 
-      "must return Some(Link)" - {
-        "when authorisations array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(AuthorisationSection(Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = AuthorisationsAnswersHelper(answers, mode)
-              val result  = helper.addOrRemoveAuthorisation.get
-
-              result.id mustBe "add-or-remove-authorisations"
-              result.text mustBe "Add or remove authorisations"
-              result.href mustBe routes.AddAnotherAuthorisationController.onPageLoad(answers.mrn, mode).url
-          }
-        }
-      }
+//      "must return Some(Link)" - {
+//        "when authorisations array is non-empty" in {
+//          forAll(arbitrary[Mode]) {
+//            mode =>
+//              val answers = emptyUserAnswers.setValue(AuthorisationSection(Index(0)), Json.obj("foo" -> "bar"))
+//              val helper  = AuthorisationsAnswersHelper(answers, mode)
+//              val result  = helper.addOrRemoveAuthorisation.get
+//
+//              result.id mustBe "add-or-remove-authorisations"
+//              result.text mustBe "Add or remove authorisations"
+//              result.href mustBe routes.AddAnotherAuthorisationController.onPageLoad(answers.mrn, mode).url
+//          }
+//        }
+//      }
     }
 
     "authorisation" - {
@@ -121,15 +122,15 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 val helper = AuthorisationsAnswersHelper(answers, mode)
                 val result = helper.authorisation(index).get
 
-                result.key.value mustBe "Authorisation 1"
+                result.key.value mustBe "Authorisation"
                 result.value.value mustBe s"$label - $referenceNumber"
                 val actions = result.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
-                action.href mustBe TypeOfLocationController.onPageLoad(answers.mrn, mode).url
-                action.visuallyHiddenText.get mustBe "authorisation 1"
-                action.id mustBe "change-authorisation-1"
+                action.href mustBe AuthorisationReferenceNumberController.onPageLoad(answers.mrn, index, mode).url
+                action.visuallyHiddenText.get mustBe "authorisation"
+                action.id mustBe "change-authorisation"
             }
 
           "when ACT" in {
@@ -173,7 +174,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                   Right(
                     ListItem(
                       name = s"$label - $ref",
-                      changeUrl = TypeOfLocationController.onPageLoad(userAnswers.mrn, mode).url,
+                      changeUrl = AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )
                   )

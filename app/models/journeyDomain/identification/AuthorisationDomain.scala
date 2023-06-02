@@ -17,7 +17,10 @@
 package models.journeyDomain.identification
 
 import cats.implicits._
+import controllers.identification.authorisation.routes
 import controllers.locationOfGoods.routes.TypeOfLocationController
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
+//import controllers.identification.authorisation.routes
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, UserAnswers}
@@ -34,7 +37,13 @@ case class AuthorisationDomain(
     s"${`type`.asString(f)} - $referenceNumber"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(TypeOfLocationController.onPageLoad(userAnswers.mrn, mode))
+    //    Some(routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode))
+    //    Some(routes.CheckAuthorisationAnswersController.onPageLoad(userAnswers.mrn, index, mode))
+    stage match {
+      case AccessingJourney => Some(routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode))
+      case CompletingJourney =>
+        Some(TypeOfLocationController.onPageLoad(userAnswers.mrn, mode))
+    }
 }
 
 object AuthorisationDomain {

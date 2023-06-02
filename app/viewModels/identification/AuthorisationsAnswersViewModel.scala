@@ -35,8 +35,8 @@ object AuthorisationsAnswersViewModel {
 
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
-        rows = helper.authorisations,
-        addAnotherLink = helper.addOrRemoveAuthorisation
+        rows = helper.authorisations
+//        addAnotherLink = helper.addOrRemoveAuthorisation
       )
 
       new AuthorisationsAnswersViewModel(section)

@@ -123,8 +123,8 @@ identification.authorisation.addAnotherAuthorisation.error.required = Select yes
 identification.authorisation.addAnotherAuthorisation.label = Do you need to add another authorisation?
 identification.authorisation.addAnotherAuthorisation.maxLimit.label = You cannot add any more authorisations. To add another authorisation, you need to remove one first.
 
-identification.authorisation.label = Authorisation {0}
-identification.authorisation.change.hidden = authorisation {0}
+identification.authorisation.label = Authorisation
+identification.authorisation.change.hidden = authorisation
 
 identification.authorisation.authorisationType.title = Which type of authorisation are you using?
 identification.authorisation.authorisationType.heading = Which type of authorisation are you using?

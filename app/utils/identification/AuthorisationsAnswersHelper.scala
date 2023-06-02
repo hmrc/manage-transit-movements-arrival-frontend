@@ -40,17 +40,18 @@ class AuthorisationsAnswersHelper(
   def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
     formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "identification.authorisation",
-    id = Some(s"change-authorisation-${index.display}"),
+//    id = Some(s"change-authorisation-${index.display}"),
+    id = Some(s"change-authorisation"),
     args = index.display
   )(AuthorisationDomain.userAnswersReader(index))
 
-  def addOrRemoveAuthorisation: Option[Link] = buildLink(AuthorisationsSection) {
-    Link(
-      id = "add-or-remove-authorisations",
-      text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
-      href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
-    )
-  }
+//  def addOrRemoveAuthorisation: Option[Link] = buildLink(AuthorisationsSection) {
+//    Link(
+//      id = "add-or-remove-authorisations",
+//      text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
+//      href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
+//    )
+//  }
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
