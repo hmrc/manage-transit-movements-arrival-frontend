@@ -18,8 +18,8 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import models.SelectableList
 import models.reference.Nationality
-import models.{SelectableList, TransportAggregateData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -35,7 +35,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val nationality2: Nationality = Nationality("Code2", "Desc2")
   val nationality3: Nationality = Nationality("Code3", "Desc3")
 
-  val nationalities: List[Nationality] = List(nationality2, nationality1, nationality3)
+  val nationalities: Seq[Nationality] = Seq(nationality2, nationality1, nationality3)
 
   val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
 
@@ -50,13 +50,13 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "must return a list of sorted nationalities" in {
 
-        when(mockRefDataConnector.getTransportData()(any(), any()))
-          .thenReturn(Future.successful(TransportAggregateData(nationalities)))
+        when(mockRefDataConnector.getNationalities()(any(), any()))
+          .thenReturn(Future.successful(nationalities))
 
         service.getNationalities().futureValue mustBe
           SelectableList(Seq(nationality1, nationality2, nationality3))
 
-        verify(mockRefDataConnector).getTransportData()(any(), any())
+        verify(mockRefDataConnector).getNationalities()(any(), any())
 
       }
     }
