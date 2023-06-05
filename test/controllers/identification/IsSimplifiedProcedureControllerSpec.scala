@@ -18,13 +18,17 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
-import models.NormalMode
 import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
+import models.reference.CustomsOffice
+import models.{Index, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.identification.IsSimplifiedProcedurePage
+import pages.identification.authorisation.AuthorisationTypePage
+import pages.identification.{DestinationOfficePage, IsSimplifiedProcedurePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -35,10 +39,11 @@ import scala.concurrent.Future
 
 class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
+  private lazy val isSimplifiedProcedureRoute = routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode).url
   private val formProvider                    = new EnumerableFormProvider()
   private val form                            = formProvider[ProcedureType]("identification.isSimplifiedProcedure")
   private val mode                            = NormalMode
-  private lazy val isSimplifiedProcedureRoute = routes.IsSimplifiedProcedureController.onPageLoad(mrn, mode).url
+  private val customsOffice                   = CustomsOffice("GB00121", None, None)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -102,7 +107,6 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, isSimplifiedProcedureRoute).withFormUrlEncodedBody(("value", ""))
@@ -147,6 +151,54 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
+    }
+
+    "must set Authorization Type to ACE when Procedure Type is simplified " in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(DestinationOfficePage, customsOffice)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request =
+        FakeRequest(POST, isSimplifiedProcedureRoute)
+          .withFormUrlEncodedBody(("value", ProcedureType.Simplified.toString))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.data mustBe userAnswers.setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACE).data
+    }
+
+    "must Not set Authorization Type to ACE when Procedure Type is Not simplified " in {
+
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val userAnswers = emptyUserAnswers
+        .setValue(DestinationOfficePage, customsOffice)
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request =
+        FakeRequest(POST, isSimplifiedProcedureRoute)
+          .withFormUrlEncodedBody(("value", ProcedureType.Normal.toString))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(AuthorisationTypePage(Index(0))) must not be defined
     }
   }
 }
