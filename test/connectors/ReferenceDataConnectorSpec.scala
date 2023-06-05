@@ -104,16 +104,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private val nationalitiesResponseJson: String =
     """
-      |{
+      |[
       |  {
       |    "code":"GB",
-      |    "desc":"United Kingdom"
+      |    "description":"United Kingdom"
       |  },
       |  {
       |    "code":"AD",
-      |    "desc":"Andorra"
+      |    "description":"Andorra"
       |  }
-      |}
+      |]
       |""".stripMargin
 
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
