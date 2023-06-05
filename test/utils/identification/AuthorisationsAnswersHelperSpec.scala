@@ -18,7 +18,6 @@ package utils.identification
 
 import base.SpecBase
 import controllers.identification.authorisation.routes
-import controllers.locationOfGoods.routes.TypeOfLocationController
 import controllers.identification.authorisation.routes.AuthorisationReferenceNumberController
 import generators.Generators
 import models.identification.ProcedureType
@@ -30,8 +29,6 @@ import org.scalacheck.Gen
 import org.scalatest.Assertion
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation._
-import pages.sections.identification.AuthorisationSection
-import play.api.libs.json.Json
 import viewModels.ListItem
 
 class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
@@ -67,34 +64,6 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
           }
         }
       }
-    }
-
-    "addOrRemoveAuthorisations" - {
-//      "must return None" - {
-//        "when authorisations array is empty" in {
-//          forAll(arbitrary[Mode]) {
-//            mode =>
-//              val helper = AuthorisationsAnswersHelper(emptyUserAnswers, mode)
-//              val result = helper.addOrRemoveAuthorisation
-//              result mustBe None
-//          }
-//        }
-//      }
-
-//      "must return Some(Link)" - {
-//        "when authorisations array is non-empty" in {
-//          forAll(arbitrary[Mode]) {
-//            mode =>
-//              val answers = emptyUserAnswers.setValue(AuthorisationSection(Index(0)), Json.obj("foo" -> "bar"))
-//              val helper  = AuthorisationsAnswersHelper(answers, mode)
-//              val result  = helper.addOrRemoveAuthorisation.get
-//
-//              result.id mustBe "add-or-remove-authorisations"
-//              result.text mustBe "Add or remove authorisations"
-//              result.href mustBe routes.AddAnotherAuthorisationController.onPageLoad(answers.mrn, mode).url
-//          }
-//        }
-//      }
     }
 
     "authorisation" - {
@@ -173,7 +142,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"$label - $ref",
+                      name      = s"$label - $ref",
                       changeUrl = AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )
@@ -205,7 +174,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = label,
+                      name      = label,
                       changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )

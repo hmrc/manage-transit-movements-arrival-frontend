@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
-import viewModels.{Link, ListItem}
+import viewModels.ListItem
 
 class AuthorisationsAnswersHelper(
   userAnswers: UserAnswers,
@@ -37,30 +37,22 @@ class AuthorisationsAnswersHelper(
   def authorisations: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AuthorisationsSection)(authorisation)
 
-  def authorisation(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AuthorisationDomain](
-    formatAnswer = _.asString(formatEnumAsString).toText,
-    prefix = "identification.authorisation",
-//    id = Some(s"change-authorisation-${index.display}"),
-    id = Some(s"change-authorisation"),
-    args = index.display
-  )(AuthorisationDomain.userAnswersReader(index))
-
-//  def addOrRemoveAuthorisation: Option[Link] = buildLink(AuthorisationsSection) {
-//    Link(
-//      id = "add-or-remove-authorisations",
-//      text = messages("arrivals.checkYourAnswers.authorisations.addOrRemove"),
-//      href = controllers.identification.authorisation.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.mrn, mode).url
-//    )
-//  }
+  def authorisation(index: Index): Option[SummaryListRow] =
+    getAnswerAndBuildSectionRow[AuthorisationDomain](
+      formatAnswer = _.asString(formatEnumAsString).toText,
+      prefix       = "identification.authorisation",
+      id   = Some(s"change-authorisation"),
+      args = index.display
+    )(AuthorisationDomain.userAnswersReader(index))
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
       index =>
         buildListItem[AuthorisationDomain, AuthorisationType](
-          page = AuthorisationTypePage(index),
+          page                     = AuthorisationTypePage(index),
           formatJourneyDomainModel = _.asString(formatEnumAsString),
-          formatType = _.asString(formatEnumAsString),
-          removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
+          formatType               = _.asString(formatEnumAsString),
+          removeRoute              = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
         )(AuthorisationDomain.userAnswersReader(index), implicitly)
     }
 }

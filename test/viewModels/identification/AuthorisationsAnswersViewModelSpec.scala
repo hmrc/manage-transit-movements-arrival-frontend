@@ -41,7 +41,6 @@ class AuthorisationsAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
               section.sectionTitle.get mustBe "Authorisations"
               section.rows.size mustBe numberOfAuthorisations
-//              section.addAnotherLink must be(defined)
           }
       }
     }
