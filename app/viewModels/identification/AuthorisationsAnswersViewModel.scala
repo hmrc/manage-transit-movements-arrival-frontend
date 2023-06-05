@@ -27,7 +27,7 @@ case class AuthorisationsAnswersViewModel(section: Section)
 
 object AuthorisationsAnswersViewModel {
 
-  class AuthorisationsAnswersViewModelProvider @Inject()() {
+  class AuthorisationsAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AuthorisationsAnswersViewModel = {
 
@@ -35,7 +35,7 @@ object AuthorisationsAnswersViewModel {
 
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
-        rows         = helper.authorisations
+        rows = helper.authorisations
       )
 
       new AuthorisationsAnswersViewModel(section)
