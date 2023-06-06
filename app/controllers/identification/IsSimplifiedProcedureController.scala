@@ -69,7 +69,7 @@ class IsSimplifiedProcedureController @Inject() (
               firstUa <- Future.fromTry(request.userAnswers.set(IsSimplifiedProcedurePage, value))
               secondUa <-
                 if (value == ProcedureType.Simplified) {
-                  Future.fromTry(firstUa.set(AuthorisationTypePage(Index(0)), AuthorisationType.ACE))
+                  Future.fromTry(firstUa.set(AuthorisationTypePage, AuthorisationType.ACE))
                 } else {
                   Future.successful(firstUa)
                 }
