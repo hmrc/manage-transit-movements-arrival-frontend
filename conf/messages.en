@@ -276,7 +276,7 @@ locationOfGoods.qualifierOfIdentification.error.required = Select how you want t
 
 locationOfGoods.typeOfLocation.title = Which type of location are the goods in?
 locationOfGoods.typeOfLocation.heading = Which type of location are the goods in?
-locationOfGoods.typeOfLocation.authorisedPlace = Authorised place – the authorised consignor’s own premises
+locationOfGoods.typeOfLocation.authorisedPlace = Authorised place – the authorised consignee’s own premises
 locationOfGoods.typeOfLocation.designatedLocation = Designated location – any other premises the consignor is authorised to use as an office of departure
 locationOfGoods.typeOfLocation.approvedPlace = Approved place – a designated location approved and controlled by the office of departure or destination
 locationOfGoods.typeOfLocation.other = Other
