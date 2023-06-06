@@ -61,12 +61,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeArrivalNavigatorProvider: ArrivalNavigatorProvider =
     (mode: Mode) => new FakeArrivalNavigator(onwardRoute, mode)
 
-  protected val fakeAuthorisationsNavigatorProvider: AuthorisationsNavigatorProvider =
-    (mode: Mode) => new FakeAuthorisationsNavigator(onwardRoute, mode)
-
-  protected val fakeAuthorisationNavigatorProvider: AuthorisationNavigatorProvider =
-    (mode: Mode, index: Index) => new FakeAuthorisationNavigator(onwardRoute, index, mode)
-
   protected val fakeIncidentsNavigatorProvider: IncidentsNavigatorProvider =
     (mode: Mode) => new FakeIncidentsNavigator(onwardRoute, mode)
 

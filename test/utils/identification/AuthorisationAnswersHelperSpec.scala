@@ -35,7 +35,7 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
         "when AuthorisationTypePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.authorisationType
               result mustBe None
           }
@@ -46,9 +46,9 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
         "when AuthorisationTypePage defined" in {
           forAll(arbitrary[AuthorisationType], arbitrary[Mode]) {
             (authorisationType, mode) =>
-              val answers = emptyUserAnswers.setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
+              val answers = emptyUserAnswers.setValue(AuthorisationTypePage)
 
-              val helper = new AuthorisationAnswersHelper(answers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(answers, mode)
               val result = helper.authorisationType.get
 
               result.key.value mustBe "Type"
@@ -59,7 +59,7 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.AuthorisationTypeController.onPageLoad(answers.mrn, authorisationIndex, mode).url
+              action.href mustBe None
               action.visuallyHiddenText.get mustBe "authorisation type"
               action.id mustBe "change-authorisation-type"
           }
@@ -72,7 +72,7 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
         "when AuthorisationReferenceNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.authorisationReferenceNumber
               result mustBe None
           }
@@ -83,9 +83,9 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
         "when AuthorisationReferenceNumberPage defined" in {
           forAll(arbitrary[Mode], Gen.alphaNumStr) {
             (mode, ref) =>
-              val answers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(authorisationIndex), ref)
+              val answers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, ref)
 
-              val helper = new AuthorisationAnswersHelper(answers, mode, authorisationIndex)
+              val helper = new AuthorisationAnswersHelper(answers, mode)
               val result = helper.authorisationReferenceNumber.get
 
               result.key.value mustBe "Reference number"
@@ -94,7 +94,7 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, authorisationIndex, mode).url
+              action.href mustBe routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "authorisation reference number"
               action.id mustBe "change-authorisation-reference-number"
           }

@@ -37,10 +37,10 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
         "must clean up IdentificationAuthorisationSection" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
           }
         }
       }
@@ -49,10 +49,10 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
         "must do nothing" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) must be(defined)
           }
         }
       }

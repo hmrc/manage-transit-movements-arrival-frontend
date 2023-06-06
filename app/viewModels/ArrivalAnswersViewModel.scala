@@ -19,7 +19,6 @@ package viewModels
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
-import viewModels.identification.AuthorisationAnswersViewModel
 import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 import viewModels.incident.IncidentsAnswersViewModel.IncidentsAnswersViewModelProvider

@@ -50,8 +50,8 @@ trait UserAnswersEntryGenerators {
   private def generateAuthorisationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification.authorisation._
     {
-      case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
-      case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
+      case AuthorisationTypePage            => arbitrary[AuthorisationType].map(Json.toJson(_))
+      case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString)
     }
   }
 

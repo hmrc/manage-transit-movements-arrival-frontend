@@ -29,7 +29,7 @@ case class IdentificationDomain(
   destinationOffice: CustomsOffice,
   identificationNumber: String,
   procedureType: ProcedureType,
-  authorisationReferenceNumber: String
+  authorisationReferenceNumber: Option[String]
 )
 
 object IdentificationDomain {
@@ -45,7 +45,6 @@ object IdentificationDomain {
       destinationOffice    <- DestinationOfficePage.reader
       identificationNumber <- IdentificationNumberPage.reader
       isSimplified         <- IsSimplifiedProcedurePage.reader
-      authorisationNumber  <- AuthorisationReferenceNumberPage.reader
-
+      authorisationNumber  <- AuthorisationReferenceNumberPage.optionalReader
     } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisationNumber)
 }

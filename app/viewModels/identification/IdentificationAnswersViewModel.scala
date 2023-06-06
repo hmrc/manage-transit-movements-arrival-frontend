@@ -18,7 +18,7 @@ package viewModels.identification
 
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import utils.identification.{AuthorisationAnswersHelper, IdentificationAnswersHelper}
+import utils.identification.IdentificationAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -32,8 +32,6 @@ object IdentificationAnswersViewModel {
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): IdentificationAnswersViewModel = {
 
       val helper = IdentificationAnswersHelper(userAnswers, mode)
-
-      val authorisationHelper = AuthorisationAnswersHelper(userAnswers, mode)
 
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.identification.subheading"),

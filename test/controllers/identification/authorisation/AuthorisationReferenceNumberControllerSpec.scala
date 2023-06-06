@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.NormalMode
 import models.identification.authorisation.AuthorisationType
-import navigation.AuthorisationNavigatorProvider
+import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -38,18 +38,18 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
   private val formProvider                           = new AuthorisationRefNoFormProvider()
   private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber", authorisationType.toString)
   private val mode                                   = NormalMode
-  private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, index, mode).url
+  private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AuthorisationNavigatorProvider]).toInstance(fakeAuthorisationNavigatorProvider))
+      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
 
   "AuthorisationReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+      val userAnswers = emptyUserAnswers.setValue(AuthorisationTypePage, AuthorisationType.ACT)
 
       setExistingUserAnswers(userAnswers)
 
@@ -62,15 +62,15 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(form, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
-        .setValue(AuthorisationReferenceNumberPage(index), "testString")
+        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
+        .setValue(AuthorisationReferenceNumberPage, "testString")
 
       setExistingUserAnswers(userAnswers)
 
@@ -85,14 +85,14 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(filledForm, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
 
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
 
       setExistingUserAnswers(userAnswers)
 
@@ -112,7 +112,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(index), AuthorisationType.ACT)
+        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
 
       setExistingUserAnswers(userAnswers)
 
@@ -128,7 +128,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, index, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(filledForm, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
 
     }
 

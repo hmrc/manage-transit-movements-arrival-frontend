@@ -24,10 +24,10 @@ class AuthorisationTypePageSpec extends PageBehaviours {
 
   "AuthorisationTypePage" - {
 
-    beRetrievable[AuthorisationType](AuthorisationTypePage(Index(0)))
+    beRetrievable[AuthorisationType](AuthorisationTypePage)
 
-    beSettable[AuthorisationType](AuthorisationTypePage(Index(0)))
+    beSettable[AuthorisationType](AuthorisationTypePage)
 
-    beRemovable[AuthorisationType](AuthorisationTypePage(Index(0)))
+    beRemovable[AuthorisationType](AuthorisationTypePage)
   }
 }

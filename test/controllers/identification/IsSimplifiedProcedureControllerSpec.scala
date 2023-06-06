@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.reference.CustomsOffice
-import models.{Index, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -173,7 +173,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.data mustBe userAnswers.setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACE).data
+      userAnswersCaptor.getValue.data mustBe userAnswers.setValue(AuthorisationTypePage, AuthorisationType.ACE).data
     }
 
     "must Not set Authorization Type to ACE when Procedure Type is Not simplified " in {
@@ -198,7 +198,7 @@ class IsSimplifiedProcedureControllerSpec extends SpecBase with AppWithDefaultMo
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(AuthorisationTypePage(Index(0))) must not be defined
+      userAnswersCaptor.getValue.get(AuthorisationTypePage) must not be defined
     }
   }
 }

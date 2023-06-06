@@ -23,10 +23,10 @@ class AuthorisationReferenceNumberPageSpec extends PageBehaviours {
 
   "AuthorisationReferenceNumberPage" - {
 
-    beRetrievable[String](AuthorisationReferenceNumberPage(Index(0)))
+    beRetrievable[String](AuthorisationReferenceNumberPage)
 
-    beSettable[String](AuthorisationReferenceNumberPage(Index(0)))
+    beSettable[String](AuthorisationReferenceNumberPage)
 
-    beRemovable[String](AuthorisationReferenceNumberPage(Index(0)))
+    beRemovable[String](AuthorisationReferenceNumberPage)
   }
 }

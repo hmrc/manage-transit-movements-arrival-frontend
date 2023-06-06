@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
-import models.{Index, Mode, MovementReferenceNumber}
+import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.identification.authorisation.AuthorisationTypePage
