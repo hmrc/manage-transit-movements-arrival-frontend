@@ -17,7 +17,7 @@
 package utils.identification
 
 import models.identification.authorisation.AuthorisationType
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -25,20 +25,19 @@ import utils.AnswersHelper
 
 class AuthorisationAnswersHelper(
   userAnswers: UserAnswers,
-  mode: Mode,
-  index: Index
+  mode: Mode
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
-    page = AuthorisationTypePage(index),
+    page = AuthorisationTypePage,
     formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
     prefix = "identification.authorisation.authorisationType",
     id = Some("change-authorisation-type")
   )
 
   def authorisationReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = AuthorisationReferenceNumberPage(index),
+    page = AuthorisationReferenceNumberPage,
     formatAnswer = formatAsText,
     prefix = "identification.authorisation.authorisationReferenceNumber",
     id = Some("change-authorisation-reference-number")
@@ -49,8 +48,7 @@ object AuthorisationAnswersHelper {
 
   def apply(
     userAnswers: UserAnswers,
-    mode: Mode,
-    index: Index
+    mode: Mode
   )(implicit messages: Messages) =
-    new AuthorisationAnswersHelper(userAnswers, mode, index)
+    new AuthorisationAnswersHelper(userAnswers, mode)
 }

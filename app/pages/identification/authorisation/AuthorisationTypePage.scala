@@ -16,20 +16,15 @@
 
 package pages.identification.authorisation
 
-import controllers.identification.authorisation.routes
 import models.identification.authorisation.AuthorisationType
-import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.identification.AuthorisationSection
+import pages.sections.identification.IdentificationSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class AuthorisationTypePage(index: Index) extends QuestionPage[AuthorisationType] {
+case object AuthorisationTypePage extends QuestionPage[AuthorisationType] {
 
-  override def path: JsPath = AuthorisationSection(index).path \ toString
+  override def path: JsPath = IdentificationSection.path \ toString
 
-  override def toString: String = "typeValue"
+  override def toString: String = "authorisationTypeValue"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AuthorisationTypeController.onPageLoad(userAnswers.mrn, index, mode))
 }

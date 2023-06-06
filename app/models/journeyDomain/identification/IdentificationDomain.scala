@@ -22,13 +22,14 @@ import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification._
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
   destinationOffice: CustomsOffice,
   identificationNumber: String,
   procedureType: ProcedureType,
-  authorisations: Option[AuthorisationsDomain]
+  authorisationReferenceNumber: String
 )
 
 object IdentificationDomain {
@@ -44,10 +45,7 @@ object IdentificationDomain {
       destinationOffice    <- DestinationOfficePage.reader
       identificationNumber <- IdentificationNumberPage.reader
       isSimplified         <- IsSimplifiedProcedurePage.reader
-      authorisations <- isSimplified match {
-        case ProcedureType.Normal     => none[AuthorisationsDomain].pure[UserAnswersReader]
-        case ProcedureType.Simplified => UserAnswersReader[AuthorisationsDomain].map(Some(_))
-      }
+      authorisationNumber  <- AuthorisationReferenceNumberPage.reader
 
-    } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisations)
+    } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisationNumber)
 }

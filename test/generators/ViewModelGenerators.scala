@@ -172,13 +172,6 @@ trait ViewModelGenerators {
     } yield ListItem(name, changeUrl, removeUrl)
   }
 
-  implicit lazy val arbitraryAddAnotherAuthorisationViewModel: Arbitrary[AddAnotherAuthorisationViewModel] = Arbitrary {
-    for {
-      listItems    <- arbitrary[Seq[ListItem]]
-      onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherAuthorisationViewModel(listItems, onSubmitCall)
-  }
-
   implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
