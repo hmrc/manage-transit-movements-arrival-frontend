@@ -142,7 +142,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name      = s"$label - $ref",
+                      name = s"$label - $ref",
                       changeUrl = AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, index, mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )
@@ -174,7 +174,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name      = label,
+                      name = label,
                       changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, Index(0), mode).url,
                       removeUrl = Some(routes.ConfirmRemoveAuthorisationController.onPageLoad(userAnswers.mrn, Index(0), mode).url)
                     )
