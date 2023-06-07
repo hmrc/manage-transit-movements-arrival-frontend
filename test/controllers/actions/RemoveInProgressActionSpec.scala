@@ -78,7 +78,6 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
       "must return original request" in {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
-
         val userAnswers = emptyUserAnswers
           .setValue(IncidentCodePage(index), IncidentCode.SealsBrokenOrTampered)
           .setValue(ContainerIdentificationNumberYesNoPage(index, equipmentIndex), true)
