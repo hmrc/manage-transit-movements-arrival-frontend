@@ -41,9 +41,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("identification.authorisation.authorisationReferenceNumber.heading", authorisationType),
-                caption = Some(messages("identification.authorisation.caption"))
+                caption = Some(messages("identification.authorisation.caption")),
+                additionalHtml = messages("identification.authorisation.authorisationReferenceNumber.paragraph").toParagraph
             ),
             hint = Some(messages("identification.authorisation.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20

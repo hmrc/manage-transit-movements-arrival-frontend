@@ -20,11 +20,10 @@ import base.SpecBase
 import controllers.identification.authorisation.routes
 import generators.Generators
 import models.Mode
-import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 
 class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -51,7 +50,7 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
               val helper = new AuthorisationAnswersHelper(answers, mode)
               val result = helper.authorisationReferenceNumber.get
 
-              result.key.value mustBe "Reference number"
+              result.key.value mustBe "Authorisation reference number"
               result.value.value mustBe ref
               val actions = result.actions.get.items
               actions.size mustBe 1

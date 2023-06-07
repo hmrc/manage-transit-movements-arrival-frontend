@@ -20,18 +20,20 @@ import base.SpecBase
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 
 class IdentificationAnswersViewModelSpec extends SpecBase with Generators {
 
   "identification section" - {
-    "must have 4 rows" in {
-      forAll(arbitrary[Mode], arbitraryIdentificationAnswers(emptyUserAnswers)) {
-        (mode, answers) =>
-          val section = new IdentificationAnswersViewModelProvider().apply(answers, mode).section
+    "must have 5 rows" in {
+      forAll(arbitrary[Mode], arbitraryIdentificationAnswers(emptyUserAnswers), arbitrary[String]) {
+        (mode, answers, refNum) =>
+          val userAnswers = answers.setValue(AuthorisationReferenceNumberPage, refNum)
+          val section     = new IdentificationAnswersViewModelProvider().apply(userAnswers, mode).section
 
           section.sectionTitle.get mustBe "Identification"
-          section.rows.size mustBe 4
+          section.rows.size mustBe 5
           section.addAnotherLink must not be defined
       }
     }

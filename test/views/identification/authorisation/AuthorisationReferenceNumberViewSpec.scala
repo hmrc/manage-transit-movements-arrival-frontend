@@ -30,24 +30,24 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   override val prefix: String = "identification.authorisation.authorisationReferenceNumber"
 
-  override def form: Form[String] = new AuthorisationRefNoFormProvider()(prefix, AuthorisationType.ACT.toString)
+  override def form: Form[String] = new AuthorisationRefNoFormProvider()(prefix, AuthorisationType.ACE.toString)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AuthorisationReferenceNumberView]
-      .apply(form, mrn, AuthorisationType.ACT.toString, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, AuthorisationType.ACE.toString, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(AuthorisationType.ACT.toString)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Authorisations")
 
-  behave like pageWithHeading(AuthorisationType.ACT.toString)
+  behave like pageWithHeading()
 
-  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
+  behave like pageWithHint("It can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

@@ -18,7 +18,7 @@ package viewModels.identification
 
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import utils.identification.IdentificationAnswersHelper
+import utils.identification.{AuthorisationAnswersHelper, IdentificationAnswersHelper}
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -39,7 +39,8 @@ object IdentificationAnswersViewModel {
           Some(helper.movementReferenceNumber),
           helper.destinationOffice,
           helper.identificationNumber,
-          helper.isSimplified
+          helper.isSimplified,
+          new AuthorisationAnswersHelper(userAnswers, mode).authorisationReferenceNumber
         ).flatten
       )
 

@@ -32,7 +32,6 @@ object ArrivalAnswersViewModel {
 
   class ArrivalAnswersViewModelProvider @Inject() (
     identificationAnswersViewModelProvider: IdentificationAnswersViewModelProvider,
-    authorisationAnswersViewModelProvider: AuthorisationAnswersViewModelProvider,
     locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider,
     IncidentsAnswersViewModelProvider: IncidentsAnswersViewModelProvider
   ) {
@@ -41,7 +40,6 @@ object ArrivalAnswersViewModel {
       val mode = CheckMode
       new ArrivalAnswersViewModel(
         identificationAnswersViewModelProvider.apply(userAnswers, mode).section ::
-          authorisationAnswersViewModelProvider.apply(userAnswers, mode).section ::
           locationOfGoodsAnswersViewModelProvider.apply(userAnswers, mode).section ::
           IncidentsAnswersViewModelProvider.apply(userAnswers, mode).section ::
           Nil

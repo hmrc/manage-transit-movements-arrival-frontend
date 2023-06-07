@@ -23,12 +23,12 @@ import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 
 class ArrivalAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "must return 4 sections" in {
+  "must return 3 sections" in {
     forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
       userAnswers =>
         val viewModelProvider = app.injector.instanceOf[ArrivalAnswersViewModelProvider]
         val sections          = viewModelProvider.apply(userAnswers).sections
-        sections.size mustBe 4
+        sections.size mustBe 3
     }
   }
 }
