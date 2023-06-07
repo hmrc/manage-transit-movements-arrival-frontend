@@ -259,7 +259,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-
     "can be parsed from UserAnswers without contact person" - {
 
       val userAnswers = emptyUserAnswers
@@ -320,7 +319,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       result.value mustBe expectedResult
     }
-
 
     "can be parsed from UserAnswers without contact person" in {
 
