@@ -96,7 +96,7 @@ arrivals.checkYourAnswers.transportMeans.subheading = Replacement means of trans
 
 identification.destinationOffice.title = Where is the office of destination?
 identification.destinationOffice.heading = Where is the office of destination?
-identification.destinationOffice.hint = Enter the office location or code, like Wien-Flughafen or AT330200.
+identification.destinationOffice.hint = Enter the office location or code, like Dover or GB000060.
 identification.destinationOffice.placeholder = Select a customs office
 identification.destinationOffice.change.hidden = office of destination
 identification.destinationOffice.paragraph = This is the customs office where the CTC transit ends.

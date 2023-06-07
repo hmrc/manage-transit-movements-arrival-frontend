@@ -48,7 +48,7 @@ class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice]
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("Enter the office location or code, like Wien-Flughafen or AT330200.")
+  behave like pageWithHint("Enter the office location or code, like Dover or GB000060.")
 
   behave like pageWithSubmitButton("Continue")
 }
