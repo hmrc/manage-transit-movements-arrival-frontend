@@ -16,15 +16,18 @@
 
 package models.locationOfGoods
 
+import base.SpecBase
+import models.identification.ProcedureType._
+import models.locationOfGoods.TypeOfLocation._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.identification.IsSimplifiedProcedurePage
 import play.api.libs.json.{JsError, JsString, Json}
 
-class TypeOfLocationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TypeOfLocationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "Typeoflocation" - {
 
@@ -55,6 +58,29 @@ class TypeOfLocationSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
       forAll(gen) {
         typeoflocation =>
           Json.toJson(typeoflocation) mustEqual JsString(typeoflocation.toString)
+      }
+    }
+
+    "Radio options" - {
+
+      "Must return the correct number of radios" - {
+        "When procedure type is Simplified" in {
+          val answers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, Simplified)
+
+          val radios   = TypeOfLocation.values(answers)
+          val expected = Seq(AuthorisedPlace, DesignatedLocation, ApprovedPlace, Other)
+          radios mustBe expected
+        }
+
+        "When procedure type is Normal" in {
+          val answers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, Normal)
+
+          val radios   = TypeOfLocation.values(answers)
+          val expected = Seq(DesignatedLocation, ApprovedPlace, Other)
+          radios mustBe expected
+        }
       }
     }
   }
