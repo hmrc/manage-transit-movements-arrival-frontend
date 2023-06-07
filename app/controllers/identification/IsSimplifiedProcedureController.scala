@@ -33,15 +33,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsSimplifiedProcedureController @Inject() (
-                                                  override val messagesApi: MessagesApi,
-                                                  implicit val sessionRepository: SessionRepository,
-                                                  navigatorProvider: ArrivalNavigatorProvider,
-                                                  actions: Actions,
-                                                  formProvider: EnumerableFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: IsSimplifiedProcedureView
-                                                )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
+  navigatorProvider: ArrivalNavigatorProvider,
+  actions: Actions,
+  formProvider: EnumerableFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsSimplifiedProcedureView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider[ProcedureType]("identification.isSimplifiedProcedure")
