@@ -30,12 +30,12 @@ class AuthorisationAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
-  def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
-    page = AuthorisationTypePage(index),
-    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
-    prefix = "identification.authorisation.authorisationType",
-    id = Some("change-authorisation-type")
-  )
+//  def authorisationType: Option[SummaryListRow] = getAnswerAndBuildRow[AuthorisationType](
+//    page = AuthorisationTypePage(index),
+//    formatAnswer = formatEnumAsText(AuthorisationType.messageKeyPrefix),
+//    prefix = "identification.authorisation.authorisationType",
+//    id = Some("change-authorisation-type")
+//  )
 
   def authorisationReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = AuthorisationReferenceNumberPage(index),

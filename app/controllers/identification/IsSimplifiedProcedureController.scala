@@ -17,13 +17,12 @@
 package controllers.identification
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
-import models.{Index, Mode, MovementReferenceNumber}
+import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.identification.IsSimplifiedProcedurePage
-import pages.identification.authorisation.AuthorisationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -65,16 +64,7 @@ class IsSimplifiedProcedureController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            for {
-              firstUa <- Future.fromTry(request.userAnswers.set(IsSimplifiedProcedurePage, value))
-              secondUa <-
-                if (value == ProcedureType.Simplified) {
-                  Future.fromTry(firstUa.set(AuthorisationTypePage(Index(0)), AuthorisationType.ACE))
-                } else {
-                  Future.successful(firstUa)
-                }
-              _ <- sessionRepository.set(secondUa)
-            } yield Redirect(navigator.nextPage(secondUa))
+            IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession().navigate()
           }
         )
   }

@@ -27,13 +27,13 @@ import pages.identification.authorisation._
 import play.api.mvc.Call
 
 case class AuthorisationDomain(
-  `type`: AuthorisationType,
+//  `type`: AuthorisationType,
   referenceNumber: String
 )(index: Index)
     extends JourneyDomainModel {
 
-  def asString(f: String => AuthorisationType => String): String =
-    s"${`type`.asString(f)} - $referenceNumber"
+//  def asString(f: String => AuthorisationType => String): String =
+//    s"${`type`.asString(f)} - $referenceNumber"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     stage match {
@@ -46,8 +46,7 @@ case class AuthorisationDomain(
 object AuthorisationDomain {
 
   implicit def userAnswersReader(index: Index): UserAnswersReader[AuthorisationDomain] =
-    (
-      AuthorisationTypePage(index).reader,
-      AuthorisationReferenceNumberPage(index).reader
-    ).tupled.map((AuthorisationDomain.apply _).tupled).map(_(index))
+    //      AuthorisationTypePage(index).reader,
+    AuthorisationReferenceNumberPage(index).reader.map(AuthorisationDomain.apply(_)(index))
+//    ).tupled.map((AuthorisationDomain.apply _).tupled))
 }
