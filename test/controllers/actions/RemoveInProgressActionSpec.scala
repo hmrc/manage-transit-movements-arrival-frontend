@@ -26,9 +26,8 @@ import models.requests._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Gen
-import pages.incident.{AddTransportEquipmentPage, IncidentCodePage}
+import pages.incident.IncidentCodePage
 import pages.incident.equipment._
-import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.Section
 import pages.sections.incident.{EquipmentSection, EquipmentsSection}

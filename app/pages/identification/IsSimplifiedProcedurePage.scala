@@ -25,7 +25,7 @@ import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
@@ -37,7 +37,8 @@ case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
     value match {
       case Some(ProcedureType.Normal) =>
         userAnswers.remove(AuthorisationSection) match {
-          case Success(ua) => ua.remove(LocationOfGoodsSection)
+          case Success(ua)        => ua.remove(LocationOfGoodsSection)
+          case Failure(exception) => Failure(exception)
         }
       case _ => super.cleanup(value, userAnswers)
     }
