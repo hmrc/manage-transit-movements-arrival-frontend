@@ -173,15 +173,6 @@ locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a co
 locationOfGoods.addContactPerson.change.hidden = if you want to add a contact for the location of goods
 locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.
 
-locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
-locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
-locationOfGoods.additionalIdentifier.hint = This can be up to 4 characters long, for example 0000 or X9X9.
-locationOfGoods.additionalIdentifier.checkYourAnswersLabel = Additional identifier
-locationOfGoods.additionalIdentifier.change.hidden = additional identifier for the location of goods
-locationOfGoods.additionalIdentifier.error.required = Enter the additional identifier for the location of goods
-locationOfGoods.additionalIdentifier.error.length = The additional identifier must be no more than 4 characters long
-locationOfGoods.additionalIdentifier.error.invalid = The additional identifier must only include the letters a to z and numbers 0 to 9
-
 locationOfGoods.postalCode.title = What is the address for the location of goods?
 locationOfGoods.postalCode.heading = What is the address for the location of goods?
 locationOfGoods.postalCode.streetNumber = Street number
@@ -303,12 +294,6 @@ locationOfGoods.identificationNumber.change.hidden = EORI number or Trader Ident
 locationOfGoods.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the location of goods
 locationOfGoods.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
-
-locationOfGoods.addAdditionalIdentifier.title = Do you want to add an additional identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.heading = Do you want to add an additional identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add an additional identifier?
-locationOfGoods.addAdditionalIdentifier.change.hidden = if you want to add an additional identifier for the location of goods
-locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add an additional identifier for the location of goods
 
 # Incident
 

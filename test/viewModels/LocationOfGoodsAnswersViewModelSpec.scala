@@ -47,11 +47,10 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
     "when EoriNumber qualifier" - {
       val qualifier = QualifierOfIdentification.EoriNumber
 
-      "with neither additional identifier nor contact person" - {
-        "must have 5 rows" in {
+      "with no contact person" - {
+        "must have 4 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, false)
 
           forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
@@ -59,18 +58,17 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
               section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 5
+              section.rows.size mustBe 4
               section.addAnotherLink must not be defined
           }
         }
       }
 
-      "with additional identifier" - {
+      "with contact person" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AddContactPersonPage, false)
+            .setValue(AddContactPersonPage, true)
 
           forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
             (mode, answers) =>
@@ -83,51 +81,15 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
         }
       }
 
-      "with contact person" - {
-        "must have 7 rows" in {
-          val initialAnswers = emptyUserAnswers
-            .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, false)
-            .setValue(AddContactPersonPage, true)
-
-          forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-            (mode, answers) =>
-              val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-              section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 7
-              section.addAnotherLink must not be defined
-          }
-        }
-      }
-
-      "with additional identifier and contact person" - {
-        "must have 8 rows" in {
-          val initialAnswers = emptyUserAnswers
-            .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AddContactPersonPage, true)
-
-          forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-            (mode, answers) =>
-              val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-              section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 8
-              section.addAnotherLink must not be defined
-          }
-        }
-      }
     }
 
     "when AuthorisationNumber qualifier" - {
       val qualifier = QualifierOfIdentification.AuthorisationNumber
 
-      "with neither additional identifier nor contact person" - {
-        "must have 5 rows" in {
+      "with no contact person" - {
+        "must have 4 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, false)
 
           forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
@@ -135,18 +97,17 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
               section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 5
+              section.rows.size mustBe 4
               section.addAnotherLink must not be defined
           }
         }
       }
 
-      "with additional identifier" - {
+      "with contact person" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AddContactPersonPage, false)
+            .setValue(AddContactPersonPage, true)
 
           forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
             (mode, answers) =>
@@ -159,41 +120,6 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
         }
       }
 
-      "with contact person" - {
-        "must have 7 rows" in {
-          val initialAnswers = emptyUserAnswers
-            .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, false)
-            .setValue(AddContactPersonPage, true)
-
-          forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-            (mode, answers) =>
-              val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-              section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 7
-              section.addAnotherLink must not be defined
-          }
-        }
-      }
-
-      "with additional identifier and contact person" - {
-        "must have 8 rows" in {
-          val initialAnswers = emptyUserAnswers
-            .setValue(QualifierOfIdentificationPage, qualifier)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AddContactPersonPage, true)
-
-          forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-            (mode, answers) =>
-              val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-              section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 8
-              section.addAnotherLink must not be defined
-          }
-        }
-      }
     }
 
     "when Coordinates qualifier" - {

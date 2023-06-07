@@ -73,16 +73,14 @@ trait UserAnswersEntryGenerators {
   private def generateLocationOfGoodsIdentifierAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
-      case AddAdditionalIdentifierPage => arbitrary[Boolean].map(JsBoolean)
-      case AdditionalIdentifierPage    => Gen.alphaNumStr.map(JsString)
-      case PostalCodePage              => arbitrary[PostalCodeAddress].map(Json.toJson(_))
-      case AuthorisationNumberPage     => Gen.alphaNumStr.map(JsString)
-      case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
-      case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case IdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
-      case CountryPage                 => arbitrary[Country].map(Json.toJson(_))
-      case AddressPage                 => arbitrary[DynamicAddress].map(Json.toJson(_))
-      case UnlocodePage                => arbitrary[UnLocode].map(Json.toJson(_))
+      case PostalCodePage           => arbitrary[PostalCodeAddress].map(Json.toJson(_))
+      case AuthorisationNumberPage  => Gen.alphaNumStr.map(JsString)
+      case CoordinatesPage          => arbitrary[Coordinates].map(Json.toJson(_))
+      case CustomsOfficePage        => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case IdentificationNumberPage => Gen.alphaNumStr.map(JsString)
+      case CountryPage              => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage              => arbitrary[DynamicAddress].map(Json.toJson(_))
+      case UnlocodePage             => arbitrary[UnLocode].map(Json.toJson(_))
     }
   }
 

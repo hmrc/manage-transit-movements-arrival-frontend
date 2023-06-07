@@ -56,8 +56,7 @@ object AddressDomain {
     ).tupled.map((AddressDomain.apply _).tupled)
 }
 
-case class EoriNumberDomain(eoriNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPersonDomain])
-    extends QualifierOfIdentificationDomain {
+case class EoriNumberDomain(eoriNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
   override val qualifierOfIdentification: String = "X"
 }
 
@@ -66,13 +65,11 @@ object EoriNumberDomain {
   implicit val userAnswersReader: UserAnswersReader[EoriNumberDomain] =
     (
       IdentificationNumberPage.reader,
-      AddAdditionalIdentifierPage.filterOptionalDependent(identity)(AdditionalIdentifierPage.reader),
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((EoriNumberDomain.apply _).tupled)
 }
 
-case class AuthorisationNumberDomain(authorisationNumber: String, additionalIdentifier: Option[String], contactPerson: Option[ContactPersonDomain])
-    extends QualifierOfIdentificationDomain {
+case class AuthorisationNumberDomain(authorisationNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
   override val qualifierOfIdentification: String = "Y"
 }
 
@@ -81,7 +78,6 @@ object AuthorisationNumberDomain {
   implicit val userAnswersReader: UserAnswersReader[AuthorisationNumberDomain] =
     (
       AuthorisationNumberPage.reader,
-      AddAdditionalIdentifierPage.filterOptionalDependent(identity)(AdditionalIdentifierPage.reader),
       AddContactPersonPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
