@@ -259,23 +259,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers with additional identifier" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(IdentificationNumberPage, idNumber)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = EoriNumberDomain(
-        idNumber,
-        None
-      )
-
-      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person or additional identifier" - {
+    "can be parsed from UserAnswers without contact person" - {
 
       val userAnswers = emptyUserAnswers
         .setValue(IdentificationNumberPage, idNumber)
@@ -336,23 +321,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers with additional identifier" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationNumberPage, idNumber)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = AuthorisationNumberDomain(
-        idNumber,
-        None
-      )
-
-      val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person or additional identifier" in {
+    "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(AuthorisationNumberPage, idNumber)
