@@ -35,7 +35,6 @@ object AuthorisationAnswersViewModel {
 
       val section = Section(
         rows = Seq(
-          helper.authorisationType,
           helper.authorisationReferenceNumber
         ).flatten
       )

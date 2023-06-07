@@ -39,7 +39,7 @@ class AuthorisationsAnswersHelper(
 
   def authorisation(index: Index): Option[SummaryListRow] =
     getAnswerAndBuildSectionRow[AuthorisationDomain](
-      formatAnswer = _.asString(formatEnumAsString).toText,
+      formatAnswer = _.asString.toText,
       prefix = "identification.authorisation",
       id = Some(s"change-authorisation"),
       args = index.display
@@ -50,7 +50,7 @@ class AuthorisationsAnswersHelper(
       index =>
         buildListItem[AuthorisationDomain, AuthorisationType](
           page = AuthorisationTypePage(index),
-          formatJourneyDomainModel = _.asString(formatEnumAsString),
+          formatJourneyDomainModel = _.asString,
           formatType = _.asString(formatEnumAsString),
           removeRoute = Some(authorisationRoutes.ConfirmRemoveAuthorisationController.onPageLoad(mrn, index, mode))
         )(AuthorisationDomain.userAnswersReader(index), implicitly)

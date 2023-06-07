@@ -32,8 +32,7 @@ case class AuthorisationDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-//  def asString(f: String => AuthorisationType => String): String =
-//    s"${`type`.asString(f)} - $referenceNumber"
+  def asString: String = this.referenceNumber
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     stage match {
