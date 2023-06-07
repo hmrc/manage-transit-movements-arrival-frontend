@@ -30,43 +30,6 @@ class AuthorisationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChe
 
   "CheckAuthorisationAnswersHelper" - {
 
-    "authorisationType" - {
-      "must return None" - {
-        "when AuthorisationTypePage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new AuthorisationAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.authorisationType
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AuthorisationTypePage defined" in {
-          forAll(arbitrary[AuthorisationType], arbitrary[Mode]) {
-            (authorisationType, mode) =>
-              val answers = emptyUserAnswers.setValue(AuthorisationTypePage)
-
-              val helper = new AuthorisationAnswersHelper(answers, mode)
-              val result = helper.authorisationType.get
-
-              result.key.value mustBe "Type"
-              val key = s"identification.authorisation.authorisationType.$authorisationType"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe None
-              action.visuallyHiddenText.get mustBe "authorisation type"
-              action.id mustBe "change-authorisation-type"
-          }
-        }
-      }
-    }
-
     "authorisationReferenceNumber" - {
       "must return None" - {
         "when AuthorisationReferenceNumberPage undefined" in {

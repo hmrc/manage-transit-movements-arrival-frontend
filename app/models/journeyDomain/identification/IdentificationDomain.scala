@@ -45,6 +45,9 @@ object IdentificationDomain {
       destinationOffice    <- DestinationOfficePage.reader
       identificationNumber <- IdentificationNumberPage.reader
       isSimplified         <- IsSimplifiedProcedurePage.reader
-      authorisationNumber  <- AuthorisationReferenceNumberPage.optionalReader
+      authorisationNumber <- isSimplified match {
+        case ProcedureType.Normal     => none[String].pure[UserAnswersReader]
+        case ProcedureType.Simplified => AuthorisationReferenceNumberPage.reader.map(Some(_))
+      }
     } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisationNumber)
 }

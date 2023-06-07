@@ -33,11 +33,8 @@ object AuthorisationAnswersViewModel {
 
       val helper = new AuthorisationAnswersHelper(userAnswers, mode)
 
-      // TODO: How does this need to be changed?
       val section = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.authorisations.subheading"),
         rows = Seq(
-          helper.authorisationType,
           helper.authorisationReferenceNumber
         ).flatten
       )

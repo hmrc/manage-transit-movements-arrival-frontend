@@ -16,7 +16,6 @@
 
 package pages.identification.authorisation
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class AuthorisationReferenceNumberPageSpec extends PageBehaviours {

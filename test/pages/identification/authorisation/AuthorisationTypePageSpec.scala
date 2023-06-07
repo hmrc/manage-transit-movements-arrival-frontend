@@ -16,7 +16,6 @@
 
 package pages.identification.authorisation
 
-import models.Index
 import models.identification.authorisation.AuthorisationType
 import pages.behaviours.PageBehaviours
 

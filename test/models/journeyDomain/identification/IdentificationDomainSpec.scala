@@ -18,7 +18,6 @@ package models.journeyDomain.identification
 
 import base.SpecBase
 import generators.Generators
-import models.Index
 import models.identification.ProcedureType
 import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
@@ -70,7 +69,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
           destinationOffice = destinationOffice,
           identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Simplified,
-          authorisationReferenceNumber = Some("referenceNumber")
+          authorisationReferenceNumber = Some(referenceNumber)
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -97,7 +96,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 
-        result.left.value.page mustBe AuthorisationTypePage
+        result.left.value.page mustBe AuthorisationReferenceNumberPage
       }
     }
   }

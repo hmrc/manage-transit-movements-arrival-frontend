@@ -19,13 +19,17 @@ package controllers.actions
 import base.SpecBase
 import generators.Generators
 import models.Index
+import models.incident.IncidentCode
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
 import models.requests._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Gen
+import pages.incident.{AddTransportEquipmentPage, IncidentCodePage}
 import pages.incident.equipment._
+import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.Section
 import pages.sections.incident.{EquipmentSection, EquipmentsSection}
 import play.api.libs.json.{JsArray, JsObject}
@@ -75,10 +79,14 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
       "must return original request" in {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
+//        val userAnswers = arbitraryEquipmentAnswers(emptyUserAnswers, index, index).sample.value
+
         val userAnswers = emptyUserAnswers
+          .setValue(IncidentCodePage(index), IncidentCode.SealsBrokenOrTampered)
           .setValue(ContainerIdentificationNumberYesNoPage(index, equipmentIndex), true)
           .setValue(ContainerIdentificationNumberPage(index, equipmentIndex), Gen.alphaNumStr.sample.value)
-          .setValue(AddSealsYesNoPage(index, equipmentIndex), false)
+          .setValue(AddSealsYesNoPage(index, equipmentIndex), true)
+          .setValue(SealIdentificationNumberPage(index, equipmentIndex, sealIndex), "1234")
           .setValue(AddGoodsItemNumberYesNoPage(index, equipmentIndex), false)
 
         val request = DataRequest(fakeRequest, eoriNumber, userAnswers)
@@ -103,16 +111,15 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
-          .setValue(ContainerIdentificationNumberYesNoPage(index, equipmentIndex), true)
-          .setValue(ContainerIdentificationNumberPage(index, equipmentIndex), Gen.alphaNumStr.sample.value)
-          .setValue(AddSealsYesNoPage(index, equipmentIndex), false)
-          .setValue(AddGoodsItemNumberYesNoPage(index, equipmentIndex), false)
+          .setValue(IncidentCodePage(Index(0)), IncidentCode.SealsBrokenOrTampered)
+          .setValue(ContainerIdentificationNumberYesNoPage(index, Index(0)), true)
+          .setValue(ContainerIdentificationNumberPage(index, Index(0)), Gen.alphaNumStr.sample.value)
+          .setValue(AddSealsYesNoPage(index, Index(0)), true)
+          .setValue(SealIdentificationNumberPage(index, Index(0), sealIndex), "1234")
+          .setValue(AddGoodsItemNumberYesNoPage(index, Index(0)), false)
           .setValue(ContainerIdentificationNumberYesNoPage(index, Index(1)), true)
           .setValue(AddSealsYesNoPage(index, Index(1)), true)
-          .setValue(AddGoodsItemNumberYesNoPage(index, Index(1)), true)
-          .setValue(ContainerIdentificationNumberYesNoPage(index, Index(2)), true)
-          .setValue(AddSealsYesNoPage(index, Index(2)), true)
-          .setValue(AddGoodsItemNumberYesNoPage(index, Index(2)), true)
+          .setValue(AddGoodsItemNumberYesNoPage(index, Index(1)), false)
 
         val request = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
@@ -125,7 +132,6 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         val expectedAnswers = userAnswers
           .removeValue(EquipmentSection(index, Index(1)))
-          .removeValue(EquipmentSection(index, Index(2)))
 
         whenReady(futureResult) {
           r =>
