@@ -34,7 +34,6 @@ object IdentificationAnswersViewModel {
       val helper = IdentificationAnswersHelper(userAnswers, mode)
 
       val section = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.identification.subheading"),
         rows = Seq(
           Some(helper.movementReferenceNumber),
           helper.destinationOffice,
