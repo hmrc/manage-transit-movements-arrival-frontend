@@ -17,9 +17,10 @@
 package pages.identification
 
 import models.identification.ProcedureType
+import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
@@ -31,16 +32,19 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
     beRemovable[ProcedureType]
 
-    // TODO: ADD BACK
-    "cleanup" ignore {
+    "cleanup" - {
       "when normal procedure type selected" - {
         "must clean up IdentificationAuthorisationSection" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
+              val preChange = emptyUserAnswers
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                .setValue(AuthorisationTypePage, AuthorisationType.ACE)
+                .setValue(AuthorisationReferenceNumberPage, refNo)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
               postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
+              postChange.get(AuthorisationTypePage) mustNot be(defined)
           }
         }
       }

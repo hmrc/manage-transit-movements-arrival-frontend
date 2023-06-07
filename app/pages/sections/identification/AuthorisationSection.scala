@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package pages.identification.authorisation
+package pages.sections.identification
 
-import models.identification.authorisation.AuthorisationType
-import pages.QuestionPage
-import pages.sections.identification.AuthorisationSection
-import play.api.libs.json.JsPath
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object AuthorisationTypePage extends QuestionPage[AuthorisationType] {
+case object AuthorisationSection extends Section[JsObject] {
 
-  override def path: JsPath = AuthorisationSection.path \ toString
+  override def path: JsPath = IdentificationSection.path \ toString
 
-  override def toString: String = "typeValue"
-
+  override def toString: String = "authorisation"
 }
