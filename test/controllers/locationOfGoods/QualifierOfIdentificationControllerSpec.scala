@@ -18,10 +18,12 @@ package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import models.identification.ProcedureType._
 import models.{NormalMode, QualifierOfIdentification}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -47,7 +49,10 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, qualifierOfIdentificationRoute)
 
@@ -58,12 +63,15 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, QualifierOfIdentification.values, mode)(request, messages).toString
+        view(form, mrn, QualifierOfIdentification.normalProcedureValues, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.values.head)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.values.head)
+
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, qualifierOfIdentificationRoute)
@@ -84,7 +92,10 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, qualifierOfIdentificationRoute)
         .withFormUrlEncodedBody(("value", QualifierOfIdentification.values.head.toString))
@@ -98,7 +109,10 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, qualifierOfIdentificationRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

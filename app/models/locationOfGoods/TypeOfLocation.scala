@@ -49,4 +49,6 @@ object TypeOfLocation extends EnumerableType[TypeOfLocation] {
     ApprovedPlace,
     Other
   )
+
+  val normalProcedureValues: Seq[TypeOfLocation] = values.diff(Seq(AuthorisedPlace))
 }

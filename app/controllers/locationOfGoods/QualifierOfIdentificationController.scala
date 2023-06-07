@@ -19,8 +19,10 @@ package controllers.locationOfGoods
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
+import models.identification.ProcedureType.Simplified
 import models.{Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.QualifierOfIdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,6 +39,7 @@ class QualifierOfIdentificationController @Inject() (
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QualifierOfIdentificationView
 )(implicit ec: ExecutionContext)
@@ -45,26 +48,35 @@ class QualifierOfIdentificationController @Inject() (
 
   private val form = formProvider[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(IsSimplifiedProcedurePage)) {
+      implicit request =>
+        val qualifierOfIdentificationValues =
+          if (request.arg == Simplified) QualifierOfIdentification.values else QualifierOfIdentification.normalProcedureValues
+        val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, mrn, QualifierOfIdentification.values, mode))
-  }
+        Ok(view(preparedForm, mrn, qualifierOfIdentificationValues, mode))
+    }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(IsSimplifiedProcedurePage))
+    .async {
+      implicit request =>
+        val qualifierOfIdentificationValues =
+          if (request.arg == Simplified) QualifierOfIdentification.values else QualifierOfIdentification.normalProcedureValues
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, qualifierOfIdentificationValues, mode))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
+            }
+          )
+    }
 }

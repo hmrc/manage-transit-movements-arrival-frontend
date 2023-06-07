@@ -19,10 +19,12 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.NormalMode
+import models.identification.ProcedureType._
 import models.locationOfGoods.TypeOfLocation
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -48,7 +50,10 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, typeOfLocationRoute)
 
@@ -59,12 +64,15 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, TypeOfLocation.values, mode)(request, messages).toString
+        view(form, mrn, TypeOfLocation.normalProcedureValues, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation.values.head)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+        .setValue(TypeOfLocationPage, TypeOfLocation.values.head)
+
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, typeOfLocationRoute)
@@ -85,7 +93,10 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, typeOfLocationRoute)
         .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
@@ -99,7 +110,10 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, typeOfLocationRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

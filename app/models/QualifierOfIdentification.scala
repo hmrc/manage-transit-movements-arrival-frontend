@@ -63,6 +63,8 @@ object QualifierOfIdentification extends EnumerableType[QualifierOfIdentificatio
     PostalCode
   )
 
+  val normalProcedureValues: Seq[QualifierOfIdentification] = values.diff(Seq(AuthorisationNumber))
+
   val locationValues: Seq[QualifierOfIdentification] = Seq(
     Unlocode,
     Coordinates,
