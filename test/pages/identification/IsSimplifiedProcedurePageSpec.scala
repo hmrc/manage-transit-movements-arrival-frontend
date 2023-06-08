@@ -17,11 +17,10 @@
 package pages.identification
 
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import pages.locationOfGoods.TypeOfLocationPage
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {
@@ -41,13 +40,11 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
             refNo =>
               val preChange = emptyUserAnswers
                 .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-                .setValue(AuthorisationTypePage, AuthorisationType.ACE)
                 .setValue(AuthorisationReferenceNumberPage, refNo)
                 .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
               postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
-              postChange.get(AuthorisationTypePage) mustNot be(defined)
               postChange.get(TypeOfLocationPage) mustNot be(defined)
           }
         }

@@ -19,11 +19,10 @@ package controllers.identification.authorisation
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.NormalMode
-import models.identification.authorisation.AuthorisationType
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

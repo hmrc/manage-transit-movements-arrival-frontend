@@ -17,7 +17,6 @@
 package generators
 
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
@@ -50,7 +49,6 @@ trait UserAnswersEntryGenerators {
   private def generateAuthorisationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification.authorisation._
     {
-      case AuthorisationTypePage            => arbitrary[AuthorisationType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString)
     }
   }

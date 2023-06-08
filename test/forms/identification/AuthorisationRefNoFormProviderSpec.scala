@@ -19,7 +19,6 @@ package forms.identification
 import forms.Constants.authorisationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
-import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
 import play.api.data.FormError
 

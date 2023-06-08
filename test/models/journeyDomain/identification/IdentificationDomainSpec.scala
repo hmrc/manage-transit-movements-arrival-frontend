@@ -19,7 +19,6 @@ package models.journeyDomain.identification
 import base.SpecBase
 import generators.Generators
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
@@ -54,14 +53,12 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       }
 
       "when a simplified journey and at least one authorisation" in {
-        val authorisationType = arbitrary[AuthorisationType].sample.value
-        val referenceNumber   = Gen.alphaNumStr.sample.value
+        val referenceNumber = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
           .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationTypePage, authorisationType)
           .setValue(AuthorisationReferenceNumberPage, referenceNumber)
 
         val expectedResult = IdentificationDomain(
