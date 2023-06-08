@@ -16,7 +16,7 @@
 
 package pages.incident
 
-import controllers.incident.routes
+import controllers.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident.IncidentsSection
@@ -32,7 +32,7 @@ case object IncidentFlagPage extends QuestionPage[Boolean] {
   override def toString: String = "incidentFlag"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IncidentFlagController.onPageLoad(userAnswers.mrn, mode))
+    Some(routes.CheckArrivalsAnswersController.onPageLoad(userAnswers.mrn))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
