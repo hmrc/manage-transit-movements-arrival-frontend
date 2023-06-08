@@ -19,8 +19,10 @@ package viewModels
 import base.SpecBase
 import generators.Generators
 import models.QualifierOfIdentification._
+import models.identification.ProcedureType
 import models.{Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
 
@@ -28,10 +30,12 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
 
   private val sectionTitle = "Location of goods"
 
-  "location of goods section" - {
+  "location of goods section" - { // TODO - ADD TESTS FOR WHEN PROCEDURE TYPE IS SIMPLIFIED
     "when CustomsOffice qualifier" - {
       "must have 3 rows" in {
-        val initialAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
+        val initialAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
 
         forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
           (mode, answers) =>
@@ -50,6 +54,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with neither additional identifier nor contact person" - {
         "must have 5 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, false)
@@ -68,6 +73,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with additional identifier" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, true)
             .setValue(AddContactPersonPage, false)
@@ -86,6 +92,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 7 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, true)
@@ -104,6 +111,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with additional identifier and contact person" - {
         "must have 8 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, true)
             .setValue(AddContactPersonPage, true)
@@ -126,6 +134,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with neither additional identifier nor contact person" - {
         "must have 5 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, false)
@@ -144,6 +153,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with additional identifier" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, true)
             .setValue(AddContactPersonPage, false)
@@ -162,6 +172,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 7 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, false)
             .setValue(AddContactPersonPage, true)
@@ -180,6 +191,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with additional identifier and contact person" - {
         "must have 8 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddAdditionalIdentifierPage, true)
             .setValue(AddContactPersonPage, true)
@@ -202,6 +214,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with no contact person" - {
         "must have 4 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, false)
 
@@ -219,6 +232,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, true)
 
@@ -240,6 +254,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with no contact person" - {
         "must have 4 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, false)
 
@@ -257,6 +272,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, true)
 
@@ -278,6 +294,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with no contact person" - {
         "must have 5 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, false)
 
@@ -295,6 +312,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 7 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, true)
 
@@ -316,6 +334,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with no contact person" - {
         "must have 4 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, false)
 
@@ -333,6 +352,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       "with contact person" - {
         "must have 6 rows" in {
           val initialAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(QualifierOfIdentificationPage, qualifier)
             .setValue(AddContactPersonPage, true)
 

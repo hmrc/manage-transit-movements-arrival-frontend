@@ -18,12 +18,14 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
+import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
 class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
@@ -38,11 +40,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
   private val unLocode      = arbitrary[UnLocode].sample.value
   private val postalCode    = arbitrary[PostalCodeAddress].sample.value
 
-  "QualifierOfIdentificationDomain" - {
+  "QualifierOfIdentificationDomain" - { // TODO - ADD TESTS FOR WHEN PROCEDURE TYPE IS SIMPLIFIED
 
     "can be parsed from UserAnswers from AddressDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
         .setValue(CountryPage, country)
         .setValue(AddressPage, address)
@@ -63,6 +66,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from EoriNumberDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.EoriNumber)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
@@ -83,6 +87,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from AuthorisationNumberDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
@@ -103,6 +108,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from CoordinatesDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Coordinates)
         .setValue(CoordinatesPage, coordinates)
         .setValue(AddContactPersonPage, true)
@@ -123,6 +129,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from CustomsOfficeDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
         .setValue(CustomsOfficePage, customsOffice)
 
@@ -136,6 +143,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from UnlocodeDomain" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Unlocode)
         .setValue(UnlocodePage, unLocode)
         .setValue(AddContactPersonPage, false)
@@ -153,6 +161,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers from PostalCode" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.PostalCode)
         .setValue(PostalCodePage, postalCode)
         .setValue(AddContactPersonPage, false)
@@ -171,7 +180,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "when a mandatory page is missing" in {
 
-        val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(emptyUserAnswers)
+        val result: EitherType[QualifierOfIdentificationDomain] =
+          UserAnswersReader[QualifierOfIdentificationDomain].run(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal))
 
         result.left.value.page mustBe QualifierOfIdentificationPage
       }
@@ -183,6 +193,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(CountryPage, country)
         .setValue(AddressPage, address)
         .setValue(AddContactPersonPage, true)
@@ -203,6 +214,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(CountryPage, country)
         .setValue(AddressPage, address)
         .setValue(AddContactPersonPage, false)
@@ -225,6 +237,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, true)
@@ -248,6 +261,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -268,6 +282,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with additional identifier" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
         .setValue(AddAdditionalIdentifierPage, true)
@@ -287,6 +302,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person or additional identifier" - {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
         .setValue(AddAdditionalIdentifierPage, false)
@@ -309,6 +325,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(IdentificationNumberPage, idNumber)
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
@@ -334,6 +351,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -354,6 +372,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with additional identifier" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
         .setValue(AddAdditionalIdentifierPage, true)
@@ -373,6 +392,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person or additional identifier" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
         .setValue(AddAdditionalIdentifierPage, false)
@@ -395,6 +415,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(AuthorisationNumberPage, idNumber)
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
@@ -420,6 +441,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(CoordinatesPage, coordinates)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -438,6 +460,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(CoordinatesPage, coordinates)
         .setValue(AddContactPersonPage, false)
 
@@ -458,6 +481,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(CoordinatesPage, coordinates)
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
@@ -480,6 +504,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(CustomsOfficePage, customsOffice)
 
       val expectedResult = CustomsOfficeDomain(customsOffice)
@@ -505,6 +530,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(UnlocodePage, unLocode)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -523,6 +549,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(UnlocodePage, unLocode)
         .setValue(AddContactPersonPage, false)
 
@@ -543,6 +570,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(UnlocodePage, unLocode)
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
@@ -565,6 +593,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers with contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(PostalCodePage, postalCode)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -583,6 +612,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers without contact person" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(PostalCodePage, postalCode)
         .setValue(AddContactPersonPage, false)
 
@@ -603,6 +633,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(PostalCodePage, postalCode)
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)

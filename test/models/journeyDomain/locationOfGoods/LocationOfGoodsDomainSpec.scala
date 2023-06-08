@@ -18,6 +18,7 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
+import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import models.reference.Country
@@ -25,6 +26,7 @@ import models.{DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
@@ -32,13 +34,14 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
   private val country = arbitrary[Country].sample.value
   private val address = arbitrary[DynamicAddress].sample.value
 
-  "LocationOfGoodsDomain" - {
+  "LocationOfGoodsDomain" - { // TODO - ADD TESTS FOR WHEN PROCEDURE TYPE IS SIMPLIFIED
 
     "can be parsed from UserAnswers" in {
 
       TypeOfLocation.values.map {
         value =>
           val userAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
             .setValue(CountryPage, country)
@@ -47,7 +50,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
           val expectedResult =
             LocationOfGoodsDomain(
-              typeOfLocation = value,
+              typeOfLocation = Some(value),
               qualifierOfIdentificationDetails = AddressDomain(
                 country,
                 address,
@@ -70,6 +73,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
         val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
 
         val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
           .setValue(CountryPage, country)
