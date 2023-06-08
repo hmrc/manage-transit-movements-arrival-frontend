@@ -46,31 +46,29 @@ class AuthorisationReferenceNumberController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
     actions
-      .requireData(mrn)
-      .andThen(getMandatoryPage.getFirst(AuthorisationTypePage)) {
+      .requireData(mrn) {
         implicit request =>
-          val form = formProvider("identification.authorisation.authorisationReferenceNumber", request.arg.toString)
+          val form = formProvider("identification.authorisation.authorisationReferenceNumber")
 
           val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mrn, request.arg.toString, mode))
+          Ok(view(preparedForm, mrn, mode))
       }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
     actions
       .requireData(mrn)
-      .andThen(getMandatoryPage.getFirst(AuthorisationTypePage))
       .async {
         implicit request =>
-          val form = formProvider("identification.authorisation.authorisationReferenceNumber", request.arg.toString)
+          val form = formProvider("identification.authorisation.authorisationReferenceNumber")
 
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, request.arg.toString, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 AuthorisationReferenceNumberPage.writeToUserAnswers(value).writeToSession().navigate()

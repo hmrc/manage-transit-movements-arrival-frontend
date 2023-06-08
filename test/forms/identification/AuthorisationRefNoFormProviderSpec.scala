@@ -31,7 +31,7 @@ class AuthorisationRefNoFormProviderSpec extends StringFieldBehaviours {
   val invalidCharactersKey = s"$prefix.error.invalid"
   val maxLength            = 35
 
-  val form = new AuthorisationRefNoFormProvider()(prefix, AuthorisationType.ACT.toString)
+  val form = new AuthorisationRefNoFormProvider()(prefix)
 
   ".value" - {
 
@@ -60,7 +60,7 @@ class AuthorisationRefNoFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, List(AuthorisationType.ACT.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

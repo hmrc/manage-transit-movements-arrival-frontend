@@ -26,9 +26,9 @@ import javax.inject.Inject
 
 class AuthorisationRefNoFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, authorisationType: String): Form[String] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required", Seq(authorisationType))
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
             maxLength(authorisationNumberLength, s"$prefix.error.length"),

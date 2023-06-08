@@ -34,9 +34,8 @@ import scala.concurrent.Future
 
 class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val authorisationType                      = AuthorisationType.ACT
   private val formProvider                           = new AuthorisationRefNoFormProvider()
-  private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber", authorisationType.toString)
+  private val form                                   = formProvider("identification.authorisation.authorisationReferenceNumber")
   private val mode                                   = NormalMode
   private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(mrn, mode).url
 
@@ -49,9 +48,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationTypePage, AuthorisationType.ACT)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, authorisationReferenceNumberRoute)
 
@@ -62,15 +59,13 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(form, mrn, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
-        .setValue(AuthorisationReferenceNumberPage, "testString")
+      val userAnswers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, "testString")
 
       setExistingUserAnswers(userAnswers)
 
@@ -85,16 +80,13 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
 
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -111,10 +103,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage, AuthorisationType.ACT)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
 
@@ -128,7 +117,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, AuthorisationType.ACT.toString, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
 
     }
 
