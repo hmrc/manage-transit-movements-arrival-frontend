@@ -44,7 +44,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "The consignee is the person or company receiving the goods at the office of destination.")
+  behave like pageWithContent("p", "The consignee is the person or organisation receiving the goods.")
 
   behave like pageWithHint(
     "This number can be up to 17 characters long and include both letters and numbers. For example, GB123456789000."
