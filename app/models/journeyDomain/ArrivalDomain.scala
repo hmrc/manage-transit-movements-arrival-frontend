@@ -40,8 +40,7 @@ object ArrivalDomain {
 
 case class ArrivalPostTransitionDomain(
   identification: IdentificationDomain,
-  locationOfGoods: LocationOfGoodsDomain,
-  incidents: Option[IncidentsDomain]
+  locationOfGoods: LocationOfGoodsDomain
 ) extends ArrivalDomain
 
 object ArrivalPostTransitionDomain {
@@ -50,8 +49,8 @@ object ArrivalPostTransitionDomain {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
-    } yield ArrivalPostTransitionDomain(identification, locationOfGoods, incidents)
+      //    incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
+    } yield ArrivalPostTransitionDomain(identification, locationOfGoods)
   }
 }
 
