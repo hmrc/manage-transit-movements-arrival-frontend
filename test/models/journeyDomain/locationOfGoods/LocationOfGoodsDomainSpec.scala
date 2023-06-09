@@ -34,7 +34,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
   private val country = arbitrary[Country].sample.value
   private val address = arbitrary[DynamicAddress].sample.value
 
-  "LocationOfGoodsDomain" - { // TODO - ADD TESTS FOR WHEN PROCEDURE TYPE IS SIMPLIFIED
+  "LocationOfGoodsDomain" - {
 
     "can be parsed from UserAnswers when procedure type is normal" in {
 
