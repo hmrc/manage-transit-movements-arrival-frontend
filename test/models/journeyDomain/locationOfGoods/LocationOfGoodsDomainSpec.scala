@@ -36,7 +36,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
   "LocationOfGoodsDomain" - { // TODO - ADD TESTS FOR WHEN PROCEDURE TYPE IS SIMPLIFIED
 
-    "can be parsed from UserAnswers" in {
+    "can be parsed from UserAnswers when procedure type is normal" in {
 
       TypeOfLocation.values.map {
         value =>
@@ -64,9 +64,34 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
       }
     }
 
+    "can be parsed from UserAnswers when procedure type is simplified" in {
+
+      val authorisationReference = Gen.alphaNumStr.sample.value
+
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+        .setValue(AuthorisationNumberPage, authorisationReference)
+        .setValue(AddAdditionalIdentifierPage, false)
+        .setValue(AddContactPersonPage, false)
+
+      val expectedResult =
+        LocationOfGoodsDomain(
+          typeOfLocation = None,
+          qualifierOfIdentificationDetails = AuthorisationNumberDomain(
+            authorisationReference,
+            None,
+            None
+          )
+        )
+
+      val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(userAnswers)
+
+      result.value mustBe expectedResult
+    }
+
     "cannot be parsed from UserAnswers" - {
 
-      "when a mandatory page is missing" in {
+      "when a mandatory page is missing for procedure type normal" in {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(TypeOfLocationPage, QualifierOfIdentificationPage)
 
@@ -78,6 +103,30 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
+          .setValue(AddContactPersonPage, false)
+
+        mandatoryPages.map {
+          mandatoryPage =>
+            val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
+
+            val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(updatedUserAnswers)
+
+            result.left.value.page mustBe mandatoryPage
+        }
+      }
+
+      "when a mandatory page is missing for procedure type simplified" in {
+
+        val authorisationReference = Gen.alphaNumStr.sample.value
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage)
+
+        val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+          .setValue(AuthorisationNumberPage, authorisationReference)
+          .setValue(AddAdditionalIdentifierPage, false)
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {
