@@ -16,6 +16,7 @@
 
 package models.locationOfGoods
 
+import models.identification.ProcedureType
 import models.{EnumerableType, Radioable, WithName}
 
 sealed trait TypeOfLocation extends Radioable[TypeOfLocation] {
@@ -43,10 +44,15 @@ object TypeOfLocation extends EnumerableType[TypeOfLocation] {
 
   val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
-  val values: Seq[TypeOfLocation] = Seq(
+  override val values: Seq[TypeOfLocation] = Seq(
     AuthorisedPlace,
     DesignatedLocation,
     ApprovedPlace,
     Other
   )
+
+  def values(procedureType: ProcedureType): Seq[TypeOfLocation] = procedureType match {
+    case ProcedureType.Simplified => values
+    case ProcedureType.Normal     => values.filterNot(_ == AuthorisedPlace)
+  }
 }

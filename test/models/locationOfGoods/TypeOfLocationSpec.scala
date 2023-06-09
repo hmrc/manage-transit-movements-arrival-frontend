@@ -16,6 +16,8 @@
 
 package models.locationOfGoods
 
+import models.identification.ProcedureType
+import models.locationOfGoods.TypeOfLocation._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -57,5 +59,35 @@ class TypeOfLocationSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           Json.toJson(typeoflocation) mustEqual JsString(typeoflocation.toString)
       }
     }
+
+    "Radio options" - {
+      "must return the correct number of radios" - {
+        "when procedure type is simplified" in {
+          val procedureType = ProcedureType.Simplified
+
+          val radios = TypeOfLocation.values(procedureType)
+          val expected = Seq(
+            AuthorisedPlace,
+            DesignatedLocation,
+            ApprovedPlace,
+            Other
+          )
+          radios mustBe expected
+        }
+        "when procedure type is normal" in {
+          val procedureType = ProcedureType.Normal
+
+          val radios = TypeOfLocation.values(procedureType)
+          val expected = Seq(
+            DesignatedLocation,
+            ApprovedPlace,
+            Other
+          )
+          radios mustBe expected
+        }
+
+      }
+    }
+
   }
 }
