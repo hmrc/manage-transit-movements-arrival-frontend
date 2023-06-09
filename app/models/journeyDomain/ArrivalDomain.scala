@@ -18,10 +18,8 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.{Mode, UserAnswers}
-import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
 sealed trait ArrivalDomain extends JourneyDomainModel {
@@ -49,7 +47,6 @@ object ArrivalPostTransitionDomain {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      //    incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
     } yield ArrivalPostTransitionDomain(identification, locationOfGoods)
   }
 }
