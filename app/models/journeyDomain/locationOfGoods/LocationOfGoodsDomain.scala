@@ -18,7 +18,7 @@ package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
@@ -30,13 +30,9 @@ case class LocationOfGoodsDomain(
 
 object LocationOfGoodsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] = for {
-    isSimplified <- IsSimplifiedProcedurePage.reader
-    typeOfLocation <- isSimplified match {
-      case ProcedureType.Simplified => none[TypeOfLocation].pure[UserAnswersReader]
-      case ProcedureType.Normal     => TypeOfLocationPage.reader.map(Some(_))
-    }
-    qualifierOfIdentificationDetails <- UserAnswersReader[QualifierOfIdentificationDomain]
-  } yield LocationOfGoodsDomain(typeOfLocation, qualifierOfIdentificationDetails)
+  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] = (
+    IsSimplifiedProcedurePage.filterOptionalDependent(_ == ProcedureType.Normal)(TypeOfLocationPage.reader),
+    UserAnswersReader[QualifierOfIdentificationDomain]
+  ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
 
 }
