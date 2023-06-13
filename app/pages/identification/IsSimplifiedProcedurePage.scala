@@ -21,10 +21,11 @@ import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.identification.{AuthorisationsSection, IdentificationSection}
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
@@ -34,8 +35,12 @@ case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
   override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(ProcedureType.Normal) => userAnswers.remove(AuthorisationsSection)
-      case _                          => super.cleanup(value, userAnswers)
+      case Some(ProcedureType.Normal) =>
+        userAnswers.remove(AuthorisationsSection) match {
+          case Success(ua)        => ua.remove(LocationOfGoodsSection)
+          case Failure(exception) => Failure(exception)
+        }
+      case _ => super.cleanup(value, userAnswers)
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =

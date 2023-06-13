@@ -18,9 +18,11 @@ package pages.identification
 
 import models.Index
 import models.identification.ProcedureType
+import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.locationOfGoods.TypeOfLocationPage
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
@@ -34,13 +36,16 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when normal procedure type selected" - {
-        "must clean up IdentificationAuthorisationSection" in {
+        "must clean up IdentificationAuthorisationSection and location of goods section" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+              val preChange = emptyUserAnswers
+                .setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+                .setValue(TypeOfLocationPage, TypeOfLocation.AuthorisedPlace)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
               postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
+              postChange.get(TypeOfLocationPage) mustNot be(defined)
           }
         }
       }
