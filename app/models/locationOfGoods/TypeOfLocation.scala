@@ -16,8 +16,9 @@
 
 package models.locationOfGoods
 
-import models.identification.ProcedureType
-import models.{EnumerableType, Radioable, WithName}
+import models.identification.ProcedureType.Simplified
+import models.{EnumerableType, Radioable, UserAnswers, WithName}
+import pages.identification.IsSimplifiedProcedurePage
 
 sealed trait TypeOfLocation extends Radioable[TypeOfLocation] {
   override val messageKeyPrefix: String = TypeOfLocation.messageKeyPrefix
@@ -44,15 +45,17 @@ object TypeOfLocation extends EnumerableType[TypeOfLocation] {
 
   val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
-  override val values: Seq[TypeOfLocation] = Seq(
+  val values: Seq[TypeOfLocation] = Seq(
     AuthorisedPlace,
     DesignatedLocation,
     ApprovedPlace,
     Other
   )
 
-  def values(procedureType: ProcedureType): Seq[TypeOfLocation] = procedureType match {
-    case ProcedureType.Simplified => values
-    case ProcedureType.Normal     => values.filterNot(_ == AuthorisedPlace)
-  }
+  def values(userAnswers: UserAnswers): Seq[TypeOfLocation] =
+    userAnswers.get(IsSimplifiedProcedurePage) match {
+      case Some(Simplified) => values
+      case _                => values.filterNot(_ == AuthorisedPlace)
+    }
+
 }

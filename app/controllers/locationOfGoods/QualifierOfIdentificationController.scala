@@ -52,7 +52,7 @@ class QualifierOfIdentificationController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, QualifierOfIdentification.values, mode))
+      Ok(view(preparedForm, mrn, QualifierOfIdentification.values(request.userAnswers), mode))
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
@@ -60,7 +60,7 @@ class QualifierOfIdentificationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values(request.userAnswers), mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()

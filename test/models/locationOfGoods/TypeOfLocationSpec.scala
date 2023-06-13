@@ -16,17 +16,18 @@
 
 package models.locationOfGoods
 
-import models.identification.ProcedureType
+import base.SpecBase
+import models.identification.ProcedureType._
 import models.locationOfGoods.TypeOfLocation._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.identification.IsSimplifiedProcedurePage
 import play.api.libs.json.{JsError, JsString, Json}
 
-class TypeOfLocationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TypeOfLocationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "Typeoflocation" - {
 
@@ -61,33 +62,26 @@ class TypeOfLocationSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
     }
 
     "Radio options" - {
-      "must return the correct number of radios" - {
-        "when procedure type is simplified" in {
-          val procedureType = ProcedureType.Simplified
 
-          val radios = TypeOfLocation.values(procedureType)
-          val expected = Seq(
-            AuthorisedPlace,
-            DesignatedLocation,
-            ApprovedPlace,
-            Other
-          )
-          radios mustBe expected
-        }
-        "when procedure type is normal" in {
-          val procedureType = ProcedureType.Normal
+      "Must return the correct number of radios" - {
+        "When procedure type is Simplified" in {
+          val answers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, Simplified)
 
-          val radios = TypeOfLocation.values(procedureType)
-          val expected = Seq(
-            DesignatedLocation,
-            ApprovedPlace,
-            Other
-          )
+          val radios   = TypeOfLocation.values(answers)
+          val expected = Seq(AuthorisedPlace, DesignatedLocation, ApprovedPlace, Other)
           radios mustBe expected
         }
 
+        "When procedure type is Normal" in {
+          val answers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, Normal)
+
+          val radios   = TypeOfLocation.values(answers)
+          val expected = Seq(DesignatedLocation, ApprovedPlace, Other)
+          radios mustBe expected
+        }
       }
     }
-
   }
 }

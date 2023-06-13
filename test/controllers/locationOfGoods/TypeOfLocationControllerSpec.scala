@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.identification.ProcedureType
+import models.identification.ProcedureType._
 import models.locationOfGoods.TypeOfLocation
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -50,7 +50,10 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified))
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, typeOfLocationRoute)
 
@@ -61,13 +64,13 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, TypeOfLocation.values, mode)(request, messages).toString
+        view(form, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+        .setValue(IsSimplifiedProcedurePage, Simplified)
         .setValue(TypeOfLocationPage, TypeOfLocation.values.head)
 
       setExistingUserAnswers(userAnswers)
@@ -83,14 +86,17 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, TypeOfLocation.values, mode)(request, messages).toString
+        view(filledForm, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified))
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Normal)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, typeOfLocationRoute)
         .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
@@ -104,7 +110,10 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified))
+      val userAnswers = emptyUserAnswers
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, typeOfLocationRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -116,7 +125,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, TypeOfLocation.values, mode)(request, messages).toString
+        view(boundForm, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
