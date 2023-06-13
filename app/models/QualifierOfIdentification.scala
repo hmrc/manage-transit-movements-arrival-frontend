@@ -16,9 +16,6 @@
 
 package models
 
-import models.identification.ProcedureType.Simplified
-import pages.identification.IsSimplifiedProcedurePage
-
 sealed trait QualifierOfIdentification extends Radioable[QualifierOfIdentification] {
   override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
   val code: String
@@ -65,12 +62,6 @@ object QualifierOfIdentification extends EnumerableType[QualifierOfIdentificatio
     Address,
     PostalCode
   )
-
-  def values(userAnswers: UserAnswers): Seq[QualifierOfIdentification] =
-    userAnswers.get(IsSimplifiedProcedurePage) match {
-      case Some(Simplified) => values
-      case _                => values.filterNot(_ == AuthorisationNumber)
-    }
 
   val locationValues: Seq[QualifierOfIdentification] = Seq(
     Unlocode,

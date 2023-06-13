@@ -16,18 +16,15 @@
 
 package models
 
-import base.SpecBase
-import models.QualifierOfIdentification._
-import models.identification.ProcedureType._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.IsSimplifiedProcedurePage
 import play.api.libs.json.{JsError, JsString, Json}
 
-class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class QualifierOfIdentificationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "Qualifierofidentification" - {
 
@@ -58,29 +55,6 @@ class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaChe
       forAll(gen) {
         qualifierofidentification =>
           Json.toJson(qualifierofidentification) mustEqual JsString(qualifierofidentification.toString)
-      }
-    }
-  }
-
-  "Radio options" - {
-
-    "Must return the correct number of radios" - {
-      "When procedure type is Simplified" in {
-        val answers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, Simplified)
-
-        val radios   = QualifierOfIdentification.values(answers)
-        val expected = Seq(CustomsOffice, EoriNumber, AuthorisationNumber, Coordinates, Unlocode, Address, PostalCode)
-        radios mustBe expected
-      }
-
-      "When procedure type is Normal" in {
-        val answers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, Normal)
-
-        val radios   = QualifierOfIdentification.values(answers)
-        val expected = Seq(CustomsOffice, EoriNumber, Coordinates, Unlocode, Address, PostalCode)
-        radios mustBe expected
       }
     }
   }

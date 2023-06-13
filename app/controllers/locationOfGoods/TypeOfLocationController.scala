@@ -22,6 +22,7 @@ import forms.EnumerableFormProvider
 import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
+import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +37,7 @@ class TypeOfLocationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -46,26 +48,27 @@ class TypeOfLocationController @Inject() (
 
   private val form = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).andThen(getMandatoryPage(IsSimplifiedProcedurePage)) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TypeOfLocationPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mrn, TypeOfLocation.values(request.userAnswers), mode))
+      Ok(view(preparedForm, mrn, TypeOfLocation.values(request.arg), mode))
   }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, TypeOfLocation.values(request.userAnswers), mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions.requireData(mrn).andThen(getMandatoryPage(IsSimplifiedProcedurePage)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, TypeOfLocation.values(request.arg), mode))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()
+            }
+          )
+    }
 }
