@@ -70,11 +70,9 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.EoriNumber)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
-        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = EoriNumberDomain(
         idNumber,
-        None,
         None
       )
 
@@ -91,11 +89,9 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
-        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = AuthorisationNumberDomain(
         idNumber,
-        None,
         None
       )
 
@@ -266,11 +262,9 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
         .setValue(ContactPersonTelephonePage, tel)
-        .setValue(AddAdditionalIdentifierPage, false)
 
       val expectedResult = EoriNumberDomain(
         idNumber,
-        None,
         Some(ContactPersonDomain(name, tel))
       )
 
@@ -279,37 +273,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value mustBe expectedResult
     }
 
-    "can be parsed from UserAnswers with additional identifier" in {
+    "can be parsed from UserAnswers without contact person" - {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
-        .setValue(AddAdditionalIdentifierPage, true)
-        .setValue(AdditionalIdentifierPage, idNumber)
 
       val expectedResult = EoriNumberDomain(
         idNumber,
-        Some(idNumber),
-        None
-      )
-
-      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person or additional identifier" - {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(IdentificationNumberPage, idNumber)
-        .setValue(AddContactPersonPage, false)
-        .setValue(AddAdditionalIdentifierPage, false)
-
-      val expectedResult = EoriNumberDomain(
-        idNumber,
-        None,
         None
       )
 
@@ -320,7 +292,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(IdentificationNumberPage, AddContactPersonPage, AddAdditionalIdentifierPage)
+      val mandatoryPages: Seq[QuestionPage[_]] = Seq(IdentificationNumberPage, AddContactPersonPage)
 
       "when a mandatory page is missing" in {
 
@@ -330,8 +302,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
           .setValue(ContactPersonTelephonePage, tel)
-          .setValue(AddAdditionalIdentifierPage, true)
-          .setValue(AdditionalIdentifierPage, idNumber)
 
         mandatoryPages.map {
           page =>
@@ -357,11 +327,9 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(AddContactPersonPage, true)
           .setValue(ContactPersonNamePage, name)
           .setValue(ContactPersonTelephonePage, tel)
-          .setValue(AddAdditionalIdentifierPage, false)
 
         val expectedResult = AuthorisationNumberDomain(
           idNumber,
-          None,
           Some(ContactPersonDomain(name, tel))
         )
 
@@ -370,37 +338,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         result.value mustBe expectedResult
       }
 
-      "can be parsed from UserAnswers with additional identifier" in {
+      "can be parsed from UserAnswers without contact person" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(AuthorisationNumberPage, idNumber)
           .setValue(AddContactPersonPage, false)
-          .setValue(AddAdditionalIdentifierPage, true)
-          .setValue(AdditionalIdentifierPage, idNumber)
 
         val expectedResult = AuthorisationNumberDomain(
           idNumber,
-          Some(idNumber),
-          None
-        )
-
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "can be parsed from UserAnswers without contact person or additional identifier" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(AuthorisationNumberPage, idNumber)
-          .setValue(AddContactPersonPage, false)
-          .setValue(AddAdditionalIdentifierPage, false)
-
-        val expectedResult = AuthorisationNumberDomain(
-          idNumber,
-          None,
           None
         )
 
@@ -411,7 +357,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "cannot be parsed from UserAnswers" - {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage, AddAdditionalIdentifierPage)
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage)
 
         "when a mandatory page is missing" in {
 
@@ -421,8 +367,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
             .setValue(AddContactPersonPage, true)
             .setValue(ContactPersonNamePage, name)
             .setValue(ContactPersonTelephonePage, tel)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AdditionalIdentifierPage, idNumber)
 
           mandatoryPages.map {
             page =>
@@ -434,141 +378,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           }
         }
       }
+
     }
 
-    "when procedure type simplified" - {
+    "CoordinatesDomain" - {
+
       "can be parsed from UserAnswers with contact person" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationNumberPage, idNumber)
-          .setValue(AddContactPersonPage, true)
-          .setValue(ContactPersonNamePage, name)
-          .setValue(ContactPersonTelephonePage, tel)
-          .setValue(AddAdditionalIdentifierPage, false)
-
-        val expectedResult = AuthorisationNumberDomain(
-          idNumber,
-          None,
-          Some(ContactPersonDomain(name, tel))
-        )
-
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "can be parsed from UserAnswers with additional identifier" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationNumberPage, idNumber)
-          .setValue(AddContactPersonPage, false)
-          .setValue(AddAdditionalIdentifierPage, true)
-          .setValue(AdditionalIdentifierPage, idNumber)
-
-        val expectedResult = AuthorisationNumberDomain(
-          idNumber,
-          Some(idNumber),
-          None
-        )
-
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "can be parsed from UserAnswers without contact person or additional identifier" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationNumberPage, idNumber)
-          .setValue(AddContactPersonPage, false)
-          .setValue(AddAdditionalIdentifierPage, false)
-
-        val expectedResult = AuthorisationNumberDomain(
-          idNumber,
-          None,
-          None
-        )
-
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "cannot be parsed from UserAnswers" - {
-
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage, AddAdditionalIdentifierPage)
-
-        "when a mandatory page is missing" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-            .setValue(AuthorisationNumberPage, idNumber)
-            .setValue(AddContactPersonPage, true)
-            .setValue(ContactPersonNamePage, name)
-            .setValue(ContactPersonTelephonePage, tel)
-            .setValue(AddAdditionalIdentifierPage, true)
-            .setValue(AdditionalIdentifierPage, idNumber)
-
-          mandatoryPages.map {
-            page =>
-              val updatedUserAnswers = userAnswers.removeValue(page)
-
-              val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(updatedUserAnswers)
-
-              result.left.value.page mustBe page
-          }
-        }
-      }
-    }
-
-  }
-
-  "CoordinatesDomain" - {
-
-    "can be parsed from UserAnswers with contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(CoordinatesPage, coordinates)
-        .setValue(AddContactPersonPage, true)
-        .setValue(ContactPersonNamePage, name)
-        .setValue(ContactPersonTelephonePage, tel)
-
-      val expectedResult = CoordinatesDomain(
-        coordinates,
-        Some(ContactPersonDomain(name, tel))
-      )
-
-      val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(CoordinatesPage, coordinates)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = CoordinatesDomain(
-        coordinates,
-        None
-      )
-
-      val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "cannot be parsed from UserAnswers" - {
-
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(CoordinatesPage, AddContactPersonPage)
-
-      "when a mandatory page is missing" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
@@ -577,87 +392,87 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(ContactPersonNamePage, name)
           .setValue(ContactPersonTelephonePage, tel)
 
-        mandatoryPages.map {
-          page =>
-            val updatedUserAnswers = userAnswers.removeValue(page)
+        val expectedResult = CoordinatesDomain(
+          coordinates,
+          Some(ContactPersonDomain(name, tel))
+        )
 
-            val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(updatedUserAnswers)
+        val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
 
-            result.left.value.page mustBe page
+        result.value mustBe expectedResult
+      }
+
+      "can be parsed from UserAnswers without contact person" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(CoordinatesPage, coordinates)
+          .setValue(AddContactPersonPage, false)
+
+        val expectedResult = CoordinatesDomain(
+          coordinates,
+          None
+        )
+
+        val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
+
+        result.value mustBe expectedResult
+      }
+
+      "cannot be parsed from UserAnswers" - {
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(CoordinatesPage, AddContactPersonPage)
+
+        "when a mandatory page is missing" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+            .setValue(CoordinatesPage, coordinates)
+            .setValue(AddContactPersonPage, true)
+            .setValue(ContactPersonNamePage, name)
+            .setValue(ContactPersonTelephonePage, tel)
+
+          mandatoryPages.map {
+            page =>
+              val updatedUserAnswers = userAnswers.removeValue(page)
+
+              val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(updatedUserAnswers)
+
+              result.left.value.page mustBe page
+          }
         }
       }
     }
-  }
 
-  "CustomsOfficeDomain" - {
+    "CustomsOfficeDomain" - {
 
-    "can be parsed from UserAnswers" in {
+      "can be parsed from UserAnswers" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(CustomsOfficePage, customsOffice)
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(CustomsOfficePage, customsOffice)
 
-      val expectedResult = CustomsOfficeDomain(customsOffice)
+        val expectedResult = CustomsOfficeDomain(customsOffice)
 
-      val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(userAnswers)
+        val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(userAnswers)
 
-      result.value mustBe expectedResult
-    }
+        result.value mustBe expectedResult
+      }
 
-    "cannot be parsed from UserAnswers" - {
+      "cannot be parsed from UserAnswers" - {
 
-      "when a mandatory page is missing" in {
+        "when a mandatory page is missing" in {
 
-        val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(emptyUserAnswers)
+          val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(emptyUserAnswers)
 
-        result.left.value.page mustBe CustomsOfficePage
+          result.left.value.page mustBe CustomsOfficePage
+        }
       }
     }
-  }
 
-  "UnlocodeDomain" - {
+    "UnlocodeDomain" - {
 
-    "can be parsed from UserAnswers with contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(UnlocodePage, unLocode)
-        .setValue(AddContactPersonPage, true)
-        .setValue(ContactPersonNamePage, name)
-        .setValue(ContactPersonTelephonePage, tel)
-
-      val expectedResult = UnlocodeDomain(
-        unLocode,
-        Some(ContactPersonDomain(name, tel))
-      )
-
-      val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(UnlocodePage, unLocode)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = UnlocodeDomain(
-        unLocode,
-        None
-      )
-
-      val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "cannot be parsed from UserAnswers" - {
-
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(UnlocodePage, AddContactPersonPage)
-
-      "when a mandatory page is missing" in {
+      "can be parsed from UserAnswers with contact person" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
@@ -666,61 +481,61 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(ContactPersonNamePage, name)
           .setValue(ContactPersonTelephonePage, tel)
 
-        mandatoryPages.map {
-          page =>
-            val updatedUserAnswers = userAnswers.removeValue(page)
+        val expectedResult = UnlocodeDomain(
+          unLocode,
+          Some(ContactPersonDomain(name, tel))
+        )
 
-            val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(updatedUserAnswers)
+        val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
 
-            result.left.value.page mustBe page
+        result.value mustBe expectedResult
+      }
+
+      "can be parsed from UserAnswers without contact person" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(UnlocodePage, unLocode)
+          .setValue(AddContactPersonPage, false)
+
+        val expectedResult = UnlocodeDomain(
+          unLocode,
+          None
+        )
+
+        val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
+
+        result.value mustBe expectedResult
+      }
+
+      "cannot be parsed from UserAnswers" - {
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(UnlocodePage, AddContactPersonPage)
+
+        "when a mandatory page is missing" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+            .setValue(UnlocodePage, unLocode)
+            .setValue(AddContactPersonPage, true)
+            .setValue(ContactPersonNamePage, name)
+            .setValue(ContactPersonTelephonePage, tel)
+
+          mandatoryPages.map {
+            page =>
+              val updatedUserAnswers = userAnswers.removeValue(page)
+
+              val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(updatedUserAnswers)
+
+              result.left.value.page mustBe page
+          }
         }
       }
     }
-  }
 
-  "PostalCodeDomain" - {
+    "PostalCodeDomain" - {
 
-    "can be parsed from UserAnswers with contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(PostalCodePage, postalCode)
-        .setValue(AddContactPersonPage, true)
-        .setValue(ContactPersonNamePage, name)
-        .setValue(ContactPersonTelephonePage, tel)
-
-      val expectedResult = PostalCodeDomain(
-        postalCode,
-        Some(ContactPersonDomain(name, tel))
-      )
-
-      val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "can be parsed from UserAnswers without contact person" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(PostalCodePage, postalCode)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = PostalCodeDomain(
-        postalCode,
-        None
-      )
-
-      val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
-    "cannot be parsed from UserAnswers" - {
-
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(PostalCodePage, AddContactPersonPage)
-
-      "when a mandatory page is missing" in {
+      "can be parsed from UserAnswers with contact person" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
@@ -729,16 +544,56 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           .setValue(ContactPersonNamePage, name)
           .setValue(ContactPersonTelephonePage, tel)
 
-        mandatoryPages.map {
-          page =>
-            val updatedUserAnswers = userAnswers.removeValue(page)
+        val expectedResult = PostalCodeDomain(
+          postalCode,
+          Some(ContactPersonDomain(name, tel))
+        )
 
-            val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(updatedUserAnswers)
+        val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
 
-            result.left.value.page mustBe page
+        result.value mustBe expectedResult
+      }
+
+      "can be parsed from UserAnswers without contact person" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(PostalCodePage, postalCode)
+          .setValue(AddContactPersonPage, false)
+
+        val expectedResult = PostalCodeDomain(
+          postalCode,
+          None
+        )
+
+        val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
+
+        result.value mustBe expectedResult
+      }
+
+      "cannot be parsed from UserAnswers" - {
+
+        val mandatoryPages: Seq[QuestionPage[_]] = Seq(PostalCodePage, AddContactPersonPage)
+
+        "when a mandatory page is missing" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+            .setValue(PostalCodePage, postalCode)
+            .setValue(AddContactPersonPage, true)
+            .setValue(ContactPersonNamePage, name)
+            .setValue(ContactPersonTelephonePage, tel)
+
+          mandatoryPages.map {
+            page =>
+              val updatedUserAnswers = userAnswers.removeValue(page)
+
+              val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(updatedUserAnswers)
+
+              result.left.value.page mustBe page
+          }
         }
       }
     }
   }
-
 }

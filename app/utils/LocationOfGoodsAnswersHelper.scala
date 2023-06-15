@@ -99,20 +99,6 @@ class LocationOfGoodsAnswersHelper(
     id = Some("postal-code")
   )
 
-  def additionalIdentifierYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddAdditionalIdentifierPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "locationOfGoods.addAdditionalIdentifier",
-    id = Some("add-additional-identifier")
-  )
-
-  def additionalIdentifier: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = AdditionalIdentifierPage,
-    formatAnswer = formatAsText,
-    prefix = "locationOfGoods.additionalIdentifier",
-    id = Some("additional-identifier")
-  )
-
   def contactYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddContactPersonPage,
     formatAnswer = formatAsYesOrNo,

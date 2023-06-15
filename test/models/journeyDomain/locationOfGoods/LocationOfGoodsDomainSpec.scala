@@ -71,7 +71,6 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
         .setValue(AuthorisationNumberPage, authorisationReference)
-        .setValue(AddAdditionalIdentifierPage, false)
         .setValue(AddContactPersonPage, false)
 
       val expectedResult =
@@ -79,7 +78,6 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
           typeOfLocation = None,
           qualifierOfIdentificationDetails = AuthorisationNumberDomain(
             authorisationReference,
-            None,
             None
           )
         )
@@ -121,12 +119,9 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage)
 
-        val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
-
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
           .setValue(AuthorisationNumberPage, authorisationReference)
-          .setValue(AddAdditionalIdentifierPage, false)
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {
