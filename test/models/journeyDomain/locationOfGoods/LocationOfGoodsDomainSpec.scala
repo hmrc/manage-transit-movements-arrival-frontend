@@ -18,7 +18,6 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
-import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
 import models.reference.Country
@@ -26,7 +25,6 @@ import models.{DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
-import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
 class LocationOfGoodsDomainSpec extends SpecBase with Generators {
@@ -36,12 +34,11 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
   "LocationOfGoodsDomain" - {
 
-    "can be parsed from UserAnswers when procedure type is normal" in {
+    "can be parsed from UserAnswers" in {
 
       TypeOfLocation.values.map {
         value =>
           val userAnswers = emptyUserAnswers
-            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
             .setValue(TypeOfLocationPage, value)
             .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
             .setValue(CountryPage, country)
@@ -50,7 +47,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
           val expectedResult =
             LocationOfGoodsDomain(
-              typeOfLocation = Some(value),
+              typeOfLocation = value,
               qualifierOfIdentificationDetails = AddressDomain(
                 country,
                 address,
@@ -64,69 +61,19 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
       }
     }
 
-    "can be parsed from UserAnswers when procedure type is simplified" in {
-
-      val authorisationReference = Gen.alphaNumStr.sample.value
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-        .setValue(AuthorisationNumberPage, authorisationReference)
-        .setValue(AddAdditionalIdentifierPage, false)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult =
-        LocationOfGoodsDomain(
-          typeOfLocation = None,
-          qualifierOfIdentificationDetails = AuthorisationNumberDomain(
-            authorisationReference,
-            None,
-            None
-          )
-        )
-
-      val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(userAnswers)
-
-      result.value mustBe expectedResult
-    }
-
     "cannot be parsed from UserAnswers" - {
 
-      "when a mandatory page is missing for procedure type normal" in {
+      "when a mandatory page is missing" in {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(TypeOfLocationPage, QualifierOfIdentificationPage)
 
         val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
 
         val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
-          .setValue(AddContactPersonPage, false)
-
-        mandatoryPages.map {
-          mandatoryPage =>
-            val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
-
-            val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(updatedUserAnswers)
-
-            result.left.value.page mustBe mandatoryPage
-        }
-      }
-
-      "when a mandatory page is missing for procedure type simplified" in {
-
-        val authorisationReference = Gen.alphaNumStr.sample.value
-
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage)
-
-        val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationNumberPage, authorisationReference)
-          .setValue(AddAdditionalIdentifierPage, false)
           .setValue(AddContactPersonPage, false)
 
         mandatoryPages.map {

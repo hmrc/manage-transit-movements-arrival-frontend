@@ -17,22 +17,20 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
 import models.locationOfGoods.TypeOfLocation
-import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
 
 case class LocationOfGoodsDomain(
-  typeOfLocation: Option[TypeOfLocation],
+  typeOfLocation: TypeOfLocation,
   qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
 )
 
 object LocationOfGoodsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] = (
-    IsSimplifiedProcedurePage.filterOptionalDependent(_ == ProcedureType.Normal)(TypeOfLocationPage.reader),
-    UserAnswersReader[QualifierOfIdentificationDomain]
-  ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
-
+  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] =
+    (
+      TypeOfLocationPage.reader,
+      UserAnswersReader[QualifierOfIdentificationDomain]
+    ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
 }
