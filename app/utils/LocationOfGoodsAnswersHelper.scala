@@ -117,7 +117,7 @@ class LocationOfGoodsAnswersHelper(
     page = ContactPersonTelephonePage,
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.contactPersonTelephone",
-    id = Some("contact-person-telephone")
+    id = Some("contact-person-phone")
   )
 
 }
