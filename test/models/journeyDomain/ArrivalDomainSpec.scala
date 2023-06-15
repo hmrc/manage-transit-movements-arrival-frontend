@@ -28,7 +28,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.locationOfGoods._
+import pages.incident._
+import pages.locationOfGoods.{AddContactPersonPage, AddressPage, CountryPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -38,6 +39,62 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
   private val idNumber          = Gen.alphaNumStr.sample.value
 
   "ArrivalDomain" - {
+
+    "when post transition" - {
+
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
+
+      "can be parsed from UserAnswers with Incidents" in {
+
+        val initialAnswers = emptyUserAnswers
+          .setValue(IncidentFlagPage, true)
+
+        forAll(arbitraryArrivalAnswers(initialAnswers)) {
+
+          userAnswers =>
+            val result: EitherType[ArrivalPostTransitionDomain] = UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
+
+            result.value.incidents must not be empty
+        }
+
+      }
+
+      "can be parsed from UserAnswers with no Incidents" in {
+
+        val initialAnswers = emptyUserAnswers
+          .setValue(IncidentFlagPage, false)
+
+        forAll(arbitraryArrivalAnswers(initialAnswers)) {
+
+          userAnswers =>
+            val result: EitherType[ArrivalPostTransitionDomain] = UserAnswersReader[ArrivalPostTransitionDomain].run(userAnswers)
+
+            result.value.incidents must be(empty)
+        }
+
+      }
+
+      "cannot be parsed from UserAnswer" - {
+
+        "when a incident flag page is missing" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(DestinationOfficePage, destinationOffice)
+            .setValue(IdentificationNumberPage, idNumber)
+            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+            .setValue(TypeOfLocationPage, AuthorisedPlace)
+            .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+            .setValue(CountryPage, country)
+            .setValue(AddressPage, address)
+            .setValue(AddContactPersonPage, false)
+
+          val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+
+          result.left.value.page mustBe IncidentFlagPage
+
+        }
+      }
+    }
 
     "when pre-transition" ignore {
 
