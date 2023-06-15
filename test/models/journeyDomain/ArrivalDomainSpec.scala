@@ -64,7 +64,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             authorisations = None
           ),
           LocationOfGoodsDomain(
-            typeOfLocation = Some(AuthorisedPlace),
+            typeOfLocation = AuthorisedPlace,
             qualifierOfIdentificationDetails = AddressDomain(
               country = country,
               address = address,

@@ -18,11 +18,9 @@ package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
 import models.QualifierOfIdentification._
-import models.identification.ProcedureType
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
-import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain {
@@ -33,18 +31,14 @@ trait QualifierOfIdentificationDomain {
 object QualifierOfIdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[QualifierOfIdentificationDomain] =
-    IsSimplifiedProcedurePage.reader.flatMap {
-      case ProcedureType.Simplified => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
-      case ProcedureType.Normal =>
-        QualifierOfIdentificationPage.reader.flatMap {
-          case QualifierOfIdentification.Address             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.EoriNumber          => UserAnswersReader[EoriNumberDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.AuthorisationNumber => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.Coordinates         => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.CustomsOffice       => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.Unlocode            => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.PostalCode          => UserAnswersReader[PostalCodeDomain].widen[QualifierOfIdentificationDomain]
-        }
+    QualifierOfIdentificationPage.reader.flatMap {
+      case QualifierOfIdentification.Address             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.EoriNumber          => UserAnswersReader[EoriNumberDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.AuthorisationNumber => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.Coordinates         => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.CustomsOffice       => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.Unlocode            => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
+      case QualifierOfIdentification.PostalCode          => UserAnswersReader[PostalCodeDomain].widen[QualifierOfIdentificationDomain]
     }
 }
 
