@@ -40,7 +40,8 @@ case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
           case Success(ua)        => ua.remove(LocationOfGoodsSection)
           case Failure(exception) => Failure(exception)
         }
-      case _ => super.cleanup(value, userAnswers)
+      case Some(ProcedureType.Simplified) => userAnswers.remove(LocationOfGoodsSection)
+      case _                              => super.cleanup(value, userAnswers)
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =

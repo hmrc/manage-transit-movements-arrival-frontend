@@ -21,7 +21,7 @@ import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
-import pages.locationOfGoods.TypeOfLocationPage
+import pages.locationOfGoods.{AddContactPersonPage, TypeOfLocationPage}
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
@@ -41,23 +41,29 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
               val preChange = emptyUserAnswers
                 .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
                 .setValue(AuthorisationReferenceNumberPage, refNo)
-                .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
+                .setValue(AddContactPersonPage, true)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
               postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
-              postChange.get(TypeOfLocationPage) mustNot be(defined)
+              postChange.get(AddContactPersonPage) mustNot be(defined)
           }
         }
       }
 
       "when simplified procedure type selected" - {
-        "must do nothing" in {
+        "must remove location of goods section nothing" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
+              val preChange = emptyUserAnswers
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+                .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
+                .setValue(AddContactPersonPage, true)
+
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
-              postChange.get(AuthorisationReferenceNumberPage) must be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
+              postChange.get(TypeOfLocationPage) mustNot be(defined)
+              postChange.get(AddContactPersonPage) mustNot be(defined)
           }
         }
       }
