@@ -540,21 +540,21 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       "must return Some(Row)" - {
         "when ContactPersonTelephonePage defined" in {
           forAll(Gen.alphaNumStr, arbitrary[Mode]) {
-            (phoneNumber, mode) =>
-              val answers = emptyUserAnswers.setValue(ContactPersonTelephonePage, phoneNumber)
+            (telephoneNumber, mode) =>
+              val answers = emptyUserAnswers.setValue(ContactPersonTelephonePage, telephoneNumber)
 
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.contactPhoneNumber.get
 
-              result.key.value mustBe "Contact phone number"
-              result.value.value mustBe phoneNumber
+              result.key.value mustBe "Contact telephone number"
+              result.value.value mustBe telephoneNumber
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe routes.ContactPersonTelephoneController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "contact phone number for the location of goods"
-              action.id mustBe "contact-person-phone"
+              action.visuallyHiddenText.get mustBe "contact telephone number for the location of goods"
+              action.id mustBe "contact-person-telephone"
           }
         }
       }
