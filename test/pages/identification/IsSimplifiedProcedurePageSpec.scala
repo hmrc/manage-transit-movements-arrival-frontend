@@ -16,7 +16,6 @@
 
 package pages.identification
 
-import models.Index
 import models.identification.ProcedureType
 import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
@@ -36,15 +35,16 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when normal procedure type selected" - {
-        "must clean up IdentificationAuthorisationSection and location of goods section" in {
+        "must clean up IdentificationAuthorisationSection and type of location" in {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange = emptyUserAnswers
-                .setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-                .setValue(TypeOfLocationPage, TypeOfLocation.AuthorisedPlace)
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                .setValue(AuthorisationReferenceNumberPage, refNo)
+                .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
               postChange.get(TypeOfLocationPage) mustNot be(defined)
           }
         }
@@ -54,10 +54,10 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
         "must do nothing" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, refNo)
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) must be(defined)
           }
         }
       }

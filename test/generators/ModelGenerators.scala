@@ -123,11 +123,6 @@ trait ModelGenerators {
       Gen.oneOf(QualifierOfIdentification.values diff QualifierOfIdentification.locationValues)
     }
 
-  implicit lazy val arbitraryAuthorisationType: Arbitrary[models.identification.authorisation.AuthorisationType] =
-    Arbitrary {
-      Gen.oneOf(models.identification.authorisation.AuthorisationType.values)
-    }
-
   implicit lazy val arbitraryProcedureType: Arbitrary[models.identification.ProcedureType] =
     Arbitrary {
       Gen.oneOf(models.identification.ProcedureType.values)

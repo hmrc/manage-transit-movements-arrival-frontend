@@ -20,17 +20,22 @@ import base.SpecBase
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import viewModels.identification.AuthorisationAnswersViewModel.AuthorisationAnswersViewModelProvider
 
 class AuthorisationAnswersViewModelSpec extends SpecBase with Generators {
 
   "authorisation section" - {
-    "must have 2 rows" in {
-      forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex), arbitrary[Mode]) {
+    "must have 1 rows" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AuthorisationReferenceNumberPage, Gen.alphaNumStr.sample.value)
+
+      forAll(userAnswers, arbitrary[Mode]) {
         (answers, mode) =>
-          val section = new AuthorisationAnswersViewModelProvider().apply(answers, authorisationIndex, mode).section
-          section.sectionTitle must not be defined
-          section.rows.size mustBe 2
+          val section = new AuthorisationAnswersViewModelProvider().apply(answers, mode).section
+          section.sectionTitle mustBe None
+          section.rows.size mustBe 1
           section.addAnotherLink must not be defined
       }
     }

@@ -18,7 +18,7 @@ package viewModels.identification
 
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import utils.identification.IdentificationAnswersHelper
+import utils.identification.{AuthorisationAnswersHelper, IdentificationAnswersHelper}
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -34,12 +34,12 @@ object IdentificationAnswersViewModel {
       val helper = IdentificationAnswersHelper(userAnswers, mode)
 
       val section = Section(
-        sectionTitle = messages("arrivals.checkYourAnswers.identification.subheading"),
         rows = Seq(
           Some(helper.movementReferenceNumber),
           helper.destinationOffice,
           helper.identificationNumber,
-          helper.isSimplified
+          helper.isSimplified,
+          new AuthorisationAnswersHelper(userAnswers, mode).authorisationReferenceNumber
         ).flatten
       )
 

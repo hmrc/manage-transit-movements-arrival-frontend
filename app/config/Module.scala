@@ -28,9 +28,6 @@ class Module extends AbstractModule {
 
     bind(classOf[ArrivalNavigatorProvider]).to(classOf[ArrivalNavigatorProviderImpl])
 
-    bind(classOf[AuthorisationsNavigatorProvider]).to(classOf[AuthorisationsNavigatorProviderImpl])
-    bind(classOf[AuthorisationNavigatorProvider]).to(classOf[AuthorisationNavigatorProviderImpl])
-
     bind(classOf[IncidentsNavigatorProvider]).to(classOf[IncidentsNavigatorProviderImpl])
     bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
     bind(classOf[EquipmentsNavigatorProvider]).to(classOf[EquipmentsNavigatorProviderImpl])

@@ -20,7 +20,7 @@ import controllers.identification.routes
 import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.identification.{AuthorisationsSection, IdentificationSection}
+import pages.sections.identification.{AuthorisationSection, IdentificationSection}
 import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
   override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(ProcedureType.Normal) =>
-        userAnswers.remove(AuthorisationsSection) match {
+        userAnswers.remove(AuthorisationSection) match {
           case Success(ua)        => ua.remove(LocationOfGoodsSection)
           case Failure(exception) => Failure(exception)
         }

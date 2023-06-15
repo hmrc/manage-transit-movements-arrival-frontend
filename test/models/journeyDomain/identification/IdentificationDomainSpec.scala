@@ -18,9 +18,7 @@ package models.journeyDomain.identification
 
 import base.SpecBase
 import generators.Generators
-import models.Index
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
@@ -46,7 +44,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
           destinationOffice = destinationOffice,
           identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
-          authorisations = None
+          authorisationReferenceNumber = None
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -55,31 +53,20 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       }
 
       "when a simplified journey and at least one authorisation" in {
-        val authorisationType = arbitrary[AuthorisationType].sample.value
-        val referenceNumber   = Gen.alphaNumStr.sample.value
+        val referenceNumber = Gen.alphaNumStr.sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
           .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
-          .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-          .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
+          .setValue(AuthorisationReferenceNumberPage, referenceNumber)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           destinationOffice = destinationOffice,
           identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Simplified,
-          authorisations = Some(
-            AuthorisationsDomain(
-              Seq(
-                AuthorisationDomain(
-                  `type` = authorisationType,
-                  referenceNumber = referenceNumber
-                )(authorisationIndex)
-              )
-            )
-          )
+          authorisationReferenceNumber = Some(referenceNumber)
         )
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
@@ -106,7 +93,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
 
-        result.left.value.page mustBe AuthorisationTypePage(Index(0))
+        result.left.value.page mustBe AuthorisationReferenceNumberPage
       }
     }
   }

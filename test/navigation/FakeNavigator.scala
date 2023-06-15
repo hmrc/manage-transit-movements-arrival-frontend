@@ -27,14 +27,6 @@ class FakeArrivalNavigator(desiredRoute: Call, mode: Mode) extends ArrivalNaviga
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAuthorisationsNavigator(desiredRoute: Call, mode: Mode) extends AuthorisationsNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}
-
-class FakeAuthorisationNavigator(desiredRoute: Call, index: Index, mode: Mode) extends AuthorisationNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}
-
 class FakeIncidentsNavigator(desiredRoute: Call, mode: Mode) extends IncidentsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

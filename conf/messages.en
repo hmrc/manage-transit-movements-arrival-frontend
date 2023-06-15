@@ -136,14 +136,15 @@ identification.authorisation.authorisationType.checkYourAnswersLabel = Type
 identification.authorisation.authorisationType.change.hidden = authorisation type
 identification.authorisation.authorisationType.error.required = Select which type of authorisation you want to add
 
-identification.authorisation.authorisationReferenceNumber.title = What’s the reference number for the {0} authorisation?
-identification.authorisation.authorisationReferenceNumber.heading = What’s the reference number for the {0} authorisation?
-identification.authorisation.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Reference number
+identification.authorisation.authorisationReferenceNumber.title = What is the authorisation reference number?
+identification.authorisation.authorisationReferenceNumber.heading = What is the authorisation reference number?
+identification.authorisation.authorisationReferenceNumber.paragraph = This authorises the consignee for common or Union transits.
+identification.authorisation.authorisationReferenceNumber.hint = It can be up to 35 characters long and include both letters and numbers.
+identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Authorisation reference number
 identification.authorisation.authorisationReferenceNumber.change.hidden = authorisation reference number
-identification.authorisation.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
-identification.authorisation.authorisationReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
-identification.authorisation.authorisationReferenceNumber.error.length = The reference number must be 35 characters or less
+identification.authorisation.authorisationReferenceNumber.error.required = Enter the authorisation reference number
+identification.authorisation.authorisationReferenceNumber.error.invalid = The authorisation reference number must only include letters a to z and numbers 0 to 9
+identification.authorisation.authorisationReferenceNumber.error.length = The authorisation reference number must be 35 characters or less
 
 identification.authorisation.checkAuthorisationAnswers.title = Check your answers
 identification.authorisation.checkAuthorisationAnswers.heading = Check your answers

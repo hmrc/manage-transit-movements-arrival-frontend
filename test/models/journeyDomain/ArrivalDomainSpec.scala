@@ -61,7 +61,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             destinationOffice = destinationOffice,
             identificationNumber = idNumber,
             procedureType = ProcedureType.Normal,
-            authorisations = None
+            authorisationReferenceNumber = None
           ),
           LocationOfGoodsDomain(
             typeOfLocation = Some(AuthorisedPlace),

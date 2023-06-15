@@ -16,7 +16,7 @@
 
 package generators
 
-import models.journeyDomain.identification.{AuthorisationDomain, AuthorisationsDomain, IdentificationDomain}
+import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
@@ -60,12 +60,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
     rec(initialUserAnswers)
   }
-
-  def arbitraryAuthorisationsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[AuthorisationsDomain](userAnswers)
-
-  def arbitraryAuthorisationAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
-    buildUserAnswers[AuthorisationDomain](userAnswers)(AuthorisationDomain.userAnswersReader(index))
 
   def arbitraryIdentificationAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[IdentificationDomain](userAnswers)
