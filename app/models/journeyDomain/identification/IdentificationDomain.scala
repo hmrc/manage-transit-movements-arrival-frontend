@@ -42,8 +42,8 @@ object IdentificationDomain {
     for {
       mrn                  <- mrnReader
       destinationOffice    <- DestinationOfficePage.reader
-      isSimplified         <- IsSimplifiedProcedurePage.reader
       identificationNumber <- IdentificationNumberPage.reader
+      isSimplified         <- IsSimplifiedProcedurePage.reader
       authorisations <- isSimplified match {
         case ProcedureType.Normal     => none[AuthorisationsDomain].pure[UserAnswersReader]
         case ProcedureType.Simplified => UserAnswersReader[AuthorisationsDomain].map(Some(_))
