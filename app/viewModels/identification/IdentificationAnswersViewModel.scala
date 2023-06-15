@@ -37,8 +37,8 @@ object IdentificationAnswersViewModel {
         rows = Seq(
           Some(helper.movementReferenceNumber),
           helper.destinationOffice,
-          helper.identificationNumber,
           helper.isSimplified,
+          helper.identificationNumber,
           new AuthorisationAnswersHelper(userAnswers, mode).authorisationReferenceNumber
         ).flatten
       )
