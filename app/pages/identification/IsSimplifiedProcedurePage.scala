@@ -22,11 +22,11 @@ import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.locationOfGoods.{QualifierOfIdentificationPage, TypeOfLocationPage}
 import pages.sections.identification.{AuthorisationSection, IdentificationSection}
-import pages.sections.locationOfGoods.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
