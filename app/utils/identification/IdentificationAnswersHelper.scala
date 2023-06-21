@@ -19,7 +19,7 @@ package utils.identification
 import models.identification.ProcedureType
 import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
-import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
+import pages.identification.{AuthorisationReferenceNumberPage, DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
@@ -56,6 +56,13 @@ class IdentificationAnswersHelper(
     formatAnswer = formatEnumAsText(ProcedureType.messageKeyPrefix),
     prefix = "identification.isSimplifiedProcedure",
     id = Some("change-is-simplified-procedure")
+  )
+
+  def authorisationReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AuthorisationReferenceNumberPage,
+    formatAnswer = formatAsText,
+    prefix = "identification.authorisation.authorisationReferenceNumber",
+    id = Some("change-authorisation-reference-number")
   )
 
 }

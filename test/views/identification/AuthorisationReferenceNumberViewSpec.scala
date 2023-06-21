@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.identification.authorisation
+package views.identification
 
 import forms.identification.AuthorisationRefNoFormProvider
 import models.NormalMode
@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.identification.authorisation.AuthorisationReferenceNumberView
+import views.html.identification.AuthorisationReferenceNumberView
 
 class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 

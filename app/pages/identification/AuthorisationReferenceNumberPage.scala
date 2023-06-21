@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package pages.sections.identification
+package pages.identification
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import controllers.identification.routes
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.identification.IdentificationSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case object AuthorisationSection extends Section[JsObject] {
+case object AuthorisationReferenceNumberPage extends QuestionPage[String] {
 
   override def path: JsPath = IdentificationSection.path \ toString
 
-  override def toString: String = "authorisation"
+  override def toString: String = "authorisationReferenceNumber"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.mrn, mode))
 }

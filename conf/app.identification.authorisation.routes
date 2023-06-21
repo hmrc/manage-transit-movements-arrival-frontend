@@ -1,5 +1,0 @@
-
-GET        /:mrn/authorisations/reference-number                       controllers.identification.authorisation.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-POST       /:mrn/authorisations/reference-number                       controllers.identification.authorisation.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
-GET        /:mrn/authorisations/change-reference-number                controllers.identification.authorisation.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
-POST       /:mrn/authorisations/change-reference-number                controllers.identification.authorisation.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

@@ -21,8 +21,7 @@ import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification._
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.{AuthorisationReferenceNumberPage, _}
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
