@@ -43,7 +43,7 @@
 
     @formHelper(action = controllers.routes.CheckArrivalsAnswersController.onSubmit(mrn), Symbol("autoComplete") -> "off") {
         @button(
-            messageKey = "site.continue",
+            messageKey = "site.confirmAndSend",
             preventDoubleClick = true,
             attributes = Map("id" -> "submit")
         )

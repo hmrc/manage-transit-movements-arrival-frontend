@@ -43,6 +43,6 @@ class CheckArrivalAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithFormAction(routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
 
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithSubmitButton("Confirm and send")
 
 }
