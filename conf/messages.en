@@ -106,7 +106,7 @@ identification.destinationOffice.error.required = Enter the office of destinatio
 identification.isSimplifiedProcedure.title = What type of procedure are you using?
 identification.isSimplifiedProcedure.heading = What type of procedure are you using?
 identification.isSimplifiedProcedure.normal = Normal - customs-approved location
-identification.isSimplifiedProcedure.simplified = Simplified - authorised consignor’s location
+identification.isSimplifiedProcedure.simplified = Simplified - authorised consignee’s location
 identification.isSimplifiedProcedure.checkYourAnswersLabel = Procedure type
 identification.isSimplifiedProcedure.change.hidden = procedure type
 identification.isSimplifiedProcedure.error.required = Select the type of procedure you’re using
@@ -136,14 +136,15 @@ identification.authorisation.authorisationType.checkYourAnswersLabel = Type
 identification.authorisation.authorisationType.change.hidden = authorisation type
 identification.authorisation.authorisationType.error.required = Select which type of authorisation you want to add
 
-identification.authorisation.authorisationReferenceNumber.title = What’s the reference number for the {0} authorisation?
-identification.authorisation.authorisationReferenceNumber.heading = What’s the reference number for the {0} authorisation?
-identification.authorisation.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Reference number
+identification.authorisation.authorisationReferenceNumber.title = What is the authorisation reference number?
+identification.authorisation.authorisationReferenceNumber.heading = What is the authorisation reference number?
+identification.authorisation.authorisationReferenceNumber.paragraph = This authorises the consignee for common or Union transits.
+identification.authorisation.authorisationReferenceNumber.hint = It can be up to 35 characters long and include both letters and numbers.
+identification.authorisation.authorisationReferenceNumber.checkYourAnswersLabel = Authorisation reference number
 identification.authorisation.authorisationReferenceNumber.change.hidden = authorisation reference number
-identification.authorisation.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
-identification.authorisation.authorisationReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
-identification.authorisation.authorisationReferenceNumber.error.length = The reference number must be 35 characters or less
+identification.authorisation.authorisationReferenceNumber.error.required = Enter the authorisation reference number
+identification.authorisation.authorisationReferenceNumber.error.invalid = The authorisation reference number must only include letters a to z and numbers 0 to 9
+identification.authorisation.authorisationReferenceNumber.error.length = The authorisation reference number must be 35 characters or less
 
 identification.authorisation.checkAuthorisationAnswers.title = Check your answers
 identification.authorisation.checkAuthorisationAnswers.heading = Check your answers
@@ -172,15 +173,6 @@ locationOfGoods.addContactPerson.heading = Do you want to add a contact for the 
 locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.change.hidden = if you want to add a contact for the location of goods
 locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.
-
-locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
-locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
-locationOfGoods.additionalIdentifier.hint = This can be up to 4 characters long, for example 0000 or X9X9.
-locationOfGoods.additionalIdentifier.checkYourAnswersLabel = Additional identifier
-locationOfGoods.additionalIdentifier.change.hidden = additional identifier for the location of goods
-locationOfGoods.additionalIdentifier.error.required = Enter the additional identifier for the location of goods
-locationOfGoods.additionalIdentifier.error.length = The additional identifier must be no more than 4 characters long
-locationOfGoods.additionalIdentifier.error.invalid = The additional identifier must only include the letters a to z and numbers 0 to 9
 
 locationOfGoods.postalCode.title = What is the address for the location of goods?
 locationOfGoods.postalCode.heading = What is the address for the location of goods?
@@ -214,16 +206,16 @@ locationOfGoods.contactPersonName.error.required = Enter the contact for the loc
 locationOfGoods.contactPersonName.error.invalid = The contact must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 locationOfGoods.contactPersonName.error.length = The contact must be 70 characters or less
 
-locationOfGoods.contactPersonTelephone.title = What is the contact for the location of goods’ telephone number?
-locationOfGoods.contactPersonTelephone.heading = What is {0}’s telephone number?
-locationOfGoods.contactPersonTelephone.hintText = For international numbers include the country code.
-locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = Contact telephone number
-locationOfGoods.contactPersonTelephone.change.hidden = contact telephone number for the location of goods
-locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s telephone number
-locationOfGoods.contactPersonTelephone.error.invalidCharacter = {0}’s telephone number must only include numbers 0 to 9 and a plus sign
-locationOfGoods.contactPersonTelephone.error.invalidFormat = {0}’s telephone number must start with a plus sign
-locationOfGoods.contactPersonTelephone.error.maxLength = {0}’s telephone number must be {1} characters or less
-locationOfGoods.contactPersonTelephone.error.minLength = {0}’s telephone number must be {1} characters or more
+locationOfGoods.contactPersonTelephone.title = What is the phone number for the location of goods’ contact?
+locationOfGoods.contactPersonTelephone.heading = What is {0}’s phone number?
+locationOfGoods.contactPersonTelephone.hintText = Include the country code, for example +44 808 157 0192.
+locationOfGoods.contactPersonTelephone.checkYourAnswersLabel = Contact phone number
+locationOfGoods.contactPersonTelephone.change.hidden = contact phone number for the location of goods
+locationOfGoods.contactPersonTelephone.error.required = Enter {0}’s phone number
+locationOfGoods.contactPersonTelephone.error.invalidCharacter = {0}’s phone number must only include numbers 0 to 9 and a plus sign
+locationOfGoods.contactPersonTelephone.error.invalidFormat = {0}’s phone number must start with a plus sign
+locationOfGoods.contactPersonTelephone.error.maxLength = {0}’s phone number must be {1} characters or less
+locationOfGoods.contactPersonTelephone.error.minLength = {0}’s phone number must be {1} characters or more
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
@@ -303,12 +295,6 @@ locationOfGoods.identificationNumber.change.hidden = EORI number or Trader Ident
 locationOfGoods.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the location of goods
 locationOfGoods.identificationNumber.error.maxLength = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
-
-locationOfGoods.addAdditionalIdentifier.title = Do you want to add an additional identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.heading = Do you want to add an additional identifier for the location of goods?
-locationOfGoods.addAdditionalIdentifier.checkYourAnswersLabel = Do you want to add an additional identifier?
-locationOfGoods.addAdditionalIdentifier.change.hidden = if you want to add an additional identifier for the location of goods
-locationOfGoods.addAdditionalIdentifier.error.required = Select yes if you want to add an additional identifier for the location of goods
 
 # Incident
 

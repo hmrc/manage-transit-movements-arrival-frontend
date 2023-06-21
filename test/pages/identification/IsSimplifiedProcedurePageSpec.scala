@@ -16,13 +16,13 @@
 
 package pages.identification
 
-import models.Index
+import models.QualifierOfIdentification
 import models.identification.ProcedureType
 import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.identification.authorisation.AuthorisationReferenceNumberPage
-import pages.locationOfGoods.TypeOfLocationPage
+import pages.locationOfGoods.{AddContactPersonPage, AuthorisationNumberPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
@@ -36,28 +36,44 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when normal procedure type selected" - {
-        "must clean up IdentificationAuthorisationSection and location of goods section" in {
+        "must clean up IdentificationAuthorisationSection and QualifierOfIdentification section" in {
           forAll(arbitrary[String]) {
             refNo =>
               val preChange = emptyUserAnswers
-                .setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
-                .setValue(TypeOfLocationPage, TypeOfLocation.AuthorisedPlace)
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+                .setValue(AuthorisationReferenceNumberPage, refNo)
+                .setValue(AuthorisationNumberPage, refNo)
+                .setValue(AddContactPersonPage, true)
+
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) mustNot be(defined)
-              postChange.get(TypeOfLocationPage) mustNot be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
+              postChange.get(AuthorisationNumberPage) mustNot be(defined)
+              postChange.get(AddContactPersonPage) mustBe defined
+
           }
         }
       }
 
       "when simplified procedure type selected" - {
-        "must do nothing" in {
+        "must remove QualifierOfIdentification section" in {
           forAll(arbitrary[String]) {
             refNo =>
-              val preChange  = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage(Index(0)), refNo)
+              val preChange = emptyUserAnswers
+                .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+                .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
+                .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
+                .setValue(AuthorisationNumberPage, refNo)
+                .setValue(AddContactPersonPage, true)
+
               val postChange = preChange.setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
-              postChange.get(AuthorisationReferenceNumberPage(Index(0))) must be(defined)
+              postChange.get(AuthorisationReferenceNumberPage) mustNot be(defined)
+              postChange.get(QualifierOfIdentificationPage) mustNot be(defined)
+              postChange.get(AuthorisationNumberPage) mustNot be(defined)
+              postChange.get(TypeOfLocationPage) mustNot be(defined)
+
+              postChange.get(AddContactPersonPage) mustBe defined
           }
         }
       }

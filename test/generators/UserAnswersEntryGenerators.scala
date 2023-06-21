@@ -17,7 +17,6 @@
 package generators
 
 import models.identification.ProcedureType
-import models.identification.authorisation.AuthorisationType
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
@@ -50,8 +49,7 @@ trait UserAnswersEntryGenerators {
   private def generateAuthorisationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification.authorisation._
     {
-      case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
-      case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
+      case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString)
     }
   }
 
@@ -73,16 +71,14 @@ trait UserAnswersEntryGenerators {
   private def generateLocationOfGoodsIdentifierAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
-      case AddAdditionalIdentifierPage => arbitrary[Boolean].map(JsBoolean)
-      case AdditionalIdentifierPage    => Gen.alphaNumStr.map(JsString)
-      case PostalCodePage              => arbitrary[PostalCodeAddress].map(Json.toJson(_))
-      case AuthorisationNumberPage     => Gen.alphaNumStr.map(JsString)
-      case CoordinatesPage             => arbitrary[Coordinates].map(Json.toJson(_))
-      case CustomsOfficePage           => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case IdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
-      case CountryPage                 => arbitrary[Country].map(Json.toJson(_))
-      case AddressPage                 => arbitrary[DynamicAddress].map(Json.toJson(_))
-      case UnlocodePage                => arbitrary[UnLocode].map(Json.toJson(_))
+      case PostalCodePage           => arbitrary[PostalCodeAddress].map(Json.toJson(_))
+      case AuthorisationNumberPage  => Gen.alphaNumStr.map(JsString)
+      case CoordinatesPage          => arbitrary[Coordinates].map(Json.toJson(_))
+      case CustomsOfficePage        => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case IdentificationNumberPage => Gen.alphaNumStr.map(JsString)
+      case CountryPage              => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage              => arbitrary[DynamicAddress].map(Json.toJson(_))
+      case UnlocodePage             => arbitrary[UnLocode].map(Json.toJson(_))
     }
   }
 

@@ -16,7 +16,7 @@
 
 package viewModels.identification
 
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.AuthorisationAnswersHelper
 import viewModels.sections.Section
@@ -29,13 +29,12 @@ object AuthorisationAnswersViewModel {
 
   class AuthorisationAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, index: Index, mode: Mode)(implicit messages: Messages): AuthorisationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AuthorisationAnswersViewModel = {
 
-      val helper = new AuthorisationAnswersHelper(userAnswers, mode, index)
+      val helper = new AuthorisationAnswersHelper(userAnswers, mode)
 
       val section = Section(
         rows = Seq(
-          helper.authorisationType,
           helper.authorisationReferenceNumber
         ).flatten
       )

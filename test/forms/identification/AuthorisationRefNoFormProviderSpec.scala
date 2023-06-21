@@ -19,7 +19,6 @@ package forms.identification
 import forms.Constants.authorisationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
-import models.identification.authorisation.AuthorisationType
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -31,7 +30,7 @@ class AuthorisationRefNoFormProviderSpec extends StringFieldBehaviours {
   val invalidCharactersKey = s"$prefix.error.invalid"
   val maxLength            = 35
 
-  val form = new AuthorisationRefNoFormProvider()(prefix, AuthorisationType.ACT.toString)
+  val form = new AuthorisationRefNoFormProvider()(prefix)
 
   ".value" - {
 
@@ -60,7 +59,7 @@ class AuthorisationRefNoFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, List(AuthorisationType.ACT.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

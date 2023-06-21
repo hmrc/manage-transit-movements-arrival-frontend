@@ -19,17 +19,18 @@ package controllers.actions
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.identification.authorisation.AuthorisationType
-import models.journeyDomain.identification.AuthorisationDomain
+import models.incident.IncidentCode
+import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
 import models.requests._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.identification.authorisation.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.incident.IncidentCodePage
+import pages.incident.equipment._
+import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.Section
-import pages.sections.identification.{AuthorisationSection, AuthorisationsSection}
+import pages.sections.incident.{EquipmentSection, EquipmentsSection}
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.mvc.Result
 import repositories.SessionRepository
@@ -59,7 +60,10 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
       "must return original request" in {
         val request = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers)
 
-        val action = new Harness[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)
+        val action = new Harness[EquipmentDomain](
+          EquipmentsSection(incidentIndex),
+          EquipmentSection(incidentIndex, _)
+        )(EquipmentDomain.userAnswersReader(incidentIndex, _))
 
         val futureResult = action.callRefine(request)
 
@@ -75,12 +79,19 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
-          .setValue(AuthorisationTypePage(authorisationIndex), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationReferenceNumberPage(authorisationIndex), Gen.alphaNumStr.sample.value)
+          .setValue(IncidentCodePage(index), IncidentCode.SealsBrokenOrTampered)
+          .setValue(ContainerIdentificationNumberYesNoPage(index, equipmentIndex), true)
+          .setValue(ContainerIdentificationNumberPage(index, equipmentIndex), Gen.alphaNumStr.sample.value)
+          .setValue(AddSealsYesNoPage(index, equipmentIndex), true)
+          .setValue(SealIdentificationNumberPage(index, equipmentIndex, sealIndex), "1234")
+          .setValue(AddGoodsItemNumberYesNoPage(index, equipmentIndex), false)
 
         val request = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-        val action = new Harness[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)
+        val action = new Harness[EquipmentDomain](
+          EquipmentsSection(incidentIndex),
+          EquipmentSection(incidentIndex, _)
+        )(EquipmentDomain.userAnswersReader(incidentIndex, _))
 
         val futureResult = action.callRefine(request)
 
@@ -97,24 +108,27 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
-          .setValue(AuthorisationTypePage(Index(0)), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationReferenceNumberPage(Index(0)), Gen.alphaNumStr.sample.value)
-          .setValue(AuthorisationTypePage(Index(1)), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationTypePage(Index(2)), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationReferenceNumberPage(Index(2)), Gen.alphaNumStr.sample.value)
-          .setValue(AuthorisationTypePage(Index(3)), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationTypePage(Index(4: Int)), arbitrary[AuthorisationType].sample.value)
-          .setValue(AuthorisationReferenceNumberPage(Index(4: Int)), Gen.alphaNumStr.sample.value)
+          .setValue(IncidentCodePage(Index(0)), IncidentCode.SealsBrokenOrTampered)
+          .setValue(ContainerIdentificationNumberYesNoPage(index, Index(0)), true)
+          .setValue(ContainerIdentificationNumberPage(index, Index(0)), Gen.alphaNumStr.sample.value)
+          .setValue(AddSealsYesNoPage(index, Index(0)), true)
+          .setValue(SealIdentificationNumberPage(index, Index(0), sealIndex), "1234")
+          .setValue(AddGoodsItemNumberYesNoPage(index, Index(0)), false)
+          .setValue(ContainerIdentificationNumberYesNoPage(index, Index(1)), true)
+          .setValue(AddSealsYesNoPage(index, Index(1)), true)
+          .setValue(AddGoodsItemNumberYesNoPage(index, Index(1)), false)
 
         val request = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-        val action = new Harness[AuthorisationDomain](AuthorisationsSection, AuthorisationSection)
+        val action = new Harness[EquipmentDomain](
+          EquipmentsSection(incidentIndex),
+          EquipmentSection(incidentIndex, _)
+        )(EquipmentDomain.userAnswersReader(incidentIndex, _))
 
         val futureResult = action.callRefine(request)
 
         val expectedAnswers = userAnswers
-          .removeValue(AuthorisationSection(Index(3)))
-          .removeValue(AuthorisationSection(Index(1)))
+          .removeValue(EquipmentSection(index, Index(1)))
 
         whenReady(futureResult) {
           r =>
