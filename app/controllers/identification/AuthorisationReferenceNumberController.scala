@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.identification
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.identification.AuthorisationRefNoFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.AuthorisationReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.identification.authorisation.AuthorisationReferenceNumberView
+import views.html.identification.AuthorisationReferenceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,6 @@ class AuthorisationReferenceNumberController @Inject() (
   formProvider: AuthorisationRefNoFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: AuthorisationReferenceNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

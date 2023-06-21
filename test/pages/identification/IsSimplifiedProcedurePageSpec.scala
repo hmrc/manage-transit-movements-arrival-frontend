@@ -21,7 +21,6 @@ import models.identification.ProcedureType
 import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
 import pages.locationOfGoods.{AddContactPersonPage, AuthorisationNumberPage, QualifierOfIdentificationPage, TypeOfLocationPage}
 
 class IsSimplifiedProcedurePageSpec extends PageBehaviours {

@@ -24,7 +24,6 @@ import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.identification._
-import pages.identification.authorisation._
 
 class IdentificationDomainSpec extends SpecBase with Generators {
 

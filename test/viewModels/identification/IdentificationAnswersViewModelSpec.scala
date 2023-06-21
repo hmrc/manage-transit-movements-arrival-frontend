@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.AuthorisationReferenceNumberPage
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 
 class IdentificationAnswersViewModelSpec extends SpecBase with Generators {

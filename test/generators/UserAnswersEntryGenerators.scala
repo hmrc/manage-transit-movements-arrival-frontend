@@ -39,16 +39,10 @@ trait UserAnswersEntryGenerators {
 
   private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.identification._
-    generateAuthorisationAnswer orElse {
-      case DestinationOfficePage     => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case IdentificationNumberPage  => Gen.alphaNumStr.map(JsString)
-      case IsSimplifiedProcedurePage => arbitrary[ProcedureType].map(Json.toJson(_))
-    }
-  }
-
-  private def generateAuthorisationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.identification.authorisation._
     {
+      case DestinationOfficePage            => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case IdentificationNumberPage         => Gen.alphaNumStr.map(JsString)
+      case IsSimplifiedProcedurePage        => arbitrary[ProcedureType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString)
     }
   }

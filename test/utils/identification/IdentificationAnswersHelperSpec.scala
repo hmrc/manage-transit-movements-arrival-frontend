@@ -158,5 +158,40 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
     }
+
+    "authorisationReferenceNumber" - {
+      "must return None" - {
+        "when AuthorisationReferenceNumberPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = IdentificationAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.authorisationReferenceNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AuthorisationReferenceNumberPage defined" in {
+          forAll(arbitrary[Mode], Gen.alphaNumStr) {
+            (mode, ref) =>
+              val answers = emptyUserAnswers.setValue(AuthorisationReferenceNumberPage, ref)
+
+              val helper = IdentificationAnswersHelper(answers, mode)
+              val result = helper.authorisationReferenceNumber.get
+
+              result.key.value mustBe "Authorisation reference number"
+              result.value.value mustBe ref
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustBe "authorisation reference number"
+              action.id mustBe "change-authorisation-reference-number"
+          }
+        }
+      }
+    }
   }
 }

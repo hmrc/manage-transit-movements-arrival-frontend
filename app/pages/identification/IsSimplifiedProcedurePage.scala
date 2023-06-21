@@ -21,7 +21,7 @@ import models.identification.ProcedureType
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.locationOfGoods.{QualifierOfIdentificationPage, TypeOfLocationPage}
-import pages.sections.identification.{AuthorisationSection, IdentificationSection}
+import pages.sections.identification.IdentificationSection
 import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,17 +34,16 @@ case object IsSimplifiedProcedurePage extends QuestionPage[ProcedureType] {
 
   override def toString: String = "isSimplifiedProcedure"
 
-  def remove(userAnswers: UserAnswers): Try[UserAnswers] = for {
-    a <- userAnswers.remove(QualifierOfIdentificationDetailsSection)
-    b <- a.remove(QualifierOfIdentificationPage)
-    c <- b.remove(AuthorisationSection)
-    d <- c.remove(TypeOfLocationPage)
-  } yield d
-
   override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(ProcedureType.Normal) | Some(ProcedureType.Simplified) => remove(userAnswers)
-      case _                                                           => super.cleanup(value, userAnswers)
+      case Some(_) =>
+        userAnswers
+          .remove(AuthorisationReferenceNumberPage)
+          .flatMap(_.remove(TypeOfLocationPage))
+          .flatMap(_.remove(QualifierOfIdentificationPage))
+          .flatMap(_.remove(QualifierOfIdentificationDetailsSection))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =

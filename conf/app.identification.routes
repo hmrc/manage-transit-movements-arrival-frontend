@@ -1,6 +1,4 @@
 
-->         /                                                 app.identification.authorisation.Routes
-
 GET        /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onSubmit(mode: Mode = NormalMode)
 GET        /change-movement-reference-number                            controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = CheckMode)
@@ -20,3 +18,8 @@ GET        /:mrn/identification/office-of-destination                   controll
 POST       /:mrn/identification/office-of-destination                   controllers.identification.DestinationOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 GET        /:mrn/identification/change-office-of-destination            controllers.identification.DestinationOfficeController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
 POST       /:mrn/identification/change-office-of-destination            controllers.identification.DestinationOfficeController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:mrn/authorisations/reference-number                       controllers.identification.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+POST       /:mrn/authorisations/reference-number                       controllers.identification.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
+GET        /:mrn/authorisations/change-reference-number                controllers.identification.AuthorisationReferenceNumberController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = CheckMode)
+POST       /:mrn/authorisations/change-reference-number                controllers.identification.AuthorisationReferenceNumberController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = CheckMode)

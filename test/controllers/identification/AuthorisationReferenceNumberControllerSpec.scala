@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.identification.authorisation
+package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.AuthorisationRefNoFormProvider
@@ -22,12 +22,12 @@ import models.NormalMode
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.identification.authorisation.AuthorisationReferenceNumberPage
+import pages.identification.AuthorisationReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.identification.authorisation.AuthorisationReferenceNumberView
+import views.html.identification.AuthorisationReferenceNumberView
 
 import scala.concurrent.Future
 
