@@ -41,9 +41,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val signOutUrl: String          = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
   val loginHmrcServiceUrl: String = configuration.get[String]("urls.loginHmrcService")
 
-  lazy val manageTransitMovementsUrl: String             = configuration.get[String]("urls.manageTransitMovementsFrontend")
-  lazy val serviceUrl: String                            = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
-  lazy val manageTransitMovementsViewArrivalsUrl: String = s"$manageTransitMovementsUrl/view-arrivals"
+  lazy val manageTransitMovementsUrl: String = configuration.get[String]("urls.manageTransitMovementsFrontend")
+  lazy val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
+  // TODO - change to non test-only route once implemented
+  lazy val manageTransitMovementsViewArrivalsUrl: String = s"$manageTransitMovementsUrl/test-only/view-arrival-notifications"
 
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")

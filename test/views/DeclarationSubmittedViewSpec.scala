@@ -59,7 +59,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
   behave like pageWithLink(
     id = "manage-transit-movements",
     expectedText = "Check the status of arrival notifications",
-    expectedHref = "http://localhost:9485/manage-transit-movements/view-arrivals"
+    expectedHref = "http://localhost:9485/manage-transit-movements/test-only/view-arrival-notifications"
   )
 
   behave like pageWithLink(
