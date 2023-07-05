@@ -23,129 +23,131 @@ import helper.WireMockServerHandler
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with Generators {
+class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks with Generators {
 
-  private val startUrl = "test-only/transit-movements-trader-reference-data"
-  private val country  = CountryCode("GB")
+  private val baseUrl = "customs-reference-data/test-only"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .configure(conf = "microservice.services.referenceData.port" -> server.port())
+      .configure(conf = "microservice.services.customsReferenceData.port" -> server.port())
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val unlocodeResponseJson: String =
+  private val unlocodesResponseJson: String =
     """
-      |
-      |[
-      |  {
-      |    "state": "valid",
-      |    "activeFrom": "2021-02-15",
-      |    "unLocodeExtendedCode": "code1",
-      |    "name": "name1",
-      |    "function": "--34-6--",
-      |    "status": "AI",
-      |    "date": "0601",
-      |    "coordinates": "4230N 00131E",
-      |    "comment": "Muy Vella"
-      |  },
-      |  {
-      |    "state": "valid",
-      |    "activeFrom": "2021-02-15",
-      |    "unLocodeExtendedCode": "code2",
-      |    "name": "name2",
-      |    "function": "--3-----",
-      |    "status": "RL",
-      |    "date": "0307",
-      |    "coordinates": "4234N 00135E"
-      |  }
-      |]
-      |
+      |{
+      |  "data": [
+      |    {
+      |      "state": "valid",
+      |      "activeFrom": "2021-02-15",
+      |      "unLocodeExtendedCode": "code1",
+      |      "name": "name1",
+      |      "function": "--34-6--",
+      |      "status": "AI",
+      |      "date": "0601",
+      |      "coordinates": "4230N 00131E",
+      |      "comment": "Muy Vella"
+      |    },
+      |    {
+      |      "state": "valid",
+      |      "activeFrom": "2021-02-15",
+      |      "unLocodeExtendedCode": "code2",
+      |      "name": "name2",
+      |      "function": "--3-----",
+      |      "status": "RL",
+      |      "date": "0307",
+      |      "coordinates": "4234N 00135E"
+      |    }
+      |  ]
+      |}
       |""".stripMargin
 
-  private val customsOfficeResponseJson: String =
+  private val customsOfficesResponseJson: String =
     """
-      |[
-      | {
-      |   "id" : "GBtestId1",
-      |   "name" : "testName1",
-      |   "roles" : ["role1", "role2"],
-      |   "phoneNumber" : "testPhoneNumber"
-      | },
-      | {
-      |   "id" : "GBtestId2",
-      |   "name" : "testName2",
-      |   "roles" : ["role1", "role2"]
-      | }
-      |]
+      |{
+      |  "data": [
+      |    {
+      |      "id" : "GBtestId1",
+      |      "name" : "testName1",
+      |      "roles" : ["DES"],
+      |      "phoneNumber" : "testPhoneNumber"
+      |    },
+      |    {
+      |      "id" : "GBtestId2",
+      |      "name" : "testName2",
+      |      "roles" : ["DES"]
+      |    }
+      |  ]
+      |}
       |""".stripMargin
 
-  private val countryListResponseJson: String =
+  private val countriesResponseJson: String =
     """
-      |[
-      | {
-      |   "code":"GB",
-      |   "state":"valid",
-      |   "description":"United Kingdom"
-      | },
-      | {
-      |   "code":"AD",
-      |   "state":"valid",
-      |   "description":"Andorra"
-      | }
-      |]
+      |{
+      |  "data": [
+      |    {
+      |      "code": "GB",
+      |      "state": "valid",
+      |      "description": "United Kingdom"
+      |    },
+      |    {
+      |      "code": "AD",
+      |      "state": "valid",
+      |      "description": "Andorra"
+      |    }
+      |  ]
+      |}
       |""".stripMargin
 
   private val nationalitiesResponseJson: String =
     """
-      |[
-      |  {
-      |    "code":"GB",
-      |    "description":"United Kingdom"
-      |  },
-      |  {
-      |    "code":"AD",
-      |    "description":"Andorra"
-      |  }
-      |]
+      |{
+      |  "data": [
+      |    {
+      |      "code": "GB",
+      |      "description": "United Kingdom"
+      |    },
+      |    {
+      |      "code": "AD",
+      |      "description": "Andorra"
+      |    }
+      |  ]
+      |}
       |""".stripMargin
 
-  val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
+  private val countryCodesResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "GB"
+      |    },
+      |    {
+      |      "code": "AD"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
   "Reference Data" - {
 
-    "getCustomsOffices" - {
-      "must return a successful future response with a sequence of CustomsOffices" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices"))
-            .willReturn(okJson(customsOfficeResponseJson))
-        )
-
-        val expectedResult =
-          Seq(
-            CustomsOffice("GBtestId1", Some("testName1"), Some("testPhoneNumber")),
-            CustomsOffice("GBtestId2", Some("testName2"), None)
-          )
-
-        connector.getCustomsOffices().futureValue mustBe expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/customs-offices", connector.getCustomsOffices())
-      }
-    }
-
     "getCustomsOfficesOfDepartureForCountry" - {
+      val countryCode = CountryCode("GB")
+      val url         = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=${countryCode.code}&data.roles.role=DES"
+
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices/GB?role=DES"))
-            .willReturn(okJson(customsOfficeResponseJson))
+          get(urlEqualTo(url))
+            .willReturn(okJson(customsOfficesResponseJson))
         )
 
         val expectedResult = Seq(
@@ -153,110 +155,70 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           CustomsOffice("GBtestId2", Some("testName2"), None)
         )
 
-        connector.getCustomsOfficesForCountry(country).futureValue mustBe expectedResult
+        connector.getCustomsOfficesForCountry(countryCode).futureValue mustBe expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/customs-offices-p5/$country?role=DES", connector.getCustomsOfficesForCountry(country))
+        checkErrorResponse(url, connector.getCustomsOfficesForCountry(countryCode))
       }
     }
 
     "getCountries" - {
+      "for a given list name" - {
+        "must return Seq of Country when successful" in {
+          forAll(Gen.alphaNumStr) {
+            listName =>
+              server.stubFor(
+                get(urlEqualTo(s"/$baseUrl/lists/$listName"))
+                  .willReturn(okJson(countriesResponseJson))
+              )
 
-      "for all countries must" - {
+              val expectedResult: Seq[Country] = Seq(
+                Country(CountryCode("GB"), "United Kingdom"),
+                Country(CountryCode("AD"), "Andorra")
+              )
 
-        "return Seq of Country when successful" in {
-          server.stubFor(
-            get(urlEqualTo(s"/$startUrl/countries"))
-              .willReturn(okJson(countryListResponseJson))
-          )
-
-          val expectedResult: Seq[Country] = Seq(
-            Country(CountryCode("GB"), "United Kingdom"),
-            Country(CountryCode("AD"), "Andorra")
-          )
-
-          connector.getCountries(Nil).futureValue mustEqual expectedResult
+              connector.getCountries(listName).futureValue mustEqual expectedResult
+          }
         }
 
-        "return an exception when an error response is returned" in {
-          checkErrorResponse(s"/$startUrl/countries", connector.getCountries(Nil))
-        }
-      }
-
-      "for transit countries must" - {
-
-        val queryParameters = Seq("membership" -> "ctc")
-
-        "return Seq of Country when successful" in {
-          server.stubFor(
-            get(urlEqualTo(s"/$startUrl/countries?membership=ctc"))
-              .willReturn(okJson(countryListResponseJson))
-          )
-
-          val expectedResult: Seq[Country] = Seq(
-            Country(CountryCode("GB"), "United Kingdom"),
-            Country(CountryCode("AD"), "Andorra")
-          )
-
-          connector.getCountries(queryParameters).futureValue mustEqual expectedResult
-        }
-
-        "return an exception when an error response is returned" in {
-          checkErrorResponse(s"/$startUrl/countries?membership=ctc", connector.getCountries(queryParameters))
+        "must return an exception when an error response is returned" in {
+          forAll(Gen.alphaNumStr) {
+            listName =>
+              checkErrorResponse(s"/$baseUrl/lists/$listName", connector.getCountries(listName))
+          }
         }
       }
-
     }
 
     "getUnLocodes" - {
+      val url = s"/$baseUrl/lists/UnLocodeExtended"
 
       "must return a successful future response with a sequence of UnLocodes" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/un-locodes"))
-            .willReturn(okJson(unlocodeResponseJson))
+          get(urlEqualTo(url))
+            .willReturn(okJson(unlocodesResponseJson))
         )
 
-        val expectedResult =
-          Seq(
-            UnLocode("code1", "name1"),
-            UnLocode("code2", "name2")
-          )
+        val expectedResult = Seq(
+          UnLocode("code1", "name1"),
+          UnLocode("code2", "name2")
+        )
 
         connector.getUnLocodes().futureValue mustBe expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/un-locodes", connector.getUnLocodes())
-      }
-
-    }
-
-    "getAddressPostcodeBasedCountries" - {
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$startUrl/country-address-postcode-based"))
-            .willReturn(okJson(countryListResponseJson))
-        )
-
-        val expectedResult: Seq[Country] = Seq(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getAddressPostcodeBasedCountries().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/country-address-postcode-based", connector.getAddressPostcodeBasedCountries())
+        checkErrorResponse(url, connector.getUnLocodes())
       }
     }
 
     "getNationalities" - {
+      val url = s"/$baseUrl/lists/Nationality"
 
       "must return a successful future response with a sequence of Nationalities" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/nationalities"))
+          get(urlEqualTo(url))
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
@@ -269,11 +231,31 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$startUrl/nationalities", connector.getNationalities())
+        checkErrorResponse(url, connector.getNationalities())
       }
-
     }
 
+    "getCountriesWithoutZip" - {
+      val url = s"/$baseUrl/lists/CountryWithoutZip"
+
+      "must return a successful future response with a sequence of country codes" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(countryCodesResponseJson))
+        )
+
+        val expectedResult = Seq(
+          CountryCode("GB"),
+          CountryCode("AD")
+        )
+
+        connector.getCountriesWithoutZip().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getCountriesWithoutZip())
+      }
+    }
   }
 
   private def checkErrorResponse(url: String, result: Future[_]): Assertion =
