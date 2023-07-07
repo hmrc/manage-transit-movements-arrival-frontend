@@ -18,7 +18,6 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
-import metrics.MetricsService
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -27,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   private def version2Header = Seq(
     "Accept" -> "application/vnd.hmrc.2.0+json"
