@@ -55,7 +55,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         service.getCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
 
-        verify(mockRefDataConnector).getCountries(eqTo(Nil))(any(), any())
+        verify(mockRefDataConnector).getCountries(eqTo("CountryCodesFullList"))(any(), any())
       }
     }
 
@@ -68,22 +68,20 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         service.getTransitCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
 
-        val expectedQueryParams = Seq("membership" -> "ctc")
-
-        verify(mockRefDataConnector).getCountries(eqTo(expectedQueryParams))(any(), any())
+        verify(mockRefDataConnector).getCountries(eqTo("CountryCodesCommonTransit"))(any(), any())
       }
     }
 
     "getAddressPostcodeBasedCountries" - {
       "must return a list of sorted address postcode based countries" in {
 
-        when(mockRefDataConnector.getAddressPostcodeBasedCountries()(any(), any()))
+        when(mockRefDataConnector.getCountries(any())(any(), any()))
           .thenReturn(Future.successful(countries))
 
         service.getAddressPostcodeBasedCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
 
-        verify(mockRefDataConnector).getAddressPostcodeBasedCountries()(any(), any())
+        verify(mockRefDataConnector).getCountries(eqTo("CountryAddressPostcodeBased"))(any(), any())
       }
     }
 

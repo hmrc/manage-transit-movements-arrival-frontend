@@ -16,25 +16,26 @@
 
 package models.reference
 
-import play.api.libs.json._
+import base.SpecBase
+import play.api.libs.json.{JsString, Json}
 
-case class CountryCode(code: String)
+class CountryCodeSpec extends SpecBase {
 
-object CountryCode {
-
-  object Constants {
-    val countryCodeLength = 2
-  }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsObject(underlying) => underlying("code").validate[String].map(CountryCode(_))
-        case JsString(code)       => JsSuccess(CountryCode(code))
-        case x                    => JsError(s"Expected a string or object, got a ${x.getClass}")
-      }
+  "must deserialise" - {
+    "when country code is its own object" in {
+      val json = JsString("foo")
+      json.as[CountryCode] mustBe CountryCode("foo")
     }
+
+    "when country code is nested inside an object" in {
+      val json = Json.parse(s"""
+           |{
+           |  "code": "foo"
+           |}
+           |""".stripMargin)
+
+      json.as[CountryCode] mustBe CountryCode("foo")
+    }
+  }
 
 }
