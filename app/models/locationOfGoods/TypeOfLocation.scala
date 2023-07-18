@@ -43,6 +43,10 @@ object TypeOfLocation extends EnumerableType[TypeOfLocation] {
     override val code: String = "D"
   }
 
+  case object TestLocation extends WithName("test") with TypeOfLocation {
+    override val code: String = "T"
+  }
+
   val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
   val values: Seq[TypeOfLocation] = Seq(
