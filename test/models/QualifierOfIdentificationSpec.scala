@@ -18,7 +18,8 @@ package models
 
 import base.SpecBase
 import models.QualifierOfIdentification._
-import models.locationOfGoods.TypeOfLocation.{ApprovedPlace, DesignatedLocation, Other, TestLocation}
+import models.locationOfGoods.TypeOfLocation
+import models.locationOfGoods.TypeOfLocation.{ApprovedPlace, DesignatedLocation, Other}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -84,6 +85,10 @@ class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaChe
         }
 
         "and Type Of Location is anything else" in {
+
+          case object TestLocation extends WithName("test") with TypeOfLocation {
+            override val code: String = "T"
+          }
 
           val radios = QualifierOfIdentification.values(TestLocation)
           val expected: Seq[WithName with QualifierOfIdentification] = Seq(
