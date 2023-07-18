@@ -18,6 +18,7 @@ package pages.locationOfGoods
 
 import models.locationOfGoods.TypeOfLocation
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
 
 class TypeOfLocationPageSpec extends PageBehaviours {
 
@@ -28,5 +29,20 @@ class TypeOfLocationPageSpec extends PageBehaviours {
     beSettable[TypeOfLocation](TypeOfLocationPage)
 
     beRemovable[TypeOfLocation](TypeOfLocationPage)
+
+    "cleanup" - {
+      "must remove Qualifier of identification" in {
+        forAll(arbitrary[TypeOfLocation]) {
+          locationType =>
+            val userAnswers = emptyUserAnswers
+              .setValue(TypeOfLocationPage, locationType)
+
+            val result = userAnswers.setValue(TypeOfLocationPage, locationType)
+
+            result.get(QualifierOfIdentificationPage) must not be defined
+        }
+      }
+    }
   }
+
 }
