@@ -19,12 +19,13 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.identification.ProcedureType._
+import models.locationOfGoods.TypeOfLocation.DesignatedLocation
 import models.{NormalMode, QualifierOfIdentification}
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods.QualifierOfIdentificationPage
+import pages.locationOfGoods.{QualifierOfIdentificationPage, TypeOfLocationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -50,7 +51,8 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, Normal)
+        .setValue(IsSimplifiedProcedurePage, Simplified)
+        .setValue(TypeOfLocationPage, DesignatedLocation)
 
       setExistingUserAnswers(userAnswers)
 
@@ -70,6 +72,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, Simplified)
+        .setValue(TypeOfLocationPage, DesignatedLocation)
         .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.values.head)
 
       setExistingUserAnswers(userAnswers)
@@ -93,7 +96,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, Normal)
+        .setValue(IsSimplifiedProcedurePage, Simplified)
 
       setExistingUserAnswers(userAnswers)
 
@@ -111,6 +114,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, Simplified)
+        .setValue(TypeOfLocationPage, DesignatedLocation)
 
       setExistingUserAnswers(userAnswers)
 
