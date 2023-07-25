@@ -20,7 +20,7 @@ import models.identification.ProcedureType.Simplified
 import models.{EnumerableType, Radioable, UserAnswers, WithName}
 import pages.identification.IsSimplifiedProcedurePage
 
-sealed trait TypeOfLocation extends Radioable[TypeOfLocation] {
+trait TypeOfLocation extends Radioable[TypeOfLocation] {
   override val messageKeyPrefix: String = TypeOfLocation.messageKeyPrefix
   val code: String
 }

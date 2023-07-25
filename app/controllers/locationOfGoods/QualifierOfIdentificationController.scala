@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.{Mode, MovementReferenceNumber, QualifierOfIdentification}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
-import pages.locationOfGoods.QualifierOfIdentificationPage
+import pages.locationOfGoods.{QualifierOfIdentificationPage, TypeOfLocationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,6 +37,7 @@ class QualifierOfIdentificationController @Inject() (
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QualifierOfIdentificationView
 )(implicit ec: ExecutionContext)
@@ -45,26 +46,30 @@ class QualifierOfIdentificationController @Inject() (
 
   private val form = formProvider[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification")
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(TypeOfLocationPage)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, mrn, QualifierOfIdentification.values(request.arg), mode))
+    }
 
-      Ok(view(preparedForm, mrn, QualifierOfIdentification.values(request.userAnswers), mode))
-  }
-
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values(request.userAnswers), mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(mrn)
+    .andThen(getMandatoryPage(TypeOfLocationPage))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values(request.arg), mode))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
+            }
+          )
+    }
 }

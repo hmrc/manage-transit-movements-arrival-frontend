@@ -24,11 +24,22 @@ import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object TypeOfLocationPage extends QuestionPage[TypeOfLocation] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 
   override def toString: String = "typeOfLocation"
+
+  override def cleanup(value: Option[TypeOfLocation], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(QualifierOfIdentificationPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.TypeOfLocationController.onPageLoad(userAnswers.mrn, mode))

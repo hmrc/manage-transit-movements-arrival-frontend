@@ -16,8 +16,8 @@
 
 package models
 
-import models.identification.ProcedureType.Simplified
-import pages.identification.IsSimplifiedProcedurePage
+import models.locationOfGoods.TypeOfLocation
+import models.locationOfGoods.TypeOfLocation.{ApprovedPlace, DesignatedLocation, Other}
 
 sealed trait QualifierOfIdentification extends Radioable[QualifierOfIdentification] {
   override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
@@ -56,6 +56,14 @@ object QualifierOfIdentification extends EnumerableType[QualifierOfIdentificatio
 
   val messageKeyPrefix: String = "qualifierOfIdentification"
 
+  def values(locationType: TypeOfLocation): Seq[QualifierOfIdentification] =
+    locationType match {
+      case DesignatedLocation => Seq(CustomsOffice, Unlocode)
+      case ApprovedPlace      => Seq(PostalCode, Unlocode, Coordinates, EoriNumber, Address)
+      case Other              => Seq(PostalCode, Unlocode, Coordinates, Address)
+      case _                  => values
+    }
+
   val values: Seq[QualifierOfIdentification] = Seq(
     CustomsOffice,
     EoriNumber,
@@ -65,12 +73,6 @@ object QualifierOfIdentification extends EnumerableType[QualifierOfIdentificatio
     Address,
     PostalCode
   )
-
-  def values(userAnswers: UserAnswers): Seq[QualifierOfIdentification] =
-    userAnswers.get(IsSimplifiedProcedurePage) match {
-      case Some(Simplified) => values
-      case _                => values.filterNot(_ == AuthorisationNumber)
-    }
 
   val locationValues: Seq[QualifierOfIdentification] = Seq(
     Unlocode,
