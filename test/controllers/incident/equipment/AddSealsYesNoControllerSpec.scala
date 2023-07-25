@@ -36,8 +36,7 @@ import scala.concurrent.Future
 class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider            = new YesNoFormProvider()
-  private val number: String          = Gen.alphaNumStr.sample.value
-  private val form                    = formProvider("incident.equipment.addSealsYesNo", number)
+  private val form                    = formProvider("incident.equipment.addSealsYesNo")
   private val mode                    = NormalMode
   private lazy val addSealsYesNoRoute = routes.AddSealsYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
 
@@ -50,10 +49,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
-
-      setExistingUserAnswers(userAnswer)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, addSealsYesNoRoute)
       val result  = route(app, request).value
@@ -63,14 +59,12 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+        view(form, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
-        .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
 
       setExistingUserAnswers(userAnswers)
 
@@ -85,17 +79,14 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+        view(filledForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
-
-      setExistingUserAnswers(userAnswer)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request =
         FakeRequest(POST, addSealsYesNoRoute)
@@ -110,10 +101,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswer = emptyUserAnswers
-        .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), number)
-
-      setExistingUserAnswers(userAnswer)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, addSealsYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -125,7 +113,7 @@ class AddSealsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[AddSealsYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, number, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+        view(boundForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

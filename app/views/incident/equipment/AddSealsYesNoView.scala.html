@@ -27,10 +27,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], containerIdentificationNumber: String, mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.equipment.addSealsYesNo.title", containerIdentificationNumber),
+    title = messages("incident.equipment.addSealsYesNo.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("incident.equipment.addSealsYesNo.heading", containerIdentificationNumber),
+                heading = messages("incident.equipment.addSealsYesNo.heading"),
                 caption = Some(messages("incident.caption"))
             )
         )
