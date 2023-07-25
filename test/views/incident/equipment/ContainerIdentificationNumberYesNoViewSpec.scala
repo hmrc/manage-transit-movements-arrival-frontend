@@ -35,6 +35,8 @@ class ContainerIdentificationNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
+  behave like pageWithContent("p", "This is a unique number used to identify the container.")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()

@@ -461,11 +461,12 @@ incident.equipment.change.hidden = transport equipment {0}
 incident.equipment.withContainer.label = Transport equipment {0} - container {1}
 incident.equipment.withoutContainer.label = Transport equipment {0}
 
-incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
-incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add an identification number for the new container?
+incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add an identification number for the new container?
+incident.equipment.containerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
 incident.equipment.containerIdentificationNumberYesNo.change.hidden = if you want to add a container identification number
-incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
+incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for the new container
 
 incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
 incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
