@@ -356,11 +356,11 @@ incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsemen
 incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
 incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
 
-incident.containerIndicatorYesNo.title = Did the incident involve a container?
-incident.containerIndicatorYesNo.heading = Did the incident involve a container?
+incident.containerIndicatorYesNo.title = Did any shipping containers change during the incident?
+incident.containerIndicatorYesNo.heading = Did any shipping containers change during the incident?
 incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
 incident.containerIndicatorYesNo.change.hidden = if the incident involved a container
-incident.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
+incident.containerIndicatorYesNo.error.required = Select yes if any shipping containers changed during the incident
 
 incident.addTransportEquipment.title = Do you need to add any transport equipment?
 incident.addTransportEquipment.heading = Do you need to add any transport equipment?
