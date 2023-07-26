@@ -600,7 +600,7 @@ incident.transportMeans.identificationNumber.error.invalid = The {0} must only i
 
 incident.transportMeans.transportNationality.title = What country is the replacement transport registered to?
 incident.transportMeans.transportNationality.heading = What country is the replacement transport registered to?
-incident.transportMeans.transportNationality.hintText = Enter the country or code, like AT or Austria.
+incident.transportMeans.transportNationality.hintText = Enter the country or code, like Austria or AT.
 incident.transportMeans.transportNationality.label = What country is the replacement transport registered to?
 incident.transportMeans.transportNationality.placeholder = Select a nationality
 incident.transportMeans.transportNationality.checkYourAnswersLabel = Registered country
