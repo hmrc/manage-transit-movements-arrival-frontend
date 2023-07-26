@@ -175,8 +175,7 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-      containerId  <- Gen.option(nonEmptyString)
-    } yield AddAnotherSealViewModel(listItems, onSubmitCall, containerId)
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryAddAnotherIncidentViewModel: Arbitrary[AddAnotherIncidentViewModel] = Arbitrary {

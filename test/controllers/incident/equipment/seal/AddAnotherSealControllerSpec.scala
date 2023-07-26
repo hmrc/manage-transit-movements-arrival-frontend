@@ -17,7 +17,6 @@
 package controllers.incident.equipment.seal
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.incident.equipment.seal.routes.SealIdentificationNumberController
 import forms.AddAnotherItemFormProvider
 import generators.Generators
 import models.{Index, NormalMode}
@@ -40,7 +39,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val formProvider = new AddAnotherItemFormProvider()
 
   private def form(viewModel: AddAnotherSealViewModel) =
-    formProvider(viewModel.prefix, viewModel.allowMoreSeals, viewModel.containerId.toList: _*)
+    formProvider(viewModel.prefix, viewModel.allowMoreSeals)
 
   private val mode = NormalMode
 
@@ -144,7 +143,9 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(listItems.length)).url
+            controllers.incident.equipment.seal.routes.SealIdentificationNumberController
+              .onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(listItems.length))
+              .url
         }
       }
 

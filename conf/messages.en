@@ -521,21 +521,13 @@ incident.equipment.seal.sealIdentificationNumber.error.length = The identificati
 incident.equipment.seal.sealIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 incident.equipment.seal.sealIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
 
-incident.equipment.seal.addAnotherSeal.withContainer.singular.title = You have added {0} seal for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.singular.heading = You have added {0} seal for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.plural.title = You have added {0} seals for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.plural.heading = You have added {0} seals for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.error.required = Select yes if you want to add another seal for container {0}
-incident.equipment.seal.addAnotherSeal.withContainer.label = Do you want to add another seal for container {0}?
-incident.equipment.seal.addAnotherSeal.withContainer.maxLimit.label = You cannot add any more seals for this container. To add another, you need to remove one first.
-
-incident.equipment.seal.addAnotherSeal.withoutContainer.singular.title = You have added {0} seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.singular.heading = You have added {0} seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.plural.title = You have added {0} seals
-incident.equipment.seal.addAnotherSeal.withoutContainer.plural.heading = You have added {0} seals
-incident.equipment.seal.addAnotherSeal.withoutContainer.error.required = Select yes if you want to add another seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.label = Do you want to add another seal?
-incident.equipment.seal.addAnotherSeal.withoutContainer.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
+incident.equipment.seal.addAnotherSeal.singular.title = You have added {0} seal
+incident.equipment.seal.addAnotherSeal.singular.heading = You have added {0} seal
+incident.equipment.seal.addAnotherSeal.plural.title = You have added {0} seals
+incident.equipment.seal.addAnotherSeal.plural.heading = You have added {0} seals
+incident.equipment.seal.addAnotherSeal.error.required = Select yes if you want to add another seal
+incident.equipment.seal.addAnotherSeal.label = Do you want to add another seal?
+incident.equipment.seal.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
 
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
