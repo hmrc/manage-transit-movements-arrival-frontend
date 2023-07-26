@@ -17,7 +17,6 @@
 package views.incident.equipment
 
 import models.NormalMode
-import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours

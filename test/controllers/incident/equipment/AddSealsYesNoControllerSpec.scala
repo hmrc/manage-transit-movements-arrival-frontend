@@ -22,9 +22,8 @@ import models.NormalMode
 import navigation.EquipmentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage}
+import pages.incident.equipment.AddSealsYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

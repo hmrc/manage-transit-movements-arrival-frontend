@@ -22,7 +22,6 @@ import models.NormalMode
 import navigation.SealNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Gen
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
