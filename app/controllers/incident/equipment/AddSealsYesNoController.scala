@@ -19,10 +19,9 @@ package controllers.incident.equipment
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.requests.SpecificDataRequestProvider1
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
-import pages.incident.equipment.{AddSealsYesNoPage, ContainerIdentificationNumberPage}
+import pages.incident.equipment.AddSealsYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

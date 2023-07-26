@@ -27,10 +27,10 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, prefix: String, args: String*)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, prefix: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title", args: _*),
+    title = messages(s"$prefix.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,10 +42,11 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages(s"$prefix.heading", args: _*),
+                heading = messages(s"$prefix.heading"),
                 caption = Some(messages("incident.caption"))
             ),
-            inputClass = InputSize.Width20
+            inputClass = InputSize.Width20,
+            hint = Some(messages(s"$prefix.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

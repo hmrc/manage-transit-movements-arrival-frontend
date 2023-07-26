@@ -513,19 +513,13 @@ incident.equipment.seal.change.hidden = seal {0}
 incident.equipment.seal.sealIdentificationNumber.checkYourAnswersLabel = Seal identification number
 incident.equipment.seal.sealIdentificationNumber.change.hidden = seal identification number
 
-incident.equipment.seal.sealIdentificationNumber.withContainer.title = What’s the seal identification number for container {0}?
-incident.equipment.seal.sealIdentificationNumber.withContainer.heading = What’s the seal identification number for container {0}?
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.required = Enter the seal identification number for container {0}
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.length = The identification number must be 20 characters or less
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
-
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.title = What’s the seal identification number?
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.heading = What’s the seal identification number?
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.required = Enter the seal identification number
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.length = The identification number must be 20 characters or less
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
+incident.equipment.seal.sealIdentificationNumber.title = What is the new seal identification number?
+incident.equipment.seal.sealIdentificationNumber.heading = What is the new seal identification number?
+incident.equipment.seal.sealIdentificationNumber.hint = This can be up to 20 characters long and include both letters and numbers, for example 98A65B321.
+incident.equipment.seal.sealIdentificationNumber.error.required = Enter the new seal identification number
+incident.equipment.seal.sealIdentificationNumber.error.length = The identification number must be 20 characters or less
+incident.equipment.seal.sealIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+incident.equipment.seal.sealIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
 
 incident.equipment.seal.addAnotherSeal.withContainer.singular.title = You have added {0} seal for container {1}
 incident.equipment.seal.addAnotherSeal.withContainer.singular.heading = You have added {0} seal for container {1}

@@ -27,45 +27,28 @@ import views.html.incident.equipment.seal.SealIdentificationNumberView
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber.withContainer"
-  val number: String              = nonEmptyString.sample.value
-  override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil, number)
+  override val prefix: String     = "incident.equipment.seal.sealIdentificationNumber"
+  override def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[SealIdentificationNumberView]
-      .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, prefix, number)(fakeRequest, messages)
+      .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, prefix)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(args = number)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithHeading(args = number)
+  behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers, for example 98A65B321.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
 
-  "when not using a container" - {
-    val prefix: String = "incident.equipment.seal.sealIdentificationNumber.withoutContainer"
-
-    def form: Form[String] = new SealIdentificationFormProvider()(prefix, Nil)
-
-    val view: HtmlFormat.Appendable =
-      injector
-        .instanceOf[SealIdentificationNumberView]
-        .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, sealIndex, prefix)(fakeRequest, messages)
-
-    val doc = parseView(view)
-
-    behave like pageWithTitle(doc, prefix)
-
-    behave like pageWithHeading(doc, prefix)
-  }
 }
