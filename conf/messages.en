@@ -494,7 +494,7 @@ incident.equipment.addAnotherTransportEquipment.singular.title = You have added 
 incident.equipment.addAnotherTransportEquipment.singular.heading = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.plural.title = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.plural.heading = You have added {0} transport equipment
-incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any more transport equipment
+incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any other transport equipment
 incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
 incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
 
