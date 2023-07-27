@@ -46,7 +46,7 @@
         caption = Some(messages("incident.caption"))
     )
 
-    @listWithActions(viewModel.listItems)
+    @listWithActions(viewModel.listItems, "site.edit.hidden.twoArg", "site.delete.hidden.twoArg")
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 

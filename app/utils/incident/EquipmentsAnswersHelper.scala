@@ -25,7 +25,7 @@ import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.AnswersHelper
-import viewModels.ListItem
+import viewModels.{ListItem, ParentListItem}
 
 class EquipmentsAnswersHelper(
   userAnswers: UserAnswers,
@@ -34,7 +34,7 @@ class EquipmentsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
-  def listItems: Seq[Either[ListItem, ListItem]] =
+  def listItems: Seq[Either[ParentListItem, ParentListItem]] =
     buildListItems(EquipmentsSection(incidentIndex)) {
       equipmentIndex =>
         val removeRoute: Option[Call] = if (userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty && equipmentIndex.isFirst) {

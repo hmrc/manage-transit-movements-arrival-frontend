@@ -22,17 +22,22 @@ import org.jsoup.select.Elements
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import play.twirl.api.TwirlHelperImports._
-import viewModels.ListItem
+import viewModels.{ListItem, ListItemWithSuffixHiddenArg, ParentListItem}
 
 trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators {
 
   def maxNumber: Int
 
-  private val listItem = arbitrary[ListItem].sample.value
+  val hiddenArg: Option[String] = None
 
-  val listItems: Seq[ListItem] = Seq(listItem)
+  private val listItem = hiddenArg match {
+    case Some(arg) => arbitrary[ListItemWithSuffixHiddenArg].sample.value.copy(hiddenSuffixArg = arg)
+    case _         => arbitrary[ListItem].sample.value
+  }
 
-  val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
+  val listItems: Seq[ParentListItem] = Seq(listItem)
+
+  val maxedOutListItems: Seq[ParentListItem] = Seq.fill(maxNumber)(listItem)
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
@@ -65,7 +70,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     }
 
   // scalastyle:off method.length
-  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
+  private def pageWithListWithActions(doc: Document, listItems: Seq[ParentListItem]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
@@ -90,14 +95,19 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 "must contain 2 actions" in {
                   actions.size() mustBe 2
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
-                withActionLink(actions, "Remove", 1, removeUrl)
+                chooseActionLink(hiddenArg, actions, "Change", 0, listItem.changeUrl)
+                chooseActionLink(hiddenArg, actions, "Remove", 1, removeUrl)
               case None =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions")
                 "must contain 1 action" in {
                   actions.size() mustBe 1
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
+                chooseActionLink(hiddenArg, actions, "Change", 0, listItem.changeUrl)
+            }
+
+            def chooseActionLink(hiddenArg: Option[String], actions: Elements, linkType: String, index: Int, url: String): Unit = hiddenArg match {
+              case Some(hiddenArg) => withActionLinkSuffixHiddenArg(hiddenArg, actions, linkType, index, url)
+              case _               => withActionLink(actions, linkType, index, url)
             }
 
             def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =
@@ -116,6 +126,25 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 assert(spans.first().hasAttr("aria-hidden"))
 
                 spans.last().text() mustBe s"$linkType ${listItem.name}"
+                assert(spans.last().hasClass("govuk-visually-hidden"))
+              }
+
+            def withActionLinkSuffixHiddenArg(hiddenArg: String, actions: Elements, linkType: String, index: Int, url: String): Unit =
+              s"must contain a $linkType link" in {
+                val link = actions
+                  .toList(index)
+                  .getElementsByClass("govuk-link")
+                  .first()
+
+                assertElementContainsHref(link, url)
+
+                val spans = link.getElementsByTag("span")
+                spans.size() mustBe 2
+
+                spans.first().text() mustBe linkType
+                assert(spans.first().hasAttr("aria-hidden"))
+
+                spans.last().text() mustBe s"$linkType $hiddenArg ${listItem.name}"
                 assert(spans.last().hasClass("govuk-visually-hidden"))
               }
           }

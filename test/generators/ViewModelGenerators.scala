@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.incident.{AddAnotherEquipmentViewModel, AddAnotherIncidentViewModel, AddAnotherItemNumberViewModel, AddAnotherSealViewModel}
 import viewModels.sections.Section
-import viewModels.{Link, ListItem}
+import viewModels.{Link, ListItem, ListItemWithSuffixHiddenArg}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -169,6 +169,15 @@ trait ViewModelGenerators {
       changeUrl <- nonEmptyString
       removeUrl <- Gen.option(nonEmptyString)
     } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryListItemWithSuffixHiddenArg: Arbitrary[ListItemWithSuffixHiddenArg] = Arbitrary {
+    for {
+      name      <- nonEmptyString
+      changeUrl <- nonEmptyString
+      removeUrl <- Gen.option(nonEmptyString)
+      hiddenArg <- nonEmptyString
+    } yield ListItemWithSuffixHiddenArg(name, changeUrl, removeUrl, hiddenArg)
   }
 
   implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {

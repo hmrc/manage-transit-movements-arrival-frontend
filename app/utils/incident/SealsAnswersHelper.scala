@@ -25,7 +25,7 @@ import pages.sections.incident.SealsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.AnswersHelper
-import viewModels.ListItem
+import viewModels.{ListItem, ParentListItem}
 
 class SealsAnswersHelper(
   userAnswers: UserAnswers,
@@ -35,7 +35,7 @@ class SealsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
-  def listItems: Seq[Either[ListItem, ListItem]] =
+  def listItems: Seq[Either[ParentListItem, ParentListItem]] =
     buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
       sealIndex =>
         val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && sealIndex.isFirst) {
@@ -44,11 +44,14 @@ class SealsAnswersHelper(
           Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
         }
 
-        buildListItem[SealDomain, String](
+        val hiddenSuffixArg = messages("incident.equipment.seal.addAnotherSeal.hidden.arg")
+
+        buildListItemWithSuffixHiddenArg[SealDomain, String](
           page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
-          removeRoute = removeRoute
+          removeRoute = removeRoute,
+          hiddenSuffixArg
         )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex), implicitly)
     }
 }

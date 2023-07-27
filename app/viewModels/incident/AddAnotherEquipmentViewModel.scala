@@ -22,12 +22,12 @@ import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.incident.EquipmentsAnswersHelper
-import viewModels.ListItem
+import viewModels.{ListItem, ParentListItem}
 
 import javax.inject.Inject
 
 case class AddAnotherEquipmentViewModel(
-  listItems: Seq[ListItem],
+  listItems: Seq[ParentListItem],
   onSubmitCall: Call
 ) {
 

@@ -34,8 +34,6 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 
 object ArrivalDomain {
 
-  //TODO: PhaseConfig to switch between readers
-
   implicit val userAnswersReader: UserAnswersReader[ArrivalDomain] =
     UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
 }
@@ -57,8 +55,7 @@ object ArrivalPostTransitionDomain {
 
 case class ArrivalTransitionDomain(
   identification: IdentificationDomain,
-  locationOfGoods: LocationOfGoodsDomain,
-  incidents: Option[IncidentsDomain]
+  locationOfGoods: LocationOfGoodsDomain
 ) extends ArrivalDomain
 
 object ArrivalTransitionDomain {
@@ -67,7 +64,6 @@ object ArrivalTransitionDomain {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      incidentReader  <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
-    } yield ArrivalTransitionDomain(identification, locationOfGoods, incidentReader)
+    } yield ArrivalTransitionDomain(identification, locationOfGoods)
   }
 }

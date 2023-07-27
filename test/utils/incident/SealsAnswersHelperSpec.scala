@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.equipment.AddSealsYesNoPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
-import viewModels.ListItem
+import viewModels.{ListItem, ListItemWithSuffixHiddenArg}
 
 class SealsAnswersHelperSpec extends SpecBase with Generators {
 
@@ -57,17 +57,19 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
                 val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
                 helper.listItems mustBe Seq(
                   Right(
-                    ListItem(
+                    ListItemWithSuffixHiddenArg(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url),
+                      "seal"
                     )
                   ),
                   Right(
-                    ListItem(
+                    viewModels.ListItemWithSuffixHiddenArg(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
-                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url),
+                      "seal"
                     )
                   )
                 )
@@ -86,17 +88,19 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
                 val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
                 helper.listItems mustBe Seq(
                   Right(
-                    ListItem(
+                    viewModels.ListItemWithSuffixHiddenArg(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                      removeUrl = None
+                      removeUrl = None,
+                      "seal"
                     )
                   ),
                   Right(
-                    ListItem(
+                    viewModels.ListItemWithSuffixHiddenArg(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
-                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url),
+                      "seal"
                     )
                   )
                 )

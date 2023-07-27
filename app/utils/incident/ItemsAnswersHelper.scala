@@ -23,7 +23,7 @@ import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
 import utils.AnswersHelper
-import viewModels.ListItem
+import viewModels.{ListItem, ParentListItem}
 
 class ItemsAnswersHelper(
   userAnswers: UserAnswers,
@@ -33,7 +33,7 @@ class ItemsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
-  def listItems: Seq[Either[ListItem, ListItem]] =
+  def listItems: Seq[Either[ParentListItem, ParentListItem]] =
     buildListItems(ItemsSection(incidentIndex, equipmentIndex)) {
       itemIndex =>
         buildListItem[ItemNumberDomain, String](

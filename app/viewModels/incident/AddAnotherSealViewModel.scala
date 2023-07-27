@@ -21,12 +21,12 @@ import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.incident.SealsAnswersHelper
-import viewModels.ListItem
+import viewModels.ParentListItem
 
 import javax.inject.Inject
 
 case class AddAnotherSealViewModel(
-  listItems: Seq[ListItem],
+  listItems: Seq[ParentListItem],
   onSubmitCall: Call
 ) {
 
@@ -40,6 +40,7 @@ case class AddAnotherSealViewModel(
   def legend(implicit messages: Messages): String  = messages(s"$prefix.label")
 
   def allowMoreSeals(implicit config: FrontendAppConfig): Boolean = numberOfSeals < config.maxSeals
+
 }
 
 object AddAnotherSealViewModel {

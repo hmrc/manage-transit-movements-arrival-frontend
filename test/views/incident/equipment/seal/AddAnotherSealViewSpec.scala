@@ -28,6 +28,8 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   override def maxNumber: Int = frontendAppConfig.maxSeals
 
+  override val hiddenArg: Option[String] = Some("seal")
+
   private def formProvider(viewModel: AddAnotherSealViewModel) =
     new AddAnotherItemFormProvider()(viewModel.prefix, viewModel.allowMoreSeals)
 
