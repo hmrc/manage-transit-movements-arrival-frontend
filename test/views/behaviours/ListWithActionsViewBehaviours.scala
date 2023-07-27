@@ -28,16 +28,16 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def maxNumber: Int
 
-  val hiddenArg: Option[String] = None
+  val additionalHiddenArgs: Boolean = false
 
-  private val listItem = hiddenArg match {
-    case Some(arg) => arbitrary[ListItemWithSuffixHiddenArg].sample.value.copy(hiddenSuffixArg = arg)
-    case _         => arbitrary[ListItem].sample.value
-  }
+  private val listItem: ParentListItem                    = arbitrary[ListItem].sample.value
+  private val listItemWithSuffixHiddenArg: ParentListItem = arbitrary[ListItemWithSuffixHiddenArg].sample.value
 
-  val listItems: Seq[ParentListItem] = Seq(listItem)
+  val listItems: Seq[ParentListItem]                    = Seq(listItem)
+  val listItemsWithSuffixHiddenArg: Seq[ParentListItem] = Seq(listItemWithSuffixHiddenArg)
 
-  val maxedOutListItems: Seq[ParentListItem] = Seq.fill(maxNumber)(listItem)
+  val maxedOutListItems: Seq[ParentListItem]                    = Seq.fill(maxNumber)(listItem)
+  val maxedOutListItemsWithSuffixHiddenArg: Seq[ParentListItem] = Seq.fill(maxNumber)(listItemWithSuffixHiddenArg)
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
@@ -48,7 +48,11 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
       behave like pageWithHeading(doc, s"$prefix.singular", h1Args: _*)
 
-      behave like pageWithListWithActions(doc, listItems)
+      if (additionalHiddenArgs) {
+        behave like pageWithListWithActions(doc, listItemsWithSuffixHiddenArg)
+      } else {
+        behave like pageWithListWithActions(doc, listItems)
+      }
 
       behave like pageWithRadioItems(legendIsHeading = false, args = h2Args)
     }
@@ -62,7 +66,11 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
       behave like pageWithHeading(doc, s"$prefix.plural", args: _*)
 
-      behave like pageWithListWithActions(doc, maxedOutListItems)
+      if (additionalHiddenArgs) {
+        behave like pageWithListWithActions(doc, maxedOutListItemsWithSuffixHiddenArg)
+      } else {
+        behave like pageWithListWithActions(doc, maxedOutListItems)
+      }
 
       behave like pageWithoutRadioItems(doc)
 
@@ -95,19 +103,26 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 "must contain 2 actions" in {
                   actions.size() mustBe 2
                 }
-                chooseActionLink(hiddenArg, actions, "Change", 0, listItem.changeUrl)
-                chooseActionLink(hiddenArg, actions, "Remove", 1, removeUrl)
+                chooseActionLink(additionalHiddenArgs, actions, "Change", 0, listItem.changeUrl)
+                chooseActionLink(additionalHiddenArgs, actions, "Remove", 1, removeUrl)
               case None =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions")
                 "must contain 1 action" in {
                   actions.size() mustBe 1
                 }
-                chooseActionLink(hiddenArg, actions, "Change", 0, listItem.changeUrl)
+                chooseActionLink(additionalHiddenArgs, actions, "Change", 0, listItem.changeUrl)
             }
 
-            def chooseActionLink(hiddenArg: Option[String], actions: Elements, linkType: String, index: Int, url: String): Unit = hiddenArg match {
-              case Some(hiddenArg) => withActionLinkSuffixHiddenArg(hiddenArg, actions, linkType, index, url)
-              case _               => withActionLink(actions, linkType, index, url)
+            def chooseActionLink(
+              additionalHiddenArgs: Boolean,
+              actions: Elements,
+              linkType: String,
+              index: Int,
+              url: String
+            ): Unit = if (additionalHiddenArgs) {
+              withActionLinkSuffixHiddenArg(actions, linkType, index, url)
+            } else {
+              withActionLink(actions, linkType, index, url)
             }
 
             def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =
@@ -129,8 +144,9 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 assert(spans.last().hasClass("govuk-visually-hidden"))
               }
 
-            def withActionLinkSuffixHiddenArg(hiddenArg: String, actions: Elements, linkType: String, index: Int, url: String): Unit =
+            def withActionLinkSuffixHiddenArg(actions: Elements, linkType: String, index: Int, url: String): Unit =
               s"must contain a $linkType link" in {
+
                 val link = actions
                   .toList(index)
                   .getElementsByClass("govuk-link")
@@ -144,7 +160,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 spans.first().text() mustBe linkType
                 assert(spans.first().hasAttr("aria-hidden"))
 
-                spans.last().text() mustBe s"$linkType $hiddenArg ${listItem.name}"
+                spans.last().text() mustBe s"$linkType ${listItem.args.head} ${listItem.name}"
                 assert(spans.last().hasClass("govuk-visually-hidden"))
               }
           }
