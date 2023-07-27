@@ -540,7 +540,7 @@ incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
 
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
-incident.equipment.itemNumber.hint = This can be up to 4 numbers long, for example 45 or 3210.
+incident.equipment.itemNumber.hint = This can be up to 4 numbers long, for example 45 or 1234.
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9

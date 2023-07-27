@@ -18,8 +18,10 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.journeyDomain.identification.IdentificationDomain
+import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.{Mode, UserAnswers}
+import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
 sealed trait ArrivalDomain extends JourneyDomainModel {
@@ -32,8 +34,10 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 
 object ArrivalDomain {
 
+  //TODO: PhaseConfig to switch between readers
+
   implicit val userAnswersReader: UserAnswersReader[ArrivalDomain] =
-    UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
+    UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
 }
 
 case class ArrivalPostTransitionDomain(
@@ -53,15 +57,17 @@ object ArrivalPostTransitionDomain {
 
 case class ArrivalTransitionDomain(
   identification: IdentificationDomain,
-  locationOfGoods: LocationOfGoodsDomain
+  locationOfGoods: LocationOfGoodsDomain,
+  incidents: Option[IncidentsDomain]
 ) extends ArrivalDomain
 
 object ArrivalTransitionDomain {
 
-  implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
+  implicit val userAnswersReaderArrivalTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-    } yield ArrivalTransitionDomain(identification, locationOfGoods)
+      incidentReader  <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
+    } yield ArrivalTransitionDomain(identification, locationOfGoods, incidentReader)
   }
 }
