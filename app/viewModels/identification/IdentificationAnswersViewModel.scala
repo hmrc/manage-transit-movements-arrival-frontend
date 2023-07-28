@@ -16,6 +16,7 @@
 
 package viewModels.identification
 
+import config.PhaseConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.identification.IdentificationAnswersHelper
@@ -29,7 +30,7 @@ object IdentificationAnswersViewModel {
 
   class IdentificationAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): IdentificationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): IdentificationAnswersViewModel = {
 
       val helper = IdentificationAnswersHelper(userAnswers, mode)
 

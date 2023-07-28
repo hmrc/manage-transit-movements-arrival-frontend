@@ -16,6 +16,7 @@
 
 package utils.incident
 
+import config.PhaseConfig
 import controllers.incident.routes
 import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
@@ -31,7 +32,7 @@ import viewModels.{Link, ListItem}
 class IncidentsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def incidents: Seq[SummaryListRow] =
@@ -73,6 +74,6 @@ class IncidentsAnswersHelper(
 
 object IncidentsAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) =
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig) =
     new IncidentsAnswersHelper(userAnswers, mode)
 }

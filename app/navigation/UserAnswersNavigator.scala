@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.PhaseConfig
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, Stage, UserAnswersReader}
 import models.{Mode, UserAnswers}
@@ -27,6 +28,7 @@ trait UserAnswersNavigator extends Navigator {
   type T <: JourneyDomainModel
 
   implicit val reader: UserAnswersReader[T]
+  implicit val phaseConfig: PhaseConfig
 
   val mode: Mode
 
@@ -40,7 +42,7 @@ object UserAnswersNavigator extends Logging {
     userAnswers: UserAnswers,
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
+  )(implicit userAnswersReader: UserAnswersReader[T], phaseConfig: PhaseConfig): Call = {
     lazy val errorCall = controllers.routes.ErrorController.notFound()
 
     userAnswersReader.run(userAnswers) match {

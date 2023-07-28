@@ -16,7 +16,7 @@
 
 package viewModels.incident
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import play.api.i18n.Messages
@@ -52,7 +52,10 @@ object AddAnotherSealViewModel {
 
   class AddAnotherSealViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit messages: Messages): AddAnotherSealViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit
+      messages: Messages,
+      phaseConfig: PhaseConfig
+    ): AddAnotherSealViewModel = {
       val helper = new SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
 
       val listItems = helper.listItems.collect {

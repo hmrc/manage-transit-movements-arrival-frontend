@@ -16,6 +16,7 @@
 
 package viewModels
 
+import config.PhaseConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.LocationOfGoodsAnswersHelper
@@ -29,7 +30,7 @@ object LocationOfGoodsAnswersViewModel {
 
   class LocationOfGoodsAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): LocationOfGoodsAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): LocationOfGoodsAnswersViewModel = {
 
       val helper = LocationOfGoodsAnswersHelper(userAnswers, mode)
 

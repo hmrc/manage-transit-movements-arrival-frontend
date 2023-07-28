@@ -16,6 +16,7 @@
 
 package viewModels
 
+import config.PhaseConfig
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
@@ -35,7 +36,7 @@ object ArrivalAnswersViewModel {
     IncidentsAnswersViewModelProvider: IncidentsAnswersViewModelProvider
   ) {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages): ArrivalAnswersViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages, phaseConfig: PhaseConfig): ArrivalAnswersViewModel = {
       val mode = CheckMode
       new ArrivalAnswersViewModel(
         identificationAnswersViewModelProvider.apply(userAnswers, mode).section ::

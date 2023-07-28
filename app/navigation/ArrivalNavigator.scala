@@ -16,13 +16,14 @@
 
 package navigation
 
+import config.PhaseConfig
 import models.Mode
 import models.journeyDomain.{ArrivalDomain, UserAnswersReader}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ArrivalNavigatorProviderImpl @Inject() () extends ArrivalNavigatorProvider {
+class ArrivalNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends ArrivalNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     new ArrivalNavigator(mode)
@@ -32,7 +33,7 @@ trait ArrivalNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class ArrivalNavigator(override val mode: Mode) extends UserAnswersNavigator {
+class ArrivalNavigator(override val mode: Mode)(implicit override val phaseConfig: PhaseConfig) extends UserAnswersNavigator {
 
   override type T = ArrivalDomain
 
