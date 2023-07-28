@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import config.PhaseConfig
 import cats.implicits._
-import config.PhaseConfig
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain

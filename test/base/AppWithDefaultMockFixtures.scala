@@ -16,6 +16,7 @@
 
 package base
 
+import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
 import navigation._
@@ -33,7 +34,7 @@ import repositories.SessionRepository
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite =>
+  self: TestSuite with SpecBase =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
@@ -89,4 +90,14 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
       )
+
+  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
+    guiceApplicationBuilder()
+      .disable[PostTransitionModule]
+      .bindings(new TransitionModule)
+
+  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
+    guiceApplicationBuilder()
+      .disable[TransitionModule]
+      .bindings(new PostTransitionModule)
 }
