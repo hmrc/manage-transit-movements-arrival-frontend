@@ -25,7 +25,7 @@ import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.AnswersHelper
-import viewModels.{ListItem, ParentListItem}
+import viewModels.ParentListItem
 
 class EquipmentsAnswersHelper(
   userAnswers: UserAnswers,

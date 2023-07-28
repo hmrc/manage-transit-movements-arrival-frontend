@@ -18,10 +18,8 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.{Mode, UserAnswers}
-import pages.incident.IncidentFlagPage
 import play.api.mvc.Call
 
 sealed trait ArrivalDomain extends JourneyDomainModel {
@@ -35,7 +33,7 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 object ArrivalDomain {
 
   implicit val userAnswersReader: UserAnswersReader[ArrivalDomain] =
-    UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
+    UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
 }
 
 case class ArrivalPostTransitionDomain(

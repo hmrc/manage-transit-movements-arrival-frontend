@@ -23,7 +23,7 @@ import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemsSection
 import play.api.i18n.Messages
 import utils.AnswersHelper
-import viewModels.{ListItem, ParentListItem}
+import viewModels.ParentListItem
 
 class ItemsAnswersHelper(
   userAnswers: UserAnswers,

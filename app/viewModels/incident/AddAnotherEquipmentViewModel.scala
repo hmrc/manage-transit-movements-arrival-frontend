@@ -22,7 +22,7 @@ import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.incident.EquipmentsAnswersHelper
-import viewModels.{ListItem, ParentListItem}
+import viewModels.ParentListItem
 
 import javax.inject.Inject
 

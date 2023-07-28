@@ -25,7 +25,7 @@ import pages.sections.incident.SealsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.AnswersHelper
-import viewModels.{ListItem, ParentListItem}
+import viewModels.ParentListItem
 
 class SealsAnswersHelper(
   userAnswers: UserAnswers,
