@@ -34,7 +34,7 @@
                                 Some(
                                     ListWithActionsAction(
                                         content = Text(messages("site.edit")),
-                                        visuallyHiddenText = Some(messages(s"$prefix.edit.hidden",  listItem.args: _*)),
+                                        visuallyHiddenText = Some(messages(s"$prefix.edit.hidden",  listItem.name)),
                                         href = listItem.changeUrl
                                     )
                                 ),
@@ -42,7 +42,7 @@
                                     url =>
                                         ListWithActionsAction(
                                             content = Text(messages("site.delete")),
-                                            visuallyHiddenText = Some(messages(s"$prefix.delete.hidden", listItem.args: _*)),
+                                            visuallyHiddenText = Some(messages(s"$prefix.delete.hidden", listItem.name)),
                                             href = url
                                         )
                                 )

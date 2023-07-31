@@ -20,6 +20,4 @@ case class ListItem(
   name: String,
   changeUrl: String,
   removeUrl: Option[String]
-) {
-  def args: Seq[String] = Seq(name)
-}
+)
