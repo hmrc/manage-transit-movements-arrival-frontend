@@ -16,23 +16,10 @@
 
 package viewModels
 
-abstract class ParentListItem(val name: String, val changeUrl: String, val removeUrl: Option[String]) {
-  def args: Seq[String]
-}
-
 case class ListItem(
-  override val name: String,
-  override val changeUrl: String,
-  override val removeUrl: Option[String]
-) extends ParentListItem(name, changeUrl, removeUrl) {
+  name: String,
+  changeUrl: String,
+  removeUrl: Option[String]
+) {
   def args: Seq[String] = Seq(name)
-}
-
-case class ListItemWithSuffixHiddenArg(
-  override val name: String,
-  override val changeUrl: String,
-  override val removeUrl: Option[String],
-  hiddenSuffixArg: String
-) extends ParentListItem(name, changeUrl, removeUrl) {
-  override def args: Seq[String] = Seq(hiddenSuffixArg, name)
 }

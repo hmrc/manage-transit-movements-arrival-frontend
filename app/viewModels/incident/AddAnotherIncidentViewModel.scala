@@ -21,12 +21,12 @@ import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.incident.IncidentsAnswersHelper
-import viewModels.ParentListItem
+import viewModels.ListItem
 
 import javax.inject.Inject
 
 case class AddAnotherIncidentViewModel(
-  listItems: Seq[ParentListItem],
+  listItems: Seq[ListItem],
   onSubmitCall: Call
 ) {
 

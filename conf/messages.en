@@ -1,9 +1,7 @@
 site.delete = Remove
 site.edit = Change
 site.delete.hidden = Remove {0}
-site.delete.hidden.twoArg = Remove {0} {1}
 site.edit.hidden = Change {0}
-site.edit.hidden.twoArg = Change {0} {1}
 site.no = No
 site.yes = Yes
 site.continue = Continue
@@ -527,10 +525,11 @@ incident.equipment.seal.addAnotherSeal.singular.title = You have added {0} seal
 incident.equipment.seal.addAnotherSeal.singular.heading = You have added {0} seal
 incident.equipment.seal.addAnotherSeal.plural.title = You have added {0} seals
 incident.equipment.seal.addAnotherSeal.plural.heading = You have added {0} seals
-incident.equipment.seal.addAnotherSeal.hidden.arg = seal
 incident.equipment.seal.addAnotherSeal.error.required = Select yes if you want to add another seal
 incident.equipment.seal.addAnotherSeal.label = Do you want to add another seal?
 incident.equipment.seal.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
+incident.equipment.seal.addAnotherSeal.edit.hidden = Change seal {0}
+incident.equipment.seal.addAnotherSeal.delete.hidden = Remove seal {0}
 
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?

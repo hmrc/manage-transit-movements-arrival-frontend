@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import viewModels.{Link, ListItem, ListItemWithSuffixHiddenArg, ParentListItem}
+import viewModels.{Link, ListItem}
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -80,48 +80,19 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
 
   protected def buildListItems(
     section: Section[JsArray]
-  )(block: Index => Option[Either[ParentListItem, ParentListItem]]): Seq[Either[ParentListItem, ParentListItem]] =
+  )(block: Index => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
     userAnswers
       .get(section)
       .mapWithIndex {
         (_, index) => block(index)
       }
 
-  protected def buildListItemWithSuffixHiddenArg[A <: JourneyDomainModel, B](
-    page: QuestionPage[B],
-    formatJourneyDomainModel: A => String,
-    formatType: B => String,
-    removeRoute: Option[Call],
-    hiddenArg: String
-  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ParentListItem, ParentListItem]] =
-    buildListItemWithSuffixHiddenArg(
-      formatJourneyDomainModel,
-      removeRoute,
-      hiddenArg
-    ) {
-      _.page.route(userAnswers, mode).flatMap {
-        changeRoute =>
-          userAnswers
-            .get(page)
-            .map {
-              value =>
-                ListItemWithSuffixHiddenArg(
-                  name = formatType(value),
-                  changeUrl = changeRoute.url,
-                  removeUrl = removeRoute.map(_.url),
-                  hiddenArg
-                )
-            }
-            .map(Left(_))
-      }
-    }
-
   protected def buildListItem[A <: JourneyDomainModel, B](
     page: QuestionPage[B],
     formatJourneyDomainModel: A => String,
     formatType: B => String,
     removeRoute: Option[Call]
-  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ParentListItem, ParentListItem]] =
+  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
     buildListItem(
       formatJourneyDomainModel,
       removeRoute
@@ -147,7 +118,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     formatJourneyDomainModel: A => String,
     formatType: Option[B] => String,
     removeRoute: Option[Call]
-  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ParentListItem, ParentListItem]] =
+  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
     buildListItem(
       formatJourneyDomainModel,
       removeRoute
@@ -164,34 +135,10 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
       }
     }
 
-  private def buildListItemWithSuffixHiddenArg[A <: JourneyDomainModel, B](
-    formatJourneyDomainModel: A => String,
-    removeRoute: Option[Call],
-    hiddenArg: String
-  )(
-    f: ReaderError => Option[Either[ListItemWithSuffixHiddenArg, ListItemWithSuffixHiddenArg]]
-  )(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ParentListItem, ParentListItem]] =
-    userAnswersReader.run(userAnswers) match {
-      case Left(readerError) =>
-        f(readerError)
-      case Right(journeyDomainModel) =>
-        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
-          changeRoute =>
-            Right(
-              ListItemWithSuffixHiddenArg(
-                name = formatJourneyDomainModel(journeyDomainModel),
-                changeUrl = changeRoute.url,
-                removeUrl = removeRoute.map(_.url),
-                hiddenArg
-              )
-            )
-        }
-    }
-
   private def buildListItem[A <: JourneyDomainModel, B](
     formatJourneyDomainModel: A => String,
     removeRoute: Option[Call]
-  )(f: ReaderError => Option[Either[ListItem, ListItem]])(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ParentListItem, ParentListItem]] =
+  )(f: ReaderError => Option[Either[ListItem, ListItem]])(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ListItem, ListItem]] =
     userAnswersReader.run(userAnswers) match {
       case Left(readerError) =>
         f(readerError)

@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.AnswersHelper
-import viewModels.{Link, ParentListItem}
+import viewModels.{Link, ListItem}
 
 class IncidentsAnswersHelper(
   userAnswers: UserAnswers,
@@ -59,7 +59,7 @@ class IncidentsAnswersHelper(
     id = Option("change-incident-flag")
   )
 
-  def listItems: Seq[Either[ParentListItem, ParentListItem]] =
+  def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(IncidentsSection) {
       index =>
         buildListItemWithDefault[IncidentDomain, IncidentCode](

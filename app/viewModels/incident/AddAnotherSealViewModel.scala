@@ -21,12 +21,12 @@ import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.incident.SealsAnswersHelper
-import viewModels.ParentListItem
+import viewModels.ListItem
 
 import javax.inject.Inject
 
 case class AddAnotherSealViewModel(
-  listItems: Seq[ParentListItem],
+  listItems: Seq[ListItem],
   onSubmitCall: Call
 ) {
 

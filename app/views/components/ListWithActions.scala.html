@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewModels.ParentListItem
+@import viewModels.ListItem
 
 @this(hmrcListWithActions: HmrcListWithActions)
 
 @(
-        listItems: Seq[ParentListItem],
-        hiddenEditMessageKey: String = "site.edit.hidden",
-        hiddenDeleteMessageKey: String = "site.delete.hidden"
+    listItems: Seq[ListItem],
+    prefix: String = "site"
 )(implicit messages: Messages)
 
 <div class="govuk-form-group">
@@ -35,7 +34,7 @@
                                 Some(
                                     ListWithActionsAction(
                                         content = Text(messages("site.edit")),
-                                        visuallyHiddenText = Some(messages(hiddenEditMessageKey,  listItem.args: _*)),
+                                        visuallyHiddenText = Some(messages(s"$prefix.edit.hidden",  listItem.args: _*)),
                                         href = listItem.changeUrl
                                     )
                                 ),
@@ -43,7 +42,7 @@
                                     url =>
                                         ListWithActionsAction(
                                             content = Text(messages("site.delete")),
-                                            visuallyHiddenText = Some(messages(hiddenDeleteMessageKey, listItem.args: _*)),
+                                            visuallyHiddenText = Some(messages(s"$prefix.delete.hidden", listItem.args: _*)),
                                             href = url
                                         )
                                 )
