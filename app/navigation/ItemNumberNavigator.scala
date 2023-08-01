@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.PhaseConfig
 import models.{CheckMode, Index, Mode, NormalMode}
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
@@ -23,7 +24,7 @@ import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton()
-class ItemNumberNavigatorProviderImpl @Inject() () extends ItemNumberNavigatorProvider {
+class ItemNumberNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends ItemNumberNavigatorProvider {
 
   override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersNavigator =
     mode match {
@@ -36,7 +37,9 @@ trait ItemNumberNavigatorProvider {
   def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersNavigator
 }
 
-class ItemNumberNavigator(override val mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index) extends UserAnswersNavigator {
+class ItemNumberNavigator(override val mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index)(implicit
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = ItemNumberDomain
 

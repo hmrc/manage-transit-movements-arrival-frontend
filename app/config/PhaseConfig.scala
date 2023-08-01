@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package config
 
-import models.locationOfGoods.TypeOfLocation
-import pages.behaviours.PageBehaviours
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-class TypeOfLocationPageSpec extends PageBehaviours {
+trait PhaseConfig {
+  val phase: Phase
 
-  "TypeoflocationPage" - {
+}
 
-    beRetrievable[TypeOfLocation](TypeOfLocationPage)
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
 
-    beSettable[TypeOfLocation](TypeOfLocationPage)
+}
 
-    beRemovable[TypeOfLocation](TypeOfLocationPage)
-  }
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
+
 }

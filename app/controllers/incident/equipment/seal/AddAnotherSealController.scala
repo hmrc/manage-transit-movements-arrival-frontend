@@ -16,7 +16,7 @@
 
 package controllers.incident.equipment.seal
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
@@ -39,7 +39,7 @@ class AddAnotherSealController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherSealViewModelProvider,
   view: AddAnotherSealView
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

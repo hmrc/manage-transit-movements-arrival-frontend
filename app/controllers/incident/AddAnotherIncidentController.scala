@@ -16,7 +16,7 @@
 
 package controllers.incident
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.journeyDomain.incident.IncidentDomain
@@ -42,7 +42,7 @@ class AddAnotherIncidentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherIncidentViewModelProvider,
   view: AddAnotherIncidentView
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -70,7 +70,8 @@ class AddAnotherIncidentController @Inject() (
           {
             case true =>
               Redirect(
-                UserAnswersNavigator.nextPage[IncidentDomain](request.userAnswers, mode)(IncidentDomain.userAnswersReader(Index(viewModel.numberOfIncidents)))
+                UserAnswersNavigator
+                  .nextPage[IncidentDomain](request.userAnswers, mode)(IncidentDomain.userAnswersReader(Index(viewModel.numberOfIncidents)), phaseConfig)
               )
             case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
           }

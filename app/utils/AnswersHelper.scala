@@ -16,6 +16,7 @@
 
 package utils
 
+import config.PhaseConfig
 import models.journeyDomain.Stage.AccessingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, UserAnswersReader}
 import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichOptionJsArray, UserAnswers}
@@ -28,7 +29,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.{Link, ListItem}
 
-class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
+class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig) extends SummaryListRowHelper {
 
   def mrn: MovementReferenceNumber = userAnswers.mrn
 

@@ -16,6 +16,7 @@
 
 package utils.incident
 
+import config.PhaseConfig
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import controllers.incident.equipment.seal.{routes => sealRoutes}
@@ -33,7 +34,7 @@ class EquipmentAnswersHelper(
   mode: Mode,
   incidentIndex: Index,
   equipmentIndex: Index
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def containerIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -109,6 +110,6 @@ object EquipmentAnswersHelper {
     mode: Mode,
     incidentIndex: Index,
     equipmentIndex: Index
-  )(implicit messages: Messages) =
+  )(implicit messages: Messages, phaseConfig: PhaseConfig) =
     new EquipmentAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
 }

@@ -18,13 +18,13 @@ package models
 
 import base.SpecBase
 import models.QualifierOfIdentification._
-import models.identification.ProcedureType._
+import models.locationOfGoods.TypeOfLocation
+import models.locationOfGoods.TypeOfLocation.{ApprovedPlace, DesignatedLocation, Other}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.IsSimplifiedProcedurePage
 import play.api.libs.json.{JsError, JsString, Json}
 
 class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -65,23 +65,47 @@ class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaChe
   "Radio options" - {
 
     "Must return the correct number of radios" - {
-      "When procedure type is Simplified" in {
-        val answers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, Simplified)
+      "When procedure type is Simplified" - {
+        "and Type Of Location is DesignatedLocation" in {
+          val radios   = QualifierOfIdentification.values(DesignatedLocation)
+          val expected = Seq(CustomsOffice, Unlocode)
+          radios mustBe expected
+        }
 
-        val radios   = QualifierOfIdentification.values(answers)
-        val expected = Seq(CustomsOffice, EoriNumber, AuthorisationNumber, Coordinates, Unlocode, Address, PostalCode)
-        radios mustBe expected
+        "and Type Of Location is ApprovedPlace" in {
+          val radios   = QualifierOfIdentification.values(ApprovedPlace)
+          val expected = Seq(PostalCode, Unlocode, Coordinates, EoriNumber, Address)
+          radios mustBe expected
+        }
+
+        "and Type Of Location is Other" in {
+          val radios   = QualifierOfIdentification.values(Other)
+          val expected = Seq(PostalCode, Unlocode, Coordinates, Address)
+          radios mustBe expected
+        }
+
+        "and Type Of Location is anything else" in {
+
+          case object TestLocation extends WithName("test") with TypeOfLocation {
+            override val code: String = "T"
+          }
+
+          val radios = QualifierOfIdentification.values(TestLocation)
+          val expected: Seq[WithName with QualifierOfIdentification] = Seq(
+            CustomsOffice,
+            EoriNumber,
+            AuthorisationNumber,
+            Coordinates,
+            Unlocode,
+            Address,
+            PostalCode
+          )
+          radios mustBe expected
+        }
       }
 
-      "When procedure type is Normal" in {
-        val answers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, Normal)
-
-        val radios   = QualifierOfIdentification.values(answers)
-        val expected = Seq(CustomsOffice, EoriNumber, Coordinates, Unlocode, Address, PostalCode)
-        radios mustBe expected
-      }
     }
+
   }
+
 }

@@ -16,7 +16,7 @@
 
 package base
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{EoriNumber, Id, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -63,13 +63,13 @@ trait SpecBase
 
   def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-
-  def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  def messagesApi: MessagesApi                         = injector.instanceOf[MessagesApi]
+  implicit def messages: Messages                      = messagesApi.preferred(fakeRequest)
+  implicit val hc: HeaderCarrier                       = HeaderCarrier()
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  implicit def phaseConfig: PhaseConfig = injector.instanceOf[PhaseConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

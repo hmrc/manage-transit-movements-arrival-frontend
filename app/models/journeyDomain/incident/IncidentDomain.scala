@@ -17,6 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
+import config.PhaseConfig
 import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain

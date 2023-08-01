@@ -16,7 +16,7 @@
 
 package viewModels.incident
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -47,7 +47,7 @@ object AddAnotherIncidentViewModel {
 
   class AddAnotherIncidentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherIncidentViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherIncidentViewModel = {
       val helper = new IncidentsAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {
