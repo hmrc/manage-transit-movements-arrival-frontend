@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.PhaseConfig
 import models._
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentsDomain
@@ -23,7 +24,7 @@ import models.journeyDomain.incident.IncidentsDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentsNavigatorProviderImpl @Inject() () extends IncidentsNavigatorProvider {
+class IncidentsNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends IncidentsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     mode match {
@@ -36,7 +37,7 @@ trait IncidentsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class IncidentsNavigator(override val mode: Mode) extends UserAnswersNavigator {
+class IncidentsNavigator(override val mode: Mode)(implicit override val phaseConfig: PhaseConfig) extends UserAnswersNavigator {
 
   override type T = IncidentsDomain
 

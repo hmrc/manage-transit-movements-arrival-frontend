@@ -16,6 +16,7 @@
 
 package utils.incident
 
+import config.PhaseConfig
 import controllers.incident.equipment.routes
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{Index, Mode, UserAnswers}
@@ -31,7 +32,7 @@ class EquipmentsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   incidentIndex: Index
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
@@ -54,6 +55,6 @@ class EquipmentsAnswersHelper(
 
 object EquipmentsAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit messages: Messages) =
+  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit messages: Messages, phaseConfig: PhaseConfig) =
     new EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
 }

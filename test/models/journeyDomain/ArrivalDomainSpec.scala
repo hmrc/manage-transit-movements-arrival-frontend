@@ -16,30 +16,57 @@
 
 package models.journeyDomain
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.PhaseConfig
 import generators.Generators
 import models.identification.ProcedureType
+import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.journeyDomain.identification.IdentificationDomain
+import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
+import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
+import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
+import models.journeyDomain.incident.{IncidentDomain, IncidentUnLocodeLocationDomain, IncidentsDomain, TransportMeansDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CustomsOffice}
-import models.{DynamicAddress, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
+import models.{DynamicAddress, Phase, QualifierOfIdentification}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
+import pages.incident._
+import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage}
+import pages.incident.location.{UnLocodePage, QualifierOfIdentificationPage => IncidentQualifierOfIdentificationPage}
+import pages.incident.transportMeans.{IdentificationPage, TransportNationalityPage, IdentificationNumberPage => TransportMeansIdentificationNumberPage}
 import pages.locationOfGoods._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
-class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
 
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
   private val country           = arbitrary[Country].sample.value
   private val address           = arbitrary[DynamicAddress].sample.value
   private val idNumber          = Gen.alphaNumStr.sample.value
 
+  val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[PhaseConfig].toInstance(mockPhaseConfig)
+      )
+
   "ArrivalDomain" - {
 
-    "when pre-transition" ignore {
+    "when post-transition" - {
+
+      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
       implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
 
@@ -55,7 +82,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
 
-        val expectedResult = ArrivalTransitionDomain(
+        val expectedResult = ArrivalPostTransitionDomain(
           IdentificationDomain(
             userAnswers.mrn,
             destinationOffice = destinationOffice,
@@ -79,5 +106,114 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
       }
     }
+
+    "when pre-transition" - {
+
+      when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
+
+      "can be parsed from UserAnswers" in {
+
+        val country     = arbitrary[Country].sample.value
+        val nationality = arbitrary[Nationality].sample.value
+        val text        = Gen.alphaNumStr.sample.value
+        val unLocode    = arbitrary[UnLocode].sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(DestinationOfficePage, destinationOffice)
+          .setValue(IdentificationNumberPage, idNumber)
+          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(TypeOfLocationPage, AuthorisedPlace)
+          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+          .setValue(CountryPage, country)
+          .setValue(AddressPage, address)
+          .setValue(AddContactPersonPage, false)
+          .setValue(IncidentFlagPage, true)
+          .setValue(IncidentCountryPage(incidentIndex), country)
+          .setValue(IncidentCodePage(incidentIndex), IncidentCode.UnexpectedlyChanged)
+          .setValue(IncidentTextPage(incidentIndex), text)
+          .setValue(AddEndorsementPage(incidentIndex), false)
+          .setValue(IncidentQualifierOfIdentificationPage(incidentIndex), QualifierOfIdentification.Unlocode)
+          .setValue(UnLocodePage(incidentIndex), unLocode)
+          .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
+          .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), text)
+          .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
+          .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), text)
+          .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
+          .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), "1234")
+          .setValue(IdentificationPage(incidentIndex), Identification.SeaGoingVessel)
+          .setValue(TransportMeansIdentificationNumberPage(incidentIndex), text)
+          .setValue(TransportNationalityPage(incidentIndex), nationality)
+
+        val expectedResult = ArrivalTransitionDomain(
+          IdentificationDomain(
+            userAnswers.mrn,
+            destinationOffice = destinationOffice,
+            identificationNumber = idNumber,
+            procedureType = ProcedureType.Normal,
+            authorisationReferenceNumber = None
+          ),
+          LocationOfGoodsDomain(
+            typeOfLocation = Some(AuthorisedPlace),
+            qualifierOfIdentificationDetails = AddressDomain(
+              country = country,
+              address = address,
+              contactPerson = None
+            )
+          ),
+          incidents = Some(
+            IncidentsDomain(
+              Seq(
+                IncidentDomain(
+                  incidentCountry = country,
+                  incidentCode = IncidentCode.UnexpectedlyChanged,
+                  incidentText = text,
+                  endorsement = None,
+                  location = IncidentUnLocodeLocationDomain(
+                    unLocode = unLocode
+                  ),
+                  equipments = EquipmentsDomain(
+                    Seq(
+                      EquipmentDomain(
+                        containerId = Some(text),
+                        seals = SealsDomain(
+                          Seq(
+                            SealDomain(
+                              identificationNumber = text
+                            )(incidentIndex, equipmentIndex, sealIndex)
+                          )
+                        ),
+                        itemNumbers = ItemNumbersDomain(
+                          Seq(
+                            ItemNumberDomain(
+                              itemNumber = "1234"
+                            )(incidentIndex, equipmentIndex, itemNumberIndex)
+                          )
+                        )
+                      )(incidentIndex, equipmentIndex)
+                    )
+                  )(incidentIndex),
+                  transportMeans = Some(
+                    TransportMeansDomain(
+                      identificationType = Identification.SeaGoingVessel,
+                      identificationNumber = text,
+                      nationality = nationality
+                    )
+                  )
+                )(index)
+              )
+            )
+          )
+        )
+
+        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+
+        result.value mustBe expectedResult
+
+      }
+    }
+
   }
+
 }

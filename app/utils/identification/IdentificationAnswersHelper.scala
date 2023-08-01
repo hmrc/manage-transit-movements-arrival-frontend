@@ -16,6 +16,7 @@
 
 package utils.identification
 
+import config.PhaseConfig
 import models.identification.ProcedureType
 import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
@@ -27,7 +28,7 @@ import utils.AnswersHelper
 class IdentificationAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def movementReferenceNumber: SummaryListRow = buildRow(
@@ -72,6 +73,6 @@ object IdentificationAnswersHelper {
   def apply(
     userAnswers: UserAnswers,
     mode: Mode
-  )(implicit messages: Messages): IdentificationAnswersHelper =
+  )(implicit messages: Messages, phaseConfig: PhaseConfig): IdentificationAnswersHelper =
     new IdentificationAnswersHelper(userAnswers, mode)
 }

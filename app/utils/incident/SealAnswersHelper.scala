@@ -16,6 +16,7 @@
 
 package utils.incident
 
+import config.PhaseConfig
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.i18n.Messages
@@ -28,7 +29,7 @@ class SealAnswersHelper(
   incidentIndex: Index,
   equipmentIndex: Index,
   sealIndex: Index
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def sealIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -42,6 +43,9 @@ class SealAnswersHelper(
 
 object SealAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit messages: Messages) =
+  def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit
+    messages: Messages,
+    phaseConfig: PhaseConfig
+  ) =
     new SealAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex, sealIndex)
 }

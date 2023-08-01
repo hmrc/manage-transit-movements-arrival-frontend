@@ -17,7 +17,6 @@
 package controllers.incident.equipment.seal
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.incident.equipment.seal.routes.SealIdentificationNumberController
 import forms.AddAnotherItemFormProvider
 import generators.Generators
 import models.{Index, NormalMode}
@@ -73,7 +72,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "redirect to add seal yes/no page" - {
       "when 0 seals" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
           .thenReturn(viewModelWithNoSeals)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -92,7 +91,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
           .thenReturn(viewModelWithSealsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -110,7 +109,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
           .thenReturn(viewModelWithSealsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -131,7 +130,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to seal id number page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
             .thenReturn(viewModelWithSealsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -144,13 +143,15 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(listItems.length)).url
+            controllers.incident.equipment.seal.routes.SealIdentificationNumberController
+              .onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(listItems.length))
+              .url
         }
       }
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
             .thenReturn(viewModelWithSealsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -169,7 +170,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
           .thenReturn(viewModelWithSealsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -187,7 +188,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
           .thenReturn(viewModelWithSealsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)

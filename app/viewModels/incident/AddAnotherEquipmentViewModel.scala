@@ -16,7 +16,7 @@
 
 package viewModels.incident
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.incident.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -48,7 +48,10 @@ object AddAnotherEquipmentViewModel {
 
   class AddAnotherEquipmentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode, incidentIndex: Index)(implicit
+      messages: Messages,
+      phaseConfig: PhaseConfig
+    ): AddAnotherEquipmentViewModel = {
       val helper = new EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
 
       val listItems = helper.listItems.collect {

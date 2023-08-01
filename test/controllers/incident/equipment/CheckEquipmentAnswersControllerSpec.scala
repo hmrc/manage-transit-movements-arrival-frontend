@@ -50,7 +50,7 @@ class CheckEquipmentAnswersControllerSpec extends SpecBase with AppWithDefaultMo
 
       val sampleSections = arbitrary[List[Section]].sample.value
 
-      when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+      when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
         .thenReturn(EquipmentAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
