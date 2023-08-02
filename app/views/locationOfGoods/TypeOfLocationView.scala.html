@@ -17,7 +17,7 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import models.locationOfGoods.TypeOfLocation
-@import viewModels.components.InputRadioViewModel.Radio
+@import viewModels.components.InputRadioViewModel.RadioWithAdditionalHtml
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
@@ -43,9 +43,10 @@
         @inputRadio(
             field = form("value"),
             radioItems = fieldId => locationTypes.toRadioItems(fieldId, form.value),
-            radioType = Radio(
+            radioType = RadioWithAdditionalHtml(
                 heading = messages("locationOfGoods.typeOfLocation.heading"),
-                caption = Some(messages("locationOfGoods.caption"))
+                caption = Some(messages("locationOfGoods.caption")),
+                additionalHtml = messages("locationOfGoods.typeOfLocation.paragraph").toParagraph
             )
         )
 

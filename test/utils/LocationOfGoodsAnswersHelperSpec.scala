@@ -448,7 +448,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe routes.ContactPersonNameController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "Enter the contacts full name."
+              action.visuallyHiddenText.get mustBe "contact name for the location of goods"
               action.id mustBe "contact-person-name"
           }
         }

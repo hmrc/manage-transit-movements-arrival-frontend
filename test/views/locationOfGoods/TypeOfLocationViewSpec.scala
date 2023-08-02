@@ -49,5 +49,7 @@ class TypeOfLocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
 
   behave like pageWithRadioItems()
 
+  behave like pageWithContent("p", "This is their location at the end of the transit movement.")
+
   behave like pageWithSubmitButton("Continue")
 }
