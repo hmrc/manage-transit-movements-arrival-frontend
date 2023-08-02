@@ -47,7 +47,7 @@ class ItemNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This can be up to 4 numbers long.")
+  behave like pageWithHint("This can be up to 4 numbers long, for example 45 or 1234.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

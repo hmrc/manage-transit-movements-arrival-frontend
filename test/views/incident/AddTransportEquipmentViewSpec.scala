@@ -37,7 +37,7 @@ class AddTransportEquipmentViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This includes any containers or seals.")
+  behave like pageWithContent("p", "This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.")
 
   behave like pageWithRadioItems()
 

@@ -341,7 +341,7 @@ incident.incidentCode.error.required = Select the type of incident
 
 incident.incidentText.title = What happened during the incident?
 incident.incidentText.heading = What happened during the incident?
-incident.incidentText.hintText = Describe the incident in detail. This can be up to 512 characters long.
+incident.incidentText.hintText = Describe the incident in detail.
 incident.incidentText.checkYourAnswersLabel = Description
 incident.incidentText.change.hidden = incident description
 incident.incidentText.error.required = Describe what happened during the incident
@@ -350,24 +350,24 @@ incident.incidentText.error.invalidCharacters = The description of the incident 
 
 incident.addEndorsement.title = Do you need to add an endorsement for the incident?
 incident.addEndorsement.heading = Do you need to add an endorsement for the incident?
-incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and weren’t stolen during the incident.
+incident.addEndorsement.paragraph1 = This is a confirmation that any high-risk or high-value goods remained intact and were not stolen during the incident.
 incident.addEndorsement.paragraph2 = An endorsement can only be provided by customs, Border Force or the police.
 incident.addEndorsement.checkYourAnswersLabel = Do you need to add an endorsement for the incident?
 incident.addEndorsement.change.hidden = if you need to add an endorsement for the incident
 incident.addEndorsement.error.required = Select yes if you want to add an endorsement for the incident
 
-incident.containerIndicatorYesNo.title = Did the incident involve a container?
-incident.containerIndicatorYesNo.heading = Did the incident involve a container?
+incident.containerIndicatorYesNo.title = Did any shipping containers change during the incident?
+incident.containerIndicatorYesNo.heading = Did any shipping containers change during the incident?
 incident.containerIndicatorYesNo.checkYourAnswersLabel = Did the incident involve a container?
 incident.containerIndicatorYesNo.change.hidden = if the incident involved a container
-incident.containerIndicatorYesNo.error.required = Select yes if the incident involved a container
+incident.containerIndicatorYesNo.error.required = Select yes if any shipping containers changed during the incident
 
-incident.addTransportEquipment.title = Do you need to add any transport equipment?
-incident.addTransportEquipment.heading = Do you need to add any transport equipment?
+incident.addTransportEquipment.title = Did any transport equipment change during the incident?
+incident.addTransportEquipment.heading = Did any transport equipment change during the incident?
 incident.addTransportEquipment.checkYourAnswersLabel = Do you need to add any transport equipment?
 incident.addTransportEquipment.change.hidden = if you need to add any transport equipment
-incident.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
-incident.addTransportEquipment.paragraph = This includes any containers or seals.
+incident.addTransportEquipment.error.required = Select yes if any transport equipment changed during the incident
+incident.addTransportEquipment.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
 
 # Incident - Endorsement
 
@@ -461,26 +461,28 @@ incident.equipment.change.hidden = transport equipment {0}
 incident.equipment.withContainer.label = Transport equipment {0} - container {1}
 incident.equipment.withoutContainer.label = Transport equipment {0}
 
-incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add a container identification number?
-incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
-incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
-incident.equipment.containerIdentificationNumberYesNo.change.hidden = if you want to add a container identification number
-incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
+incident.equipment.containerIdentificationNumberYesNo.title = Do you want to add an identification number for the new container?
+incident.equipment.containerIdentificationNumberYesNo.heading = Do you want to add an identification number for the new container?
+incident.equipment.containerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
+incident.equipment.containerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for the new container?
+incident.equipment.containerIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the new container
+incident.equipment.containerIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for the new container
 
-incident.equipment.containerIdentificationNumber.title = What’s the container identification number?
-incident.equipment.containerIdentificationNumber.heading = What’s the container identification number?
+incident.equipment.containerIdentificationNumber.title = What is the new container identification number?
+incident.equipment.containerIdentificationNumber.heading = What is the new container identification number?
 incident.equipment.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
+incident.equipment.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
 incident.equipment.containerIdentificationNumber.change.hidden = container identification number
-incident.equipment.containerIdentificationNumber.error.required = Enter the container identification number
+incident.equipment.containerIdentificationNumber.error.required = Enter the new container identification number
 incident.equipment.containerIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 incident.equipment.containerIdentificationNumber.error.length = The identification number must be 17 characters or less
 incident.equipment.containerIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique container identification number
 
-incident.equipment.addSealsYesNo.title = Do you want to add a seal for container {0}?
-incident.equipment.addSealsYesNo.heading = Do you want to add a seal for container {0}?
-incident.equipment.addSealsYesNo.checkYourAnswersLabel = Do you want to add a seal?
-incident.equipment.addSealsYesNo.change.hidden = if you want to add a seal
-incident.equipment.addSealsYesNo.error.required = Select yes if you want to add a seal for container {0}
+incident.equipment.addSealsYesNo.title = Did any seals change?
+incident.equipment.addSealsYesNo.heading = Did any seals change?
+incident.equipment.addSealsYesNo.checkYourAnswersLabel = Did any seals change?
+incident.equipment.addSealsYesNo.change.hidden = if any seals changed
+incident.equipment.addSealsYesNo.error.required = Select yes if any seals changed
 
 incident.equipment.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
 incident.equipment.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
@@ -492,7 +494,7 @@ incident.equipment.addAnotherTransportEquipment.singular.title = You have added 
 incident.equipment.addAnotherTransportEquipment.singular.heading = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.plural.title = You have added {0} transport equipment
 incident.equipment.addAnotherTransportEquipment.plural.heading = You have added {0} transport equipment
-incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any more transport equipment
+incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any other transport equipment
 incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
 incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
 
@@ -511,35 +513,23 @@ incident.equipment.seal.change.hidden = seal {0}
 incident.equipment.seal.sealIdentificationNumber.checkYourAnswersLabel = Seal identification number
 incident.equipment.seal.sealIdentificationNumber.change.hidden = seal identification number
 
-incident.equipment.seal.sealIdentificationNumber.withContainer.title = What’s the seal identification number for container {0}?
-incident.equipment.seal.sealIdentificationNumber.withContainer.heading = What’s the seal identification number for container {0}?
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.required = Enter the seal identification number for container {0}
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.length = The identification number must be 20 characters or less
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-incident.equipment.seal.sealIdentificationNumber.withContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
+incident.equipment.seal.sealIdentificationNumber.title = What is the new seal identification number?
+incident.equipment.seal.sealIdentificationNumber.heading = What is the new seal identification number?
+incident.equipment.seal.sealIdentificationNumber.hint = This can be up to 20 characters long and include both letters and numbers, for example 98A65B321.
+incident.equipment.seal.sealIdentificationNumber.error.required = Enter the new seal identification number
+incident.equipment.seal.sealIdentificationNumber.error.length = The identification number must be 20 characters or less
+incident.equipment.seal.sealIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+incident.equipment.seal.sealIdentificationNumber.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
 
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.title = What’s the seal identification number?
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.heading = What’s the seal identification number?
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.required = Enter the seal identification number
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.length = The identification number must be 20 characters or less
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-incident.equipment.seal.sealIdentificationNumber.withoutContainer.error.alreadySubmitted = This identification number has already been submitted. Enter a unique seal identification number
-
-incident.equipment.seal.addAnotherSeal.withContainer.singular.title = You have added {0} seal for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.singular.heading = You have added {0} seal for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.plural.title = You have added {0} seals for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.plural.heading = You have added {0} seals for container {1}
-incident.equipment.seal.addAnotherSeal.withContainer.error.required = Select yes if you want to add another seal for container {0}
-incident.equipment.seal.addAnotherSeal.withContainer.label = Do you want to add another seal for container {0}?
-incident.equipment.seal.addAnotherSeal.withContainer.maxLimit.label = You cannot add any more seals for this container. To add another, you need to remove one first.
-
-incident.equipment.seal.addAnotherSeal.withoutContainer.singular.title = You have added {0} seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.singular.heading = You have added {0} seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.plural.title = You have added {0} seals
-incident.equipment.seal.addAnotherSeal.withoutContainer.plural.heading = You have added {0} seals
-incident.equipment.seal.addAnotherSeal.withoutContainer.error.required = Select yes if you want to add another seal
-incident.equipment.seal.addAnotherSeal.withoutContainer.label = Do you want to add another seal?
-incident.equipment.seal.addAnotherSeal.withoutContainer.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
+incident.equipment.seal.addAnotherSeal.singular.title = You have added {0} seal
+incident.equipment.seal.addAnotherSeal.singular.heading = You have added {0} seal
+incident.equipment.seal.addAnotherSeal.plural.title = You have added {0} seals
+incident.equipment.seal.addAnotherSeal.plural.heading = You have added {0} seals
+incident.equipment.seal.addAnotherSeal.error.required = Select yes if you want to add another seal
+incident.equipment.seal.addAnotherSeal.label = Do you want to add another seal?
+incident.equipment.seal.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
+incident.equipment.seal.addAnotherSeal.edit.hidden = Change seal {0}
+incident.equipment.seal.addAnotherSeal.delete.hidden = Remove seal {0}
 
 incident.equipment.seal.remove.title = Are you sure you want to remove seal {0}?
 incident.equipment.seal.remove.heading = Are you sure you want to remove seal {0}?
@@ -552,11 +542,11 @@ incident.equipment.goodsItemNumber.change.hidden = goods item number {0}
 
 incident.equipment.itemNumber.title = What is the goods item number?
 incident.equipment.itemNumber.heading = What is the goods item number?
-incident.equipment.itemNumber.hint = This can be up to 4 numbers long.
+incident.equipment.itemNumber.hint = This can be up to 4 numbers long, for example 45 or 1234.
 incident.equipment.itemNumber.checkYourAnswersLabel = What is the goods item number?
 incident.equipment.itemNumber.error.required = Enter the goods item number
 incident.equipment.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
-incident.equipment.itemNumber.error.length = The goods item number must be 4 characters or less
+incident.equipment.itemNumber.error.length = The goods item number must be 4 numbers or less
 incident.equipment.itemNumber.error.range = The goods item number must be more than 0 and less than 2000
 
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.singular.title = You have added {0} goods item number
@@ -612,7 +602,7 @@ incident.transportMeans.identificationNumber.error.invalid = The {0} must only i
 
 incident.transportMeans.transportNationality.title = What country is the replacement transport registered to?
 incident.transportMeans.transportNationality.heading = What country is the replacement transport registered to?
-incident.transportMeans.transportNationality.hintText = Enter the country or code, like AT or Austria.
+incident.transportMeans.transportNationality.hintText = Enter the country or code, like Austria or AT.
 incident.transportMeans.transportNationality.label = What country is the replacement transport registered to?
 incident.transportMeans.transportNationality.placeholder = Select a nationality
 incident.transportMeans.transportNationality.checkYourAnswersLabel = Registered country

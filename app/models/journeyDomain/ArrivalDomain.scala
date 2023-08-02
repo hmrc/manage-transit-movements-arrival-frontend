@@ -65,7 +65,7 @@ case class ArrivalTransitionDomain(
 
 object ArrivalTransitionDomain {
 
-  implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
+  implicit val userAnswersReaderArrivalTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
     for {
       identification  <- UserAnswersReader[IdentificationDomain]
       locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]

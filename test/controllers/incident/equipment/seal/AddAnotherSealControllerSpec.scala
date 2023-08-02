@@ -39,7 +39,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val formProvider = new AddAnotherItemFormProvider()
 
   private def form(viewModel: AddAnotherSealViewModel) =
-    formProvider(viewModel.prefix, viewModel.allowMoreSeals, viewModel.containerId.toList: _*)
+    formProvider(viewModel.prefix, viewModel.allowMoreSeals)
 
   private val mode = NormalMode
 

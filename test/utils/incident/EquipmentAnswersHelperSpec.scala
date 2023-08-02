@@ -249,14 +249,14 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
               val result = helper.containerIdentificationNumberYesNo.get
 
-              result.key.value mustBe "Do you want to add a container identification number?"
+              result.key.value mustBe "Do you want to add an identification number for the new container?"
               result.value.value mustBe "Yes"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe equipmentRoutes.ContainerIdentificationNumberYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a container identification number"
+              action.visuallyHiddenText.get mustBe "if you want to add an identification number for the new container"
               action.id mustBe "change-add-container-identification-number"
           }
         }
@@ -318,14 +318,14 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 val helper = EquipmentAnswersHelper(answers, mode, incidentIndex, equipmentIndex)
                 val result = helper.sealsYesNo.get
 
-                result.key.value mustBe "Do you want to add a seal?"
+                result.key.value mustBe "Did any seals change?"
                 result.value.value mustBe "Yes"
                 val actions = result.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe equipmentRoutes.AddSealsYesNoController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex).url
-                action.visuallyHiddenText.get mustBe "if you want to add a seal"
+                action.visuallyHiddenText.get mustBe "if any seals changed"
                 action.id mustBe "change-add-seals"
             }
           }

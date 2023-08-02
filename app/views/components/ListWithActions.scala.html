@@ -19,7 +19,8 @@
 @this(hmrcListWithActions: HmrcListWithActions)
 
 @(
-        listItems: Seq[ListItem]
+    listItems: Seq[ListItem],
+    prefix: String = "site"
 )(implicit messages: Messages)
 
 <div class="govuk-form-group">
@@ -33,7 +34,7 @@
                                 Some(
                                     ListWithActionsAction(
                                         content = Text(messages("site.edit")),
-                                        visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
+                                        visuallyHiddenText = Some(messages(s"$prefix.edit.hidden",  listItem.name)),
                                         href = listItem.changeUrl
                                     )
                                 ),
@@ -41,7 +42,7 @@
                                     url =>
                                         ListWithActionsAction(
                                             content = Text(messages("site.delete")),
-                                            visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
+                                            visuallyHiddenText = Some(messages(s"$prefix.delete.hidden", listItem.name)),
                                             href = url
                                         )
                                 )

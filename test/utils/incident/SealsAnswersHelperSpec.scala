@@ -64,7 +64,7 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
                     )
                   ),
                   Right(
-                    ListItem(
+                    viewModels.ListItem(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
                       removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)
@@ -86,14 +86,14 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
                 val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
                 helper.listItems mustBe Seq(
                   Right(
-                    ListItem(
+                    viewModels.ListItem(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
                       removeUrl = None
                     )
                   ),
                   Right(
-                    ListItem(
+                    viewModels.ListItem(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url,
                       removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(1)).url)

@@ -26,10 +26,13 @@ import views.html.incident.equipment.seal.AddAnotherSealView
 
 class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
+  override val hiddenChangeText: String => String = x => s"Change seal $x"
+  override val hiddenRemoveText: String => String = x => s"Remove seal $x"
+
   override def maxNumber: Int = frontendAppConfig.maxSeals
 
   private def formProvider(viewModel: AddAnotherSealViewModel) =
-    new AddAnotherItemFormProvider()(viewModel.prefix, viewModel.allowMoreSeals, viewModel.containerId.toList: _*)
+    new AddAnotherItemFormProvider()(viewModel.prefix, viewModel.allowMoreSeals)
 
   private val viewModel                     = arbitrary[AddAnotherSealViewModel].sample.value
   private val viewModelWithSealsNotMaxedOut = viewModel.copy(listItems = listItems)
@@ -61,7 +64,7 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithMoreItemsAllowed(viewModelWithSealsNotMaxedOut.args: _*)(viewModelWithSealsNotMaxedOut.containerId.toList: _*)
+  behave like pageWithMoreItemsAllowed(viewModelWithSealsNotMaxedOut.args: _*)()
 
   behave like pageWithItemsMaxedOut(viewModelWithSealsMaxedOut.args: _*)
 

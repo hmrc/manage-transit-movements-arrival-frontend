@@ -28,6 +28,9 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def maxNumber: Int
 
+  val hiddenChangeText: String => String = x => s"Change $x"
+  val hiddenRemoveText: String => String = x => s"Remove $x"
+
   private val listItem = arbitrary[ListItem].sample.value
 
   val listItems: Seq[ListItem] = Seq(listItem)
@@ -90,17 +93,17 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 "must contain 2 actions" in {
                   actions.size() mustBe 2
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
-                withActionLink(actions, "Remove", 1, removeUrl)
+                withActionLink(actions, "Change", hiddenChangeText, 0, listItem.changeUrl)
+                withActionLink(actions, "Remove", hiddenRemoveText, 1, removeUrl)
               case None =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions")
                 "must contain 1 action" in {
                   actions.size() mustBe 1
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
+                withActionLink(actions, "Change", hiddenChangeText, 0, listItem.changeUrl)
             }
 
-            def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =
+            def withActionLink(actions: Elements, linkType: String, hiddenText: String => String, index: Int, url: String): Unit =
               s"must contain a $linkType link" in {
                 val link = actions
                   .toList(index)
@@ -115,7 +118,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 spans.first().text() mustBe linkType
                 assert(spans.first().hasAttr("aria-hidden"))
 
-                spans.last().text() mustBe s"$linkType ${listItem.name}"
+                spans.last().text() mustBe hiddenText(listItem.name)
                 assert(spans.last().hasClass("govuk-visually-hidden"))
               }
           }
