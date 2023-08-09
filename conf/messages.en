@@ -99,7 +99,7 @@ identification.destinationOffice.heading = Where is the office of destination?
 identification.destinationOffice.hint = Enter the office location or code, like Dover or GB000060.
 identification.destinationOffice.placeholder = Select a customs office
 identification.destinationOffice.change.hidden = office of destination
-identification.destinationOffice.paragraph = This is the customs office where the CTC transit ends.
+identification.destinationOffice.paragraph = This is the customs office where the transit movement ends. It may not be where the goods complete their journey.
 identification.destinationOffice.checkYourAnswersLabel = Office of destination
 identification.destinationOffice.error.required = Enter the office of destination
 
@@ -170,6 +170,7 @@ locationOfGoods.caption = Arrivals - Location of goods
 
 locationOfGoods.addContactPerson.title = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContactPerson.heading.paragraph = This is additional contact information for if Customs have any queries.
 locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.change.hidden = if you want to add a contact for the location of goods
 locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.
@@ -200,6 +201,7 @@ locationOfGoods.authorisationNumber.hintText = This can be up to 35 characters l
 
 locationOfGoods.contactPersonName.title = Who is the contact for the location of goods?
 locationOfGoods.contactPersonName.heading = Who is the contact for the location of goods?
+locationOfGoods.contactPersonName.hint = Enter the contact''s full name.
 locationOfGoods.contactPersonName.checkYourAnswersLabel = Contact name
 locationOfGoods.contactPersonName.change.hidden = contact name for the location of goods
 locationOfGoods.contactPersonName.error.required = Enter the contact for the location of goods
@@ -224,7 +226,7 @@ locationOfGoods.coordinates.longitude = Longitude
 locationOfGoods.coordinates.hintText = These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.
 locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
 locationOfGoods.coordinates.change.hidden = coordinates for the location of goods
-locationOfGoods.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal place and a minus sign
+locationOfGoods.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal point and a plus or minus sign
 locationOfGoods.coordinates.error.latitude.maximum = The latitude coordinates must be between -90 and 90
 locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
 locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
@@ -268,12 +270,13 @@ locationOfGoods.qualifierOfIdentification.error.required = Select how you want t
 
 locationOfGoods.typeOfLocation.title = Which type of location are the goods in?
 locationOfGoods.typeOfLocation.heading = Which type of location are the goods in?
+locationOfGoods.typeOfLocation.paragraph = This is their location at the end of the transit movement.
 locationOfGoods.typeOfLocation.authorisedPlace = Authorised place – the authorised consignee’s own premises
-locationOfGoods.typeOfLocation.designatedLocation = Designated location – any other premises the consignee is authorised to use as an office of destination
+locationOfGoods.typeOfLocation.designatedLocation = Designated destination – any other premises the consignee is authorised to use as an office of destination
 locationOfGoods.typeOfLocation.approvedPlace = Approved place – a designated destination approved and controlled by the office of destination
 locationOfGoods.typeOfLocation.other = Other
 locationOfGoods.typeOfLocation.checkYourAnswersLabel = Location type
-locationOfGoods.typeOfLocation.change.hidden = location type for the goods
+locationOfGoods.typeOfLocation.change.hidden = This is their location at the end of the transit movement.
 locationOfGoods.typeOfLocation.error.required = Select which type of location the goods are in
 
 locationOfGoods.unlocode.title = What is the UN/LOCODE for the location of goods?

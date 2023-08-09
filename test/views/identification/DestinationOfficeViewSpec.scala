@@ -44,7 +44,7 @@ class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice]
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This is the customs office where the CTC transit ends.")
+  behave like pageWithContent("p", "This is the customs office where the transit movement ends. It may not be where the goods complete their journey.")
 
   behave like pageWithSelect()
 

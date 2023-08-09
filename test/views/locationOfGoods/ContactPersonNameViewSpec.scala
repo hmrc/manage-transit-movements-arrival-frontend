@@ -42,7 +42,7 @@ class ContactPersonNameViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("Enter the contact's full name.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
