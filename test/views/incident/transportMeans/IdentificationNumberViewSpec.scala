@@ -39,13 +39,13 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(identificationType.arg)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithHeading(identificationType.arg)
+  behave like pageWithHeading()
 
   behave like pageWithInsetText(identificationType.arg.capitalize)
 

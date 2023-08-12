@@ -32,7 +32,7 @@
 @(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, identification: Identification)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.transportMeans.identificationNumber.title", identification.arg),
+    title = messages("incident.transportMeans.identificationNumber.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -44,7 +44,7 @@
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("incident.transportMeans.identificationNumber.heading", identification.arg),
+                heading = messages("incident.transportMeans.identificationNumber.heading"),
                 caption = Some(messages("incident.caption")),
                 additionalHtml = insetText(identification.arg.capitalize)
             ),
