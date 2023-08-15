@@ -63,7 +63,7 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
 
       "when sea going vessel" in {
         val result = SeaGoingVessel.arg
-        result mustBe "name of the sea-going vessel"
+        result mustBe "Name of a sea-going vessel"
       }
       "when IATA flight number" in {
         val result = IataFlightNumber.arg
@@ -71,7 +71,7 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       }
       "when inland waterways vehicle" in {
         val result = InlandWaterwaysVehicle.arg
-        result mustBe "name of the inland waterways vehicle"
+        result mustBe "Name of an inland waterways vehicle"
       }
       "when IMO ship identification number" in {
         val result = ImoShipIdNumber.arg
@@ -79,23 +79,23 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       }
       "when wagon number" in {
         val result = WagonNumber.arg
-        result mustBe "wagon number"
+        result mustBe "Wagon number"
       }
       "when train number" in {
         val result = TrainNumber.arg
-        result mustBe "train number"
+        result mustBe "Train number"
       }
       "when reg number of road vehicle" in {
         val result = RegNumberRoadVehicle.arg
-        result mustBe "registration number of the road vehicle"
+        result mustBe "Registration number of a road vehicle"
       }
       "when reg number of road trailer" in {
         val result = RegNumberRoadTrailer.arg
-        result mustBe "registration number of the road trailer"
+        result mustBe "Registration number of a road trailer"
       }
       "when reg number of aircraft" in {
         val result = RegNumberAircraft.arg
-        result mustBe "registration number of the aircraft"
+        result mustBe "Registration number of an aircraft"
       }
       "when european vessel identification number" in {
         val result = EuropeanVesselIdNumber.arg
@@ -103,7 +103,7 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       }
       "when unknown" in {
         val result = Unknown.arg
-        result mustBe "identification number"
+        result mustBe "Unknown - this can only be used during the transitional period"
       }
     }
 

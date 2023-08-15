@@ -23,7 +23,7 @@ sealed trait Identification extends Radioable[Identification] {
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
   val code: String
 
-  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
+  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this")
 }
 
 object Identification extends EnumerableType[Identification] {
