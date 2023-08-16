@@ -19,6 +19,7 @@ package forms
 import forms.Constants.maxIncidentTextLength
 import forms.behaviours.StringFieldBehaviours
 import forms.incident.IncidentTextFormProvider
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
@@ -26,6 +27,7 @@ class IncidentTextFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix       = Gen.alphaNumStr.sample.value
   private val requiredKey  = s"$prefix.error.required"
+  private val invalidKey   = s"$prefix.error.invalidCharacters"
   private val maxLengthKey = s"$prefix.error.maxLength"
   private val maxLength    = maxIncidentTextLength
 
@@ -45,6 +47,13 @@ class IncidentTextFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form = form,
+      fieldName = fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
+      length = maxLength
     )
 
     "must not bind valid strings over max length" in {
