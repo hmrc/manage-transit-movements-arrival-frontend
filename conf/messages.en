@@ -115,14 +115,6 @@ identification.isSimplifiedProcedure.error.required = Select the type of procedu
 
 identification.authorisation.caption = Arrivals - Authorisations
 
-identification.authorisation.addAnotherAuthorisation.singular.title = You have added {0} authorisation
-identification.authorisation.addAnotherAuthorisation.singular.heading = You have added {0} authorisation
-identification.authorisation.addAnotherAuthorisation.plural.title = You have added {0} authorisations
-identification.authorisation.addAnotherAuthorisation.plural.heading = You have added {0} authorisations
-identification.authorisation.addAnotherAuthorisation.error.required = Select yes if you need to add another authorisation
-identification.authorisation.addAnotherAuthorisation.label = Do you need to add another authorisation?
-identification.authorisation.addAnotherAuthorisation.maxLimit.label = You cannot add any more authorisations. To add another authorisation, you need to remove one first.
-
 identification.authorisation.label = Authorisation {0}
 identification.authorisation.change.hidden = authorisation {0}
 
@@ -145,14 +137,6 @@ identification.authorisation.authorisationReferenceNumber.change.hidden = author
 identification.authorisation.authorisationReferenceNumber.error.required = Enter the authorisation reference number
 identification.authorisation.authorisationReferenceNumber.error.invalid = The authorisation reference number must only include letters a to z and numbers 0 to 9
 identification.authorisation.authorisationReferenceNumber.error.length = The authorisation reference number must be 35 characters or less
-
-identification.authorisation.checkAuthorisationAnswers.title = Check your answers
-identification.authorisation.checkAuthorisationAnswers.heading = Check your answers
-identification.authorisation.checkAuthorisationAnswers.subHeading = Authorisations
-
-identification.authorisation.confirmRemoveAuthorisation.title = Are you sure you want to remove the {0} authorisation {1}?
-identification.authorisation.confirmRemoveAuthorisation.heading = Are you sure you want to remove the {0} authorisation {1}?
-identification.authorisation.confirmRemoveAuthorisation.error.required = Select yes if you sure you want to remove the {0} authorisation {1}
 
 identification.identificationNumber.title = What is the consignee’s EORI number or Trader Identification Number (TIN)?
 identification.identificationNumber.heading = What is the consignee’s EORI number or Trader Identification Number (TIN)?
@@ -500,6 +484,8 @@ incident.equipment.addAnotherTransportEquipment.plural.heading = You have added 
 incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any other transport equipment
 incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
 incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
+incident.equipment.addAnotherTransportEquipment.edit.hidden = Change transport equipment {0}
+incident.equipment.addAnotherTransportEquipment.delete.hidden = Remove transport equipment {0}
 
 incident.equipment.remove.title = Are you sure you want to remove transport equipment {0}?
 incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
@@ -559,6 +545,8 @@ incident.equipment.itemNumber.addAnotherItemNumberYesNo.plural.heading = You hav
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.error.required = Select yes if you want to add another goods item number
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.label = Do you want to add another goods item number?
 incident.equipment.itemNumber.addAnotherItemNumberYesNo.maxLimit.label = You cannot add any more goods item numbers. To add another, you need to remove one first.
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.edit.hidden = Change goods item number {0}
+incident.equipment.itemNumber.addAnotherItemNumberYesNo.delete.hidden = Remove goods item number {0}
 
 incident.equipment.itemNumber.remove.title = Are you sure you want to remove goods item number {0}?
 incident.equipment.itemNumber.remove.heading = Are you sure you want to remove goods item number {0}?
@@ -620,6 +608,8 @@ incident.addAnotherIncident.error.required = Select yes if you want to add anoth
 incident.addAnotherIncident.label = Do you want to add another incident?
 incident.addAnotherIncident.change.hidden = incident {0}
 incident.addAnotherIncident.maxLimit.label = You cannot add any more incidents. To add another, you need to remove one first.
+incident.addAnotherIncident.edit.hidden = Change incident {0}
+incident.addAnotherIncident.delete.hidden = Remove incident {0}
 
 incident.remove.title = Are you sure you want to remove incident {0}?
 incident.remove.heading = Are you sure you want to remove incident {0}?
