@@ -17,7 +17,6 @@
 package controllers.incident
 
 import com.google.inject.Inject
-import config.PhaseConfig
 import controllers.actions.Actions
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.IncidentsNavigatorProvider
@@ -34,8 +33,7 @@ class CheckIncidentAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckIncidentAnswersView,
   viewModelProvider: IncidentAnswersViewModelProvider
-)(implicit phaseConfig: PhaseConfig)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {

@@ -78,7 +78,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
       val userAnswers = emptyUserAnswers
         .setValue(IncidentCountryPage(incidentIndex), arbitrary[Country].sample.value)
 
-      when(mockViewModelProvider.apply(any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any())(any()))
         .thenReturn(viewModelWithItemsNotMaxedOut)
 
       setExistingUserAnswers(userAnswers)
@@ -90,13 +90,13 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any())(any(), any())
+      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any())(any())
       userAnswersCaptor.getValue.get(IncidentSection(incidentIndex)) mustNot be(defined)
     }
 
     "redirect to add incident yes/no" - {
       "when 0 incidents" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithNoItems)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -115,7 +115,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -133,7 +133,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -154,7 +154,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to incident country page at next index" in {
-          when(mockViewModelProvider.apply(any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(viewModelWithItemsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -175,7 +175,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(viewModelWithItemsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -194,7 +194,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -212,7 +212,7 @@ class AddAnotherIncidentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)

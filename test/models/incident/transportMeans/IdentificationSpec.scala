@@ -59,50 +59,50 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       }
     }
 
-    "must have an associated arg value" - {
+    "must convert to string" - {
 
       "when sea going vessel" in {
-        val result = SeaGoingVessel.arg
+        val result = SeaGoingVessel.asString
         result mustBe "Name of a sea-going vessel"
       }
       "when IATA flight number" in {
-        val result = IataFlightNumber.arg
+        val result = IataFlightNumber.asString
         result mustBe "IATA flight number"
       }
       "when inland waterways vehicle" in {
-        val result = InlandWaterwaysVehicle.arg
+        val result = InlandWaterwaysVehicle.asString
         result mustBe "Name of an inland waterways vehicle"
       }
       "when IMO ship identification number" in {
-        val result = ImoShipIdNumber.arg
+        val result = ImoShipIdNumber.asString
         result mustBe "IMO ship identification number"
       }
       "when wagon number" in {
-        val result = WagonNumber.arg
+        val result = WagonNumber.asString
         result mustBe "Wagon number"
       }
       "when train number" in {
-        val result = TrainNumber.arg
+        val result = TrainNumber.asString
         result mustBe "Train number"
       }
       "when reg number of road vehicle" in {
-        val result = RegNumberRoadVehicle.arg
+        val result = RegNumberRoadVehicle.asString
         result mustBe "Registration number of a road vehicle"
       }
       "when reg number of road trailer" in {
-        val result = RegNumberRoadTrailer.arg
+        val result = RegNumberRoadTrailer.asString
         result mustBe "Registration number of a road trailer"
       }
       "when reg number of aircraft" in {
-        val result = RegNumberAircraft.arg
+        val result = RegNumberAircraft.asString
         result mustBe "Registration number of an aircraft"
       }
       "when european vessel identification number" in {
-        val result = EuropeanVesselIdNumber.arg
+        val result = EuropeanVesselIdNumber.asString
         result mustBe "European vessel identification number (ENI code)"
       }
       "when unknown" in {
-        val result = Unknown.arg
+        val result = Unknown.asString
         result mustBe "Unknown - this can only be used during the transitional period"
       }
     }
