@@ -47,7 +47,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithInsetText(identificationType.arg.capitalize)
+  behave like pageWithInsetText(identificationType.arg)
 
   behave like pageWithHint(
     "This can be up to 35 characters long and include both letters and numbers."

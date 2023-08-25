@@ -16,7 +16,7 @@
 
 package controllers.incident.equipment
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.journeyDomain.incident.equipment.EquipmentDomain
@@ -42,7 +42,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherEquipmentViewModelProvider,
   view: AddAnotherEquipmentView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -77,8 +77,7 @@ class AddAnotherEquipmentController @Inject() (
               Redirect(
                 UserAnswersNavigator
                   .nextPage[EquipmentDomain](request.userAnswers, mode)(
-                    EquipmentDomain.userAnswersReader(incidentIndex, Index(viewModel.numberOfTransportEquipments)),
-                    phaseConfig: PhaseConfig
+                    EquipmentDomain.userAnswersReader(incidentIndex, Index(viewModel.numberOfTransportEquipments))
                   )
               )
             case false =>

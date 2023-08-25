@@ -33,7 +33,7 @@ trait ArrivalNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class ArrivalNavigator(override val mode: Mode)(implicit override val phaseConfig: PhaseConfig) extends UserAnswersNavigator {
+class ArrivalNavigator(override val mode: Mode)(implicit phaseConfig: PhaseConfig) extends UserAnswersNavigator {
 
   override type T = ArrivalDomain
 

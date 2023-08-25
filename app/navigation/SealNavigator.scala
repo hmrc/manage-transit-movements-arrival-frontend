@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.PhaseConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,7 +23,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SealNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends SealNavigatorProvider {
+class SealNavigatorProviderImpl @Inject() extends SealNavigatorProvider {
 
   override def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersNavigator =
     mode match {
@@ -37,8 +36,7 @@ trait SealNavigatorProvider {
   def apply(mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersNavigator
 }
 
-class SealNavigator(override val mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit override val phaseConfig: PhaseConfig)
-    extends UserAnswersNavigator {
+class SealNavigator(override val mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) extends UserAnswersNavigator {
 
   override type T = SealDomain
 
