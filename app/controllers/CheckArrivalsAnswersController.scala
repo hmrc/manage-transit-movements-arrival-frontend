@@ -17,7 +17,6 @@
 package controllers
 
 import com.google.inject.Inject
-import config.PhaseConfig
 import connectors.SubmissionConnector
 import controllers.actions.Actions
 import logging.Logging
@@ -38,7 +37,7 @@ class CheckArrivalsAnswersController @Inject() (
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
   submissionConnector: SubmissionConnector
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with Logging
     with I18nSupport {

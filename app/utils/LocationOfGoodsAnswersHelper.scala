@@ -16,7 +16,6 @@
 
 package utils
 
-import config.PhaseConfig
 import models.locationOfGoods.TypeOfLocation
 import models.reference.{Country, CustomsOffice, UnLocode}
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
@@ -27,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class LocationOfGoodsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, phaseConfig: PhaseConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[TypeOfLocation](
@@ -128,6 +127,6 @@ object LocationOfGoodsAnswersHelper {
   def apply(
     userAnswers: UserAnswers,
     mode: Mode
-  )(implicit messages: Messages, phaseConfig: PhaseConfig): LocationOfGoodsAnswersHelper =
+  )(implicit messages: Messages): LocationOfGoodsAnswersHelper =
     new LocationOfGoodsAnswersHelper(userAnswers, mode)
 }

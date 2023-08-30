@@ -16,7 +16,7 @@
 
 package controllers.incident.equipment.itemNumber
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
@@ -41,7 +41,7 @@ class AddAnotherItemNumberYesNoController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: AddAnotherItemNumberViewModelProvider,
   view: AddAnotherItemNumberYesNoView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

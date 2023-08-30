@@ -17,13 +17,14 @@
 @import controllers.incident.transportMeans.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import views.html.components.{Button, ErrorSummary, InputText, InsetText}
 @import models.incident.transportMeans.Identification
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputText: InputText,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -31,7 +32,7 @@
 @(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, identification: Identification)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.transportMeans.identificationNumber.title", identification.arg),
+    title = messages("incident.transportMeans.identificationNumber.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -42,9 +43,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("incident.transportMeans.identificationNumber.heading", identification.arg),
-                caption = Some(messages("incident.caption"))
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("incident.transportMeans.identificationNumber.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = insetText(identification.asString)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages("incident.transportMeans.identificationNumber.hint"))

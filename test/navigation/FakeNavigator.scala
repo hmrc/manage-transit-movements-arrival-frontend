@@ -28,31 +28,29 @@ class FakeArrivalNavigator(desiredRoute: Call, mode: Mode)(implicit phaseConfig:
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeIncidentsNavigator(desiredRoute: Call, mode: Mode)(implicit phaseConfig: PhaseConfig) extends IncidentsNavigator(mode) {
+class FakeIncidentsNavigator(desiredRoute: Call, mode: Mode) extends IncidentsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit phaseConfig: PhaseConfig) extends IncidentNavigator(mode, index) {
+class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode) extends IncidentNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeEquipmentsNavigator(desiredRoute: Call, incidentIndex: Index, mode: Mode)(implicit phaseConfig: PhaseConfig)
-    extends EquipmentsNavigator(mode, incidentIndex) {
+class FakeEquipmentsNavigator(desiredRoute: Call, incidentIndex: Index, mode: Mode) extends EquipmentsNavigator(mode, incidentIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeEquipmentNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, mode: Mode)(implicit phaseConfig: PhaseConfig)
+class FakeEquipmentNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, mode: Mode)
     extends EquipmentNavigator(mode, incidentIndex, equipmentIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeSealNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, mode: Mode)(implicit phaseConfig: PhaseConfig)
+class FakeSealNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, mode: Mode)
     extends SealNavigator(mode, incidentIndex, equipmentIndex, sealIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeItemNumberNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index, mode: Mode)(implicit
-  phaseConfig: PhaseConfig
-) extends ItemNumberNavigator(mode, incidentIndex, equipmentIndex, itemNumberIndex) {
+class FakeItemNumberNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index, mode: Mode)
+    extends ItemNumberNavigator(mode, incidentIndex, equipmentIndex, itemNumberIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

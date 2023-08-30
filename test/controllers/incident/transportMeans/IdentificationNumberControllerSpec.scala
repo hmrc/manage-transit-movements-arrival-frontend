@@ -40,7 +40,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val identification: Identification = arbitrary[Identification].sample.value
 
-  private val form                           = formProvider("incident.transportMeans.identificationNumber", identification.arg)
+  private val form                           = formProvider("incident.transportMeans.identificationNumber", identification.asString)
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(mrn, mode, incidentIndex).url
 

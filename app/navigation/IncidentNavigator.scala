@@ -37,7 +37,7 @@ trait IncidentNavigatorProvider {
   def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class IncidentNavigator(override val mode: Mode, index: Index)(implicit override val phaseConfig: PhaseConfig) extends UserAnswersNavigator {
+class IncidentNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
 
   override type T = IncidentDomain
 

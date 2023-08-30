@@ -17,13 +17,10 @@
 package models.incident.transportMeans
 
 import models.{EnumerableType, Radioable, WithName}
-import play.api.i18n.Messages
 
 sealed trait Identification extends Radioable[Identification] {
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
   val code: String
-
-  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
 }
 
 object Identification extends EnumerableType[Identification] {

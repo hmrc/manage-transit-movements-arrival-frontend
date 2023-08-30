@@ -17,7 +17,6 @@
 package controllers.incident.equipment
 
 import com.google.inject.Inject
-import config.PhaseConfig
 import controllers.actions.Actions
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.EquipmentsNavigatorProvider
@@ -34,8 +33,7 @@ class CheckEquipmentAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckEquipmentAnswersView,
   viewModelProvider: EquipmentAnswersViewModelProvider
-)(implicit phaseConfig: PhaseConfig)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {

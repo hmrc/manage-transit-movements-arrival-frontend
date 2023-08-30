@@ -16,7 +16,6 @@
 
 package viewModels.incident
 
-import config.PhaseConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.incident.IncidentAnswersHelper
@@ -31,7 +30,7 @@ object IncidentAnswersViewModel {
   class IncidentAnswersViewModelProvider @Inject() () {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, incidentIndex: Index, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): IncidentAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, incidentIndex: Index, mode: Mode)(implicit messages: Messages): IncidentAnswersViewModel = {
 
       val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
 

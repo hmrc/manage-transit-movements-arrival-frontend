@@ -50,7 +50,7 @@ class CheckIncidentAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val sampleSections = arbitrary[List[Section]].sample.value
 
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(IncidentAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)

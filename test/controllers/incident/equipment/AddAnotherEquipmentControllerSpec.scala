@@ -80,7 +80,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       val userAnswers = emptyUserAnswers
         .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(viewModelWithItemsNotMaxedOut)
 
       setExistingUserAnswers(userAnswers)
@@ -92,13 +92,13 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       status(result) mustEqual OK
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any(), any())(any(), any())
+      verify(mockViewModelProvider).apply(userAnswersCaptor.capture(), any(), any())(any())
       userAnswersCaptor.getValue.get(EquipmentSection(incidentIndex, equipmentIndex)) mustNot be(defined)
     }
 
     "must redirect to add seal yes/no page" - {
       "when 0 seals" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithNoItems)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -117,7 +117,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -135,7 +135,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -161,7 +161,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
               incidentCode =>
                 val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 
-                when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
                   .thenReturn(viewModelWithItemsNotMaxedOut)
 
                 val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
@@ -189,7 +189,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
 
-                when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
                   .thenReturn(viewModelWithItemsNotMaxedOut)
 
                 val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
@@ -217,7 +217,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
 
-                when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+                when(mockViewModelProvider.apply(any(), any(), any())(any()))
                   .thenReturn(viewModelWithItemsNotMaxedOut)
 
                 val nextIndex = Index(viewModelWithItemsNotMaxedOut.numberOfTransportEquipments)
@@ -240,7 +240,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(viewModelWithItemsNotMaxedOut)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -259,7 +259,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithItemsMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -277,7 +277,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithItemsNotMaxedOut)
 
         setExistingUserAnswers(emptyUserAnswers)
