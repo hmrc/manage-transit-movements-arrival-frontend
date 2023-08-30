@@ -26,6 +26,9 @@ import views.html.incident.equipment.itemNumber.AddAnotherItemNumberYesNoView
 
 class AddAnotherItemNumberYesNoViewSpec extends ListWithActionsViewBehaviours {
 
+  override val hiddenChangeText: String => String = x => s"Change goods item number $x"
+  override val hiddenRemoveText: String => String = x => s"Remove goods item number $x"
+
   override def maxNumber: Int = frontendAppConfig.maxNumberOfItems
 
   private def formProvider(viewModel: AddAnotherItemNumberViewModel) =
