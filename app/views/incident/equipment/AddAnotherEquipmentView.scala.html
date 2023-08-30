@@ -46,7 +46,7 @@
         caption = Some(messages("incident.caption"))
     )
 
-    @listWithActions(viewModel.listItems, "incident.equipment.addAnotherTransportEquipment")
+    @listWithActions(viewModel.listItems)
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 

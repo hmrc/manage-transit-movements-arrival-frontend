@@ -28,9 +28,8 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def maxNumber: Int
 
-  val entity: String
-  private val hiddenChangeText: String => String = x => s"Change $entity $x"
-  private val hiddenRemoveText: String => String = x => s"Remove $entity $x"
+  val hiddenChangeText: String => String = x => s"Change $x"
+  val hiddenRemoveText: String => String = x => s"Remove $x"
 
   private val listItem = arbitrary[ListItem].sample.value
 

@@ -26,8 +26,6 @@ import views.html.incident.equipment.AddAnotherEquipmentView
 
 class AddAnotherEquipmentViewSpec extends ListWithActionsViewBehaviours {
 
-  override val entity: String = "transport equipment"
-
   override def maxNumber: Int = frontendAppConfig.maxTransportEquipments
 
   private def formProvider(viewModel: AddAnotherEquipmentViewModel) =

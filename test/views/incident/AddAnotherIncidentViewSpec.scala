@@ -26,8 +26,6 @@ import views.html.incident.AddAnotherIncidentView
 
 class AddAnotherIncidentViewSpec extends ListWithActionsViewBehaviours {
 
-  override val entity: String = "incident"
-
   override def maxNumber: Int = frontendAppConfig.maxIncidents
 
   private def formProvider(viewModel: AddAnotherIncidentViewModel) =

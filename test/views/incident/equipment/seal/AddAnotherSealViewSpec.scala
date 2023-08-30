@@ -26,7 +26,8 @@ import views.html.incident.equipment.seal.AddAnotherSealView
 
 class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
-  override val entity: String = "seal"
+  override val hiddenChangeText: String => String = x => s"Change seal $x"
+  override val hiddenRemoveText: String => String = x => s"Remove seal $x"
 
   override def maxNumber: Int = frontendAppConfig.maxSeals
 

@@ -484,8 +484,6 @@ incident.equipment.addAnotherTransportEquipment.plural.heading = You have added 
 incident.equipment.addAnotherTransportEquipment.error.required = Select yes if you want to add any other transport equipment
 incident.equipment.addAnotherTransportEquipment.label = Do you want to add any other transport equipment?
 incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add any more transport equipment. To add more, you need to remove one first.
-incident.equipment.addAnotherTransportEquipment.edit.hidden = Change transport equipment {0}
-incident.equipment.addAnotherTransportEquipment.delete.hidden = Remove transport equipment {0}
 
 incident.equipment.remove.title = Are you sure you want to remove transport equipment {0}?
 incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
@@ -608,8 +606,6 @@ incident.addAnotherIncident.error.required = Select yes if you want to add anoth
 incident.addAnotherIncident.label = Do you want to add another incident?
 incident.addAnotherIncident.change.hidden = incident {0}
 incident.addAnotherIncident.maxLimit.label = You cannot add any more incidents. To add another, you need to remove one first.
-incident.addAnotherIncident.edit.hidden = Change incident {0}
-incident.addAnotherIncident.delete.hidden = Remove incident {0}
 
 incident.remove.title = Are you sure you want to remove incident {0}?
 incident.remove.heading = Are you sure you want to remove incident {0}?
