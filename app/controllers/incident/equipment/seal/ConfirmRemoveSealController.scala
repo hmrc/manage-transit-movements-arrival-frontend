@@ -19,11 +19,13 @@ package controllers.incident.equipment.seal
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.seal.ConfirmRemoveSealView
@@ -43,22 +45,26 @@ class ConfirmRemoveSealController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+
+  private def form(implicit request: Request): Form[Boolean] =
+    formProvider("incident.equipment.seal.remove", request.arg)
+
+  private def addAnother(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Call =
+    routes.AddAnotherSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)
+
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireIndex(mrn, SealSection(incidentIndex, equipmentIndex, sealIndex), addAnother(mrn, mode, incidentIndex, equipmentIndex))
     .andThen(getMandatoryPage(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex))) {
       implicit request =>
-        val form = formProvider("incident.equipment.seal.remove", request.arg)
-
         Ok(view(form, mrn, mode, incidentIndex, equipmentIndex, sealIndex, request.arg))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireIndex(mrn, SealSection(incidentIndex, equipmentIndex, sealIndex), addAnother(mrn, mode, incidentIndex, equipmentIndex))
     .andThen(getMandatoryPage(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)))
     .async {
       implicit request =>
-        val form = formProvider("incident.equipment.seal.remove", request.arg)
-
         form
           .bindFromRequest()
           .fold(
@@ -68,9 +74,9 @@ class ConfirmRemoveSealController @Inject() (
                 SealSection(incidentIndex, equipmentIndex, sealIndex)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(routes.AddAnotherSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
+                  .navigateTo(addAnother(mrn, mode, incidentIndex, equipmentIndex))
               case false =>
-                Future.successful(Redirect(routes.AddAnotherSealController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)))
+                Future.successful(Redirect(addAnother(mrn, mode, incidentIndex, equipmentIndex)))
             }
           )
     }

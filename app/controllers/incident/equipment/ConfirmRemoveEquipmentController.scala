@@ -21,8 +21,9 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.sections.incident.EquipmentSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.ConfirmRemoveEquipmentView
@@ -41,21 +42,23 @@ class ConfirmRemoveEquipmentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn) {
-      implicit request =>
-        val form = formProvider("incident.equipment.remove", equipmentIndex.display)
+  private def addAnother(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Call =
+    routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex)
 
-        Ok(view(form, mrn, mode, incidentIndex, equipmentIndex))
+  private def form(equipmentIndex: Index): Form[Boolean] =
+    formProvider("incident.equipment.remove", equipmentIndex.display)
+
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex)) {
+      implicit request =>
+        Ok(view(form(equipmentIndex), mrn, mode, incidentIndex, equipmentIndex))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex))
     .async {
       implicit request =>
-        val form = formProvider("incident.equipment.remove", equipmentIndex.display)
-
-        form
+        form(equipmentIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex))),
@@ -64,9 +67,9 @@ class ConfirmRemoveEquipmentController @Inject() (
                 EquipmentSection(incidentIndex, equipmentIndex)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex))
+                  .navigateTo(addAnother(mrn, mode, incidentIndex))
               case false =>
-                Future.successful(Redirect(routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex)))
+                Future.successful(Redirect(addAnother(mrn, mode, incidentIndex)))
             }
           )
     }

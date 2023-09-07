@@ -21,8 +21,9 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.sections.incident.IncidentSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.ConfirmRemoveIncidentView
@@ -41,28 +42,35 @@ class ConfirmRemoveIncidentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(index: Index) = formProvider("incident.remove", index.display)
+  private def addAnother(mrn: MovementReferenceNumber, mode: Mode): Call =
+    routes.AddAnotherIncidentController.onPageLoad(mrn, mode)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
-    implicit request =>
-      Ok(view(form(incidentIndex), mrn, mode, incidentIndex))
-  }
+  private def form(index: Index): Form[Boolean] =
+    formProvider("incident.remove", index.display)
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      form(incidentIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex))),
-          {
-            case true =>
-              IncidentSection(incidentIndex)
-                .removeFromUserAnswers()
-                .writeToSession()
-                .navigateTo(routes.AddAnotherIncidentController.onPageLoad(mrn, mode))
-            case false =>
-              Future.successful(Redirect(routes.AddAnotherIncidentController.onPageLoad(mrn, mode)))
-          }
-        )
-  }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(mrn, IncidentSection(incidentIndex), addAnother(mrn, mode)) {
+      implicit request =>
+        Ok(view(form(incidentIndex), mrn, mode, incidentIndex))
+    }
+
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(mrn, IncidentSection(incidentIndex), addAnother(mrn, mode))
+    .async {
+      implicit request =>
+        form(incidentIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex))),
+            {
+              case true =>
+                IncidentSection(incidentIndex)
+                  .removeFromUserAnswers()
+                  .writeToSession()
+                  .navigateTo(addAnother(mrn, mode))
+              case false =>
+                Future.successful(Redirect(addAnother(mrn, mode)))
+            }
+          )
+    }
 }

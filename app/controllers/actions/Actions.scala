@@ -18,14 +18,17 @@ package controllers.actions
 
 import models.MovementReferenceNumber
 import models.requests.{DataRequest, OptionalDataRequest}
-import play.api.mvc.{ActionBuilder, AnyContent}
+import pages.sections.Section
+import play.api.libs.json.JsObject
+import play.api.mvc.{ActionBuilder, AnyContent, Call}
 
 import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction
+  dataRequiredAction: DataRequiredAction,
+  indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(mrn: MovementReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -33,4 +36,7 @@ class Actions @Inject() (
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction
+
+  def requireIndex(mrn: MovementReferenceNumber, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
+    requireData(mrn) andThen indexRequiredAction(section, addAnother)
 }

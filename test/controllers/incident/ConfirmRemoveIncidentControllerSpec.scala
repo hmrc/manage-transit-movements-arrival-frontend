@@ -22,14 +22,12 @@ import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.verify
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.incident.IncidentSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.ConfirmRemoveIncidentView
-
-import scala.concurrent.Future
 
 class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -41,27 +39,26 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
   "ConfirmRemoveIncident Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, confirmRemoveIncidentRoute)
+          val result  = route(app, request).value
 
-      val request = FakeRequest(GET, confirmRemoveIncidentRoute)
-      val result  = route(app, request).value
+          val view = injector.instanceOf[ConfirmRemoveIncidentView]
 
-      val view = injector.instanceOf[ConfirmRemoveIncidentView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, mrn, mode, incidentIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, mrn, mode, incidentIndex)(request, messages).toString
+      }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
       forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
-
         userAnswers =>
-          reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          beforeEach()
 
           setExistingUserAnswers(userAnswers)
 
@@ -82,47 +79,76 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request   = FakeRequest(POST, confirmRemoveIncidentRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
 
-      val request   = FakeRequest(POST, confirmRemoveIncidentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[ConfirmRemoveIncidentView]
 
-      val view = injector.instanceOf[ConfirmRemoveIncidentView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, mrn, mode, incidentIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, mrn, mode, incidentIndex)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
+    "must redirect for a GET" - {
+      "no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setNoExistingUserAnswers()
+        val request = FakeRequest(GET, confirmRemoveIncidentRoute)
 
-      val request = FakeRequest(GET, confirmRemoveIncidentRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      "no incident is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, confirmRemoveIncidentRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.AddAnotherIncidentController.onPageLoad(mrn, mode).url
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
+    "must redirect for a POST" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setNoExistingUserAnswers()
+        val request = FakeRequest(POST, confirmRemoveIncidentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val request = FakeRequest(POST, confirmRemoveIncidentRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      "when no incident is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, confirmRemoveIncidentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.AddAnotherIncidentController.onPageLoad(mrn, mode).url
+      }
     }
   }
 }
