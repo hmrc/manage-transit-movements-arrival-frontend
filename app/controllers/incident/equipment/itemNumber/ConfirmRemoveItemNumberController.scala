@@ -19,11 +19,13 @@ package controllers.incident.equipment.itemNumber
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, Mode, MovementReferenceNumber}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.sections.incident.ItemSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.equipment.itemNumber.ConfirmRemoveItemNumberView
@@ -43,20 +45,26 @@ class ConfirmRemoveItemNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+
+  private def addAnother(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Call =
+    routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)
+
+  private def form(implicit request: Request): Form[Boolean] =
+    formProvider("incident.equipment.itemNumber.remove", request.arg)
+
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireIndex(mrn, ItemSection(incidentIndex, equipmentIndex, itemNumberIndex), addAnother(mrn, mode, incidentIndex, equipmentIndex))
     .andThen(getMandatoryPage(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex))) {
       implicit request =>
-        val form = formProvider("incident.equipment.itemNumber.remove", request.arg)
         Ok(view(form, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex, request.arg))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireIndex(mrn, ItemSection(incidentIndex, equipmentIndex, itemNumberIndex), addAnother(mrn, mode, incidentIndex, equipmentIndex))
     .andThen(getMandatoryPage(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)))
     .async {
       implicit request =>
-        val form = formProvider("incident.equipment.itemNumber.remove", request.arg)
         form
           .bindFromRequest()
           .fold(
@@ -66,9 +74,9 @@ class ConfirmRemoveItemNumberController @Inject() (
                 ItemSection(incidentIndex, equipmentIndex, itemNumberIndex)
                   .removeFromUserAnswers()
                   .writeToSession()
-                  .navigateTo(routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex))
+                  .navigateTo(addAnother(mrn, mode, incidentIndex, equipmentIndex))
               case false =>
-                Future.successful(Redirect(routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)))
+                Future.successful(Redirect(addAnother(mrn, mode, incidentIndex, equipmentIndex)))
             }
           )
     }

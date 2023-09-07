@@ -22,13 +22,11 @@ import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, verify, when}
+import org.mockito.Mockito.{never, verify}
 import pages.sections.incident.EquipmentSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.incident.equipment.ConfirmRemoveEquipmentView
-
-import scala.concurrent.Future
 
 class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -42,25 +40,26 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
   "ConfirmRemoveSeal Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, confirmRemoveRoute)
+          val result  = route(app, request).value
 
-      val request = FakeRequest(GET, confirmRemoveRoute)
-      val result  = route(app, request).value
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
+          val view = injector.instanceOf[ConfirmRemoveEquipmentView]
 
-      val view = injector.instanceOf[ConfirmRemoveEquipmentView]
-
-      contentAsString(result) mustEqual
-        view(form, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+      }
     }
 
     "must redirect to the next page when valid data is submitted and call to remove a transport equipment" in {
       forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
         userAnswers =>
-          reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          beforeEach()
 
           setExistingUserAnswers(userAnswers)
 
@@ -81,63 +80,96 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
     }
 
     "must redirect to the next page when valid data is submitted and call to remove a transport equipment is false" in {
+      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      val userAnswers = emptyUserAnswers
+          val request = FakeRequest(POST, confirmRemoveRoute)
+            .withFormUrlEncodedBody(("value", "false"))
 
-      setExistingUserAnswers(userAnswers)
+          val result = route(app, request).value
 
-      val request = FakeRequest(POST, confirmRemoveRoute)
-        .withFormUrlEncodedBody(("value", "false"))
+          status(result) mustEqual SEE_OTHER
 
-      val result = route(app, request).value
+          redirectLocation(result).value mustEqual
+            routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
 
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url
-
-      verify(mockSessionRepository, never()).set(any())(any())
+          verify(mockSessionRepository, never()).set(any())(any())
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request   = FakeRequest(POST, confirmRemoveRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
+          val result    = route(app, request).value
 
-      val request   = FakeRequest(POST, confirmRemoveRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
-      val result    = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[ConfirmRemoveEquipmentView]
 
-      val view = injector.instanceOf[ConfirmRemoveEquipmentView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect for a GET" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, confirmRemoveRoute)
+        val request = FakeRequest(GET, confirmRemoveRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
+
+      "when no equipment is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, confirmRemoveRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex).url
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect for a POST" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, confirmRemoveRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, confirmRemoveRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
+
+      "when no equipment is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, confirmRemoveRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex).url
+      }
     }
   }
 }

@@ -61,20 +61,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
         view(form, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex, itemNumber)(request, messages).toString
     }
 
-    "must return error page when user tries to remove a item number that does not exist" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, confirmRemoveItemNumberRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to the next page when valid data is submitted and call to remove item" in {
+    "must redirect to the next page and remove item number when yes is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -99,7 +86,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
       userAnswersCaptor.getValue.get(ItemSection(incidentIndex, equipmentIndex, itemNumberIndex)) mustNot be(defined)
     }
 
-    "must redirect to the next page when valid data is submitted and call to remove a seal is false" in {
+    "must redirect to the next page when no is submitted" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), itemNumber)
@@ -138,31 +125,60 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
         view(boundForm, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex, itemNumber)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
+    "must redirect for a GET" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setNoExistingUserAnswers()
+        val request = FakeRequest(GET, confirmRemoveItemNumberRoute)
 
-      val request = FakeRequest(GET, confirmRemoveItemNumberRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      "when no item number is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, confirmRemoveItemNumberRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
+    "must redirect for a POST" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setNoExistingUserAnswers()
+        val request = FakeRequest(POST, confirmRemoveItemNumberRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val request = FakeRequest(POST, confirmRemoveItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      }
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      "when no item number is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, confirmRemoveItemNumberRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
+      }
     }
   }
 }
