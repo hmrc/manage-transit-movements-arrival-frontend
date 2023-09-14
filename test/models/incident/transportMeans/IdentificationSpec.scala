@@ -63,47 +63,47 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
 
       "when sea going vessel" in {
         val result = SeaGoingVessel.toString
-        result mustBe "Name of a sea-going vessel"
+        result mustBe "seaGoingVessel"
       }
       "when IATA flight number" in {
         val result = IataFlightNumber.toString
-        result mustBe "IATA flight number"
+        result mustBe "iataFlightNumber"
       }
       "when inland waterways vehicle" in {
         val result = InlandWaterwaysVehicle.toString
-        result mustBe "Name of an inland waterways vehicle"
+        result mustBe "inlandWaterwaysVehicle"
       }
       "when IMO ship identification number" in {
         val result = ImoShipIdNumber.toString
-        result mustBe "IMO ship identification number"
+        result mustBe "imoShipIdNumber"
       }
       "when wagon number" in {
         val result = WagonNumber.toString
-        result mustBe "Wagon number"
+        result mustBe "wagonNumber"
       }
       "when train number" in {
         val result = TrainNumber.toString
-        result mustBe "Train number"
+        result mustBe "trainNumber"
       }
       "when reg number of road vehicle" in {
         val result = RegNumberRoadVehicle.toString
-        result mustBe "Registration number of a road vehicle"
+        result mustBe "regNumberRoadVehicle"
       }
       "when reg number of road trailer" in {
         val result = RegNumberRoadTrailer.toString
-        result mustBe "Registration number of a road trailer"
+        result mustBe "regNumberRoadTrailer"
       }
       "when reg number of aircraft" in {
         val result = RegNumberAircraft.toString
-        result mustBe "Registration number of an aircraft"
+        result mustBe "regNumberAircraft"
       }
       "when european vessel identification number" in {
         val result = EuropeanVesselIdNumber.toString
-        result mustBe "European vessel identification number (ENI code)"
+        result mustBe "europeanVesselIdNumber"
       }
       "when unknown" in {
         val result = Unknown.toString
-        result mustBe "Unknown - this can only be used during the transitional period"
+        result mustBe "unknown"
       }
     }
 

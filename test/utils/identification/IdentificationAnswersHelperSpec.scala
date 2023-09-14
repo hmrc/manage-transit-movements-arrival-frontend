@@ -146,7 +146,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               result.key.value mustBe "Procedure type"
               val key = s"identification.isSimplifiedProcedure.$procedureType"
               messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(s"$procedureType")
+              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

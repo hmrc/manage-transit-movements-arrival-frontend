@@ -85,7 +85,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> incidentCodesList.head.toString))
+      val filledForm = form.bind(Map("value" -> ic1.toString))
 
       val view = injector.instanceOf[IncidentCodeView]
 

@@ -183,7 +183,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         "and container indicator is true" - {
           "must redirect to container id at next index" in {
-            forAll(Gen.oneOf(IncidentCode("4", "test4"), IncidentCode("6", "test6"))) {
+            forAll(Gen.oneOf(IncidentCode("3", "test3"), IncidentCode("6", "test6"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
