@@ -16,6 +16,8 @@
 
 package forms
 
+import models.incident.IncidentCode
+
 object Constants {
   lazy val tirCarnetReferenceMaxLength: Int = 12
   lazy val maxEoriNumberLength: Int         = 17
@@ -27,4 +29,13 @@ object Constants {
   lazy val itemNumberLength: Int            = 4
   lazy val itemNumberMax: Int               = 1999
   lazy val identificationNumberLength: Int  = 35
+
+  val incidentCodesList: Seq[IncidentCode] = Seq(
+    IncidentCode("1", "test1"),
+    IncidentCode("2", "test2"),
+    IncidentCode("3", "test3"),
+    IncidentCode("4", "test4"),
+    IncidentCode("5", "test5"),
+    IncidentCode("6", "test6")
+  )
 }

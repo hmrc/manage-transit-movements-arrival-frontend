@@ -157,7 +157,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       "when yes submitted" - {
         "and container indicator is undefined" - {
           "must redirect to add container id yes/no at next index" in {
-            forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
+            forAll(Gen.oneOf(IncidentCode("2", "test2"), IncidentCode("4", "test4"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 
@@ -183,7 +183,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         "and container indicator is true" - {
           "must redirect to container id at next index" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode("4", "test4"), IncidentCode("6", "test6"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -211,7 +211,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         "and container indicator is false" - {
           "must redirect to add container id yes/no at next index" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode("3", "test3"), IncidentCode("6", "test6"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)

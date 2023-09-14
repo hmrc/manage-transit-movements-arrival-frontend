@@ -79,7 +79,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
-          .setValue(IncidentCodePage(index), IncidentCode.SealsBrokenOrTampered)
+          .setValue(IncidentCodePage(index), IncidentCode("2", "test"))
           .setValue(ContainerIdentificationNumberYesNoPage(index, equipmentIndex), true)
           .setValue(ContainerIdentificationNumberPage(index, equipmentIndex), Gen.alphaNumStr.sample.value)
           .setValue(AddSealsYesNoPage(index, equipmentIndex), true)
@@ -108,7 +108,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
-          .setValue(IncidentCodePage(Index(0)), IncidentCode.SealsBrokenOrTampered)
+          .setValue(IncidentCodePage(Index(0)), IncidentCode("2", "test"))
           .setValue(ContainerIdentificationNumberYesNoPage(index, Index(0)), true)
           .setValue(ContainerIdentificationNumberPage(index, Index(0)), Gen.alphaNumStr.sample.value)
           .setValue(AddSealsYesNoPage(index, Index(0)), true)

@@ -131,7 +131,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(AddContactPersonPage, false)
           .setValue(IncidentFlagPage, true)
           .setValue(IncidentCountryPage(incidentIndex), country)
-          .setValue(IncidentCodePage(incidentIndex), IncidentCode.UnexpectedlyChanged)
+          .setValue(IncidentCodePage(incidentIndex), IncidentCode("6", "test6"))
           .setValue(IncidentTextPage(incidentIndex), text)
           .setValue(AddEndorsementPage(incidentIndex), false)
           .setValue(IncidentQualifierOfIdentificationPage(incidentIndex), QualifierOfIdentification.Unlocode)
@@ -167,7 +167,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
               Seq(
                 IncidentDomain(
                   incidentCountry = country,
-                  incidentCode = IncidentCode.UnexpectedlyChanged,
+                  incidentCode = IncidentCode("6", "test6"),
                   incidentText = text,
                   endorsement = None,
                   location = IncidentUnLocodeLocationDomain(

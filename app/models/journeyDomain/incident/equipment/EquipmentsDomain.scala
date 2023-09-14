@@ -17,6 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import controllers.incident.equipment.routes
+import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
@@ -45,7 +46,7 @@ object EquipmentsDomain {
         .map(EquipmentsDomain(_)(incidentIndex))
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case TransferredToAnotherTransport | UnexpectedlyChanged =>
+      case IncidentCode("3", _) | IncidentCode("6", _) =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true => readEquipments
           case false =>
@@ -54,8 +55,9 @@ object EquipmentsDomain {
               case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
             }
         }
-      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readEquipments
-      case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+      case IncidentCode("2", _) | IncidentCode("4", _) => readEquipments
+      case IncidentCode("1", _) | IncidentCode("5", _) => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+      case _                                           => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity

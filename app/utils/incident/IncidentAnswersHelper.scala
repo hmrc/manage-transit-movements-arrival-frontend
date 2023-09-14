@@ -68,7 +68,7 @@ class IncidentAnswersHelper(
 
   def code: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
     page = IncidentCodePage(incidentIndex),
-    formatAnswer = formatEnumAsText(IncidentCode.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "incident.incidentCode",
     id = Some("change-code")
   )

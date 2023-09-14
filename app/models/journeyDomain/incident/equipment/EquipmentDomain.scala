@@ -18,6 +18,7 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import controllers.incident.equipment.routes
+import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
@@ -65,8 +66,8 @@ object EquipmentDomain {
     }
 
     lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
-      case SealsBrokenOrTampered => sealsReads
-      case _                     => optionalSealsReads
+      case IncidentCode("2", _) => sealsReads
+      case _                    => optionalSealsReads
     }
 
     lazy val readsWithContainerId = (
@@ -87,13 +88,13 @@ object EquipmentDomain {
       }
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case TransferredToAnotherTransport | UnexpectedlyChanged =>
+      case IncidentCode("3", _) | IncidentCode("6", _) =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true  => readsWithContainerId
           case false => readsWithOptionalContainerId
         }
-      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readsWithOptionalContainerId
-      case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      case IncidentCode("2", _) | IncidentCode("4", _) => readsWithOptionalContainerId
+      case _                                           => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity

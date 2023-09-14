@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package services
 
-import forms.mappings.Mappings
-import models.Enumerable
-import play.api.data.Form
+import connectors.ReferenceDataConnector
+import models.incident.IncidentCode
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class EnumerableFormProvider @Inject() extends Mappings {
+class IncidentCodeService @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
 
-  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
-    Form(
-      "value" -> enumerable[T](s"$prefix.error.required")
-    )
+  def getIncidentCodes()(implicit hc: HeaderCarrier): Future[Seq[IncidentCode]] =
+    referenceDataConnector
+      .getIncidentCodes()
+      .map(sort)
 
-  def apply[T](prefix: String, values: Seq[T])(implicit et: Seq[T] => Enumerable[T]): Form[T] =
-    apply(prefix)(et(values))
+  private def sort(incidentCode: Seq[IncidentCode]): Seq[IncidentCode] =
+    incidentCode.sortBy(_.code.toLowerCase)
 }

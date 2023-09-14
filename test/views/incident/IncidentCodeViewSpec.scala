@@ -16,6 +16,7 @@
 
 package views.incident
 
+import forms.Constants.incidentCodesList
 import forms.EnumerableFormProvider
 import models.NormalMode
 import models.incident.IncidentCode
@@ -27,7 +28,7 @@ import views.html.incident.IncidentCodeView
 
 class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
-  override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix)
+  override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =
     injector.instanceOf[IncidentCodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
@@ -37,7 +38,7 @@ class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
   override def radioItems(fieldId: String, checkedValue: Option[IncidentCode] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[IncidentCode] = IncidentCode.values
+  override def values: Seq[IncidentCode] = incidentCodesList
 
   behave like pageWithTitle()
 

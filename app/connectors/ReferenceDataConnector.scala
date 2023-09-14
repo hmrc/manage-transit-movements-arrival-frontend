@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
+import models.incident.IncidentCode
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -72,6 +73,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[UnLocode]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/UnLocodeExtended"
     http.GET[Seq[UnLocode]](url = url, headers = version2Header)
+  }
+
+  def getIncidentCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[IncidentCode]] = {
+    val url = s"${config.customsReferenceDataUrl}/lists/IncidentCode"
+    http.GET[Seq[IncidentCode]](url = url, headers = version2Header)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {

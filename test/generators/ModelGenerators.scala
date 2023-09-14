@@ -32,7 +32,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
     Arbitrary {
-      Gen.oneOf(models.incident.transportMeans.Identification.values.toSeq)
+      Gen.oneOf(models.incident.transportMeans.Identification.values)
     }
 
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
@@ -55,31 +55,38 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.values)
+      Gen.oneOf(
+        IncidentCode("1", "test1"),
+        IncidentCode("2", "test2"),
+        IncidentCode("3", "test3"),
+        IncidentCode("4", "test4"),
+        IncidentCode("5", "test5"),
+        IncidentCode("6", "test6")
+      )
     }
 
   lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
+      Gen.oneOf(IncidentCode("3", "test3"), IncidentCode("6", "test6"))
     }
 
   lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
+      Gen.oneOf(IncidentCode("2", "test2"), IncidentCode("4", "test4"))
     }
 
   lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
+      Gen.oneOf(IncidentCode("1", "test1"), IncidentCode("5", "test5"))
     }
 
   lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
       Gen.oneOf(
-        IncidentCode.SealsBrokenOrTampered,
-        IncidentCode.PartiallyOrFullyUnloaded,
-        IncidentCode.DeviatedFromItinerary,
-        IncidentCode.CarrierUnableToComply
+        IncidentCode("1", "test1"),
+        IncidentCode("2", "test2"),
+        IncidentCode("4", "test4"),
+        IncidentCode("5", "test5")
       )
     }
 

@@ -54,7 +54,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, sealId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("2", "test"))
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
                   .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
                   .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), false)
@@ -76,7 +76,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr, Gen.alphaNumStr) {
               (mode, containerId, sealId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("2", "test2"))
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                   .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                   .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
@@ -102,7 +102,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, sealId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("3", "test3"))
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
@@ -126,7 +126,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("3", "test3"))
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
@@ -156,7 +156,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode]) {
               mode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("2", "test2"))
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
                 val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
@@ -176,7 +176,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("2", "test2"))
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                   .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
@@ -200,7 +200,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode]) {
               mode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("3", "test3"))
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
@@ -222,7 +222,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(IncidentCodePage(incidentIndex), IncidentCode.TransferredToAnotherTransport)
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode("3", "test3"))
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
                   .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)

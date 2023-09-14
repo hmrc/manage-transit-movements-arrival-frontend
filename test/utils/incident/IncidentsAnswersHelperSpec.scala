@@ -230,7 +230,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.$incidentCode")}",
+                      name = s"Incident ${incidentIndex.display} - $incidentCode)}",
                       changeUrl = routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                     )
