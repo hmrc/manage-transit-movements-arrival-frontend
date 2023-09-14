@@ -23,12 +23,13 @@ import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
 import models.reference.Country
-import models.{Index, Mode}
+import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.{IncidentCodePage, IncidentCountryPage, IncidentFlagPage}
-import pages.sections.incident.IncidentSection
-import play.api.libs.json.Json
+import pages.sections.incident.{IncidentSection, IncidentsSection}
+import play.api.libs.json.{JsArray, JsString, Json}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.ListItem
 
 class IncidentsAnswersHelperSpec extends SpecBase with Generators {
@@ -116,7 +117,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
               val result = helper.incident(index).get
 
               result.key.value mustBe s"Incident ${incidentIndex.display}"
-              result.value.value mustBe s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}"
+              result.value.value mustBe s"Incident ${incidentIndex.display} - ${incident.incidentCode}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -187,7 +188,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}",
+                    name = s"Incident ${incidentIndex.display} - ${incident.incidentCode}",
                     changeUrl = routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                     removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                   )
@@ -230,7 +231,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = s"Incident ${incidentIndex.display} - $incidentCode)}",
+                      name = s"Incident ${incidentIndex.display} - $incidentCode",
                       changeUrl = routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                     )

@@ -49,7 +49,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
   private val mode = NormalMode
 
-  private lazy val addAnotherSealRoute = routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex).url
+  private lazy val addAnotherEquipmentRoute = routes.AddAnotherEquipmentController.onPageLoad(mrn, mode, incidentIndex).url
 
   private val mockViewModelProvider = mock[AddAnotherEquipmentViewModelProvider]
 
@@ -85,7 +85,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addAnotherSealRoute)
+      val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
       val result = route(app, request).value
 
@@ -103,7 +103,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherSealRoute)
+        val request = FakeRequest(GET, addAnotherEquipmentRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -122,7 +122,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherSealRoute)
+        val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
         val result = route(app, request).value
 
@@ -140,7 +140,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherSealRoute)
+        val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
         val result = route(app, request).value
 
@@ -168,7 +168,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
                 setExistingUserAnswers(userAnswers)
 
-                val request = FakeRequest(POST, addAnotherSealRoute)
+                val request = FakeRequest(POST, addAnotherEquipmentRoute)
                   .withFormUrlEncodedBody(("value", "true"))
 
                 val result = route(app, request).value
@@ -196,7 +196,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
                 setExistingUserAnswers(userAnswers)
 
-                val request = FakeRequest(POST, addAnotherSealRoute)
+                val request = FakeRequest(POST, addAnotherEquipmentRoute)
                   .withFormUrlEncodedBody(("value", "true"))
 
                 val result = route(app, request).value
@@ -224,7 +224,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
                 setExistingUserAnswers(userAnswers)
 
-                val request = FakeRequest(POST, addAnotherSealRoute)
+                val request = FakeRequest(POST, addAnotherEquipmentRoute)
                   .withFormUrlEncodedBody(("value", "true"))
 
                 val result = route(app, request).value
@@ -245,7 +245,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherSealRoute)
+          val request = FakeRequest(POST, addAnotherEquipmentRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
           val result = route(app, request).value
@@ -264,7 +264,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherSealRoute)
+        val request = FakeRequest(POST, addAnotherEquipmentRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val result = route(app, request).value
@@ -282,7 +282,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherSealRoute)
+        val request = FakeRequest(POST, addAnotherEquipmentRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form(viewModelWithItemsNotMaxedOut).bind(Map("value" -> ""))
@@ -301,7 +301,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
     "must redirect to Session Expired for a GET if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addAnotherSealRoute)
+      val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
       val result = route(app, request).value
 
@@ -313,7 +313,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addAnotherSealRoute)
+      val request = FakeRequest(POST, addAnotherEquipmentRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

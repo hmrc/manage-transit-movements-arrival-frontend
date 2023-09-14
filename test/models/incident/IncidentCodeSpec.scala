@@ -17,46 +17,49 @@
 package models.incident
 
 import base.SpecBase
-import forms.Constants.incidentCodesList
+import generators.Generators
 import models.incident.IncidentCode._
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsString, Json}
+import play.api.libs.json.Json
 
-class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class IncidentCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "IncidentCode" - {
 
-    "must deserialise valid values" in {
-
-      val gen = Gen.oneOf(incidentCodesList)
-
-      forAll(gen) {
-        incidentCode =>
-          JsString(incidentCode.toString).validate[IncidentCode].asOpt.value mustEqual incidentCode
-      }
-    }
-
-    "must fail to deserialise invalid values" in {
-
-      val gen = arbitrary[String] suchThat (!incidentCodesList.map(_.toString).contains(_))
-
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[IncidentCode] mustEqual JsError("error.invalid")
-      }
-    }
-
     "must serialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val incidentCode = IncidentCode(code, description)
+          Json.toJson(incidentCode) mustBe Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
+      }
+    }
 
-      val gen = Gen.oneOf(incidentCodesList)
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val incidentCode = IncidentCode(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[IncidentCode] mustBe incidentCode
+      }
+    }
 
-      forAll(gen) {
-        incidentCode =>
-          Json.toJson(incidentCode) mustEqual JsString(incidentCode.toString)
+    "must format as string" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val incidentCode = IncidentCode(code, description)
+          incidentCode.toString mustBe s"$description"
       }
     }
   }

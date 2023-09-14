@@ -38,7 +38,7 @@ class IncidentsAnswersHelper(
     getAnswersAndBuildSectionRows(IncidentsSection)(incident)
 
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString(formatEnumAsString).toText,
     prefix = "incident",
     id = Some(s"change-incident-${index.display}"),
     args = index.display
