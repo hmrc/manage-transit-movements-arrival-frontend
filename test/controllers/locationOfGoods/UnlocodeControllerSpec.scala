@@ -17,9 +17,9 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.UnLocodeFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.NormalMode
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -35,12 +35,10 @@ import scala.concurrent.Future
 
 class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val unLocode1    = arbitraryUnLocode.arbitrary.sample.get
-  private val unLocode2    = arbitraryUnLocode.arbitrary.sample.get
-  private val unLocodeList = SelectableList(Seq(unLocode1, unLocode2))
+  private val unLocode1 = arbitraryUnLocode.arbitrary.sample.get
 
-  private val formProvider       = new SelectableFormProvider()
-  private val form               = formProvider("locationOfGoods.unlocode", unLocodeList)
+  private val formProvider       = new UnLocodeFormProvider()
+  private val form               = formProvider("locationOfGoods.unlocode")
   private val mode               = NormalMode
   private lazy val unlocodeRoute = routes.UnlocodeController.onPageLoad(mrn, mode).url
 
@@ -56,7 +54,6 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockUnLocodesService.getUnLocodes()(any())).thenReturn(Future.successful(unLocodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, unlocodeRoute)
@@ -68,12 +65,11 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, unLocodeList.values, mode)(request, messages).toString
+        view(form, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockUnLocodesService.getUnLocodes()(any())).thenReturn(Future.successful(unLocodeList))
       val userAnswers = emptyUserAnswers.setValue(UnlocodePage, unLocode1)
       setExistingUserAnswers(userAnswers)
 
@@ -81,25 +77,24 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> unLocode1.unLocodeExtendedCode))
+      val filledForm = form.bind(Map("value" -> unLocode1))
 
       val view = injector.instanceOf[UnlocodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, unLocodeList.values, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockUnLocodesService.getUnLocodes()(any())).thenReturn(Future.successful(unLocodeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, unlocodeRoute)
-        .withFormUrlEncodedBody(("value", unLocode1.unLocodeExtendedCode))
+        .withFormUrlEncodedBody(("value", unLocode1))
 
       val result = route(app, request).value
 
@@ -110,7 +105,6 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockUnLocodesService.getUnLocodes()(any())).thenReturn(Future.successful(unLocodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
@@ -125,7 +119,7 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val view = injector.instanceOf[UnlocodeView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, unLocodeList.values, mode)(request, messages).toString
+        view(filledForm, mrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -146,7 +140,7 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, unlocodeRoute)
-        .withFormUrlEncodedBody(("value", unLocode1.unLocodeExtendedCode))
+        .withFormUrlEncodedBody(("value", unLocode1))
 
       val result = route(app, request).value
 

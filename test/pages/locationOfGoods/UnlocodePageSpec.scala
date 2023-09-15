@@ -16,17 +16,16 @@
 
 package pages.locationOfGoods
 
-import models.reference.UnLocode
 import pages.behaviours.PageBehaviours
 
 class UnlocodePageSpec extends PageBehaviours {
 
   "UnlocodePage" - {
 
-    beRetrievable[UnLocode](UnlocodePage)
+    beRetrievable[String](UnlocodePage)
 
-    beSettable[UnLocode](UnlocodePage)
+    beSettable[String](UnlocodePage)
 
-    beRemovable[UnLocode](UnlocodePage)
+    beRemovable[String](UnlocodePage)
   }
 }

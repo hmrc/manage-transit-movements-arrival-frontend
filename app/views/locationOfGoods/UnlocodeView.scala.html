@@ -16,19 +16,19 @@
 
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
-@import models.reference.UnLocode
 @import viewModels.components.InputSelectViewModel.SelectWithAdditionalHtml
-@import views.html.components.{Button, ErrorSummary, InputSelect}
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputSelect: InputSelect,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[UnLocode], mrn: MovementReferenceNumber, unLocodes: Seq[UnLocode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.unlocode.title"),
@@ -40,16 +40,14 @@
 
         @errorSummary(form.errors)
 
-        @inputSelect(
-            field = form("value"),
-            selectType = SelectWithAdditionalHtml(
-                heading = messages("locationOfGoods.unlocode.heading"),
-                caption = Some(messages("locationOfGoods.caption")),
-                additionalHtml = messages("locationOfGoods.unlocode.paragraph").toParagraph
-            ),
-            hint = Some(messages("locationOfGoods.unlocode.hintText")),
-            selectItems = unLocodes.toSelectItems(form.value),
-            placeholder = messages("locationOfGoods.unlocode.placeholder")
+        @inputText(
+          field = form("value"),
+          inputTextType = OrdinaryTextInput(
+            heading = messages("locationOfGoods.unlocode.heading"),
+            caption = Some(messages("locationOfGoods.caption"))
+          ),
+          hint = Some(messages("locationOfGoods.unlocode.hintText")),
+          inputType = "text"
         )
 
         @button(attributes = Map("id" -> "submit"))

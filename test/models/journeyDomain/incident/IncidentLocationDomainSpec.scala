@@ -19,7 +19,6 @@ package models.journeyDomain.incident
 import base.SpecBase
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.UnLocode
 import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -28,7 +27,7 @@ import pages.incident.location._
 class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   private val address     = arbitrary[DynamicAddress].sample.value
-  private val unLocode    = arbitrary[UnLocode].sample.value
+  private val unLocode    = arbitrary[String].sample.value
   private val coordinates = arbitrary[Coordinates].sample.value
 
   "IncidentLocationDomain" - {

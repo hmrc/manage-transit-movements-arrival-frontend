@@ -16,25 +16,24 @@
 
 package views.locationOfGoods
 
-import forms.SelectableFormProvider
-import models.reference.UnLocode
-import models.{NormalMode, SelectableList}
+import forms.UnLocodeFormProvider
+import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputSelectViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.locationOfGoods.UnlocodeView
 
-class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
+class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "locationOfGoods.unlocode"
 
-  override def form: Form[UnLocode] = new SelectableFormProvider()(prefix, SelectableList(values))
+  override def form: Form[String] = new UnLocodeFormProvider()(prefix)
 
-  override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
-    injector.instanceOf[UnlocodeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[UnlocodeView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[UnLocode] = arbitraryUnLocode
+  implicit override val arbitraryT: Arbitrary[String] = arbitraryUnLocode
 
   behave like pageWithTitle()
 
@@ -44,11 +43,9 @@ class UnlocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
 
   behave like pageWithHeading()
 
-  behave like pageWithSelect()
+  behave like pageWithInputText()
 
   behave like pageWithHint("Enter the location or code, like Berlin or DEBER.")
-
-  behave like pageWithContent("p", "This is a 5-character code used to identify a transit-related location, like a port or clearance depot.")
 
   behave like pageWithSubmitButton("Continue")
 }

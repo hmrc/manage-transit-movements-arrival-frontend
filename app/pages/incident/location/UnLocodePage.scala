@@ -18,17 +18,16 @@ package pages.incident.location
 
 import controllers.incident.location.routes
 import models.{Index, Mode, UserAnswers}
-import models.reference.UnLocode
 import pages.QuestionPage
 import pages.sections.incident
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class UnLocodePage(index: Index) extends QuestionPage[UnLocode] {
+case class UnLocodePage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = incident.IncidentSection(index).path \ toString
 
-  override def toString: String = "unLocode"
+  override def toString: String = "unLocode.unLocodeExtendedCode"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.UnLocodeController.onPageLoad(userAnswers.mrn, mode, index))

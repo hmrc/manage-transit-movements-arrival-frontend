@@ -18,7 +18,6 @@ package models.journeyDomain.incident
 
 import cats.implicits._
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import models.reference.UnLocode
 import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
@@ -51,7 +50,7 @@ object IncidentCoordinatesLocationDomain {
     CoordinatesPage(index).reader.map(IncidentCoordinatesLocationDomain(_))
 }
 
-case class IncidentUnLocodeLocationDomain(unLocode: UnLocode) extends IncidentLocationDomain {
+case class IncidentUnLocodeLocationDomain(unLocode: String) extends IncidentLocationDomain {
   override val code: String = "U"
 }
 

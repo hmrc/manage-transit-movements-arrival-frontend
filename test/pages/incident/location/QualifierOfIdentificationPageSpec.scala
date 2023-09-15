@@ -17,9 +17,8 @@
 package pages.incident.location
 
 import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
-import models.reference.UnLocode
-import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
@@ -34,7 +33,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
   "cleanup" - {
     "when Coordinates is selected" - {
       "must remove Unlocode page" in {
-        forAll(arbitrary[UnLocode]) {
+        forAll(arbitrary[String]) {
           unlocode =>
             val userAnswers = emptyUserAnswers
               .setValue(UnLocodePage(index), unlocode)
@@ -96,7 +95,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
       }
 
       "must remove Unlocode page" in {
-        forAll(arbitrary[UnLocode]) {
+        forAll(arbitrary[String]) {
           unLocode =>
             val userAnswers = emptyUserAnswers
               .setValue(UnLocodePage(index), unLocode)
