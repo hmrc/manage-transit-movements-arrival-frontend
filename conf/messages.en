@@ -265,9 +265,8 @@ locationOfGoods.typeOfLocation.error.required = Select which type of location th
 
 locationOfGoods.unlocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unlocode.heading = What is the UN/LOCODE for the location of goods?
-locationOfGoods.unlocode.hintText = Enter the location or code, like Berlin or DEBER.
+locationOfGoods.unlocode.hintText = This is a 5-character code used to identify a transit-related location, like DEBER.
 locationOfGoods.unlocode.placeholder = Select a UN/LOCODE.
-locationOfGoods.unlocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
 locationOfGoods.unlocode.change.hidden = UN/LOCODE for the location of goods
 locationOfGoods.unlocode.checkYourAnswersLabel = UN/LOCODE
 locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location of goods
@@ -405,8 +404,7 @@ incident.location.qualifierOfIdentification.error.required = Select how you want
 
 incident.location.unLocode.title = What is the UN/LOCODE for the incident?
 incident.location.unLocode.heading = What is the UN/LOCODE for the incident?
-incident.location.unLocode.hintText = Enter the location or code, like Berlin or DE BER.
-incident.location.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+incident.location.unLocode.hintText = This is a 5-character code used to identify a transit-related location, like DEBER.
 incident.location.unLocode.placeholder = Select a UN/LOCODE.
 incident.location.unLocode.change.hidden = UN/LOCODE for the incident
 incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE

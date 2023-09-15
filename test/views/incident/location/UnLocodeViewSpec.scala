@@ -43,7 +43,7 @@ class UnLocodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("Enter the location or code, like Berlin or DE BER.")
+  behave like pageWithHint("This is a 5-character code used to identify a transit-related location, like DEBER.")
 
   behave like pageWithInputText()
 

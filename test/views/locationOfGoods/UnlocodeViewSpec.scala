@@ -45,7 +45,7 @@ class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithInputText()
 
-  behave like pageWithHint("Enter the location or code, like Berlin or DEBER.")
+  behave like pageWithHint("This is a 5-character code used to identify a transit-related location, like DEBER.")
 
   behave like pageWithSubmitButton("Continue")
 }
