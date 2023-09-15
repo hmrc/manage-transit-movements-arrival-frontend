@@ -66,7 +66,7 @@ class IncidentAnswersHelper(
     id = Some("change-country")
   )
 
-  def code: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
+  def incidentCode: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
     page = IncidentCodePage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.incidentCode",

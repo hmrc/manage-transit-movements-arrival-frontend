@@ -37,7 +37,7 @@ object IncidentAnswersViewModel {
       val incidentSection = Section(
         rows = Seq(
           helper.country,
-          helper.code,
+          helper.incidentCode,
           helper.text,
           helper.qualifierOfIdentification,
           helper.unLocode,

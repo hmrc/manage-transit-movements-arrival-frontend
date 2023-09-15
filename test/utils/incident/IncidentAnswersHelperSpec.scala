@@ -207,7 +207,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = IncidentAnswersHelper(emptyUserAnswers, mode, incidentIndex)
-              val result = helper.code
+              val result = helper.incidentCode
               result mustBe None
           }
         }
@@ -220,7 +220,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val answers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), code)
 
               val helper = IncidentAnswersHelper(answers, mode, incidentIndex)
-              val result = helper.code.get
+              val result = helper.incidentCode.get
 
               result.key.value mustBe "Incident code"
               result.value.value mustBe code.toString
@@ -469,7 +469,9 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
-              result.value.value mustBe identificationType.toString
+              val key = s"qualifierOfIdentification.$identificationType"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -675,7 +677,9 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.transportMeansIdentificationType.get
 
               result.key.value mustBe "Identification type"
-              result.value.value mustBe identification.toString
+              val key = s"incident.transportMeans.identification.$identification"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
