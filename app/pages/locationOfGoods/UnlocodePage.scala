@@ -27,7 +27,7 @@ case object UnlocodePage extends QuestionPage[String] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "unlocode.unLocodeExtendedCode"
+  override def toString: String = "unlocode"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.UnlocodeController.onPageLoad(userAnswers.mrn, mode))
