@@ -25,6 +25,7 @@ import pages.incident.location.UnLocodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UnLocodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.location.UnLocodeView
 
@@ -37,6 +38,7 @@ class UnLocodeController @Inject() (
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   formProvider: UnLocodeFormProvider,
+  unLocodesService: UnLocodeService,
   val controllerComponents: MessagesControllerComponents,
   view: UnLocodeView
 )(implicit ec: ExecutionContext)
@@ -60,13 +62,25 @@ class UnLocodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            UnLocodePage(index)
-              .writeToUserAnswers(value)
-              .writeToSession()
-              .navigate()
-          }
+          formValue =>
+            unLocodesService
+              .validateUnLocode(formValue)
+              .flatMap(
+                isValid =>
+                  formProvider
+                    .validateUnLocode("incident.location.unLocode", isValid)
+                    .bindFromRequest()
+                    .fold(
+                      formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
+                      value => {
+                        implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                        UnLocodePage(index)
+                          .writeToUserAnswers(value)
+                          .writeToSession()
+                          .navigate()
+                      }
+                    )
+              )
         )
   }
 }

@@ -272,6 +272,7 @@ locationOfGoods.unlocode.checkYourAnswersLabel = UN/LOCODE
 locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location of goods
 locationOfGoods.unlocode.error.length = The UN/LOCODE must be exactly 5 characters long
 locationOfGoods.unlocode.error.invalid = The UN/LOCODE number must only include letters A to Z and numbers 0 to 9.
+locationOfGoods.unlocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
 
 locationOfGoods.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
 locationOfGoods.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
@@ -411,6 +412,8 @@ incident.location.unLocode.checkYourAnswersLabel = UN/LOCODE
 incident.location.unLocode.error.required = Enter the UN/LOCODE for the incident
 incident.location.unLocode.error.length = The UN/LOCODE must be exactly 5 characters long
 incident.location.unLocode.error.invalid = The UN/LOCODE number must only include letters A to Z and numbers 0 to 9.
+incident.location.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
+
 
 incident.location.coordinates.title = What are the coordinates for the incident?
 incident.location.coordinates.heading = What are the coordinates for the incident?

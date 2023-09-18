@@ -36,4 +36,14 @@ class UnLocodeFormProvider @Inject() extends Mappings {
           )
         )
     )
+
+  def validateUnLocode(prefix: String, isInList: Boolean): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            exists(s"$prefix.error.not.exists", isInList)
+          )
+        )
+    )
 }
