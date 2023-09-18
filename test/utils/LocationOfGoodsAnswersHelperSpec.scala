@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -259,7 +259,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
       "must return Some(Row)" - {
         "when UnlocodePage defined" in {
-          forAll(arbitrary[UnLocode], arbitrary[Mode]) {
+          forAll(arbitrary[String], arbitrary[Mode]) {
             (unLocode, mode) =>
               val answers = emptyUserAnswers.setValue(UnlocodePage, unLocode)
 

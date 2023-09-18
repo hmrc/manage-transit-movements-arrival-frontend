@@ -17,7 +17,7 @@
 package utils
 
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
@@ -71,7 +71,7 @@ class LocationOfGoodsAnswersHelper(
     id = Some("coordinates")
   )
 
-  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[UnLocode](
+  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = UnlocodePage,
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.unlocode",

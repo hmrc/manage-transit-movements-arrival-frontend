@@ -19,7 +19,7 @@ package utils.incident
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Nationality, UnLocode}
+import models.reference.{Country, Nationality}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
 import pages.incident._
 import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
@@ -122,7 +122,7 @@ class IncidentAnswersHelper(
     id = Some("change-qualifier-of-identification")
   )
 
-  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[UnLocode](
+  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = UnLocodePage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "incident.location.unLocode",

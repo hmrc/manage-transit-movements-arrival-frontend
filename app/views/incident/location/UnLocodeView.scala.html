@@ -20,18 +20,18 @@
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import viewModels.components.InputSelectViewModel._
-@import views.html.components.{Button, ErrorSummary, InputSelect}
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputSelect: InputSelect,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[UnLocode], mrn: MovementReferenceNumber, unLocodes: Seq[UnLocode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.location.unLocode.title"),
@@ -43,16 +43,14 @@
 
         @errorSummary(form.errors)
 
-        @inputSelect(
-            field = form("value"),
-            selectType = SelectWithAdditionalHtml(
-                heading = messages("incident.location.unLocode.heading"),
-                caption = Some(messages("incident.caption")),
-                additionalHtml = messages("incident.location.unLocode.paragraph").toParagraph
-            ),
-            hint = Some(messages("incident.location.unLocode.hintText")),
-            selectItems = unLocodes.toSelectItems(form.value),
-            placeholder = messages("incident.location.unLocode.placeholder")
+        @inputText(
+          field = form("value"),
+          inputTextType = OrdinaryTextInput(
+            heading = messages("incident.location.unLocode.heading"),
+            caption = Some(messages("incident.caption"))
+          ),
+          hint = Some(messages("incident.location.unLocode.hintText")),
+          inputType = "text"
         )
 
         @button(attributes = Map("id" -> "submit"))

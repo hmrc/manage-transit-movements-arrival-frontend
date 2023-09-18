@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -37,7 +37,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
   private val idNumber      = Gen.alphaNumStr.sample.value
   private val name          = Gen.alphaNumStr.sample.value
   private val tel           = Gen.alphaNumStr.sample.value
-  private val unLocode      = arbitrary[UnLocode].sample.value
+  private val unLocode      = arbitrary[String].sample.value
   private val postalCode    = arbitrary[PostalCodeAddress].sample.value
 
   "QualifierOfIdentificationDomain" - {

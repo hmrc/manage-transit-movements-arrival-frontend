@@ -27,7 +27,7 @@ import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Nationality, UnLocode}
+import models.reference.{Country, Nationality}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -499,7 +499,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
       "must return Some(Row)" - {
         "when UnLocodePage is defined" in {
-          forAll(arbitrary[UnLocode], arbitrary[Mode]) {
+          forAll(arbitrary[String], arbitrary[Mode]) {
             (unlocode, mode) =>
               val answers = emptyUserAnswers.setValue(UnLocodePage(incidentIndex), unlocode)
 

@@ -20,7 +20,7 @@ import models.identification.ProcedureType
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
+import models.reference.{Country, CustomsOffice, Nationality}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -72,7 +72,7 @@ trait UserAnswersEntryGenerators {
       case IdentificationNumberPage => Gen.alphaNumStr.map(JsString)
       case CountryPage              => arbitrary[Country].map(Json.toJson(_))
       case AddressPage              => arbitrary[DynamicAddress].map(Json.toJson(_))
-      case UnlocodePage             => arbitrary[UnLocode].map(Json.toJson(_))
+      case UnlocodePage             => arbitrary[String].map(Json.toJson(_))
     }
   }
 
@@ -120,7 +120,7 @@ trait UserAnswersEntryGenerators {
     {
       case QualifierOfIdentificationPage(_) => arbitrary[QualifierOfIdentification].map(Json.toJson(_))
       case CoordinatesPage(_)               => arbitrary[Coordinates].map(Json.toJson(_))
-      case UnLocodePage(_)                  => arbitrary[UnLocode].map(Json.toJson(_))
+      case UnLocodePage(_)                  => arbitrary[String].map(Json.toJson(_))
       case AddressPage(_)                   => arbitrary[DynamicAddress].map(Json.toJson(_))
     }
   }

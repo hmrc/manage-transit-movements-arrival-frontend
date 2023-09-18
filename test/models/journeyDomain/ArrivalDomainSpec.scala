@@ -29,7 +29,7 @@ import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomai
 import models.journeyDomain.incident.{IncidentDomain, IncidentUnLocodeLocationDomain, IncidentsDomain, TransportMeansDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CustomsOffice, Nationality, UnLocode}
+import models.reference.{Country, CustomsOffice, Nationality}
 import models.{DynamicAddress, Phase, QualifierOfIdentification}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -118,7 +118,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
         val country     = arbitrary[Country].sample.value
         val nationality = arbitrary[Nationality].sample.value
         val text        = Gen.alphaNumStr.sample.value
-        val unLocode    = arbitrary[UnLocode].sample.value
+        val unLocode    = arbitrary[String].sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)

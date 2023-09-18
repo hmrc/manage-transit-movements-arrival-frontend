@@ -20,7 +20,7 @@ import cats.implicits._
 import models.QualifierOfIdentification._
 import models.identification.ProcedureType
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.reference.{Country, CustomsOffice, UnLocode}
+import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
@@ -112,7 +112,7 @@ object CustomsOfficeDomain {
     CustomsOfficePage.reader.map(CustomsOfficeDomain(_))
 }
 
-case class UnlocodeDomain(code: UnLocode, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
+case class UnlocodeDomain(code: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
   override val qualifierOfIdentification: String = "U"
 }
 

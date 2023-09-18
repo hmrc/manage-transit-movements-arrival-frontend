@@ -16,17 +16,16 @@
 
 package pages.incident.location
 
-import models.reference.UnLocode
 import pages.behaviours.PageBehaviours
 
 class UnLocodePageSpec extends PageBehaviours {
 
   "UnLocodePage" - {
 
-    beRetrievable[UnLocode](UnLocodePage(index))
+    beRetrievable[String](UnLocodePage(index))
 
-    beSettable[UnLocode](UnLocodePage(index))
+    beSettable[String](UnLocodePage(index))
 
-    beRemovable[UnLocode](UnLocodePage(index))
+    beRemovable[String](UnLocodePage(index))
   }
 }

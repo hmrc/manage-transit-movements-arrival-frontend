@@ -16,23 +16,22 @@
 
 package views.incident.location
 
-import forms.SelectableFormProvider
-import models.reference.UnLocode
-import models.{NormalMode, SelectableList}
+import forms.UnLocodeFormProvider
+import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputSelectViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.incident.location.UnLocodeView
 
-class UnLocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
+class UnLocodeViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[UnLocode] = new SelectableFormProvider()(prefix, SelectableList(values))
+  override def form: Form[String] = new UnLocodeFormProvider()(prefix)
 
-  override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
-    injector.instanceOf[UnLocodeView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[UnLocodeView].apply(form, mrn, NormalMode, index)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[UnLocode] = arbitraryUnLocode
+  implicit override val arbitraryT: Arbitrary[String] = arbitraryUnLocode
 
   override val prefix: String = "incident.location.unLocode"
 
@@ -44,11 +43,9 @@ class UnLocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("Enter the location or code, like Berlin or DE BER.")
+  behave like pageWithHint("This is a 5-character code used to identify a transit-related location, like DEBER.")
 
-  behave like pageWithContent("p", "This is a 5-character code used to identify a transit-related location, like a port or clearance depot.")
-
-  behave like pageWithSelect()
+  behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
 }
