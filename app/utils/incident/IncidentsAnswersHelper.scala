@@ -37,12 +37,13 @@ class IncidentsAnswersHelper(
   def incidents: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(IncidentsSection)(incident)
 
-  def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
-    formatAnswer = _.asString(formatEnumAsString).toText,
-    prefix = "incident",
-    id = Some(s"change-incident-${index.display}"),
-    args = index.display
-  )(IncidentDomain.userAnswersReader(index))
+  def incident(index: Index): Option[SummaryListRow] =
+    getAnswerAndBuildSectionRow[IncidentDomain](
+      formatAnswer = _.asString(formatEnumAsString).toText,
+      prefix = "incident",
+      id = Some(s"change-incident-${index.display}"),
+      args = index.display
+    )(IncidentDomain.userAnswersReader(index))
 
   def addOrRemoveIncidents: Option[Link] = buildLink(IncidentsSection) {
     Link(

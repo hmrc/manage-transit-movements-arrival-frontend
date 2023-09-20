@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
+import models.incident.IncidentCode
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -28,9 +29,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
-  private def version2Header = Seq(
-    "Accept" -> "application/vnd.hmrc.2.0+json"
-  )
+  def getCustomsOfficesForCountry(countryCode: CountryCode)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
+    val url = s"${config.customsReferenceDataUrl}/filtered-lists/CustomsOffices"
+    val queryParams: Seq[(String, String)] = Seq(
+      "data.countryId"  -> countryCode.code,
+      "data.roles.role" -> "DES"
+    )
+    http.GET[Seq[CustomsOffice]](url = url, headers = version2Header, queryParams = queryParams)
+  }
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
     (_: String, _: String, response: HttpResponse) => {
@@ -50,14 +56,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       }
     }
 
-  def getCustomsOfficesForCountry(countryCode: CountryCode)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
-    val url = s"${config.customsReferenceDataUrl}/filtered-lists/CustomsOffices"
-    val queryParams: Seq[(String, String)] = Seq(
-      "data.countryId"  -> countryCode.code,
-      "data.roles.role" -> "DES"
-    )
-    http.GET[Seq[CustomsOffice]](url = url, headers = version2Header, queryParams = queryParams)
-  }
+  private def version2Header = Seq(
+    "Accept" -> "application/vnd.hmrc.2.0+json"
+  )
 
   def getCountries(listName: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/$listName"
@@ -72,6 +73,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[UnLocode]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/UnLocodeExtended"
     http.GET[Seq[UnLocode]](url = url, headers = version2Header)
+  }
+
+  def getIncidentCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[IncidentCode]] = {
+    val url = s"${config.customsReferenceDataUrl}/lists/IncidentCode"
+    http.GET[Seq[IncidentCode]](url = url, headers = version2Header)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {

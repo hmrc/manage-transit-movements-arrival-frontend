@@ -50,13 +50,13 @@ case class IncidentDomain(
 object IncidentDomain {
 
   def asString(index: Index, incidentCode: IncidentCode)(f: String => IncidentCode => String)(implicit messages: Messages): String =
-    messages("incident.value", index.display, f(IncidentCode.prefixForDisplay)(incidentCode))
+    messages("incident.value", index.display, f(IncidentCode.messageKeyPrefix)(incidentCode))
 
   def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
 
     val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
       .filterOptionalDependent(
-        x => x == TransferredToAnotherTransport || x == UnexpectedlyChanged
+        x => x == IncidentCode("3", "TransferredToAnotherTransport") || x == IncidentCode("6", "UnexpectedlyChanged")
       )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
 
     (

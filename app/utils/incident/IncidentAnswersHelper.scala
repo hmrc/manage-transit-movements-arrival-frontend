@@ -44,12 +44,13 @@ class IncidentAnswersHelper(
   def equipments: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(EquipmentsSection(incidentIndex))(equipment)
 
-  def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
-    formatAnswer = _.asString.toText,
-    prefix = "incident.equipment",
-    id = Some(s"change-transport-equipment-${index.display}"),
-    args = index.display
-  )(EquipmentDomain.userAnswersReader(incidentIndex, index))
+  def equipment(index: Index): Option[SummaryListRow] =
+    getAnswerAndBuildSectionRow[EquipmentDomain](
+      formatAnswer = _.asString.toText,
+      prefix = "incident.equipment",
+      id = Some(s"change-transport-equipment-${index.display}"),
+      args = index.display
+    )(EquipmentDomain.userAnswersReader(incidentIndex, index))
 
   def addOrRemoveEquipments: Option[Link] = buildLink(EquipmentsSection(incidentIndex)) {
     Link(
@@ -68,7 +69,7 @@ class IncidentAnswersHelper(
 
   def code: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
     page = IncidentCodePage(incidentIndex),
-    formatAnswer = formatEnumAsText(IncidentCode.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "incident.incidentCode",
     id = Some("change-code")
   )

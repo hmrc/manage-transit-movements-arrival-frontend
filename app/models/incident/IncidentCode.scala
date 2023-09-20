@@ -16,48 +16,16 @@
 
 package models.incident
 
-import models.{EnumerableType, Radioable, WithName}
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.json.{Format, Json}
 
-sealed trait IncidentCode extends Radioable[IncidentCode] {
-  override val messageKeyPrefix: String = IncidentCode.messageKeyPrefix
-  val code: String
+case class IncidentCode(code: String, description: String) extends Radioable[IncidentCode] {
+  override def toString: String = s"($code) $description"
+
+  override val messageKeyPrefix: String = "incident.incidentCode"
 }
 
-object IncidentCode extends EnumerableType[IncidentCode] {
-
-  case object DeviatedFromItinerary extends WithName("deviatedFromItinerary") with IncidentCode {
-    override val code: String = "1"
-  }
-
-  case object SealsBrokenOrTampered extends WithName("sealsBrokenOrTampered") with IncidentCode {
-    override val code: String = "2"
-  }
-
-  case object TransferredToAnotherTransport extends WithName("transferredToAnotherTransport") with IncidentCode {
-    override val code: String = "3"
-  }
-
-  case object PartiallyOrFullyUnloaded extends WithName("partiallyOrFullyUnloaded") with IncidentCode {
-    override val code: String = "4"
-  }
-
-  case object CarrierUnableToComply extends WithName("carrierUnableToComply") with IncidentCode {
-    override val code: String = "5"
-  }
-
-  case object UnexpectedlyChanged extends WithName("unexpectedlyChanged") with IncidentCode {
-    override val code: String = "6"
-  }
-
-  val messageKeyPrefix: String = "incident.incidentCode"
-  val prefixForDisplay: String = s"$messageKeyPrefix.forDisplay"
-
-  val values: Seq[IncidentCode] = Seq(
-    DeviatedFromItinerary,
-    SealsBrokenOrTampered,
-    TransferredToAnotherTransport,
-    PartiallyOrFullyUnloaded,
-    CarrierUnableToComply,
-    UnexpectedlyChanged
-  )
+object IncidentCode extends DynamicEnumerableType[IncidentCode] {
+  implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
+  val messageKeyPrefix: String              = "incident.incidentCode"
 }
