@@ -20,7 +20,7 @@ import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
 case class IncidentCode(code: String, description: String) extends Radioable[IncidentCode] {
-  override def toString: String = s"($code) $description"
+  override def toString: String = s"$code - $description"
 
   override val messageKeyPrefix: String = "incident.incidentCode"
 }

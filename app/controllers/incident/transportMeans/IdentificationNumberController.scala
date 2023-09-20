@@ -50,7 +50,7 @@ class IdentificationNumberController @Inject() (
       .andThen(getMandatoryPage(IdentificationPage(incidentIndex))) {
         implicit request =>
           val identificationType = request.arg
-          val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.asString)
+          val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.toString)
           val preparedForm = request.userAnswers.get(IdentificationNumberPage(incidentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,7 +64,7 @@ class IdentificationNumberController @Inject() (
     .async {
       implicit request =>
         val identificationType = request.arg
-        val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.asString)
+        val form               = formProvider("incident.transportMeans.identificationNumber", identificationType.toString)
         form
           .bindFromRequest()
           .fold(
