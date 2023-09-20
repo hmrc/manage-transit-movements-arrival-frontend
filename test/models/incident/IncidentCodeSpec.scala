@@ -16,22 +16,25 @@
 
 package models.incident
 
-import models.incident.IncidentCode._
 import base.SpecBase
+import models.incident.IncidentCode._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
+  private val ic1 = IncidentCode("1", "test1")
+  private val ic2 = IncidentCode("2", "test2")
+  private val ics = Seq(ic1, ic2)
 
   "IncidentCode" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(IncidentCode.values)
+      val gen = Gen.oneOf(ics)
 
       forAll(gen) {
         incidentCode =>
@@ -41,7 +44,7 @@ class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChe
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!IncidentCode.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ics.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
@@ -51,7 +54,7 @@ class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChe
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(IncidentCode.values)
+      val gen = Gen.oneOf(ics)
 
       forAll(gen) {
         incidentCode =>

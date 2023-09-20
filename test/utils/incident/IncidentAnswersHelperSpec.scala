@@ -22,6 +22,7 @@ import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
+import forms.Constants.SealsBrokenOrTamperedCode
 import generators.Generators
 import models.incident.IncidentCode
 import models.incident.transportMeans.Identification
@@ -92,7 +93,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must return Some(Row)" - {
         "when equipment is  defined and container id is undefined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
@@ -114,7 +115,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         "when equipment is  defined and container id is defined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {

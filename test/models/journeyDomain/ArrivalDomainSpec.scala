@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.PhaseConfig
+import forms.Constants.UnexpectedlyChangedCode
 import generators.Generators
 import models.identification.ProcedureType
 import models.incident.IncidentCode
@@ -131,7 +132,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(AddContactPersonPage, false)
           .setValue(IncidentFlagPage, true)
           .setValue(IncidentCountryPage(incidentIndex), country)
-          .setValue(IncidentCodePage(incidentIndex), IncidentCode.UnexpectedlyChanged)
+          .setValue(IncidentCodePage(incidentIndex), IncidentCode(UnexpectedlyChangedCode, "test"))
           .setValue(IncidentTextPage(incidentIndex), text)
           .setValue(AddEndorsementPage(incidentIndex), false)
           .setValue(IncidentQualifierOfIdentificationPage(incidentIndex), QualifierOfIdentification.Unlocode)
@@ -167,7 +168,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
               Seq(
                 IncidentDomain(
                   incidentCountry = country,
-                  incidentCode = IncidentCode.UnexpectedlyChanged,
+                  incidentCode = IncidentCode(UnexpectedlyChangedCode, "test"),
                   incidentText = text,
                   endorsement = None,
                   location = IncidentUnLocodeLocationDomain(

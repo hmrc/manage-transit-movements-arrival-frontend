@@ -16,6 +16,7 @@
 
 package generators
 
+import forms.Constants._
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.incident.IncidentCode
@@ -28,7 +29,11 @@ import uk.gov.hmrc.http.HttpVerbs._
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
+
   self: Generators =>
+  private val ic1 = IncidentCode("1", "test1")
+  private val ic2 = IncidentCode("2", "test2")
+  private val ics = Seq(ic1, ic2)
 
   implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
     Arbitrary {
@@ -55,31 +60,31 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.values)
+      Gen.oneOf(ics)
     }
 
   lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
+      Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))
     }
 
   lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
+      Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
     }
 
   lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
+      Gen.oneOf(IncidentCode(DeviatedFromItineraryCode, "test"), IncidentCode(CarrierUnableToComplyCode, "test"))
     }
 
   lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
       Gen.oneOf(
-        IncidentCode.SealsBrokenOrTampered,
-        IncidentCode.PartiallyOrFullyUnloaded,
-        IncidentCode.DeviatedFromItinerary,
-        IncidentCode.CarrierUnableToComply
+        IncidentCode(SealsBrokenOrTamperedCode, "test1"),
+        IncidentCode(PartiallyOrFullyUnloadedCode, "test2"),
+        IncidentCode(DeviatedFromItineraryCode, "test3"),
+        IncidentCode(CarrierUnableToComplyCode, "test4")
       )
     }
 
