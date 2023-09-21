@@ -66,20 +66,20 @@ object EquipmentDomain {
       case false => UserAnswersReader.apply(ItemNumbersDomain(Nil))
     }
 
-    lazy val sealsReadsByIncidentCode: Kleisli[EitherType, UserAnswers, SealsDomain] = IncidentCodePage(incidentIndex).reader.flatMap {
+    lazy val sealsReadsByIncidentCode: UserAnswersReader[SealsDomain] = IncidentCodePage(incidentIndex).reader.flatMap {
       _.code match {
         case SealsBrokenOrTamperedCode => sealsReads
         case _                         => optionalSealsReads
       }
     }
 
-    lazy val readsWithContainerId: Kleisli[EitherType, UserAnswers, EquipmentDomain] = (
+    lazy val readsWithContainerId:UserAnswersReader[EquipmentDomain] = (
       ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
       sealsReadsByIncidentCode,
       optionalItemNumbersReads
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
 
-    lazy val readsWithOptionalContainerId: Kleisli[EitherType, UserAnswers, EquipmentDomain] =
+    lazy val readsWithOptionalContainerId:  UserAnswersReader[EquipmentDomain] =
       ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
         case true => readsWithContainerId
         case false =>
