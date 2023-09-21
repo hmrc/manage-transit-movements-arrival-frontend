@@ -18,7 +18,6 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import controllers.incident.equipment.routes
-import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
@@ -67,7 +66,7 @@ object EquipmentDomain {
 
     lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
       case x if x.code == "2" => sealsReads
-      case _                    => optionalSealsReads
+      case _                  => optionalSealsReads
     }
 
     lazy val readsWithContainerId = (
