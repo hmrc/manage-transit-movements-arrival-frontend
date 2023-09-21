@@ -88,13 +88,13 @@ object EquipmentDomain {
       }
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case IncidentCode("3", _) | IncidentCode("6", _) =>
+      case x if x.code == "3" || x.code == "6" =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true  => readsWithContainerId
           case false => readsWithOptionalContainerId
         }
-      case IncidentCode("2", _) | IncidentCode("4", _) => readsWithOptionalContainerId
-      case IncidentCode("1", _) | IncidentCode("5", _) => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      case x if x.code == "2" || x.code == "4" => readsWithOptionalContainerId
+      case x if x.code == "1" || x.code == "5" => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity
