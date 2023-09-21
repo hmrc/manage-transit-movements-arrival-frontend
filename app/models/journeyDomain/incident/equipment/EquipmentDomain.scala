@@ -66,7 +66,7 @@ object EquipmentDomain {
     }
 
     lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
-      case IncidentCode("2", _) => sealsReads
+      case x if x.code == "2" => sealsReads
       case _                    => optionalSealsReads
     }
 
