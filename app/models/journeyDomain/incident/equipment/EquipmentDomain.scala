@@ -65,11 +65,9 @@ object EquipmentDomain {
       case false => UserAnswersReader.apply(ItemNumbersDomain(Nil))
     }
 
-    lazy val sealsReadsByIncidentCode: UserAnswersReader[SealsDomain] = IncidentCodePage(incidentIndex).reader.flatMap {
-      _.code match {
-        case SealsBrokenOrTamperedCode => sealsReads
-        case _                         => optionalSealsReads
-      }
+    lazy val sealsReadsByIncidentCode: UserAnswersReader[SealsDomain] = IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+      case SealsBrokenOrTamperedCode => sealsReads
+      case _                         => optionalSealsReads
     }
 
     lazy val readsWithContainerId: UserAnswersReader[EquipmentDomain] = (
