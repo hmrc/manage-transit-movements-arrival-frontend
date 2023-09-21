@@ -48,7 +48,7 @@ class IdentificationController @Inject() (
     with I18nSupport {
 
   private def form(identification: Seq[Identification]): Form[Identification] =
-    formProvider("incident.transportMeans.identification", identification)
+    formProvider.applyDynamic("incident.transportMeans.identification", identification)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>

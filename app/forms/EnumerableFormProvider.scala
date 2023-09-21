@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Enumerable
+import models.{DynamicRadioable, Enumerable, Radioable}
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,5 +30,8 @@ class EnumerableFormProvider @Inject() extends Mappings {
     )
 
   def apply[T](prefix: String, values: Seq[T])(implicit et: Seq[T] => Enumerable[T]): Form[T] =
+    apply(prefix)(et(values))
+
+  def applyDynamic[T <: DynamicRadioable[T]](prefix: String, values: Seq[T])(implicit et: Seq[T] => Enumerable[T]): Form[T] =
     apply(prefix)(et(values))
 }
