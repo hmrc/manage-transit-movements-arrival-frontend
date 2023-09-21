@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
+import models.incident.IncidentCode
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -117,6 +118,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |    {
       |      "code": "AD",
       |      "description": "Andorra"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val incidentCodeResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "1",
+      |      "description": "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
+      |    },
+      |    {
+      |      "code": "2",
+      |     "description": "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier's control."
       |    }
       |  ]
       |}
@@ -232,6 +249,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getNationalities())
+      }
+    }
+    "getIncidentCodes" - {
+      val url = s"/$baseUrl/lists/IncidentCode"
+
+      "must return a successful future response with a sequence of IncidentCodes" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(incidentCodeResponseJson))
+        )
+
+        val expectedResult = Seq(
+          IncidentCode(
+            "1",
+            "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
+          ),
+          IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier's control.")
+        )
+
+        connector.getIncidentCodes().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getIncidentCodes())
       }
     }
 
