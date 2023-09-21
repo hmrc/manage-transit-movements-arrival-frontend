@@ -58,54 +58,5 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
           Json.toJson(identification) mustEqual JsString(identification.toString)
       }
     }
-
-    "must convert to string" - {
-
-      "when sea going vessel" in {
-        val result = SeaGoingVessel.toString
-        result mustBe "Name of a sea-going vessel"
-      }
-      "when IATA flight number" in {
-        val result = IataFlightNumber.toString
-        result mustBe "IATA flight number"
-      }
-      "when inland waterways vehicle" in {
-        val result = InlandWaterwaysVehicle.toString
-        result mustBe "Name of an inland waterways vehicle"
-      }
-      "when IMO ship identification number" in {
-        val result = ImoShipIdNumber.toString
-        result mustBe "IMO ship identification number"
-      }
-      "when wagon number" in {
-        val result = WagonNumber.toString
-        result mustBe "Wagon number"
-      }
-      "when train number" in {
-        val result = TrainNumber.toString
-        result mustBe "Train number"
-      }
-      "when reg number of road vehicle" in {
-        val result = RegNumberRoadVehicle.toString
-        result mustBe "Registration number of a road vehicle"
-      }
-      "when reg number of road trailer" in {
-        val result = RegNumberRoadTrailer.toString
-        result mustBe "Registration number of a road trailer"
-      }
-      "when reg number of aircraft" in {
-        val result = RegNumberAircraft.toString
-        result mustBe "Registration number of an aircraft"
-      }
-      "when european vessel identification number" in {
-        val result = EuropeanVesselIdNumber.toString
-        result mustBe "European vessel identification number (ENI code)"
-      }
-      "when unknown" in {
-        val result = Unknown.toString
-        result mustBe "Unknown - this can only be used during the transitional period"
-      }
-    }
-
   }
 }

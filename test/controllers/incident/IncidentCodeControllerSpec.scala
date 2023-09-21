@@ -23,7 +23,6 @@ import models.NormalMode
 import models.incident.IncidentCode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mock
 import org.mockito.Mockito.{reset, when}
 import pages.incident.IncidentCodePage
 import play.api.inject.bind

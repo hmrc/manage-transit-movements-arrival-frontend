@@ -44,7 +44,7 @@ class IncidentsAnswersHelper(
     args = index.display
   )(IncidentDomain.userAnswersReader(index))
 
-  def addOrRemoveIncidents: Option[Link] = buildLink(IncidentsSection) {
+  def addOrRemoveIncidents(): Option[Link] = buildLink(IncidentsSection) {
     Link(
       id = "add-or-remove-incidents",
       text = messages("arrivals.checkYourAnswers.incidents.addOrRemove"),

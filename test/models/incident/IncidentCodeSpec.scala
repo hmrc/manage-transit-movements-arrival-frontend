@@ -34,11 +34,17 @@ class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChe
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(ics)
-
-      forAll(gen) {
-        incidentCode =>
-          JsString(incidentCode.toString).validate[IncidentCode].asOpt.value mustEqual incidentCode
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val incidentCode = IncidentCode(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[IncidentCode] mustBe incidentCode
       }
     }
 
@@ -48,17 +54,21 @@ class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChe
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[IncidentCode] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[IncidentCode] mustEqual JsError("error.expected.jsobject")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(ics)
-
-      forAll(gen) {
-        incidentCode =>
-          Json.toJson(incidentCode) mustEqual JsString(incidentCode.toString)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val incidentCode = IncidentCode(code, description)
+          Json.toJson(incidentCode) mustBe Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
   }

@@ -55,7 +55,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               result.key.value mustBe "Location type"
               val key = s"locationOfGoods.typeOfLocation.$typeOfLocation"
               messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe typeOfLocation.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -92,7 +92,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               result.key.value mustBe "Identifier type"
               val key = s"qualifierOfIdentification.$qualifierOfIdentification"
               messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe qualifierOfIdentification.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
