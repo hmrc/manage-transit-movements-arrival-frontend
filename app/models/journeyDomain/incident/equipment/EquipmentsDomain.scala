@@ -46,7 +46,7 @@ object EquipmentsDomain {
         .map(EquipmentsDomain(_)(incidentIndex))
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case IncidentCode("3", _) | IncidentCode("6", _) =>
+      case x if x.code == "3" | x.code == "6" =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true => readEquipments
           case false =>
@@ -55,8 +55,8 @@ object EquipmentsDomain {
               case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
             }
         }
-      case IncidentCode("2", _) | IncidentCode("4", _) => readEquipments
-      case IncidentCode("1", _) | IncidentCode("5", _) => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+      case x if x.code == "2" | x.code == "4" => readEquipments
+      case x if x.code == "1" | x.code == "5" => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
     }
   }
   // scalastyle:on cyclomatic.complexity
