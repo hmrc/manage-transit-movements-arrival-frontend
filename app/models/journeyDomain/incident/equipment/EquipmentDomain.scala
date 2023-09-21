@@ -16,14 +16,13 @@
 
 package models.journeyDomain.incident.equipment
 
-import cats.data.Kleisli
 import cats.implicits._
 import controllers.incident.equipment.routes
 import forms.Constants._
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
-import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
@@ -73,13 +72,13 @@ object EquipmentDomain {
       }
     }
 
-    lazy val readsWithContainerId:UserAnswersReader[EquipmentDomain] = (
+    lazy val readsWithContainerId: UserAnswersReader[EquipmentDomain] = (
       ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
       sealsReadsByIncidentCode,
       optionalItemNumbersReads
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
 
-    lazy val readsWithOptionalContainerId:  UserAnswersReader[EquipmentDomain] =
+    lazy val readsWithOptionalContainerId: UserAnswersReader[EquipmentDomain] =
       ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
         case true => readsWithContainerId
         case false =>
