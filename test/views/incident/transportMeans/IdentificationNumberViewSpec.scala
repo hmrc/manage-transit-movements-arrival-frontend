@@ -29,8 +29,9 @@ import org.scalacheck.{Arbitrary, Gen}
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String    = "incident.transportMeans.identificationNumber"
-  private val identificationType = arbitrary[Identification].sample.value
+  override val prefix: String                    = "incident.transportMeans.identificationNumber"
+  private val identificationType: Identification = arbitrary[Identification].sample.value
+  private val messageKeyPrefix                   = "incident.transportMeans.identification"
 
   override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
 
@@ -47,7 +48,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithInsetText(identificationType.toString)
+  behave like pageWithInsetText(messages(s"$messageKeyPrefix.$identificationType"))
 
   behave like pageWithHint(
     "This can be up to 35 characters long and include both letters and numbers."

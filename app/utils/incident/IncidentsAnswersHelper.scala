@@ -38,7 +38,7 @@ class IncidentsAnswersHelper(
     getAnswersAndBuildSectionRows(IncidentsSection)(incident)
 
   def incident(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[IncidentDomain](
-    formatAnswer = _.asString(formatEnumAsString).toText,
+    formatAnswer = _.asString().toText,
     prefix = "incident",
     id = Some(s"change-incident-${index.display}"),
     args = index.display
@@ -64,8 +64,8 @@ class IncidentsAnswersHelper(
       index =>
         buildListItemWithDefault[IncidentDomain, IncidentCode](
           page = IncidentCodePage(index),
-          formatJourneyDomainModel = _.asString(formatEnumAsString),
-          formatType = _.fold(messages("incident.label", index.display))(IncidentDomain.asString(index, _)(formatEnumAsString)),
+          formatJourneyDomainModel = _.asString(),
+          formatType = _.fold(messages("incident.label", index.display))(IncidentDomain.asString(index, _)),
           removeRoute = Option(routes.ConfirmRemoveIncidentController.onPageLoad(mrn, mode, index))
         )(IncidentDomain.userAnswersReader(index), implicitly)
     }
