@@ -19,6 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import logging.Logging
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -78,6 +79,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getIncidentCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[IncidentCode]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/IncidentCode"
     http.GET[Seq[IncidentCode]](url = url, headers = version2Header)
+  }
+
+  def getIncidentIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
+    val url = s"${config.customsReferenceDataUrl}/lists/QualifierOfIdentificationIncident"
+    http.GET[Seq[Identification]](url = url, headers = version2Header)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {

@@ -28,6 +28,8 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.transportMeans.IdentificationView
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
+import play.api.data.Form
+import services.IncidentCodeService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +39,7 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
+  incidentCodeService: IncidentCodeService,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView
@@ -44,28 +47,35 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[Identification]("incident.transportMeans.identification")
+  private def form(identification: Seq[Identification]): Form[Identification] =
+    formProvider("incident.transportMeans.identification", identification)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IdentificationPage(incidentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      incidentCodeService.getIncidentIdentifications().map {
+        incidentIdentifications =>
+          val preparedForm = request.userAnswers.get(IdentificationPage(incidentIndex)) match {
+            case None        => form(incidentIdentifications)
+            case Some(value) => form(incidentIdentifications).fill(value)
+          }
 
-      Ok(view(preparedForm, mrn, Identification.values, mode, incidentIndex))
+          Ok(view(preparedForm, mrn, incidentIdentifications, mode, incidentIndex))
+      }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, Identification.values, mode, incidentIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
-            IdentificationPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
+      incidentCodeService.getIncidentIdentifications().flatMap {
+        incidentIdentifications =>
+          form(incidentIdentifications)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, incidentIdentifications, mode, incidentIndex))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
+                IdentificationPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()
+              }
+            )
+      }
   }
 }

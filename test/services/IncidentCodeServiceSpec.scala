@@ -19,6 +19,7 @@ package services
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -34,6 +35,10 @@ class IncidentCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
   val incidentCode1: IncidentCode = IncidentCode("A", "Test1")
   val incidentCode2: IncidentCode = IncidentCode("B", "Test2")
   val incidentCodes               = Seq(incidentCode1, incidentCode2)
+
+  val incidentId1: Identification = Identification("U", "Test1")
+  val incidentId2: Identification = Identification("V", "Test2")
+  val incidentIds                 = Seq(incidentId1, incidentId2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -51,6 +56,18 @@ class IncidentCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
         service.getIncidentCodes().futureValue mustBe incidentCodes
 
         verify(mockRefDataConnector).getIncidentCodes()(any(), any())
+      }
+    }
+
+    "getIncidentIdentifications" - {
+      "must return a list of sorted incident identifications" in {
+
+        when(mockRefDataConnector.getIncidentIdentifications()(any(), any()))
+          .thenReturn(Future.successful(incidentIds))
+
+        service.getIncidentIdentifications().futureValue mustBe incidentIds
+
+        verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
       }
     }
   }

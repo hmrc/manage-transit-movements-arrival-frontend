@@ -16,72 +16,18 @@
 
 package models.incident.transportMeans
 
-import models.{EnumerableType, Radioable, WithName}
+import models.{DynamicEnumerableType, DynamicRadioable}
+import play.api.libs.json.{Format, Json}
 
-sealed trait Identification extends Radioable[Identification] {
+case class Identification(qualifier: String, description: String) extends DynamicRadioable[Identification] {
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
-  val code: String
+  override def toString: String         = s"$description"
+
+  override val code: String = qualifier
 }
 
-object Identification extends EnumerableType[Identification] {
+object Identification extends DynamicEnumerableType[Identification] {
+  implicit val format: Format[Identification] = Json.format[Identification]
 
-  case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification {
-    override val code: String = "11"
-  }
-
-  case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
-    override val code: String = "40"
-  }
-
-  case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
-    override val code: String = "81"
-  }
-
-  case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
-    override val code: String = "10"
-  }
-
-  case object WagonNumber extends WithName("wagonNumber") with Identification {
-    override val code: String = "20"
-  }
-
-  case object TrainNumber extends WithName("trainNumber") with Identification {
-    override val code: String = "21"
-  }
-
-  case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
-    override val code: String = "30"
-  }
-
-  case object RegNumberRoadTrailer extends WithName("regNumberRoadTrailer") with Identification {
-    override val code: String = "31"
-  }
-
-  case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
-    override val code: String = "41"
-  }
-
-  case object EuropeanVesselIdNumber extends WithName("europeanVesselIdNumber") with Identification {
-    override val code: String = "80"
-  }
-
-  case object Unknown extends WithName("unknown") with Identification {
-    override val code: String = "99"
-  }
-
-  val messageKeyPrefix: String = "incident.transportMeans.identification"
-
-  val values: Seq[Identification] = Seq(
-    SeaGoingVessel,
-    IataFlightNumber,
-    InlandWaterwaysVehicle,
-    ImoShipIdNumber,
-    WagonNumber,
-    TrainNumber,
-    RegNumberRoadVehicle,
-    RegNumberRoadTrailer,
-    RegNumberAircraft,
-    EuropeanVesselIdNumber,
-    Unknown
-  )
+  val messageKeyPrefix = "incident.location.qualifierOfIdentification"
 }

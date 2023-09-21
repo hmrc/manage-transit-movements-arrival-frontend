@@ -18,6 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,8 +31,11 @@ class IncidentCodeService @Inject() (
   def getIncidentCodes()(implicit hc: HeaderCarrier): Future[Seq[IncidentCode]] =
     referenceDataConnector
       .getIncidentCodes()
-      .map(sort)
+      .map(_.sortBy(_.code.toLowerCase))
 
-  private def sort(incidentCodes: Seq[IncidentCode]): Seq[IncidentCode] =
-    incidentCodes.sortBy(_.code.toLowerCase)
+  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
+    referenceDataConnector
+      .getIncidentIdentifications()
+      .map(_.sortBy(_.qualifier.toLowerCase))
+
 }

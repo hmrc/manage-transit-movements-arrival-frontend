@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, 
 import generators.Generators
 import helper.WireMockServerHandler
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -118,6 +119,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |    {
       |      "code": "AD",
       |      "description": "Andorra"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val incidentIdentifiersResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "qualifier": "U",
+      |      "description":  "UN/LOCODE"
+      |    },
+      |    {
+      |      "qualifier": W",
+      |      "description": "GPS coordinates"
       |    }
       |  ]
       |}
@@ -273,6 +290,34 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getIncidentCodes())
+      }
+    }
+
+    "getIncidentIdentifications" - {
+      val url = s"/$baseUrl/lists/QualifierOfIdentificationIncident"
+
+      "must return a successful future response with a sequence of IncidentIdentifications" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(incidentIdentifiersResponseJson))
+        )
+
+        val expectedResult = Seq(
+          Identification(
+            "U",
+            "UN/LOCODE"
+          ),
+          Identification(
+            "W",
+            "GPS coordinates"
+          )
+        )
+
+        connector.getIncidentIdentifications().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getIncidentIdentifications())
       }
     }
 
