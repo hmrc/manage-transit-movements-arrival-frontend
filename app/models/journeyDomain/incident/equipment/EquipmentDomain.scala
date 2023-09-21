@@ -16,12 +16,14 @@
 
 package models.journeyDomain.incident.equipment
 
+import cats.data.Kleisli
 import cats.implicits._
 import controllers.incident.equipment.routes
+import forms.Constants._
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
@@ -64,18 +66,20 @@ object EquipmentDomain {
       case false => UserAnswersReader.apply(ItemNumbersDomain(Nil))
     }
 
-    lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
-      case x if x.code == "2" => sealsReads
-      case _                  => optionalSealsReads
+    lazy val sealsReadsByIncidentCode: Kleisli[EitherType, UserAnswers, SealsDomain] = IncidentCodePage(incidentIndex).reader.flatMap {
+      _.code match {
+        case SealsBrokenOrTamperedCode => sealsReads
+        case _                         => optionalSealsReads
+      }
     }
 
-    lazy val readsWithContainerId = (
+    lazy val readsWithContainerId: Kleisli[EitherType, UserAnswers, EquipmentDomain] = (
       ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
       sealsReadsByIncidentCode,
       optionalItemNumbersReads
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
 
-    lazy val readsWithOptionalContainerId =
+    lazy val readsWithOptionalContainerId: Kleisli[EitherType, UserAnswers, EquipmentDomain] =
       ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
         case true => readsWithContainerId
         case false =>
@@ -87,15 +91,18 @@ object EquipmentDomain {
       }
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case x if x.code == "3" || x.code == "6" =>
-        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true  => readsWithContainerId
-          case false => readsWithOptionalContainerId
-        }
-      case x if x.code == "2" || x.code == "4" => readsWithOptionalContainerId
-      case x if x.code == "1" || x.code == "5" => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      _.code match {
+        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+          ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+            case true  => readsWithContainerId
+            case false => readsWithOptionalContainerId
+          }
+        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
+        case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      }
     }
   }
+
   // scalastyle:on cyclomatic.complexity
   // scalastyle:on method.length
 }

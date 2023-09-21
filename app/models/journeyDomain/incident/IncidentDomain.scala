@@ -16,7 +16,8 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits._
+import cats.implicits.catsSyntaxTuple7Semigroupal
+import forms.Constants._
 import models.incident.IncidentCode
 import models.incident.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
@@ -44,7 +45,6 @@ case class IncidentDomain(
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
-
 }
 
 object IncidentDomain {
@@ -56,7 +56,7 @@ object IncidentDomain {
 
     val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
       .filterOptionalDependent(
-        x => x.code == "3" || x.code == "6"
+        x => x.code == TransferredToAnotherTransportCode | x.code == UnexpectedlyChangedCode
       )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
 
     (

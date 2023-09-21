@@ -17,7 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import controllers.incident.equipment.routes
-import models.incident.IncidentCode
+import forms.Constants._
 import models.incident.IncidentCode._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
@@ -46,17 +46,19 @@ object EquipmentsDomain {
         .map(EquipmentsDomain(_)(incidentIndex))
 
     IncidentCodePage(incidentIndex).reader.flatMap {
-      case x if x.code == "3" | x.code == "6" =>
-        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true => readEquipments
-          case false =>
-            AddTransportEquipmentPage(incidentIndex).reader.flatMap {
-              case true  => readEquipments
-              case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
-            }
-        }
-      case x if x.code == "2" | x.code == "4" => readEquipments
-      case x if x.code == "1" | x.code == "5" => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+      _.code match {
+        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+          ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+            case true => readEquipments
+            case false =>
+              AddTransportEquipmentPage(incidentIndex).reader.flatMap {
+                case true  => readEquipments
+                case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+              }
+          }
+        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readEquipments
+        case _                                                        => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+      }
     }
   }
   // scalastyle:on cyclomatic.complexity
