@@ -17,8 +17,9 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.QualifierOfIdentification.CustomsOffice
-import models.{Mode, QualifierOfIdentification, UserAnswers}
+import forms.Constants.CustomsOfficeCode
+import models.reference.QualifierOfIdentification
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.locationOfGoods.{ContactPersonSection, LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
@@ -38,9 +39,9 @@ case object QualifierOfIdentificationPage extends QuestionPage[QualifierOfIdenti
   override def cleanup(value: Option[QualifierOfIdentification], userAnswers: UserAnswers): Try[UserAnswers] = {
 
     def removeContactPerson(value: QualifierOfIdentification, userAnswers: UserAnswers): Try[UserAnswers] =
-      value match {
-        case CustomsOffice => userAnswers.remove(AddContactPersonPage).flatMap(_.remove(ContactPersonSection))
-        case _             => Success(userAnswers)
+      value.code match {
+        case CustomsOfficeCode => userAnswers.remove(AddContactPersonPage).flatMap(_.remove(ContactPersonSection))
+        case _                 => Success(userAnswers)
       }
 
     value match {

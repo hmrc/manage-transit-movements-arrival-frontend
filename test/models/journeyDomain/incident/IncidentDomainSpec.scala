@@ -19,9 +19,8 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
-import models.incident.IncidentCode
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

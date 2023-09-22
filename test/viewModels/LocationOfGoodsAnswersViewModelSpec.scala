@@ -18,7 +18,7 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.QualifierOfIdentification._
+import models.reference.QualifierOfIdentification._
 import models.identification.ProcedureType
 import models.{Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary

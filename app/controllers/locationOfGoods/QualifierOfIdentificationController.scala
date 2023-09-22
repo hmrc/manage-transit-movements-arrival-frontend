@@ -19,12 +19,15 @@ package controllers.locationOfGoods
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{Mode, MovementReferenceNumber, QualifierOfIdentification}
+import models.reference.QualifierOfIdentification
+import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.{QualifierOfIdentificationPage, TypeOfLocationPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.IncidentCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.QualifierOfIdentificationView
 
@@ -39,22 +42,28 @@ class QualifierOfIdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: QualifierOfIdentificationView
+  view: QualifierOfIdentificationView,
+  service: IncidentCodeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification")
+  private def form(qualifiers: Seq[QualifierOfIdentification]): Form[QualifierOfIdentification] =
+    formProvider[QualifierOfIdentification]("locationOfGoods.qualifierOfIdentification", qualifiers)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(getMandatoryPage(TypeOfLocationPage)) {
+    .andThen(getMandatoryPage(TypeOfLocationPage))
+    .async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        service.getIdentifications(request.arg).map {
+          qualifiers =>
+            val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
+              case None        => form(qualifiers)
+              case Some(value) => form(qualifiers).fill(value)
+            }
+            Ok(view(preparedForm, mrn, qualifiers, mode))
         }
-        Ok(view(preparedForm, mrn, QualifierOfIdentification.values(request.arg), mode))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
@@ -62,14 +71,17 @@ class QualifierOfIdentificationController @Inject() (
     .andThen(getMandatoryPage(TypeOfLocationPage))
     .async {
       implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.values(request.arg), mode))),
-            value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
-            }
-          )
+        service.getIdentifications(request.arg).flatMap {
+          qualifiers =>
+            form(qualifiers)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, qualifiers, mode))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  QualifierOfIdentificationPage.writeToUserAnswers(value).writeToSession().navigate()
+                }
+              )
+        }
     }
 }

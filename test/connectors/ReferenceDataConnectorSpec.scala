@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion

@@ -19,7 +19,7 @@ package models.journeyDomain.incident.equipment
 import cats.implicits._
 import controllers.incident.equipment.routes
 import forms.Constants._
-import models.incident.IncidentCode._
+import models.reference.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package models.incident
+package models.reference
 
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
-case class IncidentCode(code: String, description: String) extends Radioable[IncidentCode] {
+case class Identification(qualifier: String, description: String) extends Radioable[Identification] {
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+  override def toString: String         = s"$description"
 
-  override def toString: String = s"$code - $description"
-
-  override val messageKeyPrefix: String = "incident.incidentCode"
+  override val code: String = qualifier
 }
 
-object IncidentCode extends DynamicEnumerableType[IncidentCode] {
-  implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
-  val messageKeyPrefix: String              = "incident.incidentCode"
+object Identification extends DynamicEnumerableType[Identification] {
+  implicit val format: Format[Identification] = Json.format[Identification]
+
+  val messageKeyPrefix = "incident.location.qualifierOfIdentification"
 }

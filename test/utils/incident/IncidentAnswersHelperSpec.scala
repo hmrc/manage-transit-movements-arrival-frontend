@@ -24,11 +24,9 @@ import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
 import forms.Constants.SealsBrokenOrTamperedCode
 import generators.Generators
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Nationality}
+import models.reference.{Country, Identification, IncidentCode, Nationality}
 import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

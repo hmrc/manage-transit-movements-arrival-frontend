@@ -18,7 +18,7 @@ package views.incident
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
 import forms.Constants._
 import generators.Generators
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, NormalMode, UserAnswers}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentCaptor

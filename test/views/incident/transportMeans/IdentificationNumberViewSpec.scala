@@ -18,7 +18,7 @@ package views.incident.transportMeans
 
 import forms.IdentificationNumberFormProvider
 import models.NormalMode
-import models.incident.transportMeans.Identification
+import models.reference.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

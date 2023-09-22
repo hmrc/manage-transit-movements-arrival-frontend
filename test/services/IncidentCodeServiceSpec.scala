@@ -18,8 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
+import models.reference.{Identification, IncidentCode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach

@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.QualifierOfIdentification._
+import models.reference.QualifierOfIdentification._
 import models.locationOfGoods.TypeOfLocation
 import models.locationOfGoods.TypeOfLocation.{ApprovedPlace, DesignatedLocation, Other}
 import org.scalacheck.Arbitrary.arbitrary

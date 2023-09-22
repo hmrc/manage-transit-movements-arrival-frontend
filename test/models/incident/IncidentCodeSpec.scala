@@ -17,7 +17,8 @@
 package models.incident
 
 import base.SpecBase
-import models.incident.IncidentCode._
+import models.reference.IncidentCode
+import models.reference.IncidentCode._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues

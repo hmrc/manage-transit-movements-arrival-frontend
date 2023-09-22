@@ -17,7 +17,7 @@
 package pages.incident.transportMeans
 
 import controllers.incident.transportMeans.routes
-import models.incident.transportMeans.Identification
+import models.reference.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident.TransportMeansSection

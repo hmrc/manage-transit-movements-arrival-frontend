@@ -19,8 +19,8 @@ package controllers.incident.transportMeans
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
+import models.reference.Identification
 import models.{Index, Mode, MovementReferenceNumber}
-import models.incident.transportMeans.Identification
 import pages.incident.transportMeans.IdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +48,7 @@ class IdentificationController @Inject() (
     with I18nSupport {
 
   private def form(identification: Seq[Identification]): Form[Identification] =
-    formProvider.applyDynamic("incident.transportMeans.identification", identification)
+    formProvider[Identification]("incident.transportMeans.identification", identification)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>

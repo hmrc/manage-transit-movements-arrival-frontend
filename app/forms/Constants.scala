@@ -36,7 +36,11 @@ object Constants {
   lazy val CarrierUnableToComplyCode         = "5"
   lazy val UnexpectedlyChangedCode           = "6"
 
-  lazy val idUnlocodeCode    = "U"
-  lazy val idCoordinatesCode = "W"
-  lazy val idFreeTextCode    = "Z"
+  lazy val PostalCodeCode          = "T"
+  lazy val UnlocodeCode            = "U"
+  lazy val CustomsOfficeCode       = "V"
+  lazy val CoordinatesCode         = "W"
+  lazy val EoriNumberCode          = "X"
+  lazy val AuthorisationNumberCode = "Y"
+  lazy val AddressCode             = "Z"
 }

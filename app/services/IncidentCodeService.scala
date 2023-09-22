@@ -17,8 +17,8 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
+import models.locationOfGoods.TypeOfLocation
+import models.reference.{Identification, IncidentCode, QualifierOfIdentification}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -37,5 +37,16 @@ class IncidentCodeService @Inject() (
     referenceDataConnector
       .getIncidentIdentifications()
       .map(_.sortBy(_.qualifier.toLowerCase))
+
+  // TODO - filter based on location type
+  // Need 2 separate methods - one for location of goods and one for incident location
+  // The location of goods one needs to be filtered by TypeOfLocationPage
+  def getIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
+    referenceDataConnector
+      .getIdentifications()
+      .map(_.sortBy(_.qualifier.toLowerCase))
+
+  def getIdentifications(locationType: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
+    getIdentifications()
 
 }

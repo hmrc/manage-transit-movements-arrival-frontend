@@ -17,7 +17,8 @@
 package models.incident.transportMeans
 
 import base.SpecBase
-import models.incident.transportMeans.Identification._
+import models.reference.Identification
+import models.reference.Identification._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues

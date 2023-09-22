@@ -19,7 +19,7 @@ package controllers.incident
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentCodePage

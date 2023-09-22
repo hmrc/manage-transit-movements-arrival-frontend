@@ -21,7 +21,6 @@ import config.PhaseConfig
 import forms.Constants.UnexpectedlyChangedCode
 import generators.Generators
 import models.identification.ProcedureType
-import models.incident.IncidentCode
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
@@ -29,7 +28,7 @@ import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomai
 import models.journeyDomain.incident.{IncidentDomain, IncidentUnLocodeLocationDomain, IncidentsDomain, TransportMeansDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CustomsOffice, Nationality}
+import models.reference.{Country, CustomsOffice, Identification, IncidentCode, Nationality}
 import models.{DynamicAddress, Phase, QualifierOfIdentification}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,7 +36,6 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
-import models.incident.transportMeans.Identification
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage}

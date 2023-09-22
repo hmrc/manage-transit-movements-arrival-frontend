@@ -17,10 +17,8 @@
 package generators
 
 import models.identification.ProcedureType
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, Nationality}
+import models.reference.{Country, CustomsOffice, Identification, IncidentCode, Nationality}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

@@ -19,10 +19,8 @@ package generators
 import forms.Constants._
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.reference._
-import models.{QualifierOfIdentification, _}
+import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -45,7 +43,7 @@ trait ModelGenerators {
     IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control.")
   private val ics = Seq(ic1, ic2)
 
-  implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
+  implicit lazy val arbitraryIdentification: Arbitrary[Identification] =
     Arbitrary {
       Gen.oneOf(ids)
     }

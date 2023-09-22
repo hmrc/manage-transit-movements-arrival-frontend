@@ -19,8 +19,8 @@ package models.journeyDomain.incident.equipment
 import base.SpecBase
 import forms.Constants._
 import models.Index
-import models.incident.IncidentCode
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import models.reference.IncidentCode
 import org.scalacheck.Gen
 import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}

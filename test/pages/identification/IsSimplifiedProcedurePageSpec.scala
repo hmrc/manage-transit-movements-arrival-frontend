@@ -16,7 +16,7 @@
 
 package pages.identification
 
-import models.QualifierOfIdentification
+import models.reference.QualifierOfIdentification
 import models.identification.ProcedureType
 import models.locationOfGoods.TypeOfLocation
 import org.scalacheck.Arbitrary.arbitrary
