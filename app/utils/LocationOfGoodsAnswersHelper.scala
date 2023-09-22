@@ -31,7 +31,7 @@ class LocationOfGoodsAnswersHelper(
 
   def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[TypeOfLocation](
     page = TypeOfLocationPage,
-    formatAnswer = formatEnumAsText(TypeOfLocation.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "locationOfGoods.typeOfLocation",
     id = Some("type-of-location")
   )

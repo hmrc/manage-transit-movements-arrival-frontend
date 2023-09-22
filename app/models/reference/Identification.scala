@@ -19,11 +19,11 @@ package models.reference
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
-case class Identification(qualifier: String, description: String) extends Radioable[Identification] {
+case class Identification(`type`: String, description: String) extends Radioable[Identification] {
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
-  override def toString: String         = s"$description"
+  override def toString: String         = description
 
-  override val code: String = qualifier
+  override val code: String = `type`
 }
 
 object Identification extends DynamicEnumerableType[Identification] {

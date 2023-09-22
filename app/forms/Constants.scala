@@ -43,4 +43,9 @@ object Constants {
   lazy val EoriNumberCode          = "X"
   lazy val AuthorisationNumberCode = "Y"
   lazy val AddressCode             = "Z"
+
+  lazy val DesignatedLocation = "A"
+  lazy val AuthorisedPlace    = "B"
+  lazy val ApprovedPlace      = "C"
+  lazy val OtherLocation      = "D"
 }

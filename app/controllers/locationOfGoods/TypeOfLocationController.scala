@@ -23,9 +23,11 @@ import models.locationOfGoods.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.TypeOfLocationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.IncidentCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.TypeOfLocationView
 
@@ -39,33 +41,41 @@ class TypeOfLocationController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TypeOfLocationView
+  view: TypeOfLocationView,
+  service: IncidentCodeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation")
+  private def form(typesOfLocation: Seq[TypeOfLocation]): Form[TypeOfLocation] =
+    formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation", typesOfLocation)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TypeOfLocationPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getTypesOfLocation().map {
+        typesOfLocation =>
+          val preparedForm = request.userAnswers.get(TypeOfLocationPage) match {
+            case None        => form(typesOfLocation)
+            case Some(value) => form(typesOfLocation).fill(value)
+          }
 
-      Ok(view(preparedForm, mrn, TypeOfLocation.values(request.userAnswers), mode))
+          Ok(view(preparedForm, mrn, typesOfLocation, mode))
+      }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, TypeOfLocation.values(request.userAnswers), mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
+      service.getTypesOfLocation().flatMap {
+        typesOfLocation =>
+          form(typesOfLocation)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, typesOfLocation, mode))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()
+              }
+            )
+      }
   }
 }

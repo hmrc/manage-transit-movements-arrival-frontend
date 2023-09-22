@@ -158,7 +158,7 @@ class IncidentAnswersHelper(
 
   def transportMeansIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(incidentIndex),
-    formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "incident.transportMeans.identification",
     id = Some("change-transport-means-identification-type")
   )

@@ -24,6 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO - rename to ReferenceDataService or DynamicRadioService or something
 class IncidentCodeService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
@@ -33,10 +34,15 @@ class IncidentCodeService @Inject() (
       .getIncidentCodes()
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
+  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIncidentIdentifications()
       .map(_.sortBy(_.qualifier.toLowerCase))
+
+  def getTransportIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
+    referenceDataConnector
+      .getTransportIdentifications()
+      .map(_.sortBy(_.`type`.toLowerCase))
 
   // TODO - filter based on location type
   // Need 2 separate methods - one for location of goods and one for incident location
@@ -49,4 +55,9 @@ class IncidentCodeService @Inject() (
   def getIdentifications(locationType: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     getIdentifications()
 
+  // TODO - filter based on IsSimplifiedProcedurePage (see TypeOfLocation.scala)
+  def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
+    referenceDataConnector
+      .getTypesOfLocation()
+      .map(_.sortBy(_.`type`.toLowerCase))
 }

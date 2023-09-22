@@ -20,6 +20,7 @@ import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
 case class QualifierOfIdentification(qualifier: String, description: String) extends Radioable[QualifierOfIdentification] {
+  override def toString: String         = description
   override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
   override val code: String             = qualifier
 }

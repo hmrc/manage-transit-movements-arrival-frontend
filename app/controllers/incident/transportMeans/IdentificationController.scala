@@ -21,15 +21,15 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.reference.Identification
 import models.{Index, Mode, MovementReferenceNumber}
+import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.transportMeans.IdentificationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.IncidentCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.transportMeans.IdentificationView
-import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
-import play.api.data.Form
-import services.IncidentCodeService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +52,7 @@ class IdentificationController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      incidentCodeService.getIncidentIdentifications().map {
+      incidentCodeService.getTransportIdentifications().map {
         incidentIdentifications =>
           val preparedForm = request.userAnswers.get(IdentificationPage(incidentIndex)) match {
             case None        => form(incidentIdentifications)
@@ -65,7 +65,7 @@ class IdentificationController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      incidentCodeService.getIncidentIdentifications().flatMap {
+      incidentCodeService.getTransportIdentifications().flatMap {
         incidentIdentifications =>
           form(incidentIdentifications)
             .bindFromRequest()
