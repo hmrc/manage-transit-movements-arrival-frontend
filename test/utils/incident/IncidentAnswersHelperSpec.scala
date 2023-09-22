@@ -22,7 +22,7 @@ import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
-import forms.Constants.SealsBrokenOrTamperedCode
+import config.Constants._
 import generators.Generators
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain

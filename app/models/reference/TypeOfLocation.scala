@@ -30,10 +30,4 @@ object TypeOfLocation extends DynamicEnumerableType[TypeOfLocation] {
 
   val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
 
-  /*def values(userAnswers: UserAnswers): Seq[TypeOfLocation] =
-    userAnswers.get(IsSimplifiedProcedurePage) match {
-      case Some(Simplified) => values
-      case _                => values.filterNot(_ == AuthorisedPlace)
-    }*/
-
 }

@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import views.html.incident.IncidentCodeView
 
 import scala.concurrent.Future
@@ -40,17 +40,17 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val ics = arbitrary[Seq[IncidentCode]].sample.value
   private val ic  = ics.head
 
-  private val formProvider                                 = new EnumerableFormProvider()
-  private val form                                         = formProvider[IncidentCode]("incident.incidentCode", ics)
-  private val mode                                         = NormalMode
-  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
-  private val mockIncidentCodeService: IncidentCodeService = mock[IncidentCodeService]
+  private val formProvider                                              = new EnumerableFormProvider()
+  private val form                                                      = formProvider[IncidentCode]("incident.incidentCode", ics)
+  private val mode                                                      = NormalMode
+  private lazy val incidentCodeRoute                                    = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
+  private val mockIncidentCodeService: ReferenceDataDynamicRadioService = mock[ReferenceDataDynamicRadioService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
-      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockIncidentCodeService))
+      .overrides(bind(classOf[ReferenceDataDynamicRadioService]).toInstance(mockIncidentCodeService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

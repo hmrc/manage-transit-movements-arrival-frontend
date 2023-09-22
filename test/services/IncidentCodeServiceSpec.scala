@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class IncidentCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  val service                                      = new IncidentCodeService(mockRefDataConnector)
+  val service                                      = new ReferenceDataDynamicRadioService(mockRefDataConnector)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

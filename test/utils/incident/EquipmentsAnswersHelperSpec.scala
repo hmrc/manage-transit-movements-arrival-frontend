@@ -17,8 +17,8 @@
 package utils.incident
 
 import base.SpecBase
+import config.Constants._
 import controllers.incident.equipment._
-import forms.Constants._
 import generators.Generators
 import models.reference.IncidentCode
 import models.{Index, Mode}

@@ -16,7 +16,7 @@
 
 package pages.incident.location
 
-import forms.Constants.{AddressCode, CoordinatesCode, UnlocodeCode}
+import config.Constants._
 import models.reference.QualifierOfIdentification
 import models.{Coordinates, DynamicAddress}
 import org.scalacheck.Arbitrary.arbitrary

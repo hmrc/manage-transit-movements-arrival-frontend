@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.QualifierOfIdentificationView
 
@@ -43,7 +43,7 @@ class QualifierOfIdentificationController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QualifierOfIdentificationView,
-  service: IncidentCodeService
+  service: ReferenceDataDynamicRadioService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

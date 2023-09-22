@@ -17,7 +17,7 @@
 package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.DynamicAddress
 import models.identification.ProcedureType

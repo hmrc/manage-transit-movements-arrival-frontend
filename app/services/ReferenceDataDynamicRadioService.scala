@@ -17,14 +17,16 @@
 package services
 
 import connectors.ReferenceDataConnector
+import models.UserAnswers
+import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
+import pages.identification.IsSimplifiedProcedurePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - rename to ReferenceDataService or DynamicRadioService or something
-class IncidentCodeService @Inject() (
+class ReferenceDataDynamicRadioService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
@@ -43,9 +45,6 @@ class IncidentCodeService @Inject() (
       .getTransportIdentifications()
       .map(_.sortBy(_.`type`.toLowerCase))
 
-  // TODO - filter based on location type
-  // Need 2 separate methods - one for location of goods and one for incident location
-  // The location of goods one needs to be filtered by TypeOfLocationPage
   def getIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIdentifications()
@@ -54,9 +53,24 @@ class IncidentCodeService @Inject() (
   def getIdentifications(locationType: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     getIdentifications()
 
-  // TODO - filter based on IsSimplifiedProcedurePage (see TypeOfLocation.scala)
-  def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
-    referenceDataConnector
-      .getTypesOfLocation()
-      .map(_.sortBy(_.`type`.toLowerCase))
+  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
+    userAnswers.get(IsSimplifiedProcedurePage) match {
+      case Some(Normal) =>
+        referenceDataConnector
+          .getTypesOfLocation()
+          .map(_.sortBy(_.`type`.toLowerCase))
+      case _ =>
+        referenceDataConnector
+          .getTypesOfLocation()
+          .map(_.sortBy(_.`type`.toLowerCase))
+          .map(
+            x => filterUserAnswers(x)
+          )
+    }
+
+  def filterUserAnswers(foo: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
+    foo.filterNot(
+      x => x.code == "B"
+    )
+
 }

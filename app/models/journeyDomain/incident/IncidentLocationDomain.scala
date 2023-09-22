@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
-import forms.Constants._
+import config.Constants._
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
 import models.{Coordinates, DynamicAddress, Index}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}

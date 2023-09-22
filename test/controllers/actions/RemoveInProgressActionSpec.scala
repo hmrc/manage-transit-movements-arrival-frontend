@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.Index
 import models.journeyDomain.incident.equipment.EquipmentDomain

@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.QualifierOfIdentification

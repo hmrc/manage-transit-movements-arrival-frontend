@@ -17,7 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.IncidentCode

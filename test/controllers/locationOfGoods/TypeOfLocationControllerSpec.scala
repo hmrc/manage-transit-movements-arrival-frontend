@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import views.html.locationOfGoods.TypeOfLocationView
 
 import scala.concurrent.Future
@@ -47,18 +47,18 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode                     = NormalMode
   private lazy val typeOfLocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
 
-  private lazy val mockService: IncidentCodeService = mock[IncidentCodeService]
+  private lazy val mockService: ReferenceDataDynamicRadioService = mock[ReferenceDataDynamicRadioService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
-      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockService))
+      .overrides(bind(classOf[ReferenceDataDynamicRadioService]).toInstance(mockService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockService)
-    when(mockService.getTypesOfLocation()(any())).thenReturn(Future.successful(tois))
+    when(mockService.getTypesOfLocation(any())(any())).thenReturn(Future.successful(tois))
   }
 
   "TypeOfLocation Controller" - {

@@ -17,7 +17,7 @@
 package viewModels
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.Mode
 import models.identification.ProcedureType

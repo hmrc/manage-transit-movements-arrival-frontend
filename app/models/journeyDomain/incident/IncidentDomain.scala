@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import cats.implicits.catsSyntaxTuple7Semigroupal
-import forms.Constants._
+import config.Constants._
 import models.reference.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain

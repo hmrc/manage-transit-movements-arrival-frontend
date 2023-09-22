@@ -16,7 +16,7 @@
 
 package pages.locationOfGoods
 
-import forms.Constants.CustomsOfficeCode
+import config.Constants._
 import models.UserAnswers
 import models.reference.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary

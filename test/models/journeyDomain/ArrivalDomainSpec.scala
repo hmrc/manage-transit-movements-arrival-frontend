@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.PhaseConfig
-import forms.Constants.{AddressCode, UnexpectedlyChangedCode, UnlocodeCode}
+import config.Constants._
 import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain

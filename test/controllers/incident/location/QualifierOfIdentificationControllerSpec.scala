@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import views.html.incident.location.QualifierOfIdentificationView
 
 import scala.concurrent.Future
@@ -45,13 +45,13 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
   private val mode                                = NormalMode
   private lazy val qualifierOfIdentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode, index).url
 
-  private lazy val mockService: IncidentCodeService = mock[IncidentCodeService]
+  private lazy val mockService: ReferenceDataDynamicRadioService = mock[ReferenceDataDynamicRadioService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
-      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockService))
+      .overrides(bind(classOf[ReferenceDataDynamicRadioService]).toInstance(mockService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.TypeOfLocationView
 
@@ -42,7 +42,7 @@ class TypeOfLocationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TypeOfLocationView,
-  service: IncidentCodeService
+  service: ReferenceDataDynamicRadioService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -52,7 +52,7 @@ class TypeOfLocationController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTypesOfLocation().map {
+      service.getTypesOfLocation(request.userAnswers).map {
         typesOfLocation =>
           val preparedForm = request.userAnswers.get(TypeOfLocationPage) match {
             case None        => form(typesOfLocation)
@@ -65,7 +65,7 @@ class TypeOfLocationController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getTypesOfLocation().flatMap {
+      service.getTypesOfLocation(request.userAnswers).flatMap {
         typesOfLocation =>
           form(typesOfLocation)
             .bindFromRequest()

@@ -18,7 +18,7 @@ package controllers.incident.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.reference.IncidentCode
 import models.{Index, NormalMode, UserAnswers}
