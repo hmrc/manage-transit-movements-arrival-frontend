@@ -130,11 +130,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     |  "data": [
     |    {
     |     "qualifier": "U",
-    |      "description":  "UN/LOCODE"
+    |     "description": "UN/LOCODE"
     |    },
     |    {
-    |      "qualifier": W",
-    |       "description": "GPS coordinates"
+    |     "qualifier": "W",
+    |     "description": "GPS coordinates"
     |    }
     |  ]
     |}
