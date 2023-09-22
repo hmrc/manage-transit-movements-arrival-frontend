@@ -35,4 +35,8 @@ object Constants {
   lazy val PartiallyOrFullyUnloadedCode      = "4"
   lazy val CarrierUnableToComplyCode         = "5"
   lazy val UnexpectedlyChangedCode           = "6"
+
+  lazy val idUnlocodeCode    = "U"
+  lazy val idCoordinatesCode = "W"
+  lazy val idFreeTextCode    = "Z"
 }

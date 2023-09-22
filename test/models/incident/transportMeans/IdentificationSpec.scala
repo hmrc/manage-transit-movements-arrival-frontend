@@ -26,36 +26,50 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
+  private val id1 = Identification("U", "UN/LOCODE")
+  private val id2 = Identification("W", "GPS coordinates")
+  private val id3 = Identification("Z", "Free text")
+  private val ids = Seq(id1, id2, id3)
 
   "Identification" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(Identification.values)
-
-      forAll(gen) {
-        identification =>
-          JsString(identification.toString).validate[Identification].asOpt.value mustEqual identification
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val identification = Identification(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "qualifier": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[Identification] mustBe identification
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!Identification.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ids.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[Identification] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[Identification] mustEqual JsError("error.expected.jsobject")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(Identification.values)
-
-      forAll(gen) {
-        identification =>
-          Json.toJson(identification) mustEqual JsString(identification.toString)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val identification = Identification(code, description)
+          Json.toJson(identification) mustBe Json.parse(s"""
+               |{
+               |  "qualifier": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
   }

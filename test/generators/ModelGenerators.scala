@@ -20,6 +20,7 @@ import forms.Constants._
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.incident.IncidentCode
+import models.incident.transportMeans.Identification
 import models.reference._
 import models.{QualifierOfIdentification, _}
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,13 +32,22 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait ModelGenerators {
 
   self: Generators =>
-  private val ic1 = IncidentCode("1", "test1")
-  private val ic2 = IncidentCode("2", "test2")
+  private val id1: Identification = Identification("U", "UN/LOCODE")
+  private val id2: Identification = Identification("W", "GPS coordinates")
+  private val ids                 = Seq(id1, id2)
+
+  private val ic1: IncidentCode = IncidentCode(
+    "1",
+    "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
+  )
+
+  private val ic2: IncidentCode =
+    IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control.")
   private val ics = Seq(ic1, ic2)
 
   implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
     Arbitrary {
-      Gen.oneOf(models.incident.transportMeans.Identification.values.toSeq)
+      Gen.oneOf(ids)
     }
 
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =

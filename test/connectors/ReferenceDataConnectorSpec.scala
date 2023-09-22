@@ -126,19 +126,19 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private val incidentIdentifiersResponseJson: String =
     """
-      |{
-      |  "data": [
-      |    {
-      |      "qualifier": "U",
-      |      "description":  "UN/LOCODE"
-      |    },
-      |    {
-      |      "qualifier": W",
-      |      "description": "GPS coordinates"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
+    |{
+    |  "data": [
+    |    {
+    |     "qualifier": "U",
+    |      "description":  "UN/LOCODE"
+    |    },
+    |    {
+    |      "qualifier": W",
+    |       "description": "GPS coordinates"
+    |    }
+    |  ]
+    |}
+    |""".stripMargin
 
   private val incidentCodeResponseJson: String =
     """
@@ -150,7 +150,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |    },
       |    {
       |      "code": "2",
-      |     "description": "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier's control."
+      |     "description": "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control."
       |    }
       |  ]
       |}
@@ -282,7 +282,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             "1",
             "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
           ),
-          IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier's control.")
+          IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control.")
         )
 
         connector.getIncidentCodes().futureValue mustBe expectedResult
@@ -303,16 +303,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = Seq(
-          Identification(
-            "U",
-            "UN/LOCODE"
-          ),
-          Identification(
-            "W",
-            "GPS coordinates"
-          )
+          Identification("U", "UN/LOCODE"),
+          Identification("W", "GPS coordinates")
         )
-
         connector.getIncidentIdentifications().futureValue mustBe expectedResult
       }
 

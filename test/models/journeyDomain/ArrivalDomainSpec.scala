@@ -22,7 +22,6 @@ import forms.Constants.UnexpectedlyChangedCode
 import generators.Generators
 import models.identification.ProcedureType
 import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
@@ -38,6 +37,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.incident._
+import models.incident.transportMeans.Identification
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage}
@@ -53,6 +53,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
   private val country           = arbitrary[Country].sample.value
   private val address           = arbitrary[DynamicAddress].sample.value
   private val idNumber          = Gen.alphaNumStr.sample.value
+  private val id1               = Identification("U", "UN/LOCODE")
 
   val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
 
@@ -143,7 +144,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), text)
           .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
           .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), "1234")
-          .setValue(IdentificationPage(incidentIndex), Identification.SeaGoingVessel)
+          .setValue(IdentificationPage(incidentIndex), id1)
           .setValue(TransportMeansIdentificationNumberPage(incidentIndex), text)
           .setValue(TransportNationalityPage(incidentIndex), nationality)
 
@@ -197,7 +198,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
                   )(incidentIndex),
                   transportMeans = Some(
                     TransportMeansDomain(
-                      identificationType = Identification.SeaGoingVessel,
+                      identificationType = id1,
                       identificationNumber = text,
                       nationality = nationality
                     )

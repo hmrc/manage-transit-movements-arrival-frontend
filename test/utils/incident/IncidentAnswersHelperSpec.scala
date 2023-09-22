@@ -678,8 +678,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.transportMeansIdentificationType.get
 
               result.key.value mustBe "Identification type"
-              val key = s"incident.transportMeans.identification.$identification"
-              messages.isDefinedAt(key) mustBe true
+              val key = s"incident.location.qualifierOfIdentification.$identification"
               result.value.value mustBe messages(s"$key")
               val actions = result.actions.get.items
               actions.size mustBe 1

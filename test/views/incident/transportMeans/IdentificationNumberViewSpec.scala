@@ -31,7 +31,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String                    = "incident.transportMeans.identificationNumber"
   private val identificationType: Identification = arbitrary[Identification].sample.value
-  private val messageKeyPrefix                   = "incident.transportMeans.identification"
+  private val messageKeyPrefix                   = "incident.location.qualifierOfIdentification"
 
   override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
 

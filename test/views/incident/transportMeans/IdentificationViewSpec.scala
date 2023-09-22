@@ -27,7 +27,12 @@ import views.html.incident.transportMeans.IdentificationView
 
 class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
 
-  override def form: Form[Identification] = new EnumerableFormProvider()(prefix)
+  private val id1 = Identification("U", "UN/LOCODE")
+  private val id2 = Identification("W", "GPS coordinates")
+  private val id3 = Identification("Z", "Free text")
+  private val ids = Seq(id1, id2, id3)
+
+  override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)
@@ -37,7 +42,7 @@ class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
   override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[Identification] = Identification.values
+  override def values: Seq[Identification] = ids
 
   behave like pageWithTitle()
 

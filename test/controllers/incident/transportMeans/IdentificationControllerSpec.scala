@@ -34,8 +34,12 @@ import scala.concurrent.Future
 
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val id1                      = Identification("U", "UN/LOCODE")
+  private val id2                      = Identification("W", "GPS coordinates")
+  private val id3                      = Identification("Z", "Free text")
+  private val ids                      = Seq(id1, id2, id3)
   private val formProvider             = new EnumerableFormProvider()
-  private val form                     = formProvider[Identification]("incident.transportMeans.identification")
+  private val form                     = formProvider[Identification]("incident.transportMeans.identification", ids)
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(mrn, mode, index).url
 
@@ -59,26 +63,26 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, Identification.values, mode, index)(request, messages).toString
+        view(form, mrn, ids, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IdentificationPage(index), Identification.values.head)
+      val userAnswers = emptyUserAnswers.setValue(IdentificationPage(index), id1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> Identification.values.head.toString))
+      val filledForm = form.bind(Map("value" -> ids.head.toString))
 
       val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, Identification.values, mode, index)(request, messages).toString
+        view(filledForm, mrn, ids, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +92,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", Identification.values.head.toString))
+        .withFormUrlEncodedBody(("value", id1.toString))
 
       val result = route(app, request).value
 
@@ -111,7 +115,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, Identification.values, mode, index)(request, messages).toString
+        view(boundForm, mrn, ids, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -131,7 +135,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", Identification.values.head.toString))
+        .withFormUrlEncodedBody(("value", id1.toString))
 
       val result = route(app, request).value
 
