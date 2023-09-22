@@ -18,7 +18,6 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
-import models.locationOfGoods.TypeOfLocation
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads

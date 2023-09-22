@@ -16,8 +16,7 @@
 
 package utils
 
-import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages

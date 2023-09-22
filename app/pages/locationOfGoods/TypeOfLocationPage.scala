@@ -17,7 +17,7 @@
 package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
-import models.locationOfGoods.TypeOfLocation
+import models.reference.TypeOfLocation
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.locationOfGoods.LocationOfGoodsSection

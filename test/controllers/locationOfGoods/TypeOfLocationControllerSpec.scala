@@ -18,33 +18,48 @@ package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.NormalMode
 import models.identification.ProcedureType._
-import models.locationOfGoods.TypeOfLocation
+import models.reference.TypeOfLocation
 import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.IncidentCodeService
 import views.html.locationOfGoods.TypeOfLocationView
 
 import scala.concurrent.Future
 
-class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val tois = arbitrary[Seq[TypeOfLocation]].sample.value
+  private val toi  = tois.head
 
   private val formProvider             = new EnumerableFormProvider()
-  private val form                     = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation")
+  private val form                     = formProvider[TypeOfLocation]("locationOfGoods.typeOfLocation", tois)
   private val mode                     = NormalMode
   private lazy val typeOfLocationRoute = routes.TypeOfLocationController.onPageLoad(mrn, mode).url
+
+  private lazy val mockService: IncidentCodeService = mock[IncidentCodeService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
+      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockService)
+    when(mockService.getTypesOfLocation()(any())).thenReturn(Future.successful(tois))
+  }
 
   "TypeOfLocation Controller" - {
 
@@ -64,14 +79,14 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
+        view(form, mrn, tois, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, Simplified)
-        .setValue(TypeOfLocationPage, TypeOfLocation.values.head)
+        .setValue(TypeOfLocationPage, toi)
 
       setExistingUserAnswers(userAnswers)
 
@@ -79,14 +94,14 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> TypeOfLocation.values.head.toString))
+      val filledForm = form.bind(Map("value" -> toi.code))
 
       val view = injector.instanceOf[TypeOfLocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
+        view(filledForm, mrn, tois, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -99,7 +114,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, typeOfLocationRoute)
-        .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
+        .withFormUrlEncodedBody(("value", toi.code))
 
       val result = route(app, request).value
 
@@ -125,7 +140,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, TypeOfLocation.values(userAnswers), mode)(request, messages).toString
+        view(boundForm, mrn, tois, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -145,7 +160,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, typeOfLocationRoute)
-        .withFormUrlEncodedBody(("value", TypeOfLocation.values.head.toString))
+        .withFormUrlEncodedBody(("value", toi.code))
 
       val result = route(app, request).value
 

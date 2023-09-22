@@ -17,8 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.locationOfGoods.TypeOfLocation
-import models.reference.{Identification, IncidentCode, QualifierOfIdentification}
+import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

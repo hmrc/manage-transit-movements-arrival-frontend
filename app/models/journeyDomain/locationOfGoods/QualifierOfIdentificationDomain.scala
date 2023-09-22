@@ -34,7 +34,8 @@ object QualifierOfIdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[QualifierOfIdentificationDomain] =
     IsSimplifiedProcedurePage.reader.flatMap {
-      case ProcedureType.Simplified => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
+      case ProcedureType.Simplified =>
+        UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
       case ProcedureType.Normal =>
         QualifierOfIdentificationPage.reader.map(_.code).flatMap {
           case AddressCode             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]

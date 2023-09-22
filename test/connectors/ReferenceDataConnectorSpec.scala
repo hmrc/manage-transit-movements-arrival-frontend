@@ -301,8 +301,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = Seq(
-          Identification("U", "UN/LOCODE"),
-          Identification("W", "GPS coordinates")
+          QualifierOfIdentification("U", "UN/LOCODE"),
+          QualifierOfIdentification("W", "GPS coordinates")
         )
         connector.getIncidentIdentifications().futureValue mustBe expectedResult
       }

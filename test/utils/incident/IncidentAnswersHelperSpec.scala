@@ -26,8 +26,8 @@ import forms.Constants.SealsBrokenOrTamperedCode
 import generators.Generators
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Identification, IncidentCode, Nationality}
-import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification}
+import models.reference._
+import models.{Coordinates, DynamicAddress, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -468,9 +468,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
-              val key = s"qualifierOfIdentification.$identificationType"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(s"$key")
+              result.value.value mustBe identificationType.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -676,8 +674,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.transportMeansIdentificationType.get
 
               result.key.value mustBe "Identification type"
-              val key = s"incident.location.qualifierOfIdentification.$identification"
-              result.value.value mustBe messages(s"$key")
+              result.value.value mustBe identification.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

@@ -24,6 +24,7 @@ import models.reference.IncidentCode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.IncidentCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,9 +37,9 @@ import scala.concurrent.Future
 
 class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val ic1                                          = IncidentCode("1", "test1")
-  private val ic2                                          = IncidentCode("2", "test2")
-  private val ics                                          = Seq(ic1, ic2)
+  private val ics = arbitrary[Seq[IncidentCode]].sample.value
+  private val ic  = ics.head
+
   private val formProvider                                 = new EnumerableFormProvider()
   private val form                                         = formProvider[IncidentCode]("incident.incidentCode", ics)
   private val mode                                         = NormalMode
@@ -86,7 +87,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> ic1.toString))
+      val filledForm = form.bind(Map("value" -> ic.code))
 
       val view = injector.instanceOf[IncidentCodeView]
 
@@ -103,7 +104,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, incidentCodeRoute)
-        .withFormUrlEncodedBody(("value", ics.head.toString))
+        .withFormUrlEncodedBody(("value", ic.code))
 
       val result = route(app, request).value
 
@@ -146,7 +147,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, incidentCodeRoute)
-        .withFormUrlEncodedBody(("value", ics.head.toString))
+        .withFormUrlEncodedBody(("value", ic.code))
 
       val result = route(app, request).value
 

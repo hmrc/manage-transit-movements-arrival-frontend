@@ -17,10 +17,11 @@
 package viewModels
 
 import base.SpecBase
+import forms.Constants._
 import generators.Generators
-import models.reference.QualifierOfIdentification._
+import models.Mode
 import models.identification.ProcedureType
-import models.{Mode, QualifierOfIdentification}
+import models.reference.QualifierOfIdentification._
 import org.scalacheck.Arbitrary.arbitrary
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
@@ -78,7 +79,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
         "must have 3 rows" in {
           val initialAnswers = emptyUserAnswers
             .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-            .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
+            .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(CustomsOfficeCode).sample.value)
 
           forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
             (mode, answers) =>
@@ -92,7 +93,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when EoriNumber qualifier" - {
-        val qualifier = QualifierOfIdentification.EoriNumber
+        val qualifier = qualifierOfIdentificationGen(EoriNumberCode).sample.value
 
         "with no contact person" - {
           "must have 4 rows" in {
@@ -132,7 +133,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when AuthorisationNumber qualifier" - {
-        val qualifier = QualifierOfIdentification.AuthorisationNumber
+        val qualifier = qualifierOfIdentificationGen(AuthorisationNumberCode).sample.value
 
         "with no contact person" - {
           "must have 4 rows" in {
@@ -172,7 +173,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when Coordinates qualifier" - {
-        val qualifier = QualifierOfIdentification.Coordinates
+        val qualifier = qualifierOfIdentificationGen(CoordinatesCode).sample.value
 
         "with no contact person" - {
           "must have 4 rows" in {
@@ -212,7 +213,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when Unlocode qualifier" - {
-        val qualifier = QualifierOfIdentification.Unlocode
+        val qualifier = qualifierOfIdentificationGen(UnlocodeCode).sample.value
 
         "with no contact person" - {
           "must have 4 rows" in {
@@ -252,7 +253,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when Address qualifier" - {
-        val qualifier = QualifierOfIdentification.Address
+        val qualifier = qualifierOfIdentificationGen(AddressCode).sample.value
 
         "with no contact person" - {
           "must have 5 rows" in {
@@ -292,7 +293,7 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
       }
 
       "when PostalCode qualifier" - {
-        val qualifier = QualifierOfIdentification.PostalCode
+        val qualifier = qualifierOfIdentificationGen(PostalCodeCode).sample.value
 
         "with no contact person" - {
           "must have 4 rows" in {

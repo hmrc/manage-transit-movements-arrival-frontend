@@ -27,6 +27,8 @@ import views.html.incident.IncidentCodeView
 
 class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
 
+  override val getValue: IncidentCode => String = _.code
+
   override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[IncidentCode]): HtmlFormat.Appendable =

@@ -16,7 +16,9 @@
 
 package pages.locationOfGoods
 
-import models.{QualifierOfIdentification, UserAnswers}
+import forms.Constants.CustomsOfficeCode
+import models.UserAnswers
+import models.reference.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.locationOfGoods.{ContactPersonSection, QualifierOfIdentificationDetailsSection}
@@ -24,7 +26,7 @@ import play.api.libs.json.Json
 
 class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
-  "QualifierofidentificationPage" - {
+  "QualifierOfIdentificationPage" - {
 
     beRetrievable[QualifierOfIdentification](QualifierOfIdentificationPage)
 
@@ -38,16 +40,17 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
         val sampleUa = arbitrary[UserAnswers].sample.value
 
-        QualifierOfIdentification.values.foreach {
+        forAll(arbitrary[QualifierOfIdentification]) {
           qualifierOfIdentification =>
-            val differentQualifierOfIdentification = QualifierOfIdentification.values.filterNot(_ == qualifierOfIdentification).head
+            forAll(arbitrary[QualifierOfIdentification].retryUntil(_.qualifier != qualifierOfIdentification.qualifier)) {
+              differentQualifierOfIdentification =>
+                val result = sampleUa
+                  .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
+                  .setValue(QualifierOfIdentificationDetailsSection, Json.obj("foo" -> "bar"))
+                  .setValue(QualifierOfIdentificationPage, differentQualifierOfIdentification)
 
-            val result = sampleUa
-              .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)
-              .setValue(QualifierOfIdentificationDetailsSection, Json.obj("foo" -> "bar"))
-              .setValue(QualifierOfIdentificationPage, differentQualifierOfIdentification)
-
-            result.get(QualifierOfIdentificationDetailsSection) must not be defined
+                result.get(QualifierOfIdentificationDetailsSection) must not be defined
+            }
         }
       }
 
@@ -59,7 +62,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
               .setValue(ContactPersonNamePage, name)
               .setValue(ContactPersonTelephonePage, telephoneNumber)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(CustomsOfficeCode).sample.value)
 
             result.get(AddContactPersonPage) must not be defined
             result.get(ContactPersonSection) must not be defined
@@ -70,7 +73,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
         val sampleUa = arbitrary[UserAnswers].sample.value
 
-        QualifierOfIdentification.values.foreach {
+        forAll(arbitrary[QualifierOfIdentification]) {
           qualifierOfIdentification =>
             val result = sampleUa
               .setValue(QualifierOfIdentificationPage, qualifierOfIdentification)

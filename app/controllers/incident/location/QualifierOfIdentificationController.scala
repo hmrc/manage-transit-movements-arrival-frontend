@@ -52,7 +52,7 @@ class QualifierOfIdentificationController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getIdentifications().map {
+      service.getIncidentIdentifications().map {
         qualifiers =>
           val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage(index)) match {
             case None        => form(qualifiers)
@@ -65,7 +65,7 @@ class QualifierOfIdentificationController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      service.getIdentifications().flatMap {
+      service.getIncidentIdentifications().flatMap {
         qualifiers =>
           form(qualifiers)
             .bindFromRequest()

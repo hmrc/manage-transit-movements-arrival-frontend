@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.locationOfGoods.TypeOfLocation
+import models.reference.TypeOfLocation
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.TypeOfLocationPage

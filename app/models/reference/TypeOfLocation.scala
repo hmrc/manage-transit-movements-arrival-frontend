@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.locationOfGoods
+package models.reference
 
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}

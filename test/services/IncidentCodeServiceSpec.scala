@@ -31,14 +31,6 @@ class IncidentCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new IncidentCodeService(mockRefDataConnector)
 
-  val incidentCode1: IncidentCode = IncidentCode("A", "Test1")
-  val incidentCode2: IncidentCode = IncidentCode("B", "Test2")
-  val incidentCodes               = Seq(incidentCode1, incidentCode2)
-
-  val incidentId1: Identification = Identification("U", "Test1")
-  val incidentId2: Identification = Identification("V", "Test2")
-  val incidentIds                 = Seq(incidentId1, incidentId2)
-
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -47,26 +39,32 @@ class IncidentCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
   "IncidentCodesService" - {
 
     "getIncidentCodes" - {
+      val incidentCode1: IncidentCode = IncidentCode("2", "Test2")
+      val incidentCode2: IncidentCode = IncidentCode("1", "Test1")
+
       "must return a list of sorted incidentCodes" in {
 
         when(mockRefDataConnector.getIncidentCodes()(any(), any()))
-          .thenReturn(Future.successful(incidentCodes))
+          .thenReturn(Future.successful(Seq(incidentCode1, incidentCode2)))
 
-        service.getIncidentCodes().futureValue mustBe incidentCodes
+        service.getIncidentCodes().futureValue mustBe Seq(incidentCode2, incidentCode1)
 
         verify(mockRefDataConnector).getIncidentCodes()(any(), any())
       }
     }
 
-    "getIncidentIdentifications" - {
-      "must return a list of sorted incident identifications" in {
+    "getTransportIdentifications" - {
+      val transportId1: Identification = Identification("11", "Name of the sea-going vessel")
+      val transportId2: Identification = Identification("10", "IMO Ship Identification Number")
 
-        when(mockRefDataConnector.getIncidentIdentifications()(any(), any()))
-          .thenReturn(Future.successful(incidentIds))
+      "must return a list of sorted transport identifications" in {
 
-        service.getIncidentIdentifications().futureValue mustBe incidentIds
+        when(mockRefDataConnector.getTransportIdentifications()(any(), any()))
+          .thenReturn(Future.successful(Seq(transportId1, transportId2)))
 
-        verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
+        service.getTransportIdentifications().futureValue mustBe Seq(transportId2, transportId1)
+
+        verify(mockRefDataConnector).getTransportIdentifications()(any(), any())
       }
     }
   }

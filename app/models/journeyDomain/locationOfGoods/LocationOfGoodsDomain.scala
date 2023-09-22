@@ -19,7 +19,7 @@ package models.journeyDomain.locationOfGoods
 import cats.implicits._
 import models.identification.ProcedureType
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.locationOfGoods.TypeOfLocation
+import models.reference.TypeOfLocation
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
 

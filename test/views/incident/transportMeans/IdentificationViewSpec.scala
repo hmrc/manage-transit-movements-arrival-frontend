@@ -27,10 +27,7 @@ import views.html.incident.transportMeans.IdentificationView
 
 class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
 
-  private val id1 = Identification("U", "UN/LOCODE")
-  private val id2 = Identification("W", "GPS coordinates")
-  private val id3 = Identification("Z", "Free text")
-  private val ids = Seq(id1, id2, id3)
+  override val getValue: Identification => String = _.code
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 
@@ -42,7 +39,11 @@ class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
   override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[Identification] = ids
+  override def values: Seq[Identification] = Seq(
+    Identification("10", "IMO Ship Identification Number"),
+    Identification("20", "Wagon Number"),
+    Identification("40", "IATA flight number")
+  )
 
   behave like pageWithTitle()
 

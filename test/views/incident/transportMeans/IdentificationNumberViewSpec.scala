@@ -20,18 +20,17 @@ import forms.IdentificationNumberFormProvider
 import models.NormalMode
 import models.reference.Identification
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.incident.transportMeans.IdentificationNumberView
-import org.scalacheck.{Arbitrary, Gen}
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String                    = "incident.transportMeans.identificationNumber"
   private val identificationType: Identification = arbitrary[Identification].sample.value
-  private val messageKeyPrefix                   = "incident.location.qualifierOfIdentification"
 
   override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
 
@@ -48,7 +47,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithInsetText(messages(s"$messageKeyPrefix.$identificationType"))
+  behave like pageWithInsetText(identificationType.asString)
 
   behave like pageWithHint(
     "This can be up to 35 characters long and include both letters and numbers."

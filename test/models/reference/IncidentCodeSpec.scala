@@ -14,49 +14,33 @@
  * limitations under the License.
  */
 
-package models.incident.transportMeans
+package models.reference
 
 import base.SpecBase
-import models.reference.Identification
-import models.reference.Identification._
-import org.scalacheck.Arbitrary.arbitrary
+import models.reference.IncidentCode._
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsString, Json}
+import play.api.libs.json.Json
 
-class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
-  private val id1 = Identification("U", "UN/LOCODE")
-  private val id2 = Identification("W", "GPS coordinates")
-  private val id3 = Identification("Z", "Free text")
-  private val ids = Seq(id1, id2, id3)
+class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "Identification" - {
+  "IncidentCode" - {
 
     "must deserialise valid values" in {
 
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val identification = Identification(code, description)
+          val incidentCode = IncidentCode(code, description)
           Json
             .parse(s"""
                  |{
-                 |  "qualifier": "$code",
+                 |  "code": "$code",
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[Identification] mustBe identification
-      }
-    }
-
-    "must fail to deserialise invalid values" in {
-
-      val gen = arbitrary[String] suchThat (!ids.map(_.toString).contains(_))
-
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[Identification] mustEqual JsError("error.expected.jsobject")
+            .as[IncidentCode] mustBe incidentCode
       }
     }
 
@@ -64,10 +48,10 @@ class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
 
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val identification = Identification(code, description)
-          Json.toJson(identification) mustBe Json.parse(s"""
+          val incidentCode = IncidentCode(code, description)
+          Json.toJson(incidentCode) mustBe Json.parse(s"""
                |{
-               |  "qualifier": "$code",
+               |  "code": "$code",
                |  "description": "$description"
                |}
                |""".stripMargin)

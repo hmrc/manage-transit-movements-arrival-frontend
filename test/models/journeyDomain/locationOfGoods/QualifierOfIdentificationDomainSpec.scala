@@ -17,11 +17,12 @@
 package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
+import forms.Constants._
 import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
@@ -46,7 +47,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
         .setValue(CountryPage, country)
         .setValue(AddressPage, address)
         .setValue(AddContactPersonPage, false)
@@ -67,7 +68,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.EoriNumber)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(EoriNumberCode).sample.value)
         .setValue(IdentificationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
 
@@ -86,7 +87,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AuthorisationNumberCode).sample.value)
         .setValue(AuthorisationNumberPage, idNumber)
         .setValue(AddContactPersonPage, false)
 
@@ -105,7 +106,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Coordinates)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(CoordinatesCode).sample.value)
         .setValue(CoordinatesPage, coordinates)
         .setValue(AddContactPersonPage, true)
         .setValue(ContactPersonNamePage, name)
@@ -126,7 +127,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.CustomsOffice)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(CustomsOfficeCode).sample.value)
         .setValue(CustomsOfficePage, customsOffice)
 
       val expectedResult = CustomsOfficeDomain(customsOffice)
@@ -140,7 +141,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Unlocode)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(UnlocodeCode).sample.value)
         .setValue(UnlocodePage, unLocode)
         .setValue(AddContactPersonPage, false)
 
@@ -158,7 +159,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val userAnswers = emptyUserAnswers
         .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.PostalCode)
+        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(PostalCodeCode).sample.value)
         .setValue(PostalCodePage, postalCode)
         .setValue(AddContactPersonPage, false)
 

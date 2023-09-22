@@ -17,9 +17,11 @@
 package models.journeyDomain.incident
 
 import base.SpecBase
+import forms.Constants._
 import generators.Generators
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
+import models.reference.QualifierOfIdentification
+import models.{Coordinates, DynamicAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.location._
@@ -36,7 +38,7 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
 
       "when qualifierOfIdentification is coordinates" in {
         val userAnswers = emptyUserAnswers
-          .setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+          .setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(CoordinatesCode).sample.value)
           .setValue(CoordinatesPage(index), coordinates)
 
         val expectedResult = IncidentCoordinatesLocationDomain(
@@ -51,7 +53,7 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
 
       "when qualifierOfIdentification is UnLocode" in {
         val userAnswers = emptyUserAnswers
-          .setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Unlocode)
+          .setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(UnlocodeCode).sample.value)
           .setValue(UnLocodePage(index), unLocode)
 
         val expectedResult = IncidentUnLocodeLocationDomain(
@@ -66,7 +68,7 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
 
       "when qualifierOfIdentification is Address" in {
         val userAnswers = emptyUserAnswers
-          .setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+          .setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(AddressPage(index), address)
 
         val expectedResult = IncidentAddressLocationDomain(

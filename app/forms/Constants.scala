@@ -29,6 +29,7 @@ object Constants {
   lazy val identificationNumberLength: Int  = 35
   lazy val exactLoCodeLength: Int           = 5
 
+  // todo - move to config/Constants
   lazy val DeviatedFromItineraryCode         = "1"
   lazy val SealsBrokenOrTamperedCode         = "2"
   lazy val TransferredToAnotherTransportCode = "3"

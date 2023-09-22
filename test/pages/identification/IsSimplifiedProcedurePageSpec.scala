@@ -16,9 +16,8 @@
 
 package pages.identification
 
-import models.reference.QualifierOfIdentification
 import models.identification.ProcedureType
-import models.locationOfGoods.TypeOfLocation
+import models.reference.{QualifierOfIdentification, TypeOfLocation}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.locationOfGoods.{AddContactPersonPage, AuthorisationNumberPage, QualifierOfIdentificationPage, TypeOfLocationPage}
@@ -56,12 +55,12 @@ class IsSimplifiedProcedurePageSpec extends PageBehaviours {
 
       "when simplified procedure type selected" - {
         "must remove QualifierOfIdentification section" in {
-          forAll(arbitrary[String]) {
-            refNo =>
+          forAll(arbitrary[String], arbitrary[TypeOfLocation], arbitrary[QualifierOfIdentification]) {
+            (refNo, typeOfLocation, qualifier) =>
               val preChange = emptyUserAnswers
                 .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-                .setValue(TypeOfLocationPage, TypeOfLocation.DesignatedLocation)
-                .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.AuthorisationNumber)
+                .setValue(TypeOfLocationPage, typeOfLocation)
+                .setValue(QualifierOfIdentificationPage, qualifier)
                 .setValue(AuthorisationNumberPage, refNo)
                 .setValue(AddContactPersonPage, true)
 
