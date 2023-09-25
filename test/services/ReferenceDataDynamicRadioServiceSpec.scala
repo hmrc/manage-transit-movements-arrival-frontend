@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import config.Constants.{ApprovedPlace, DesignatedLocation}
 import connectors.ReferenceDataConnector
 import models.identification.ProcedureType._
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
@@ -24,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.identification.IsSimplifiedProcedurePage
+import pages.locationOfGoods.TypeOfLocationPage
 
 import scala.collection.immutable.Seq
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,6 +35,14 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new ReferenceDataDynamicRadioService(mockRefDataConnector)
+  val id1: QualifierOfIdentification               = QualifierOfIdentification("T", "Postal code")
+  val id2: QualifierOfIdentification               = QualifierOfIdentification("U", "UN/LOCODE")
+  val id3: QualifierOfIdentification               = QualifierOfIdentification("V", "Customs office identifier")
+  val id4: QualifierOfIdentification               = QualifierOfIdentification("W", "GPS coordinates")
+  val id5: QualifierOfIdentification               = QualifierOfIdentification("X", "EORI number")
+  val id6: QualifierOfIdentification               = QualifierOfIdentification("Y", "Authorisation number")
+  val id7: QualifierOfIdentification               = QualifierOfIdentification("Z", "Free text")
+  val ids                                          = Seq(id1, id2, id3, id4, id5, id6, id7)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -99,20 +109,45 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
     }
 
     "getIdentifications" - {
-      val id1: QualifierOfIdentification = QualifierOfIdentification("T", "Postal code")
-      val id2: QualifierOfIdentification = QualifierOfIdentification("U", "UN/LOCODE")
 
-      "must return a list of sorted transport identifications" in {
+      "must return list of sorted transport identifications" - {
+        "must show an unfiltered list" in {
+          when(mockRefDataConnector.getIdentifications()(any(), any()))
+            .thenReturn(Future.successful(ids))
 
-        when(mockRefDataConnector.getIdentifications()(any(), any()))
-          .thenReturn(Future.successful(Seq(id1, id2)))
+          service.getIdentifications(emptyUserAnswers).futureValue mustBe ids
 
-        service.getIdentifications().futureValue mustBe Seq(id1, id2)
+          verify(mockRefDataConnector).getIdentifications()(any(), any())
+        }
 
-        verify(mockRefDataConnector).getIdentifications()(any(), any())
+        "must show an filtered list when TypeOfLocation is DesignatedLocation" in {
+          when(mockRefDataConnector.getIdentifications()(any(), any()))
+            .thenReturn(Future.successful(ids))
+          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(DesignatedLocation, "test"))
+          service.getIdentifications(ua).futureValue mustBe Seq(id2, id3)
+
+          verify(mockRefDataConnector).getIdentifications()(any(), any())
+        }
+
+        "must show an filtered list when TypeOfLocation is Approved place" in {
+          when(mockRefDataConnector.getIdentifications()(any(), any()))
+            .thenReturn(Future.successful(ids))
+          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(ApprovedPlace, "test"))
+          service.getIdentifications(ua).futureValue mustBe Seq(id1, id2, id4, id5, id7)
+
+          verify(mockRefDataConnector).getIdentifications()(any(), any())
+        }
+
+        "must show an filtered list when TypeOfLocation is Other location" in {
+          when(mockRefDataConnector.getIdentifications()(any(), any()))
+            .thenReturn(Future.successful(ids))
+          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(ApprovedPlace, "test"))
+          service.getIdentifications(ua).futureValue mustBe Seq(id1, id2, id4, id5, id7)
+
+          verify(mockRefDataConnector).getIdentifications()(any(), any())
+        }
       }
     }
-
     "getIncidentIdentifications" - {
       val id1: QualifierOfIdentification = QualifierOfIdentification("T", "Postal code")
       val id2: QualifierOfIdentification = QualifierOfIdentification("U", "UN/LOCODE")
@@ -126,6 +161,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
       }
+
     }
 
   }

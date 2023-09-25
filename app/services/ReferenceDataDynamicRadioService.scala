@@ -57,17 +57,17 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getTransportIdentifications()
       .map(_.sortBy(_.`type`.toLowerCase))
 
-  def getIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
+  def getIdentifications(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIdentifications()
       .map(_.sortBy(_.qualifier.toLowerCase))
+      .map(
+        x => filterQualifierOfIdentificationUserAnswers(userAnswers, x)
+      )
 
   def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIncidentIdentifications()
-
-  def getIdentifications(locationType: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
-    getIdentifications()
 
   def filterLocationUserAnswers(locationTypes: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
     locationTypes.filterNot(
