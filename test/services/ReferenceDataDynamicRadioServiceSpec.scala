@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import config.Constants.{ApprovedPlace, DesignatedLocation}
+import config.Constants.{ApprovedPlace, DesignatedLocation, Other}
 import connectors.ReferenceDataConnector
 import models.identification.ProcedureType._
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
@@ -141,8 +141,8 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         "must show an filtered list when TypeOfLocation is Other location" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(ids))
-          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(ApprovedPlace, "test"))
-          service.getIdentifications(ua).futureValue mustBe Seq(postalCode, unlocode, coordinates, eoriNumberIdentifier, address)
+          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(Other, "test"))
+          service.getIdentifications(ua).futureValue mustBe Seq(postalCode, unlocode, coordinates, address)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }

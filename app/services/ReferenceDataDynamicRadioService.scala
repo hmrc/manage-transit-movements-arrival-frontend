@@ -89,7 +89,7 @@ class ReferenceDataDynamicRadioService @Inject() (
           .filterNot(
             x => x.code == CustomsOfficeCode | x.code == AuthorisationNumberCode
           )
-      case Some(OtherLocation) =>
+      case Some(Other) =>
         qualifiersOfIdentification
           .filterNot(
             x => x.code == CustomsOfficeCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode
