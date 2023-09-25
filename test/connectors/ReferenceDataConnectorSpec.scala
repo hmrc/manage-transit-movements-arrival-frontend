@@ -20,10 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
+import models.identification.ProcedureType._
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.identification.IsSimplifiedProcedurePage
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -106,6 +108,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val typeOfLocationResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "type": "A",
+      |      "description": "Designated location"
+      |    },
+      |    {
+      |      "type": "B",
+      |      "description": "Authorised place"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   private val nationalitiesResponseJson: String =
     """
       |{
@@ -137,6 +155,46 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     |  ]
     |}
     |""".stripMargin
+
+  private val transportIdentifiersResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |     "type": "10",
+      |     "description": "IMO Ship Identification Number"
+      |    },
+      |    {
+      |     "type": "11",
+      |     "description": "Name of the sea-going vessel"
+      |    },
+      |    {
+      |     "type": "20",
+      |     "description": "Wagon Number"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val identifiersResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |     "qualifier": "T",
+      |     "description": "Postal code"
+      |    },
+      |    {
+      |     "qualifier": "U",
+      |     "description": "UN/LOCODE"
+      |    },
+      |    {
+      |     "qualifier": "W",
+      |     "description": "GPS coordinates"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
 
   private val incidentCodeResponseJson: String =
     """
@@ -291,6 +349,28 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getTypesOfLocation" - {
+      val url = s"/$baseUrl/lists/TypeOfLocation"
+
+      "must return a successful future response with a sequence of LocationType" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(typeOfLocationResponseJson))
+        )
+
+        val expectedResult = Seq(
+          TypeOfLocation("A", "Designated location"),
+          TypeOfLocation("B", "Authorised place")
+        )
+
+        connector.getTypesOfLocation(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, Normal)).futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTypesOfLocation(emptyUserAnswers))
+      }
+    }
+
     "getIncidentIdentifications" - {
       val url = s"/$baseUrl/lists/QualifierOfIdentificationIncident"
 
@@ -309,6 +389,50 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getIncidentIdentifications())
+      }
+    }
+
+    "getIdentifications" - {
+      val url = s"/$baseUrl/lists/QualifierOfTheIdentification"
+
+      "must return a successful future response with a sequence of Identifications" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(identifiersResponseJson))
+        )
+
+        val expectedResult = Seq(
+          QualifierOfIdentification("T", "Postal code"),
+          QualifierOfIdentification("U", "UN/LOCODE"),
+          QualifierOfIdentification("W", "GPS coordinates")
+        )
+        connector.getIdentifications().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getIdentifications())
+      }
+    }
+
+    "getTransportIdentifications" - {
+      val url = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport"
+
+      "must return a successful future response with a sequence of  Identifications" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(transportIdentifiersResponseJson))
+        )
+
+        val expectedResult: Seq[Identification] = Seq(
+          Identification("10", "IMO Ship Identification Number"),
+          Identification("11", "Name of the sea-going vessel"),
+          Identification("20", "Wagon Number")
+        )
+        connector.getTransportIdentifications().futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportIdentifications())
       }
     }
 

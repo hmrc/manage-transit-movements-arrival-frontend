@@ -16,11 +16,13 @@
 
 package services
 
+import config.Constants._
 import connectors.ReferenceDataConnector
 import models.UserAnswers
 import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import pages.identification.IsSimplifiedProcedurePage
+import pages.locationOfGoods.TypeOfLocationPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -35,10 +37,20 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getIncidentCodes()
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
-    referenceDataConnector
-      .getIncidentIdentifications()
-      .map(_.sortBy(_.qualifier.toLowerCase))
+  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
+    userAnswers.get(IsSimplifiedProcedurePage) match {
+      case Some(Normal) =>
+        referenceDataConnector
+          .getTypesOfLocation(userAnswers)
+          .map(_.sortBy(_.`type`.toLowerCase))
+      case _ =>
+        referenceDataConnector
+          .getTypesOfLocation(userAnswers)
+          .map(_.sortBy(_.`type`.toLowerCase))
+          .map(
+            x => filterLocationUserAnswers(x)
+          )
+    }
 
   def getTransportIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
     referenceDataConnector
@@ -50,27 +62,39 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getIdentifications()
       .map(_.sortBy(_.qualifier.toLowerCase))
 
+  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
+    referenceDataConnector
+      .getIncidentIdentifications()
+
   def getIdentifications(locationType: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     getIdentifications()
 
-  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
-    userAnswers.get(IsSimplifiedProcedurePage) match {
-      case Some(Normal) =>
-        referenceDataConnector
-          .getTypesOfLocation()
-          .map(_.sortBy(_.`type`.toLowerCase))
-      case _ =>
-        referenceDataConnector
-          .getTypesOfLocation()
-          .map(_.sortBy(_.`type`.toLowerCase))
-          .map(
-            x => filterUserAnswers(x)
-          )
-    }
-
-  def filterUserAnswers(foo: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
-    foo.filterNot(
+  def filterLocationUserAnswers(locationTypes: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
+    locationTypes.filterNot(
       x => x.code == "B"
     )
+
+  def filterQualifierOfIdentificationUserAnswers(userAnswers: UserAnswers,
+                                                 qualifiersOfIdentification: Seq[QualifierOfIdentification]
+  ): Seq[QualifierOfIdentification] =
+    userAnswers.get(TypeOfLocationPage).map(_.code) match {
+
+      case Some(DesignatedLocation) =>
+        qualifiersOfIdentification
+          .filterNot(
+            x => x.code == PostalCodeCode | x.code == CoordinatesCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode | x.code == AddressCode
+          )
+      case Some(ApprovedPlace) =>
+        qualifiersOfIdentification
+          .filterNot(
+            x => x.code == CustomsOfficeCode | x.code == AuthorisationNumberCode
+          )
+      case Some(OtherLocation) =>
+        qualifiersOfIdentification
+          .filterNot(
+            x => x.code == CustomsOfficeCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode
+          )
+      case _ => qualifiersOfIdentification
+    }
 
 }
