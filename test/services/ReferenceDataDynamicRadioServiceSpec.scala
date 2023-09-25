@@ -25,7 +25,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods.TypeOfLocationPage
 
 import scala.collection.immutable.Seq
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -73,21 +72,21 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       val typeOfLocation3: TypeOfLocation = TypeOfLocation("A", "TestC")
       val typesOfLocation                 = Seq(typeOfLocation1, typeOfLocation2, typeOfLocation3)
 
-      "must return a list of sorted TypeOfLocation when Normal Procedure Type" in {
-
-        when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
-          .thenReturn(Future.successful(typesOfLocation))
-
-        service.getTypesOfLocation(uaNormal).futureValue mustBe Seq(typeOfLocation3, typeOfLocation2, typeOfLocation1)
-
-      }
-
       "must return a list of sorted TypeOfLocation when Simplified Procedure Type" in {
 
         when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
           .thenReturn(Future.successful(typesOfLocation))
 
-        service.getTypesOfLocation(uaSimplified).futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
+        service.getTypesOfLocation(uaSimplified).futureValue mustBe Seq(typeOfLocation3, typeOfLocation2, typeOfLocation1)
+
+      }
+
+      "must return a list of sorted TypeOfLocation when Normal Procedure Type" in {
+
+        when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
+          .thenReturn(Future.successful(typesOfLocation))
+
+        service.getTypesOfLocation(uaNormal).futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
       }
 
@@ -111,20 +110,11 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
     "getIdentifications" - {
 
       "must return list of sorted transport identifications" - {
-        "must show an unfiltered list" in {
-          when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
-
-          service.getIdentifications(emptyUserAnswers).futureValue mustBe ids
-
-          verify(mockRefDataConnector).getIdentifications()(any(), any())
-        }
 
         "must show an filtered list when TypeOfLocation is DesignatedLocation" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(ids))
-          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(DesignatedLocation, "test"))
-          service.getIdentifications(ua).futureValue mustBe Seq(unlocode, customsOfficeIdentifier)
+          service.getIdentifications(TypeOfLocation(DesignatedLocation, "test")).futureValue mustBe Seq(unlocode, customsOfficeIdentifier)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }
@@ -132,8 +122,12 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         "must show an filtered list when TypeOfLocation is Approved place" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(ids))
-          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(ApprovedPlace, "test"))
-          service.getIdentifications(ua).futureValue mustBe Seq(postalCode, unlocode, coordinates, eoriNumberIdentifier, address)
+          service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustBe Seq(postalCode,
+                                                                                                   unlocode,
+                                                                                                   coordinates,
+                                                                                                   eoriNumberIdentifier,
+                                                                                                   address
+          )
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }
@@ -141,8 +135,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         "must show an filtered list when TypeOfLocation is Other location" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(ids))
-          val ua = emptyUserAnswers.setValue(TypeOfLocationPage, TypeOfLocation(Other, "test"))
-          service.getIdentifications(ua).futureValue mustBe Seq(postalCode, unlocode, coordinates, address)
+          service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(postalCode, unlocode, coordinates, address)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }

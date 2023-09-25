@@ -22,7 +22,6 @@ import models.UserAnswers
 import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods.TypeOfLocationPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -37,64 +36,54 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getIncidentCodes()
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
-    userAnswers.get(IsSimplifiedProcedurePage) match {
-      case Some(Normal) =>
-        referenceDataConnector
-          .getTypesOfLocation(userAnswers)
-          .map(_.sortBy(_.`type`.toLowerCase))
-      case _ =>
-        referenceDataConnector
-          .getTypesOfLocation(userAnswers)
-          .map(_.sortBy(_.`type`.toLowerCase))
-          .map(
-            x => filterLocationUserAnswers(x)
-          )
-    }
+  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
+    def filter(typesOfLocation: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
+      userAnswers.get(IsSimplifiedProcedurePage) match {
+        case Some(Normal) => typesOfLocation.filterNot(_.code == "B")
+        case _            => typesOfLocation
+      }
+
+    referenceDataConnector
+      .getTypesOfLocation(userAnswers)
+      .map(filter)
+      .map(_.sortBy(_.`type`.toLowerCase))
+  }
 
   def getTransportIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
     referenceDataConnector
       .getTransportIdentifications()
       .map(_.sortBy(_.`type`.toLowerCase))
 
-  def getIdentifications(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
+  def getIdentifications(typeOfLocation: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] = {
+    def filterQualifierOfIdentificationUserAnswers(
+      qualifiersOfIdentification: Seq[QualifierOfIdentification]
+    ): Seq[QualifierOfIdentification] =
+      typeOfLocation.code match {
+        case DesignatedLocation =>
+          qualifiersOfIdentification.filterNot(
+            x => x.code == PostalCodeCode || x.code == CoordinatesCode || x.code == EoriNumberCode || x.code == AuthorisationNumberCode || x.code == AddressCode
+          )
+        case ApprovedPlace =>
+          qualifiersOfIdentification.filterNot(
+            x => x.code == CustomsOfficeCode || x.code == AuthorisationNumberCode
+          )
+        case Other =>
+          qualifiersOfIdentification.filterNot(
+            x => x.code == CustomsOfficeCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode
+          )
+        case _ => qualifiersOfIdentification
+      }
+
     referenceDataConnector
       .getIdentifications()
       .map(_.sortBy(_.qualifier.toLowerCase))
       .map(
-        x => filterQualifierOfIdentificationUserAnswers(userAnswers, x)
+        filterQualifierOfIdentificationUserAnswers
       )
+  }
 
   def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIncidentIdentifications()
-
-  def filterLocationUserAnswers(locationTypes: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
-    locationTypes.filterNot(
-      x => x.code == "B"
-    )
-
-  def filterQualifierOfIdentificationUserAnswers(userAnswers: UserAnswers,
-                                                 qualifiersOfIdentification: Seq[QualifierOfIdentification]
-  ): Seq[QualifierOfIdentification] =
-    userAnswers.get(TypeOfLocationPage).map(_.code) match {
-
-      case Some(DesignatedLocation) =>
-        qualifiersOfIdentification
-          .filterNot(
-            x => x.code == PostalCodeCode | x.code == CoordinatesCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode | x.code == AddressCode
-          )
-      case Some(ApprovedPlace) =>
-        qualifiersOfIdentification
-          .filterNot(
-            x => x.code == CustomsOfficeCode | x.code == AuthorisationNumberCode
-          )
-      case Some(Other) =>
-        qualifiersOfIdentification
-          .filterNot(
-            x => x.code == CustomsOfficeCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode
-          )
-      case _ => qualifiersOfIdentification
-    }
 
 }

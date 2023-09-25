@@ -56,7 +56,7 @@ class QualifierOfIdentificationController @Inject() (
     .andThen(getMandatoryPage(TypeOfLocationPage))
     .async {
       implicit request =>
-        service.getIdentifications(request.userAnswers).map {
+        service.getIdentifications(request.arg).map {
           qualifiers =>
             val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage) match {
               case None        => form(qualifiers)
@@ -71,7 +71,7 @@ class QualifierOfIdentificationController @Inject() (
     .andThen(getMandatoryPage(TypeOfLocationPage))
     .async {
       implicit request =>
-        service.getIdentifications(request.userAnswers).flatMap {
+        service.getIdentifications(request.arg).flatMap {
           qualifiers =>
             form(qualifiers)
               .bindFromRequest()

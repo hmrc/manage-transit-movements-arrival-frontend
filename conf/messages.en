@@ -305,12 +305,7 @@ incident.incidentCode.heading = Which type of incident was it?
 incident.incidentCode.checkYourAnswersLabel = Incident code
 incident.incidentCode.change.hidden = incident code
 incident.incidentCode.error.required = Select the type of incident
-incident.incidentCode.1 = 1 - The carrier deviated from the itinerary due to circumstances beyond their control
-incident.incidentCode.2 = 2 - The seals were broken or tampered with during transit for reasons beyond the carriers control
-incident.incidentCode.3 = 3 - The goods were transferred to another means of transport under the supervision of the customs authority
-incident.incidentCode.4 = 4 - The goods were partially or fully unloaded from the sealed means of transport due to imminent danger
-incident.incidentCode.5 = 5 - The holder of procedure or carrier was unable to comply with their obligations due to an incident
-incident.incidentCode.6 = 6 - The means of transport was unexpectedly changed
+
 
 incident.incidentText.title = What happened during the incident?
 incident.incidentText.heading = What happened during the incident?

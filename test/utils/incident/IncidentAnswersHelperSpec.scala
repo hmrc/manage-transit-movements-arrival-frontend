@@ -222,7 +222,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.code.get
 
               result.key.value mustBe "Incident code"
-              result.value.value mustBe code.toString
+              result.value.value mustBe s"${code.code} - ${code.description}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
