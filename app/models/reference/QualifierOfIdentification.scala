@@ -30,11 +30,4 @@ object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdenti
 
   val messageKeyPrefix: String = "qualifierOfIdentification"
 
-  /*def values(locationType: TypeOfLocation): Seq[QualifierOfIdentification] =
-    locationType match {
-      case DesignatedLocation => Seq(CustomsOffice, Unlocode)
-      case ApprovedPlace      => Seq(PostalCode, Unlocode, Coordinates, EoriNumber, Address)
-      case Other              => Seq(PostalCode, Unlocode, Coordinates, Address)
-      case _                  => values
-    }*/
 }
