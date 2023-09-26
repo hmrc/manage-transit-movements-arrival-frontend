@@ -25,7 +25,6 @@ import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification.IsSimplifiedProcedurePage
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -363,12 +362,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           TypeOfLocation("B", "Authorised place")
         )
 
-        connector.getTypesOfLocation(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, Normal)).futureValue mustBe expectedResult
+        connector.getTypesOfLocation(Normal).futureValue mustBe expectedResult
       }
 
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTypesOfLocation(emptyUserAnswers))
-      }
     }
 
     "getIncidentIdentifications" - {

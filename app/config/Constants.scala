@@ -33,6 +33,7 @@ object Constants {
   lazy val AddressCode             = "Z"
 
   lazy val DesignatedLocation = "A"
+  lazy val AuthorisedPlace    = "B"
   lazy val ApprovedPlace      = "C"
   lazy val Other              = "D"
 }

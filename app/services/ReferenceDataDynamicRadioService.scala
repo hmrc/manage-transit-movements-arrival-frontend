@@ -18,10 +18,9 @@ package services
 
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.UserAnswers
+import models.identification.ProcedureType
 import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
-import pages.identification.IsSimplifiedProcedurePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -36,15 +35,15 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getIncidentCodes()
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getTypesOfLocation(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
+  def getTypesOfLocation(isSimplifiedProcedure: ProcedureType)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
     def filter(typesOfLocation: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
-      userAnswers.get(IsSimplifiedProcedurePage) match {
-        case Some(Normal) => typesOfLocation.filterNot(_.code == "B")
-        case _            => typesOfLocation
+      isSimplifiedProcedure match {
+        case Normal => typesOfLocation.filterNot(_.code == AuthorisedPlace)
+        case _      => typesOfLocation
       }
 
     referenceDataConnector
-      .getTypesOfLocation(userAnswers)
+      .getTypesOfLocation(isSimplifiedProcedure)
       .map(filter)
       .map(_.sortBy(_.`type`.toLowerCase))
   }
@@ -69,7 +68,7 @@ class ReferenceDataDynamicRadioService @Inject() (
           )
         case Other =>
           qualifiersOfIdentification.filterNot(
-            x => x.code == CustomsOfficeCode | x.code == EoriNumberCode | x.code == AuthorisationNumberCode
+            x => x.code == CustomsOfficeCode || x.code == EoriNumberCode || x.code == AuthorisationNumberCode
           )
         case _ => qualifiersOfIdentification
       }

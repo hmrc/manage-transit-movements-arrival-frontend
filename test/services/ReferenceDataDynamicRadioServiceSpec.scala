@@ -24,7 +24,6 @@ import models.reference.{Identification, IncidentCode, QualifierOfIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import pages.identification.IsSimplifiedProcedurePage
 
 import scala.collection.immutable.Seq
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +40,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
   val eoriNumberIdentifier: QualifierOfIdentification    = QualifierOfIdentification("X", "EORI number")
   val authNumber: QualifierOfIdentification              = QualifierOfIdentification("Y", "Authorisation number")
   val address: QualifierOfIdentification                 = QualifierOfIdentification("Z", "Free text")
-  val ids                                                = Seq(postalCode, unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address)
+  val ids: Seq[QualifierOfIdentification]                = Seq(postalCode, unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -65,8 +64,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       }
     }
     "getTypesOfLocation" - {
-      val uaNormal                        = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, Normal)
-      val uaSimplified                    = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, Simplified)
+
       val typeOfLocation1: TypeOfLocation = TypeOfLocation("C", "TestA")
       val typeOfLocation2: TypeOfLocation = TypeOfLocation("B", "TestB")
       val typeOfLocation3: TypeOfLocation = TypeOfLocation("A", "TestC")
@@ -77,7 +75,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
           .thenReturn(Future.successful(typesOfLocation))
 
-        service.getTypesOfLocation(uaSimplified).futureValue mustBe Seq(typeOfLocation3, typeOfLocation2, typeOfLocation1)
+        service.getTypesOfLocation(Simplified).futureValue mustBe Seq(typeOfLocation3, typeOfLocation2, typeOfLocation1)
 
       }
 
@@ -86,7 +84,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
           .thenReturn(Future.successful(typesOfLocation))
 
-        service.getTypesOfLocation(uaNormal).futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
+        service.getTypesOfLocation(Normal).futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
       }
 

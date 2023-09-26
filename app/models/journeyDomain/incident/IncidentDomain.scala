@@ -55,7 +55,7 @@ object IncidentDomain {
 
     val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
       .filterOptionalDependent(
-        x => x.code == TransferredToAnotherTransportCode | x.code == UnexpectedlyChangedCode
+        x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
       )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
 
     (
