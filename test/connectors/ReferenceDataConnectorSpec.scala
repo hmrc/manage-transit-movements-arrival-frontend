@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
-import models.identification.ProcedureType._
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -362,7 +361,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           TypeOfLocation("B", "Authorised place")
         )
 
-        connector.getTypesOfLocation(Normal).futureValue mustBe expectedResult
+        connector.getTypesOfLocation().futureValue mustBe expectedResult
       }
 
     }

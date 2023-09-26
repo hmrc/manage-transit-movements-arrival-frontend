@@ -18,7 +18,6 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
-import models.identification.ProcedureType
 import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -90,7 +89,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[QualifierOfIdentification]](url = url, headers = version2Header)
   }
 
-  def getTypesOfLocation(procedureType: ProcedureType)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
+  def getTypesOfLocation()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/TypeOfLocation"
     http.GET[Seq[TypeOfLocation]](url = url, headers = version2Header)
   }

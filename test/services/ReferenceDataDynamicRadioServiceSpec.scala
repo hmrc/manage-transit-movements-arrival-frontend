@@ -19,7 +19,6 @@ package services
 import base.SpecBase
 import config.Constants.{ApprovedPlace, DesignatedLocation, Other}
 import connectors.ReferenceDataConnector
-import models.identification.ProcedureType._
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -70,24 +69,14 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       val typeOfLocation3: TypeOfLocation = TypeOfLocation("A", "TestC")
       val typesOfLocation                 = Seq(typeOfLocation1, typeOfLocation2, typeOfLocation3)
 
-      "must return a list of sorted TypeOfLocation when Simplified Procedure Type" in {
+      "must return a list of sorted TypeOfLocation filtered -without B" in {
 
-        when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
+        when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
           .thenReturn(Future.successful(typesOfLocation))
 
-        service.getTypesOfLocation(Simplified).futureValue mustBe Seq(typeOfLocation3, typeOfLocation2, typeOfLocation1)
+        service.getTypesOfLocation().futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
       }
-
-      "must return a list of sorted TypeOfLocation when Normal Procedure Type" in {
-
-        when(mockRefDataConnector.getTypesOfLocation(any())(any(), any()))
-          .thenReturn(Future.successful(typesOfLocation))
-
-        service.getTypesOfLocation(Normal).futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
-
-      }
-
     }
 
     "getTransportIdentifications" - {

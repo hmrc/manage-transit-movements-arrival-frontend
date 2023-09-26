@@ -87,16 +87,16 @@ object EquipmentDomain {
           ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
       }
 
-    IncidentCodePage(incidentIndex).reader.flatMap {
-      _.code match {
-        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
-          ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-            case true  => readsWithContainerId
-            case false => readsWithOptionalContainerId
-          }
-        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
-        case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
-      }
+    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+
+      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+          case true  => readsWithContainerId
+          case false => readsWithOptionalContainerId
+        }
+      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
+      case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+
     }
   }
 

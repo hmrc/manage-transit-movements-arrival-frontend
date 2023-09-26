@@ -58,7 +58,7 @@ class TypeOfLocationController @Inject() (
       .andThen(getMandatoryPage(IsSimplifiedProcedurePage))
       .async {
         implicit request =>
-          service.getTypesOfLocation(request.arg).map {
+          service.getTypesOfLocation().map {
             typesOfLocation =>
               val preparedForm = request.userAnswers.get(TypeOfLocationPage) match {
                 case None        => form(typesOfLocation)
@@ -75,7 +75,7 @@ class TypeOfLocationController @Inject() (
       .andThen(getMandatoryPage(IsSimplifiedProcedurePage))
       .async {
         implicit request =>
-          service.getTypesOfLocation(request.arg).flatMap {
+          service.getTypesOfLocation().flatMap {
             typesOfLocation =>
               form(typesOfLocation)
                 .bindFromRequest()

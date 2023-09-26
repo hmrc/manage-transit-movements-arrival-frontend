@@ -58,7 +58,7 @@ class TypeOfLocationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockService)
-    when(mockService.getTypesOfLocation(any())(any())).thenReturn(Future.successful(tois))
+    when(mockService.getTypesOfLocation()(any())).thenReturn(Future.successful(tois))
   }
 
   "TypeOfLocation Controller" - {

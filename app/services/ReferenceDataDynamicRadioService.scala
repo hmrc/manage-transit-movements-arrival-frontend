@@ -35,15 +35,12 @@ class ReferenceDataDynamicRadioService @Inject() (
       .getIncidentCodes()
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getTypesOfLocation(isSimplifiedProcedure: ProcedureType)(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
+  def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
     def filter(typesOfLocation: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
-      isSimplifiedProcedure match {
-        case Normal => typesOfLocation.filterNot(_.code == AuthorisedPlace)
-        case _      => typesOfLocation
-      }
+      typesOfLocation.filterNot(_.code == AuthorisedPlace)
 
     referenceDataConnector
-      .getTypesOfLocation(isSimplifiedProcedure)
+      .getTypesOfLocation()
       .map(filter)
       .map(_.sortBy(_.`type`.toLowerCase))
   }
