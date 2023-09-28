@@ -22,6 +22,7 @@ import forms.UnLocodeFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.UnLocodePage
+import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,7 +46,8 @@ class UnLocodeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("incident.location.unLocode")
+  private val prefix: String = "incident.location.unLocode"
+  private val form           = formProvider(prefix)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
@@ -62,25 +64,18 @@ class UnLocodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
-          formValue =>
-            unLocodesService
-              .validateUnLocode(formValue)
-              .flatMap(
-                isValid =>
-                  formProvider
-                    .validateUnLocode("incident.location.unLocode", isValid)
-                    .bindFromRequest()
-                    .fold(
-                      formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
-                      value => {
-                        implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                        UnLocodePage(index)
-                          .writeToUserAnswers(value)
-                          .writeToSession()
-                          .navigate()
-                      }
-                    )
-              )
+          value =>
+            unLocodesService.doesUnLocodeExist(value).flatMap {
+              case true =>
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                UnLocodePage(index)
+                  .writeToUserAnswers(value)
+                  .writeToSession()
+                  .navigate()
+              case false =>
+                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, mrn, mode, index)))
+            }
         )
   }
 }

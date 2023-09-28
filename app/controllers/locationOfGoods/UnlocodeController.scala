@@ -22,6 +22,7 @@ import forms.UnLocodeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.locationOfGoods.UnlocodePage
+import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,7 +46,8 @@ class UnlocodeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("locationOfGoods.unlocode")
+  private val prefix: String = "locationOfGoods.unlocode"
+  private val form           = formProvider(prefix)
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
@@ -62,25 +64,18 @@ class UnlocodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-          formValue =>
-            unLocodesService
-              .validateUnLocode(formValue)
-              .flatMap(
-                isValid =>
-                  formProvider
-                    .validateUnLocode("locationOfGoods.unlocode", isValid)
-                    .bindFromRequest()
-                    .fold(
-                      formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
-                      value => {
-                        implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                        UnlocodePage
-                          .writeToUserAnswers(value)
-                          .writeToSession()
-                          .navigate()
-                      }
-                    )
-              )
+          value =>
+            unLocodesService.doesUnLocodeExist(value).flatMap {
+              case true =>
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                UnlocodePage
+                  .writeToUserAnswers(value)
+                  .writeToSession()
+                  .navigate()
+              case false =>
+                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, mrn, mode)))
+            }
         )
   }
 }
