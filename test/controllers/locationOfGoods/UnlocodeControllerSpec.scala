@@ -89,6 +89,8 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must redirect to the next page when valid data is submitted" in {
 
+      when(mockUnLocodesService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
+
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -101,6 +103,26 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+    }
+
+    "must return a Bad Request and errors when value does not exist in the reference data collection" in {
+
+      when(mockUnLocodesService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(false)
+
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, unlocodeRoute)
+        .withFormUrlEncodedBody(("value", unLocode1))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) must include(
+        "Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER."
+      )
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
