@@ -74,6 +74,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[UnLocode]](url = url, headers = version2Header)
   }
 
+  def getUnLocode(unLocode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[UnLocode]] = {
+
+    val queryParams: Seq[(String, String)] = Seq("data.unLocodeExtendedCode" -> unLocode)
+    val serviceUrl: String                 = s"${config.customsReferenceDataUrl}/filtered-lists/UnLocodeExtended"
+
+    http.GET[Seq[UnLocode]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  }
+
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
     val url = s"${config.customsReferenceDataUrl}/lists/CountryWithoutZip"
     http.GET[Seq[CountryCode]](url = url, headers = version2Header)
