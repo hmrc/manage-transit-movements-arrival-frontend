@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.json.{Format, Json}
 
-  implicit def enumerable(values: Seq[T]): Enumerable[T] =
-    Enumerable(
-      values.map(
-        v => v.code -> v
-      ): _*
-    )
+case class Identification(`type`: String, description: String) extends Radioable[Identification] {
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+  override def toString: String         = description
+
+  override val code: String = `type`
+}
+
+object Identification extends DynamicEnumerableType[Identification] {
+  implicit val format: Format[Identification] = Json.format[Identification]
+
+  val messageKeyPrefix = "incident.transportMeans.identification"
 }

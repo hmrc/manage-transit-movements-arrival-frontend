@@ -18,7 +18,7 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText, InsetText}
-@import models.incident.transportMeans.Identification
+@import models.reference.Identification
 
 @this(
     mainTemplate: MainTemplate,
@@ -46,7 +46,7 @@
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("incident.transportMeans.identificationNumber.heading"),
                 caption = Some(messages("incident.caption")),
-                additionalHtml = insetText(messages(s"${identification.messageKeyPrefix}.${identification.toString}"))
+                additionalHtml = insetText(identification.asString)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages("incident.transportMeans.identificationNumber.hint"))

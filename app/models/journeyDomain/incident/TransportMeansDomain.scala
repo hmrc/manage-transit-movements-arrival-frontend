@@ -18,9 +18,8 @@ package models.journeyDomain.incident
 
 import cats.implicits._
 import models.Index
-import models.incident.transportMeans.Identification
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import models.reference.Nationality
+import models.reference.{Identification, Nationality}
 import pages.incident.transportMeans._
 
 case class TransportMeansDomain(

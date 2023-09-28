@@ -27,6 +27,8 @@ import views.html.identification.IsSimplifiedProcedureView
 
 class IsSimplifiedProcedureViewSpec extends RadioViewBehaviours[ProcedureType] {
 
+  override val getValue: ProcedureType => String = _.code
+
   override def form: Form[ProcedureType] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[ProcedureType]): HtmlFormat.Appendable =

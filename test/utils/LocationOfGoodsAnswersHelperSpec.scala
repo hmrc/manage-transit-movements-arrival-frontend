@@ -19,9 +19,8 @@ package utils
 import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
-import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification}
+import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -53,9 +52,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val result = helper.locationType.get
 
               result.key.value mustBe "Location type"
-              val key = s"locationOfGoods.typeOfLocation.$typeOfLocation"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(s"$key")
+              result.value.value mustBe typeOfLocation.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -90,9 +87,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
-              val key = s"qualifierOfIdentification.$qualifierOfIdentification"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(s"$key")
+              result.value.value mustBe qualifierOfIdentification.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

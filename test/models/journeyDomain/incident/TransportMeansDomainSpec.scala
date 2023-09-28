@@ -18,9 +18,8 @@ package models.journeyDomain.incident
 
 import base.SpecBase
 import generators.Generators
-import models.incident.transportMeans.Identification
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.Nationality
+import models.reference.{Identification, Nationality}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.transportMeans._

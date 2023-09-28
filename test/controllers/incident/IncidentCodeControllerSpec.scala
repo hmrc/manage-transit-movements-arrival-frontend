@@ -20,36 +20,37 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.IncidentCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import views.html.incident.IncidentCodeView
 
 import scala.concurrent.Future
 
 class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val ic1                                          = IncidentCode("1", "test1")
-  private val ic2                                          = IncidentCode("2", "test2")
-  private val ics                                          = Seq(ic1, ic2)
-  private val formProvider                                 = new EnumerableFormProvider()
-  private val form                                         = formProvider[IncidentCode]("incident.incidentCode", ics)
-  private val mode                                         = NormalMode
-  private lazy val incidentCodeRoute                       = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
-  private val mockIncidentCodeService: IncidentCodeService = mock[IncidentCodeService]
+  private val ics = arbitrary[Seq[IncidentCode]].sample.value
+  private val ic  = ics.head
+
+  private val formProvider                                              = new EnumerableFormProvider()
+  private val form                                                      = formProvider[IncidentCode]("incident.incidentCode", ics)
+  private val mode                                                      = NormalMode
+  private lazy val incidentCodeRoute                                    = routes.IncidentCodeController.onPageLoad(mrn, mode, index).url
+  private val mockIncidentCodeService: ReferenceDataDynamicRadioService = mock[ReferenceDataDynamicRadioService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
-      .overrides(bind(classOf[IncidentCodeService]).toInstance(mockIncidentCodeService))
+      .overrides(bind(classOf[ReferenceDataDynamicRadioService]).toInstance(mockIncidentCodeService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -86,7 +87,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> ic1.toString))
+      val filledForm = form.bind(Map("value" -> ic.code))
 
       val view = injector.instanceOf[IncidentCodeView]
 
@@ -103,7 +104,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, incidentCodeRoute)
-        .withFormUrlEncodedBody(("value", ics.head.toString))
+        .withFormUrlEncodedBody(("value", ic.code))
 
       val result = route(app, request).value
 
@@ -146,7 +147,7 @@ class IncidentCodeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, incidentCodeRoute)
-        .withFormUrlEncodedBody(("value", ics.head.toString))
+        .withFormUrlEncodedBody(("value", ic.code))
 
       val result = route(app, request).value
 

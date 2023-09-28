@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{DynamicAddress, PostalCodeAddress}
+import models.{DynamicAddress, PostalCodeAddress, Radioable}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -49,6 +49,8 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
     messages(s"$messageKeyPrefix.$answer")
+
+  protected def formatDynamicEnumAsText[T <: Radioable[T]](answer: T): Content = answer.asString.toText
 
   protected def buildRow(
     prefix: String,

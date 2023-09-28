@@ -17,12 +17,12 @@
 package controllers.actions
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.Index
-import models.incident.IncidentCode
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.reference.IncidentCode
 import models.requests._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}

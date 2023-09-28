@@ -17,32 +17,29 @@
 package models.journeyDomain.incident
 
 import cats.implicits._
+import config.Constants._
 import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
-import models.{Coordinates, DynamicAddress, Index, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, Index}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
-sealed trait IncidentLocationDomain {
-  val code: String
-}
+sealed trait IncidentLocationDomain
 
 object IncidentLocationDomain {
 
   def userAnswersReader(index: Index): UserAnswersReader[IncidentLocationDomain] =
-    QualifierOfIdentificationPage(index).reader.flatMap {
-      case QualifierOfIdentification.Coordinates =>
+    QualifierOfIdentificationPage(index).reader.map(_.code).flatMap {
+      case CoordinatesCode =>
         UserAnswersReader[IncidentCoordinatesLocationDomain](IncidentCoordinatesLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
-      case QualifierOfIdentification.Unlocode =>
+      case UnlocodeCode =>
         UserAnswersReader[IncidentUnLocodeLocationDomain](IncidentUnLocodeLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
-      case QualifierOfIdentification.Address =>
+      case AddressCode =>
         UserAnswersReader[IncidentAddressLocationDomain](IncidentAddressLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
       case _ => UserAnswersReader.fail(QualifierOfIdentificationPage(index))
     }
 
 }
 
-case class IncidentCoordinatesLocationDomain(coordinates: Coordinates) extends IncidentLocationDomain {
-  override val code: String = "W"
-}
+case class IncidentCoordinatesLocationDomain(coordinates: Coordinates) extends IncidentLocationDomain
 
 object IncidentCoordinatesLocationDomain {
 
@@ -50,9 +47,7 @@ object IncidentCoordinatesLocationDomain {
     CoordinatesPage(index).reader.map(IncidentCoordinatesLocationDomain(_))
 }
 
-case class IncidentUnLocodeLocationDomain(unLocode: String) extends IncidentLocationDomain {
-  override val code: String = "U"
-}
+case class IncidentUnLocodeLocationDomain(unLocode: String) extends IncidentLocationDomain
 
 object IncidentUnLocodeLocationDomain {
 
@@ -60,9 +55,7 @@ object IncidentUnLocodeLocationDomain {
     UnLocodePage(index).reader.map(IncidentUnLocodeLocationDomain(_))
 }
 
-case class IncidentAddressLocationDomain(address: DynamicAddress) extends IncidentLocationDomain {
-  override val code: String = "Z"
-}
+case class IncidentAddressLocationDomain(address: DynamicAddress) extends IncidentLocationDomain
 
 object IncidentAddressLocationDomain {
 

@@ -29,10 +29,4 @@ object Constants {
   lazy val identificationNumberLength: Int  = 35
   lazy val exactLoCodeLength: Int           = 5
 
-  lazy val DeviatedFromItineraryCode         = "1"
-  lazy val SealsBrokenOrTamperedCode         = "2"
-  lazy val TransferredToAnotherTransportCode = "3"
-  lazy val PartiallyOrFullyUnloadedCode      = "4"
-  lazy val CarrierUnableToComplyCode         = "5"
-  lazy val UnexpectedlyChangedCode           = "6"
 }

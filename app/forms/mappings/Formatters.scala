@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, MovementReferenceNumber, RichString, Selectable, SelectableList}
+import models.{Enumerable, MovementReferenceNumber, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -80,7 +80,7 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
+  private[mappings] def enumerableFormatter[A <: Radioable[A]](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 
       private val baseFormatter = stringFormatter(requiredKey)
@@ -92,7 +92,7 @@ trait Formatters {
         }
 
       override def unbind(key: String, value: A): Map[String, String] =
-        baseFormatter.unbind(key, value.toString)
+        baseFormatter.unbind(key, value.code)
     }
 
   private[mappings] def mrnFormatter(

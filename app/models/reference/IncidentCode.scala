@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package services
+package models.reference
 
-import connectors.ReferenceDataConnector
-import models.incident.IncidentCode
-import uk.gov.hmrc.http.HeaderCarrier
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case class IncidentCode(code: String, description: String) extends Radioable[IncidentCode] {
 
-class IncidentCodeService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-)(implicit ec: ExecutionContext) {
+  override def toString: String = s"$code - $description"
 
-  def getIncidentCodes()(implicit hc: HeaderCarrier): Future[Seq[IncidentCode]] =
-    referenceDataConnector
-      .getIncidentCodes()
-      .map(sort)
+  override val messageKeyPrefix: String = "incident.incidentCode"
+}
 
-  private def sort(incidentCodes: Seq[IncidentCode]): Seq[IncidentCode] =
-    incidentCodes.sortBy(_.code.toLowerCase)
+object IncidentCode extends DynamicEnumerableType[IncidentCode] {
+  implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
+  val messageKeyPrefix: String              = "incident.incidentCode"
 }

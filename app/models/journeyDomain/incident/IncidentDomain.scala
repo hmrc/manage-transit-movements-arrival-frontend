@@ -17,13 +17,12 @@
 package models.journeyDomain.incident
 
 import cats.implicits.catsSyntaxTuple7Semigroupal
-import forms.Constants._
-import models.incident.IncidentCode
-import models.incident.IncidentCode._
+import config.Constants._
+import models.reference.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 import play.api.i18n.Messages
@@ -56,7 +55,7 @@ object IncidentDomain {
 
     val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
       .filterOptionalDependent(
-        x => x.code == TransferredToAnotherTransportCode | x.code == UnexpectedlyChangedCode
+        x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
       )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
 
     (

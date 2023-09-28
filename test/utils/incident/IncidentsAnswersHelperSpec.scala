@@ -19,10 +19,9 @@ package utils.incident
 import base.SpecBase
 import controllers.incident.routes
 import generators.Generators
-import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

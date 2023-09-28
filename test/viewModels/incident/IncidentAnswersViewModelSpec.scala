@@ -18,7 +18,7 @@ package viewModels.incident
 
 import base.SpecBase
 import generators.Generators
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

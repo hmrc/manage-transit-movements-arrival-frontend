@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-trait EnumerableType[T <: Radioable[T]] extends DynamicEnumerableType[T] {
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.json.{Format, Json}
 
-  val values: Seq[T]
+case class TypeOfLocation(`type`: String, description: String) extends Radioable[TypeOfLocation] {
+  override def toString: String         = description
+  override val messageKeyPrefix: String = TypeOfLocation.messageKeyPrefix
+  override val code: String             = `type`
+}
 
-  implicit def enumerable: Enumerable[T] = enumerable(values)
+object TypeOfLocation extends DynamicEnumerableType[TypeOfLocation] {
+  implicit val format: Format[TypeOfLocation] = Json.format[TypeOfLocation]
+
+  val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
+
 }

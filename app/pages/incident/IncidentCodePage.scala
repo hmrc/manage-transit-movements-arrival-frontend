@@ -17,7 +17,7 @@
 package pages.incident
 
 import controllers.incident.routes
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident

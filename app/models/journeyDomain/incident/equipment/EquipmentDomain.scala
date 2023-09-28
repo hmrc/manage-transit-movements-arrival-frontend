@@ -18,8 +18,8 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import controllers.incident.equipment.routes
-import forms.Constants._
-import models.incident.IncidentCode._
+import config.Constants._
+import models.reference.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
@@ -87,16 +87,16 @@ object EquipmentDomain {
           ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
       }
 
-    IncidentCodePage(incidentIndex).reader.flatMap {
-      _.code match {
-        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
-          ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-            case true  => readsWithContainerId
-            case false => readsWithOptionalContainerId
-          }
-        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
-        case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
-      }
+    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+
+      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+          case true  => readsWithContainerId
+          case false => readsWithOptionalContainerId
+        }
+      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
+      case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+
     }
   }
 

@@ -16,11 +16,9 @@
 
 package utils.incident
 
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Nationality}
-import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification, UserAnswers}
+import models.reference._
+import models.{Coordinates, DynamicAddress, Index, Mode, UserAnswers}
 import pages.incident._
 import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
@@ -69,7 +67,7 @@ class IncidentAnswersHelper(
 
   def code: Option[SummaryListRow] = getAnswerAndBuildRow[IncidentCode](
     page = IncidentCodePage(incidentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "incident.incidentCode",
     id = Some("change-code")
   )
@@ -118,7 +116,7 @@ class IncidentAnswersHelper(
 
   def qualifierOfIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[QualifierOfIdentification](
     page = QualifierOfIdentificationPage(incidentIndex),
-    formatAnswer = formatEnumAsText(QualifierOfIdentification.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "incident.location.qualifierOfIdentification",
     id = Some("change-qualifier-of-identification")
   )
@@ -160,7 +158,7 @@ class IncidentAnswersHelper(
 
   def transportMeansIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(incidentIndex),
-    formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "incident.transportMeans.identification",
     id = Some("change-transport-means-identification-type")
   )

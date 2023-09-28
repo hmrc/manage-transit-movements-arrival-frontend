@@ -17,8 +17,8 @@
 package utils.incident
 
 import controllers.incident.routes
-import models.incident.IncidentCode
 import models.journeyDomain.incident.IncidentDomain
+import models.reference.IncidentCode
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentFlagPage}
 import pages.sections.incident.IncidentsSection

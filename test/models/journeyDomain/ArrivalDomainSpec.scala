@@ -18,20 +18,17 @@ package models.journeyDomain
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.PhaseConfig
-import forms.Constants.UnexpectedlyChangedCode
+import config.Constants._
 import generators.Generators
 import models.identification.ProcedureType
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
 import models.journeyDomain.incident.{IncidentDomain, IncidentUnLocodeLocationDomain, IncidentsDomain, TransportMeansDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
-import models.locationOfGoods.TypeOfLocation.AuthorisedPlace
-import models.reference.{Country, CustomsOffice, Nationality}
-import models.{DynamicAddress, Phase, QualifierOfIdentification}
+import models.reference._
+import models.{DynamicAddress, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -49,10 +46,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
 
-  private val destinationOffice = arbitrary[CustomsOffice].sample.value
-  private val country           = arbitrary[Country].sample.value
-  private val address           = arbitrary[DynamicAddress].sample.value
-  private val idNumber          = Gen.alphaNumStr.sample.value
+  private val destinationOffice       = arbitrary[CustomsOffice].sample.value
+  private val country                 = arbitrary[Country].sample.value
+  private val address                 = arbitrary[DynamicAddress].sample.value
+  private val idNumber                = Gen.alphaNumStr.sample.value
+  private val transportIdentification = arbitrary[Identification].sample.value
+  private val typeOfLocation          = arbitrary[TypeOfLocation].sample.value
 
   val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
 
@@ -77,8 +76,8 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(DestinationOfficePage, destinationOffice)
           .setValue(IdentificationNumberPage, idNumber)
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(TypeOfLocationPage, AuthorisedPlace)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+          .setValue(TypeOfLocationPage, typeOfLocation)
+          .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
@@ -92,7 +91,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             authorisationReferenceNumber = None
           ),
           LocationOfGoodsDomain(
-            typeOfLocation = Some(AuthorisedPlace),
+            typeOfLocation = Some(typeOfLocation),
             qualifierOfIdentificationDetails = AddressDomain(
               country = country,
               address = address,
@@ -125,8 +124,8 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(DestinationOfficePage, destinationOffice)
           .setValue(IdentificationNumberPage, idNumber)
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(TypeOfLocationPage, AuthorisedPlace)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+          .setValue(TypeOfLocationPage, typeOfLocation)
+          .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)
@@ -135,7 +134,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(IncidentCodePage(incidentIndex), IncidentCode(UnexpectedlyChangedCode, "test"))
           .setValue(IncidentTextPage(incidentIndex), text)
           .setValue(AddEndorsementPage(incidentIndex), false)
-          .setValue(IncidentQualifierOfIdentificationPage(incidentIndex), QualifierOfIdentification.Unlocode)
+          .setValue(IncidentQualifierOfIdentificationPage(incidentIndex), qualifierOfIdentificationGen(UnlocodeCode).sample.value)
           .setValue(UnLocodePage(incidentIndex), unLocode)
           .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
           .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), text)
@@ -143,7 +142,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), text)
           .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex), true)
           .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), "1234")
-          .setValue(IdentificationPage(incidentIndex), Identification.SeaGoingVessel)
+          .setValue(IdentificationPage(incidentIndex), transportIdentification)
           .setValue(TransportMeansIdentificationNumberPage(incidentIndex), text)
           .setValue(TransportNationalityPage(incidentIndex), nationality)
 
@@ -156,7 +155,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
             authorisationReferenceNumber = None
           ),
           LocationOfGoodsDomain(
-            typeOfLocation = Some(AuthorisedPlace),
+            typeOfLocation = Some(typeOfLocation),
             qualifierOfIdentificationDetails = AddressDomain(
               country = country,
               address = address,
@@ -197,7 +196,7 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
                   )(incidentIndex),
                   transportMeans = Some(
                     TransportMeansDomain(
-                      identificationType = Identification.SeaGoingVessel,
+                      identificationType = transportIdentification,
                       identificationNumber = text,
                       nationality = nationality
                     )

@@ -19,7 +19,7 @@ package controllers.incident
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentCodePage
@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.IncidentCodeService
+import services.ReferenceDataDynamicRadioService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.IncidentCodeView
 
@@ -40,7 +40,7 @@ class IncidentCodeController @Inject() (
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
-  incidentCodeService: IncidentCodeService,
+  incidentCodeService: ReferenceDataDynamicRadioService,
   val controllerComponents: MessagesControllerComponents,
   view: IncidentCodeView
 )(implicit ec: ExecutionContext)

@@ -24,13 +24,7 @@ address.numberAndStreet = number and street name
 address.city = town or city
 address.streetNumber = street number
 
-qualifierOfIdentification.customsOffice = Customs office identifier
-qualifierOfIdentification.eoriNumber = EORI number
-qualifierOfIdentification.authorisationNumber = Authorisation number
-qualifierOfIdentification.coordinates = Coordinates
-qualifierOfIdentification.unlocode = UN/LOCODE
-qualifierOfIdentification.address = Address
-qualifierOfIdentification.postalCode = Postal code
+qualifierOfIdentification.Z = Address
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
@@ -255,10 +249,9 @@ locationOfGoods.qualifierOfIdentification.error.required = Select how you want t
 locationOfGoods.typeOfLocation.title = Which type of location are the goods in?
 locationOfGoods.typeOfLocation.heading = Which type of location are the goods in?
 locationOfGoods.typeOfLocation.paragraph = This is their location at the end of the transit movement.
-locationOfGoods.typeOfLocation.authorisedPlace = Authorised place – the authorised consignee’s own premises
-locationOfGoods.typeOfLocation.designatedLocation = Designated destination – any other premises the consignee is authorised to use as an office of destination
-locationOfGoods.typeOfLocation.approvedPlace = Approved place – a designated location approved and controlled by the office of destination
-locationOfGoods.typeOfLocation.other = Other
+locationOfGoods.typeOfLocation.B = Authorised place – the authorised consignee’s own premises
+locationOfGoods.typeOfLocation.A = Designated destination – any other premises the consignee is authorised to use as an office of destination
+locationOfGoods.typeOfLocation.C = Approved place – a designated location approved and controlled by the office of destination
 locationOfGoods.typeOfLocation.checkYourAnswersLabel = Location type
 locationOfGoods.typeOfLocation.change.hidden = This is their location at the end of the transit movement.
 locationOfGoods.typeOfLocation.error.required = Select which type of location the goods are in
@@ -312,6 +305,7 @@ incident.incidentCode.heading = Which type of incident was it?
 incident.incidentCode.checkYourAnswersLabel = Incident code
 incident.incidentCode.change.hidden = incident code
 incident.incidentCode.error.required = Select the type of incident
+
 
 incident.incidentText.title = What happened during the incident?
 incident.incidentText.heading = What happened during the incident?
@@ -542,17 +536,6 @@ incident.equipment.itemNumber.remove.error.required = Select yes if you want to 
 
 incident.transportMeans.identification.title = Which identification do you want to use for the replacement means of transport?
 incident.transportMeans.identification.heading = Which identification do you want to use for the replacement means of transport?
-incident.transportMeans.identification.seaGoingVessel = Name of a sea-going vessel
-incident.transportMeans.identification.iataFlightNumber = IATA flight number
-incident.transportMeans.identification.inlandWaterwaysVehicle = Name of an inland waterways vehicle
-incident.transportMeans.identification.imoShipIdNumber = IMO ship identification number
-incident.transportMeans.identification.wagonNumber = Wagon number
-incident.transportMeans.identification.trainNumber = Train number
-incident.transportMeans.identification.regNumberRoadVehicle = Registration number of a road vehicle
-incident.transportMeans.identification.regNumberRoadTrailer = Registration number of a road trailer
-incident.transportMeans.identification.regNumberAircraft = Registration number of an aircraft
-incident.transportMeans.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
-incident.transportMeans.identification.unknown = Unknown - this can only be used during the transitional period
 incident.transportMeans.identification.checkYourAnswersLabel = Identification type
 incident.transportMeans.identification.change.hidden = identification type for the replacement means of transport
 incident.transportMeans.identification.error.required = Select which identification you want to use for the replacement means of transport

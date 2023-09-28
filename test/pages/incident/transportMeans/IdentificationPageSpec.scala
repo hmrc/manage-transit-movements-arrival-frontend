@@ -17,8 +17,7 @@
 package pages.incident.transportMeans
 
 import generators.Generators
-import models.incident.transportMeans.Identification
-import models.reference.Nationality
+import models.reference.{Identification, Nationality}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

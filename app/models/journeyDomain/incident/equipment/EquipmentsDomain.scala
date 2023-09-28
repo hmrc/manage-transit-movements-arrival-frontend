@@ -17,8 +17,8 @@
 package models.journeyDomain.incident.equipment
 
 import controllers.incident.equipment.routes
-import forms.Constants._
-import models.incident.IncidentCode._
+import config.Constants._
+import models.reference.IncidentCode._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
@@ -45,20 +45,19 @@ object EquipmentsDomain {
         }
         .map(EquipmentsDomain(_)(incidentIndex))
 
-    IncidentCodePage(incidentIndex).reader.flatMap {
-      _.code match {
-        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
-          ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-            case true => readEquipments
-            case false =>
-              AddTransportEquipmentPage(incidentIndex).reader.flatMap {
-                case true  => readEquipments
-                case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
-              }
-          }
-        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readEquipments
-        case _                                                        => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
-      }
+    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
+          case true => readEquipments
+          case false =>
+            AddTransportEquipmentPage(incidentIndex).reader.flatMap {
+              case true  => readEquipments
+              case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+            }
+        }
+      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readEquipments
+      case _                                                        => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
+
     }
   }
   // scalastyle:on cyclomatic.complexity

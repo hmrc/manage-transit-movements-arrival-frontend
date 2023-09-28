@@ -18,7 +18,7 @@ package views.incident
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -26,6 +26,8 @@ import views.behaviours.RadioViewBehaviours
 import views.html.incident.IncidentCodeView
 
 class IncidentCodeViewSpec extends RadioViewBehaviours[IncidentCode] {
+
+  override val getValue: IncidentCode => String = _.code
 
   override def form: Form[IncidentCode] = new EnumerableFormProvider()(prefix, values)
 

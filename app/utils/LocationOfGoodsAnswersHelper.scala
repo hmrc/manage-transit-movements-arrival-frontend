@@ -16,9 +16,8 @@
 
 package utils
 
-import models.locationOfGoods.TypeOfLocation
-import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, QualifierOfIdentification, UserAnswers}
+import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
+import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -31,14 +30,14 @@ class LocationOfGoodsAnswersHelper(
 
   def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[TypeOfLocation](
     page = TypeOfLocationPage,
-    formatAnswer = formatEnumAsText(TypeOfLocation.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "locationOfGoods.typeOfLocation",
     id = Some("type-of-location")
   )
 
   def qualifierOfIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[QualifierOfIdentification](
     page = QualifierOfIdentificationPage,
-    formatAnswer = formatEnumAsText(QualifierOfIdentification.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "locationOfGoods.qualifierOfIdentification",
     id = Some("qualifier-of-identification")
   )

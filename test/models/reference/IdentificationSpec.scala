@@ -14,47 +14,33 @@
  * limitations under the License.
  */
 
-package models.incident
+package models.reference
 
 import base.SpecBase
-import models.incident.IncidentCode._
-import org.scalacheck.Arbitrary.arbitrary
+import models.reference.Identification._
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsString, Json}
+import play.api.libs.json.Json
 
-class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
-  private val ic1 = IncidentCode("1", "test1")
-  private val ic2 = IncidentCode("2", "test2")
-  private val ics = Seq(ic1, ic2)
+class IdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "IncidentCode" - {
+  "Identification" - {
 
     "must deserialise valid values" in {
 
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val incidentCode = IncidentCode(code, description)
+          val identification = Identification(code, description)
           Json
             .parse(s"""
                  |{
-                 |  "code": "$code",
+                 |  "type": "$code",
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[IncidentCode] mustBe incidentCode
-      }
-    }
-
-    "must fail to deserialise invalid values" in {
-
-      val gen = arbitrary[String] suchThat (!ics.map(_.toString).contains(_))
-
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[IncidentCode] mustEqual JsError("error.expected.jsobject")
+            .as[Identification] mustBe identification
       }
     }
 
@@ -62,10 +48,10 @@ class IncidentCodeSpec extends SpecBase with Matchers with ScalaCheckPropertyChe
 
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val incidentCode = IncidentCode(code, description)
-          Json.toJson(incidentCode) mustBe Json.parse(s"""
+          val identification = Identification(code, description)
+          Json.toJson(identification) mustBe Json.parse(s"""
                |{
-               |  "code": "$code",
+               |  "type": "$code",
                |  "description": "$description"
                |}
                |""".stripMargin)

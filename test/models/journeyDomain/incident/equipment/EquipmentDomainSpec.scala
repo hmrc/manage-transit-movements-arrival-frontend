@@ -17,13 +17,13 @@
 package models.journeyDomain.incident.equipment
 
 import base.SpecBase
-import forms.Constants._
+import config.Constants._
 import generators.Generators
 import models.Index
-import models.incident.IncidentCode
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import models.reference.IncidentCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

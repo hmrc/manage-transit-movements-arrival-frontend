@@ -18,7 +18,7 @@ package views.locationOfGoods
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.locationOfGoods.TypeOfLocation
+import models.reference.TypeOfLocation
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -27,7 +27,9 @@ import views.html.locationOfGoods.TypeOfLocationView
 
 class TypeOfLocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
 
-  override def form: Form[TypeOfLocation] = new EnumerableFormProvider()(prefix)
+  override val getValue: TypeOfLocation => String = _.code
+
+  override def form: Form[TypeOfLocation] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[TypeOfLocation]): HtmlFormat.Appendable =
     injector.instanceOf[TypeOfLocationView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
@@ -37,7 +39,12 @@ class TypeOfLocationViewSpec extends RadioViewBehaviours[TypeOfLocation] {
   override def radioItems(fieldId: String, checkedValue: Option[TypeOfLocation] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[TypeOfLocation] = TypeOfLocation.values
+  override def values: Seq[TypeOfLocation] = Seq(
+    TypeOfLocation("A", "Designated location"),
+    TypeOfLocation("B", "Authorised place"),
+    TypeOfLocation("C", "Approved place"),
+    TypeOfLocation("D", "Other")
+  )
 
   behave like pageWithTitle()
 
