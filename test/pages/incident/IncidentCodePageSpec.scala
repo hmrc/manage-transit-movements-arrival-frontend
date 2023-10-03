@@ -16,8 +16,8 @@
 
 package pages.incident
 
-import models.incident.IncidentCode
-import models.incident.IncidentCode._
+import models.reference.IncidentCode._
+import models.reference.IncidentCode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.incident.{EquipmentsSection, TransportMeansSection}

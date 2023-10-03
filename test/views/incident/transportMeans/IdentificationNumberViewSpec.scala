@@ -18,19 +18,19 @@ package views.incident.transportMeans
 
 import forms.IdentificationNumberFormProvider
 import models.NormalMode
-import models.incident.transportMeans.Identification
+import models.reference.Identification
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.incident.transportMeans.IdentificationNumberView
-import org.scalacheck.{Arbitrary, Gen}
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String    = "incident.transportMeans.identificationNumber"
-  private val identificationType = arbitrary[Identification].sample.value
+  override val prefix: String                    = "incident.transportMeans.identificationNumber"
+  private val identificationType: Identification = arbitrary[Identification].sample.value
 
   override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
 

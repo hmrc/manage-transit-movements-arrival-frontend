@@ -18,7 +18,8 @@ package models.journeyDomain.incident.equipment
 
 import cats.implicits._
 import controllers.incident.equipment.routes
-import models.incident.IncidentCode._
+import config.Constants._
+import models.reference.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
@@ -64,18 +65,18 @@ object EquipmentDomain {
       case false => UserAnswersReader.apply(ItemNumbersDomain(Nil))
     }
 
-    lazy val sealsReadsByIncidentCode = IncidentCodePage(incidentIndex).reader.flatMap {
-      case SealsBrokenOrTampered => sealsReads
-      case _                     => optionalSealsReads
+    lazy val sealsReadsByIncidentCode: UserAnswersReader[SealsDomain] = IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+      case SealsBrokenOrTamperedCode => sealsReads
+      case _                         => optionalSealsReads
     }
 
-    lazy val readsWithContainerId = (
+    lazy val readsWithContainerId: UserAnswersReader[EquipmentDomain] = (
       ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
       sealsReadsByIncidentCode,
       optionalItemNumbersReads
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
 
-    lazy val readsWithOptionalContainerId =
+    lazy val readsWithOptionalContainerId: UserAnswersReader[EquipmentDomain] =
       ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
         case true => readsWithContainerId
         case false =>
@@ -86,16 +87,19 @@ object EquipmentDomain {
           ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
       }
 
-    IncidentCodePage(incidentIndex).reader.flatMap {
-      case TransferredToAnotherTransport | UnexpectedlyChanged =>
+    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+
+      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
         ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
           case true  => readsWithContainerId
           case false => readsWithOptionalContainerId
         }
-      case SealsBrokenOrTampered | PartiallyOrFullyUnloaded => readsWithOptionalContainerId
-      case DeviatedFromItinerary | CarrierUnableToComply    => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
+      case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+
     }
   }
+
   // scalastyle:on cyclomatic.complexity
   // scalastyle:on method.length
 }

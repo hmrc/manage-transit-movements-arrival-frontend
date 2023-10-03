@@ -17,16 +17,16 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import models.QualifierOfIdentification._
+import config.Constants._
 import models.identification.ProcedureType
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.reference.QualifierOfIdentification._
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, PostalCodeAddress, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, PostalCodeAddress}
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
 trait QualifierOfIdentificationDomain {
-  val qualifierOfIdentification: String
   val contactPerson: Option[ContactPersonDomain]
 }
 
@@ -34,23 +34,23 @@ object QualifierOfIdentificationDomain {
 
   implicit val userAnswersReader: UserAnswersReader[QualifierOfIdentificationDomain] =
     IsSimplifiedProcedurePage.reader.flatMap {
-      case ProcedureType.Simplified => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
+      case ProcedureType.Simplified =>
+        UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
       case ProcedureType.Normal =>
-        QualifierOfIdentificationPage.reader.flatMap {
-          case QualifierOfIdentification.Address             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.EoriNumber          => UserAnswersReader[EoriNumberDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.AuthorisationNumber => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.Coordinates         => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.CustomsOffice       => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.Unlocode            => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
-          case QualifierOfIdentification.PostalCode          => UserAnswersReader[PostalCodeDomain].widen[QualifierOfIdentificationDomain]
+        QualifierOfIdentificationPage.reader.map(_.code).flatMap {
+          case AddressCode             => UserAnswersReader[AddressDomain].widen[QualifierOfIdentificationDomain]
+          case EoriNumberCode          => UserAnswersReader[EoriNumberDomain].widen[QualifierOfIdentificationDomain]
+          case AuthorisationNumberCode => UserAnswersReader[AuthorisationNumberDomain].widen[QualifierOfIdentificationDomain]
+          case CoordinatesCode         => UserAnswersReader[CoordinatesDomain].widen[QualifierOfIdentificationDomain]
+          case CustomsOfficeCode       => UserAnswersReader[CustomsOfficeDomain].widen[QualifierOfIdentificationDomain]
+          case UnlocodeCode            => UserAnswersReader[UnlocodeDomain].widen[QualifierOfIdentificationDomain]
+          case PostalCodeCode          => UserAnswersReader[PostalCodeDomain].widen[QualifierOfIdentificationDomain]
+          case code                    => throw new Exception(s"Unexpected qualifier code $code")
         }
     }
 }
 
-case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "Z"
-}
+case class AddressDomain(country: Country, address: DynamicAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object AddressDomain {
 
@@ -62,9 +62,7 @@ object AddressDomain {
     ).tupled.map((AddressDomain.apply _).tupled)
 }
 
-case class EoriNumberDomain(eoriNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "X"
-}
+case class EoriNumberDomain(eoriNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object EoriNumberDomain {
 
@@ -75,9 +73,7 @@ object EoriNumberDomain {
     ).tupled.map((EoriNumberDomain.apply _).tupled)
 }
 
-case class AuthorisationNumberDomain(authorisationNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "Y"
-}
+case class AuthorisationNumberDomain(authorisationNumber: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object AuthorisationNumberDomain {
 
@@ -88,9 +84,7 @@ object AuthorisationNumberDomain {
     ).tupled.map((AuthorisationNumberDomain.apply _).tupled)
 }
 
-case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "W"
-}
+case class CoordinatesDomain(coordinates: Coordinates, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object CoordinatesDomain {
 
@@ -102,7 +96,6 @@ object CoordinatesDomain {
 }
 
 case class CustomsOfficeDomain(customsOffice: CustomsOffice) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String          = "V"
   override val contactPerson: Option[ContactPersonDomain] = None
 }
 
@@ -112,9 +105,7 @@ object CustomsOfficeDomain {
     CustomsOfficePage.reader.map(CustomsOfficeDomain(_))
 }
 
-case class UnlocodeDomain(code: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "U"
-}
+case class UnlocodeDomain(code: String, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object UnlocodeDomain {
 
@@ -125,9 +116,7 @@ object UnlocodeDomain {
     ).tupled.map((UnlocodeDomain.apply _).tupled)
 }
 
-case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain {
-  override val qualifierOfIdentification: String = "T"
-}
+case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
 
 object PostalCodeDomain {
 

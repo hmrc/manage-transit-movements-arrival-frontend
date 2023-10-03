@@ -16,11 +16,11 @@
 
 package generators
 
+import config.Constants._
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
+import models._
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
-import models.incident.IncidentCode
 import models.reference._
-import models.{QualifierOfIdentification, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -28,11 +28,15 @@ import uk.gov.hmrc.http.HttpVerbs._
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
+
   self: Generators =>
 
-  implicit lazy val arbitraryIdentification: Arbitrary[models.incident.transportMeans.Identification] =
+  implicit lazy val arbitraryIdentification: Arbitrary[Identification] =
     Arbitrary {
-      Gen.oneOf(models.incident.transportMeans.Identification.values.toSeq)
+      for {
+        code        <- Gen.oneOf("10", "11", "20", "21", "30", "31", "40", "41", "80", "81", "99")
+        description <- nonEmptyString
+      } yield Identification(code, description)
     }
 
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
@@ -55,31 +59,34 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.values)
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "5", "6")
+        description <- nonEmptyString
+      } yield IncidentCode(code, description)
     }
 
   lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)
+      Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))
     }
 
   lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)
+      Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
     }
 
   lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
-      Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)
+      Gen.oneOf(IncidentCode(DeviatedFromItineraryCode, "test"), IncidentCode(CarrierUnableToComplyCode, "test"))
     }
 
   lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
     Arbitrary {
       Gen.oneOf(
-        IncidentCode.SealsBrokenOrTampered,
-        IncidentCode.PartiallyOrFullyUnloaded,
-        IncidentCode.DeviatedFromItinerary,
-        IncidentCode.CarrierUnableToComply
+        IncidentCode(SealsBrokenOrTamperedCode, "test1"),
+        IncidentCode(PartiallyOrFullyUnloadedCode, "test2"),
+        IncidentCode(DeviatedFromItineraryCode, "test3"),
+        IncidentCode(CarrierUnableToComplyCode, "test4")
       )
     }
 
@@ -107,19 +114,31 @@ trait ModelGenerators {
       } yield models.Coordinates(latitude, longitude)
     }
 
-  implicit lazy val arbitraryTypeOfLocation: Arbitrary[models.locationOfGoods.TypeOfLocation] =
+  implicit lazy val arbitraryTypeOfLocation: Arbitrary[TypeOfLocation] =
     Arbitrary {
-      Gen.oneOf(models.locationOfGoods.TypeOfLocation.values)
+      for {
+        code        <- Gen.oneOf("A", "B", "C", "D")
+        description <- nonEmptyString
+      } yield TypeOfLocation(code, description)
     }
+
+  def qualifierOfIdentificationGen(qualifier: String): Gen[QualifierOfIdentification] =
+    nonEmptyString.map(QualifierOfIdentification(qualifier, _))
 
   implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
-      Gen.oneOf(QualifierOfIdentification.values)
+      for {
+        code        <- Gen.oneOf("T", "U", "V", "W", "X", "Y", "Z")
+        description <- nonEmptyString
+      } yield QualifierOfIdentification(code, description)
     }
 
   lazy val arbitraryNonLocationQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
-      Gen.oneOf(QualifierOfIdentification.values diff QualifierOfIdentification.locationValues)
+      for {
+        code        <- Gen.oneOf("T", "V", "X", "Y")
+        description <- nonEmptyString
+      } yield QualifierOfIdentification(code, description)
     }
 
   implicit lazy val arbitraryProcedureType: Arbitrary[models.identification.ProcedureType] =
@@ -153,6 +172,12 @@ trait ModelGenerators {
     for {
       values <- listWithMaxLength[T]()
     } yield SelectableList(values.distinctBy(_.value))
+  }
+
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
   }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =

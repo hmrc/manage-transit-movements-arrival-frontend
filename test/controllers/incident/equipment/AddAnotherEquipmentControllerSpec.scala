@@ -18,8 +18,9 @@ package controllers.incident.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherItemFormProvider
+import config.Constants._
 import generators.Generators
-import models.incident.IncidentCode
+import models.reference.IncidentCode
 import models.{Index, NormalMode, UserAnswers}
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentCaptor
@@ -157,7 +158,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       "when yes submitted" - {
         "and container indicator is undefined" - {
           "must redirect to add container id yes/no at next index" in {
-            forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
+            forAll(Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers.setValue(IncidentCodePage(incidentIndex), incidentCode)
 
@@ -183,7 +184,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         "and container indicator is true" - {
           "must redirect to container id at next index" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -211,7 +212,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         "and container indicator is false" - {
           "must redirect to add container id yes/no at next index" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)

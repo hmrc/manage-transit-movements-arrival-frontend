@@ -16,7 +16,9 @@
 
 package pages.incident.location
 
-import models.{Coordinates, DynamicAddress, QualifierOfIdentification}
+import config.Constants._
+import models.reference.QualifierOfIdentification
+import models.{Coordinates, DynamicAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -38,7 +40,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(UnLocodePage(index), unlocode)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(CoordinatesCode).sample.value)
 
             result.get(UnLocodePage(index)) mustNot be(defined)
         }
@@ -50,7 +52,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(AddressPage(index), address)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(CoordinatesCode).sample.value)
 
             result.get(AddressPage(index)) mustNot be(defined)
         }
@@ -63,7 +65,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(CoordinatesPage(index), coordinates)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(AddressCode).sample.value)
 
             result.get(CoordinatesPage(index)) mustNot be(defined)
         }
@@ -75,7 +77,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(AddressPage(index), address)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Unlocode)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(UnlocodeCode).sample.value)
 
             result.get(AddressPage(index)) mustNot be(defined)
         }
@@ -88,7 +90,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(CoordinatesPage(index), coordinates)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(AddressCode).sample.value)
 
             result.get(CoordinatesPage(index)) mustNot be(defined)
         }
@@ -100,7 +102,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(UnLocodePage(index), unLocode)
 
-            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Address)
+            val result = userAnswers.setValue(QualifierOfIdentificationPage(index), qualifierOfIdentificationGen(AddressCode).sample.value)
 
             result.get(UnLocodePage(index)) mustNot be(defined)
         }

@@ -19,10 +19,9 @@ package utils.incident
 import base.SpecBase
 import controllers.incident.routes
 import generators.Generators
-import models.incident.IncidentCode
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -72,7 +71,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = IncidentsAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.addOrRemoveIncidents
+              val result = helper.addOrRemoveIncidents()
               result mustBe None
           }
         }
@@ -84,7 +83,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
             mode =>
               val answers = emptyUserAnswers.setValue(IncidentSection(Index(0)), Json.obj("foo" -> "bar"))
               val helper  = IncidentsAnswersHelper(answers, mode)
-              val result  = helper.addOrRemoveIncidents.get
+              val result  = helper.addOrRemoveIncidents().get
 
               result.id mustBe "add-or-remove-incidents"
               result.text mustBe "Add or remove incidents"
@@ -116,7 +115,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
               val result = helper.incident(index).get
 
               result.key.value mustBe s"Incident ${incidentIndex.display}"
-              result.value.value mustBe s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}"
+              result.value.value mustBe s"Incident ${incidentIndex.display} - ${incident.incidentCode.description}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -187,7 +186,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.${incident.incidentCode}")}",
+                    name = s"Incident ${incidentIndex.display} - ${incident.incidentCode.description}",
                     changeUrl = routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                     removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                   )
@@ -230,7 +229,7 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = s"Incident ${incidentIndex.display} - ${messages(s"incident.incidentCode.forDisplay.$incidentCode")}",
+                      name = s"Incident ${incidentIndex.display} - ${incidentCode.description}",
                       changeUrl = routes.IncidentTextController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                     )

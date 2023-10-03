@@ -16,13 +16,13 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits._
-import models.incident.IncidentCode
-import models.incident.IncidentCode._
+import cats.implicits.catsSyntaxTuple7Semigroupal
+import config.Constants._
+import models.reference.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, IncidentCode}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
 import play.api.i18n.Messages
@@ -39,24 +39,23 @@ case class IncidentDomain(
 )(index: Index)
     extends JourneyDomainModel {
 
-  def asString(f: String => IncidentCode => String)(implicit messages: Messages): String =
-    IncidentDomain.asString(index, incidentCode)(f)
+  def asString()(implicit messages: Messages): String =
+    IncidentDomain.asString(index, incidentCode)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
-
 }
 
 object IncidentDomain {
 
-  def asString(index: Index, incidentCode: IncidentCode)(f: String => IncidentCode => String)(implicit messages: Messages): String =
-    messages("incident.value", index.display, f(IncidentCode.prefixForDisplay)(incidentCode))
+  def asString(index: Index, incidentCode: IncidentCode)(implicit messages: Messages): String =
+    messages("incident.value", index.display, incidentCode.description)
 
   def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
 
     val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
       .filterOptionalDependent(
-        x => x == TransferredToAnotherTransport || x == UnexpectedlyChanged
+        x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
       )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
 
     (

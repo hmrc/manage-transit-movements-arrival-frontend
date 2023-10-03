@@ -19,12 +19,15 @@ package controllers.incident.location
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{Index, Mode, MovementReferenceNumber, QualifierOfIdentification}
+import models.reference.QualifierOfIdentification
+import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.location.QualifierOfIdentificationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ReferenceDataDynamicRadioService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.incident.location.QualifierOfIdentificationView
 
@@ -38,33 +41,41 @@ class QualifierOfIdentificationController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: QualifierOfIdentificationView
+  view: QualifierOfIdentificationView,
+  service: ReferenceDataDynamicRadioService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
+  private def form(qualifiers: Seq[QualifierOfIdentification]): Form[QualifierOfIdentification] =
+    formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification", qualifiers)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getIncidentIdentifications().map {
+        qualifiers =>
+          val preparedForm = request.userAnswers.get(QualifierOfIdentificationPage(index)) match {
+            case None        => form(qualifiers)
+            case Some(value) => form(qualifiers).fill(value)
+          }
 
-      Ok(view(preparedForm, mrn, QualifierOfIdentification.locationValues, mode, index))
+          Ok(view(preparedForm, mrn, qualifiers, mode, index))
+      }
   }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, QualifierOfIdentification.locationValues, mode, index))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            QualifierOfIdentificationPage(index).writeToUserAnswers(value).writeToSession().navigate()
-          }
-        )
+      service.getIncidentIdentifications().flatMap {
+        qualifiers =>
+          form(qualifiers)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, qualifiers, mode, index))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                QualifierOfIdentificationPage(index).writeToUserAnswers(value).writeToSession().navigate()
+              }
+            )
+      }
   }
 }

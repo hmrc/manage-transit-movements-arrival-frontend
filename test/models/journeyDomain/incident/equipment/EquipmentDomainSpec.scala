@@ -17,12 +17,13 @@
 package models.journeyDomain.incident.equipment
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
 import models.Index
-import models.incident.IncidentCode
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import models.reference.IncidentCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -179,7 +180,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         "and container id is answered" - {
           "and incident code is 2" in {
             val userAnswers = emptyUserAnswers
-              .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+              .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
               .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
               .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
               .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex), sealId)
@@ -200,7 +201,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           "and incident code is 4" - {
             "and adding seals" in {
               val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.PartiallyOrFullyUnloaded)
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
                 .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                 .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                 .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
@@ -221,7 +222,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             "and not adding seals" in {
               val userAnswers = emptyUserAnswers
-                .setValue(IncidentCodePage(incidentIndex), IncidentCode.PartiallyOrFullyUnloaded)
+                .setValue(IncidentCodePage(incidentIndex), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
                 .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
                 .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
                 .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)
@@ -373,7 +374,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         "and incident code is 2" in {
           val userAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
             .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
@@ -385,7 +386,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         "and incident code is 4" in {
           val userAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.PartiallyOrFullyUnloaded)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
             .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
 
@@ -411,7 +412,7 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when add seals is no" in {
         val userAnswers = emptyUserAnswers
-          .setValue(IncidentCodePage(incidentIndex), IncidentCode.PartiallyOrFullyUnloaded)
+          .setValue(IncidentCodePage(incidentIndex), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
           .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
           .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerId)
           .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), false)

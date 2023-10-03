@@ -17,9 +17,10 @@
 package models.journeyDomain.incident.equipment
 
 import base.SpecBase
+import config.Constants._
 import models.Index
-import models.incident.IncidentCode
 import models.journeyDomain.{EitherType, UserAnswersReader}
+import models.reference.IncidentCode
 import org.scalacheck.Gen
 import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
@@ -29,7 +30,7 @@ class EquipmentsDomainSpec extends SpecBase {
   "Equipments Domain" - {
     "can be parsed from user answers" - {
       "when incident code is 1 or 5" in {
-        forAll(Gen.oneOf(IncidentCode.DeviatedFromItinerary, IncidentCode.CarrierUnableToComply)) {
+        forAll(Gen.oneOf(IncidentCode(DeviatedFromItineraryCode, "test"), IncidentCode(CarrierUnableToComplyCode, "test"))) {
           incidentCode =>
             val userAnswers = emptyUserAnswers
               .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -46,7 +47,7 @@ class EquipmentsDomainSpec extends SpecBase {
       "when incident code is 3 or 6" - {
         "and container indicator is false" - {
           "and add transport equipment is false" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -75,7 +76,7 @@ class EquipmentsDomainSpec extends SpecBase {
 
       "when incident code is 3 or 6" - {
         "and container indicator is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+          forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -89,7 +90,7 @@ class EquipmentsDomainSpec extends SpecBase {
 
         "and container indicator is false" - {
           "and add transport equipment is unanswered" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -103,7 +104,7 @@ class EquipmentsDomainSpec extends SpecBase {
           }
 
           "and add transport equipment is true" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -120,7 +121,7 @@ class EquipmentsDomainSpec extends SpecBase {
 
         "and container indicator is true" - {
           "and container identification number is unanswered" in {
-            forAll(Gen.oneOf(IncidentCode.TransferredToAnotherTransport, IncidentCode.UnexpectedlyChanged)) {
+            forAll(Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))) {
               incidentCode =>
                 val userAnswers = emptyUserAnswers
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
@@ -137,7 +138,7 @@ class EquipmentsDomainSpec extends SpecBase {
 
       "when incident code is 2 or 4" - {
         "and add container id number yes/no is unanswered" in {
-          forAll(Gen.oneOf(IncidentCode.SealsBrokenOrTampered, IncidentCode.PartiallyOrFullyUnloaded)) {
+          forAll(Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))) {
             incidentCode =>
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)

@@ -17,19 +17,20 @@
 package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
+import models.DynamicAddress
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.locationOfGoods.TypeOfLocation
-import models.reference.Country
-import models.{DynamicAddress, QualifierOfIdentification}
+import models.reference.{Country, TypeOfLocation}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
-class LocationOfGoodsDomainSpec extends SpecBase with Generators {
+class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val country = arbitrary[Country].sample.value
   private val address = arbitrary[DynamicAddress].sample.value
@@ -38,19 +39,19 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers when procedure type is normal" in {
 
-      TypeOfLocation.values.map {
-        value =>
+      forAll(arbitrary[TypeOfLocation]) {
+        typeOfLocation =>
           val userAnswers = emptyUserAnswers
             .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-            .setValue(TypeOfLocationPage, value)
-            .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+            .setValue(TypeOfLocationPage, typeOfLocation)
+            .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
             .setValue(CountryPage, country)
             .setValue(AddressPage, address)
             .setValue(AddContactPersonPage, false)
 
           val expectedResult =
             LocationOfGoodsDomain(
-              typeOfLocation = Some(value),
+              typeOfLocation = Some(typeOfLocation),
               qualifierOfIdentificationDetails = AddressDomain(
                 country,
                 address,
@@ -93,12 +94,12 @@ class LocationOfGoodsDomainSpec extends SpecBase with Generators {
 
         val mandatoryPages: Seq[QuestionPage[_]] = Seq(TypeOfLocationPage, QualifierOfIdentificationPage)
 
-        val typeOfLocation = Gen.oneOf(TypeOfLocation.values).sample.value
+        val typeOfLocation = arbitrary[TypeOfLocation].sample.value
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
           .setValue(TypeOfLocationPage, typeOfLocation)
-          .setValue(QualifierOfIdentificationPage, QualifierOfIdentification.Address)
+          .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(CountryPage, country)
           .setValue(AddressPage, address)
           .setValue(AddContactPersonPage, false)

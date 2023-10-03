@@ -17,11 +17,13 @@
 package pages.incident.location
 
 import controllers.incident.location.routes
-import models.{Index, Mode, QualifierOfIdentification, UserAnswers}
+import models.reference.QualifierOfIdentification
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.incident
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import config.Constants._
 
 import scala.util.Try
 
@@ -35,16 +37,16 @@ case class QualifierOfIdentificationPage(index: Index) extends QuestionPage[Qual
     Some(routes.QualifierOfIdentificationController.onPageLoad(userAnswers.mrn, mode, index))
 
   override def cleanup(value: Option[QualifierOfIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(QualifierOfIdentification.Coordinates) =>
+    value.map(_.code) match {
+      case Some(CoordinatesCode) =>
         userAnswers
           .remove(UnLocodePage(index))
           .flatMap(_.remove(AddressPage(index)))
-      case Some(QualifierOfIdentification.Unlocode) =>
+      case Some(UnlocodeCode) =>
         userAnswers
           .remove(CoordinatesPage(index))
           .flatMap(_.remove(AddressPage(index)))
-      case Some(QualifierOfIdentification.Address) =>
+      case Some(AddressCode) =>
         userAnswers
           .remove(CoordinatesPage(index))
           .flatMap(_.remove(UnLocodePage(index)))

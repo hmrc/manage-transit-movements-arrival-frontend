@@ -22,13 +22,12 @@ import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
+import config.Constants._
 import generators.Generators
-import models.incident.IncidentCode
-import models.incident.transportMeans.Identification
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.reference.{Country, Nationality}
-import models.{Coordinates, DynamicAddress, Index, Mode, QualifierOfIdentification}
+import models.reference._
+import models.{Coordinates, DynamicAddress, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -92,7 +91,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must return Some(Row)" - {
         "when equipment is  defined and container id is undefined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), false)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
@@ -114,7 +113,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         "when equipment is  defined and container id is defined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(IncidentCodePage(incidentIndex), IncidentCode.SealsBrokenOrTampered)
+            .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
             .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex), true)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
@@ -223,9 +222,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.code.get
 
               result.key.value mustBe "Incident code"
-              val key = s"incident.incidentCode.$code"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe s"${code.code} - ${code.description}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -471,9 +468,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.qualifierOfIdentification.get
 
               result.key.value mustBe "Identifier type"
-              val key = s"qualifierOfIdentification.$identificationType"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe identificationType.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -507,7 +502,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.unLocode.get
 
               result.key.value mustBe "UN/LOCODE"
-              result.value.value mustBe unlocode.toString
+              result.value.value mustBe unlocode
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -679,9 +674,7 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.transportMeansIdentificationType.get
 
               result.key.value mustBe "Identification type"
-              val key = s"incident.transportMeans.identification.$identification"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe identification.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

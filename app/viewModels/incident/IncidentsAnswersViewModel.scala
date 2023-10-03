@@ -36,7 +36,7 @@ object IncidentsAnswersViewModel {
       val section = Section(
         sectionTitle = messages("arrivals.checkYourAnswers.incidents.subheading"),
         rows = helper.incidentFlag.toList ++ helper.incidents,
-        addAnotherLink = helper.addOrRemoveIncidents
+        addAnotherLink = helper.addOrRemoveIncidents()
       )
 
       IncidentsAnswersViewModel(section)

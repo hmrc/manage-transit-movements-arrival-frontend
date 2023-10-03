@@ -18,30 +18,46 @@ package controllers.incident.location
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
-import models.{NormalMode, QualifierOfIdentification}
+import generators.Generators
+import models.NormalMode
+import models.reference.QualifierOfIdentification
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.location.QualifierOfIdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.ReferenceDataDynamicRadioService
 import views.html.incident.location.QualifierOfIdentificationView
 
 import scala.concurrent.Future
 
-class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val qois = arbitrary[Seq[QualifierOfIdentification]].sample.value
+  private val qoi  = qois.head
 
   private val formProvider                        = new EnumerableFormProvider()
-  private val form                                = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification")
+  private val form                                = formProvider[QualifierOfIdentification]("incident.location.qualifierOfIdentification", qois)
   private val mode                                = NormalMode
   private lazy val qualifierOfIdentificationRoute = routes.QualifierOfIdentificationController.onPageLoad(mrn, mode, index).url
+
+  private lazy val mockService: ReferenceDataDynamicRadioService = mock[ReferenceDataDynamicRadioService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[IncidentNavigatorProvider]).toInstance(fakeIncidentNavigatorProvider))
+      .overrides(bind(classOf[ReferenceDataDynamicRadioService]).toInstance(mockService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockService)
+    when(mockService.getIncidentIdentifications()(any())).thenReturn(Future.successful(qois))
+  }
 
   "QualifierOfIdentification Controller" - {
 
@@ -58,26 +74,26 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
+        view(form, mrn, qois, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage(index), QualifierOfIdentification.Coordinates)
+      val userAnswers = emptyUserAnswers.setValue(QualifierOfIdentificationPage(index), qoi)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, qualifierOfIdentificationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> QualifierOfIdentification.Coordinates.toString))
+      val filledForm = form.bind(Map("value" -> qoi.code))
 
       val view = injector.instanceOf[QualifierOfIdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
+        view(filledForm, mrn, qois, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -87,7 +103,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, qualifierOfIdentificationRoute)
-        .withFormUrlEncodedBody(("value", QualifierOfIdentification.values.head.toString))
+        .withFormUrlEncodedBody(("value", qoi.code))
 
       val result = route(app, request).value
 
@@ -110,7 +126,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, QualifierOfIdentification.locationValues, mode, index)(request, messages).toString
+        view(boundForm, mrn, qois, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -130,7 +146,7 @@ class QualifierOfIdentificationControllerSpec extends SpecBase with AppWithDefau
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, qualifierOfIdentificationRoute)
-        .withFormUrlEncodedBody(("value", QualifierOfIdentification.values.head.toString))
+        .withFormUrlEncodedBody(("value", qoi.code))
 
       val result = route(app, request).value
 

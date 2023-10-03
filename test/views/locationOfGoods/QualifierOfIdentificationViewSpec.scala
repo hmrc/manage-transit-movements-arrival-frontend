@@ -17,7 +17,8 @@
 package views.locationOfGoods
 
 import forms.EnumerableFormProvider
-import models.{NormalMode, QualifierOfIdentification}
+import models.NormalMode
+import models.reference.QualifierOfIdentification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -26,7 +27,9 @@ import views.html.locationOfGoods.QualifierOfIdentificationView
 
 class QualifierOfIdentificationViewSpec extends RadioViewBehaviours[QualifierOfIdentification] {
 
-  override def form: Form[QualifierOfIdentification] = new EnumerableFormProvider()(prefix)
+  override val getValue: QualifierOfIdentification => String = _.code
+
+  override def form: Form[QualifierOfIdentification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[QualifierOfIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[QualifierOfIdentificationView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)
@@ -36,7 +39,11 @@ class QualifierOfIdentificationViewSpec extends RadioViewBehaviours[QualifierOfI
   override def radioItems(fieldId: String, checkedValue: Option[QualifierOfIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[QualifierOfIdentification] = QualifierOfIdentification.values
+  override def values: Seq[QualifierOfIdentification] = Seq(
+    QualifierOfIdentification("U", "UN/LOCODE"),
+    QualifierOfIdentification("W", "GPS coordinates"),
+    QualifierOfIdentification("Z", "Free text")
+  )
 
   behave like pageWithTitle()
 

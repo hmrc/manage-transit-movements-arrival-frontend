@@ -20,6 +20,7 @@ import models.{EnumerableType, Radioable, WithName}
 
 sealed trait ProcedureType extends Radioable[ProcedureType] {
   override val messageKeyPrefix: String = ProcedureType.messageKeyPrefix
+  override val code: String             = this.toString
 }
 
 object ProcedureType extends EnumerableType[ProcedureType] {

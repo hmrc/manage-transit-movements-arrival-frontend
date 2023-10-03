@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.incident.transportMeans.Identification
+import models.reference.Identification
 import navigation.IncidentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -40,7 +40,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val identification: Identification = arbitrary[Identification].sample.value
 
-  private val form                           = formProvider("incident.transportMeans.identificationNumber", identification.asString)
+  private val form                           = formProvider("incident.transportMeans.identificationNumber", identification.toString)
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(mrn, mode, incidentIndex).url
 
