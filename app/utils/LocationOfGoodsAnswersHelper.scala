@@ -80,7 +80,7 @@ class LocationOfGoodsAnswersHelper(
 
   def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = CountryPage,
-    formatAnswer = _.toString.toText,
+    formatAnswer = formatAsCountry,
     prefix = "locationOfGoods.country",
     id = Some("country")
   )
