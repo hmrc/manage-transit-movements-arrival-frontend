@@ -60,7 +60,7 @@ class IncidentAnswersHelper(
 
   def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = IncidentCountryPage(incidentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = _.toString.toText,
     prefix = "incident.incidentCountry",
     id = Some("change-country")
   )
@@ -102,7 +102,7 @@ class IncidentAnswersHelper(
 
   def endorsementCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = EndorsementCountryPage(incidentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = _.toString.toText,
     prefix = "incident.endorsement.country",
     id = Some("change-endorsement-country")
   )

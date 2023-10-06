@@ -18,8 +18,6 @@ package services
 
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.identification.ProcedureType
-import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import uk.gov.hmrc.http.HeaderCarrier
 
