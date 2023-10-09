@@ -17,11 +17,11 @@
 package models.journeyDomain.incident
 
 import cats.implicits.catsSyntaxTuple7Semigroupal
-import config.Constants._
-import models.reference.IncidentCode._
+import config.Constants.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.reference.IncidentCode._
 import models.reference.{Country, IncidentCode}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}

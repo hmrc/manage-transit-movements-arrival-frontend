@@ -16,6 +16,7 @@
 
 package pages.incident.location
 
+import config.Constants.QualifierCode._
 import controllers.incident.location.routes
 import models.reference.QualifierOfIdentification
 import models.{Index, Mode, UserAnswers}
@@ -23,7 +24,6 @@ import pages.QuestionPage
 import pages.sections.incident
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import config.Constants._
 
 import scala.util.Try
 

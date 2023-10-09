@@ -16,7 +16,7 @@
 
 package generators
 
-import config.Constants._
+import config.Constants.IncidentCode._
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models._
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}

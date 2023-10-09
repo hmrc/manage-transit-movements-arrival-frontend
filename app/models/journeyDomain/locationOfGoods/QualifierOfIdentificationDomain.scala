@@ -17,7 +17,7 @@
 package models.journeyDomain.locationOfGoods
 
 import cats.implicits._
-import config.Constants._
+import config.Constants.QualifierCode._
 import models.identification.ProcedureType
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.reference.QualifierOfIdentification._

@@ -17,7 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.IncidentCode._
 import generators.Generators
 import models.Index
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}

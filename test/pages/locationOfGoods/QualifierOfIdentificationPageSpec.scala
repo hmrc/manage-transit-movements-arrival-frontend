@@ -16,7 +16,7 @@
 
 package pages.locationOfGoods
 
-import config.Constants._
+import config.Constants.QualifierCode._
 import models.UserAnswers
 import models.reference.QualifierOfIdentification
 import org.scalacheck.Arbitrary.arbitrary

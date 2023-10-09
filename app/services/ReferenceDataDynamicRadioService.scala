@@ -16,10 +16,9 @@
 
 package services
 
-import config.Constants._
+import config.Constants.LocationType._
+import config.Constants.QualifierCode._
 import connectors.ReferenceDataConnector
-import models.identification.ProcedureType
-import models.identification.ProcedureType.Normal
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,17 +55,11 @@ class ReferenceDataDynamicRadioService @Inject() (
     ): Seq[QualifierOfIdentification] =
       typeOfLocation.code match {
         case DesignatedLocation =>
-          qualifiersOfIdentification.filterNot(
-            x => x.code == PostalCodeCode || x.code == CoordinatesCode || x.code == EoriNumberCode || x.code == AuthorisationNumberCode || x.code == AddressCode
-          )
+          qualifiersOfIdentification.filterNot(_.isOneOf(PostalCodeCode, CoordinatesCode, EoriNumberCode, AuthorisationNumberCode, AddressCode))
         case ApprovedPlace =>
-          qualifiersOfIdentification.filterNot(
-            x => x.code == CustomsOfficeCode || x.code == AuthorisationNumberCode
-          )
+          qualifiersOfIdentification.filterNot(_.isOneOf(CustomsOfficeCode, AuthorisationNumberCode))
         case Other =>
-          qualifiersOfIdentification.filterNot(
-            x => x.code == CustomsOfficeCode || x.code == EoriNumberCode || x.code == AuthorisationNumberCode
-          )
+          qualifiersOfIdentification.filterNot(_.isOneOf(CustomsOfficeCode, EoriNumberCode, AuthorisationNumberCode))
         case _ => qualifiersOfIdentification
       }
 

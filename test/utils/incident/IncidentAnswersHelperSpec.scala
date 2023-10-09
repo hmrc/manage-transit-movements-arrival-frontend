@@ -17,12 +17,12 @@
 package utils.incident
 
 import base.SpecBase
+import config.Constants.IncidentCode._
 import controllers.incident.endorsement.{routes => endorsementRoutes}
 import controllers.incident.equipment.{routes => equipmentRoutes}
 import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
-import config.Constants._
 import generators.Generators
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain

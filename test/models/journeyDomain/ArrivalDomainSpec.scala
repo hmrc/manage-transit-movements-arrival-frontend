@@ -17,8 +17,9 @@
 package models.journeyDomain
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.IncidentCode._
+import config.Constants.QualifierCode._
 import config.PhaseConfig
-import config.Constants._
 import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain

@@ -16,6 +16,7 @@
 
 package pages.locationOfGoods
 
+import config.Constants.QualifierCode._
 import controllers.locationOfGoods.routes
 import models.reference.QualifierOfIdentification
 import models.{Mode, UserAnswers}
@@ -23,7 +24,6 @@ import pages.QuestionPage
 import pages.sections.locationOfGoods.{ContactPersonSection, LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import config.Constants._
 
 import scala.util.{Success, Try}
 
