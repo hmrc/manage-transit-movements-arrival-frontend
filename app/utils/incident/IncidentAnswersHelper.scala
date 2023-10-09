@@ -172,7 +172,7 @@ class IncidentAnswersHelper(
 
   def transportMeansRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = TransportNationalityPage(incidentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = _.toString.toText,
     prefix = "incident.transportMeans.transportNationality",
     id = Some("change-transport-means-registered-country")
   )
