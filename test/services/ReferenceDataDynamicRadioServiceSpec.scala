@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import config.Constants.{ApprovedPlace, DesignatedLocation, Other}
+import config.Constants.LocationType._
 import connectors.ReferenceDataConnector
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import org.mockito.ArgumentMatchers.any

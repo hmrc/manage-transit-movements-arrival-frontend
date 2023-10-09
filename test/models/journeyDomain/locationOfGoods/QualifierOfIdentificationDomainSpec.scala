@@ -17,7 +17,7 @@
 package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.QualifierCode._
 import generators.Generators
 import models.identification.ProcedureType
 import models.journeyDomain.{EitherType, UserAnswersReader}

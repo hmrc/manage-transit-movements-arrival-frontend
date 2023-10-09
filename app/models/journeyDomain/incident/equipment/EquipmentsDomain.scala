@@ -16,10 +16,10 @@
 
 package models.journeyDomain.incident.equipment
 
+import config.Constants.IncidentCode._
 import controllers.incident.equipment.routes
-import config.Constants._
-import models.reference.IncidentCode._
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.reference.IncidentCode._
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
 import pages.sections.incident.EquipmentsSection

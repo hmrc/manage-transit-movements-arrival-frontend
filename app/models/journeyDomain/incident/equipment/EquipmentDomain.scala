@@ -17,12 +17,12 @@
 package models.journeyDomain.incident.equipment
 
 import cats.implicits._
+import config.Constants.IncidentCode._
 import controllers.incident.equipment.routes
-import config.Constants._
-import models.reference.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.reference.IncidentCode._
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}

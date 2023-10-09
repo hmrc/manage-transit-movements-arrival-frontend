@@ -17,23 +17,30 @@
 package config
 
 object Constants {
-  lazy val DeviatedFromItineraryCode         = "1"
-  lazy val SealsBrokenOrTamperedCode         = "2"
-  lazy val TransferredToAnotherTransportCode = "3"
-  lazy val PartiallyOrFullyUnloadedCode      = "4"
-  lazy val CarrierUnableToComplyCode         = "5"
-  lazy val UnexpectedlyChangedCode           = "6"
 
-  lazy val PostalCodeCode          = "T"
-  lazy val UnlocodeCode            = "U"
-  lazy val CustomsOfficeCode       = "V"
-  lazy val CoordinatesCode         = "W"
-  lazy val EoriNumberCode          = "X"
-  lazy val AuthorisationNumberCode = "Y"
-  lazy val AddressCode             = "Z"
+  object IncidentCode {
+    lazy val DeviatedFromItineraryCode         = "1"
+    lazy val SealsBrokenOrTamperedCode         = "2"
+    lazy val TransferredToAnotherTransportCode = "3"
+    lazy val PartiallyOrFullyUnloadedCode      = "4"
+    lazy val CarrierUnableToComplyCode         = "5"
+    lazy val UnexpectedlyChangedCode           = "6"
+  }
 
-  lazy val DesignatedLocation = "A"
-  lazy val AuthorisedPlace    = "B"
-  lazy val ApprovedPlace      = "C"
-  lazy val Other              = "D"
+  object QualifierCode {
+    lazy val PostalCodeCode          = "T"
+    lazy val UnlocodeCode            = "U"
+    lazy val CustomsOfficeCode       = "V"
+    lazy val CoordinatesCode         = "W"
+    lazy val EoriNumberCode          = "X"
+    lazy val AuthorisationNumberCode = "Y"
+    lazy val AddressCode             = "Z"
+  }
+
+  object LocationType {
+    lazy val DesignatedLocation = "A"
+    lazy val AuthorisedPlace    = "B"
+    lazy val ApprovedPlace      = "C"
+    lazy val Other              = "D"
+  }
 }

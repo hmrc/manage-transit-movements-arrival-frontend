@@ -17,7 +17,7 @@
 package utils.incident
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.IncidentCode._
 import controllers.incident.equipment._
 import generators.Generators
 import models.reference.IncidentCode

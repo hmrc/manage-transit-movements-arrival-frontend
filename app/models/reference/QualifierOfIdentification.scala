@@ -23,6 +23,8 @@ case class QualifierOfIdentification(qualifier: String, description: String) ext
   override def toString: String         = description
   override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
   override val code: String             = qualifier
+
+  def isOneOf(codes: String*): Boolean = codes.contains(code)
 }
 
 object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdentification] {
