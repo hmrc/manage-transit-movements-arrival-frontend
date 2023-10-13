@@ -18,13 +18,10 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{MovementReferenceNumber, NormalMode}
-import navigation.ArrivalNavigatorProvider
+import models.MovementReferenceNumber
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.identification.MovementReferenceNumberView
@@ -36,14 +33,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   val formProvider                        = new MovementReferenceNumberFormProvider()
   val form: Form[MovementReferenceNumber] = formProvider()
 
-  private val mode = NormalMode
-
-  private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad(mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[ArrivalNavigatorProvider]).toInstance(fakeArrivalNavigatorProvider))
+  private lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad().url
 
   "MovementReferenceNumber Controller" - {
 
@@ -60,10 +50,29 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mode)(request, messages).toString
+        view(form)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted and sessionRepository returns UserAnswers value as Some(_)" in {
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      setNoExistingUserAnswers()
+
+      lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageReload(mrn).url
+
+      val request = FakeRequest(GET, movementReferenceNumberRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> mrn.toString))
+
+      val view = injector.instanceOf[MovementReferenceNumberView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm)(request, messages).toString
+    }
+
+    "must redirect to the next page with NormalMode when valid data is submitted and user answers found in session repository" in {
 
       when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None) thenReturn Future.successful(Some(emptyUserAnswers))
       when(mockSessionRepository.put(any())(any())) thenReturn Future.successful(true)
@@ -76,9 +85,30 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        s"/manage-transit-movements/arrivals/$mrn/identification/office-of-destination"
+
       verify(mockSessionRepository, times(2)).get(eqTo(mrn.toString))(any())
-      verify(mockSessionRepository, times(1)).put(eqTo(mrn.toString))(any())
+      verify(mockSessionRepository).put(eqTo(mrn.toString))(any())
+    }
+
+    "must redirect to the next page with CheckMode when valid data is submitted and user answers not found in session repository" in {
+
+      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, movementReferenceNumberRoute)
+        .withFormUrlEncodedBody(("value", mrn.toString))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual
+        s"/manage-transit-movements/arrivals/$mrn/identification/change-office-of-destination"
+
+      verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
+      verify(mockSessionRepository, never()).put(any())(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -99,7 +129,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(filledForm, mode)(request, messages).toString
+        view(filledForm)(request, messages).toString
     }
   }
 }
