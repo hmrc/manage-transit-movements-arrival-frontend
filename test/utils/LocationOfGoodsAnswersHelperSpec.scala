@@ -58,7 +58,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe routes.TypeOfLocationController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "This is their location at the end of the transit movement."
+              action.visuallyHiddenText.get mustBe "location type for the goods"
               action.id mustBe "type-of-location"
           }
         }
