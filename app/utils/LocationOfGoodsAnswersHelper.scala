@@ -20,7 +20,6 @@ import models.reference.{Country, CustomsOffice, QualifierOfIdentification, Type
 import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, UserAnswers}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class LocationOfGoodsAnswersHelper(

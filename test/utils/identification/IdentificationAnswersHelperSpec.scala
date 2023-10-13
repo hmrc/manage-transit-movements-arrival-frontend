@@ -46,7 +46,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             actions.size mustBe 1
             val action = actions.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.MovementReferenceNumberController.onPageLoad(mode).url
+            action.href mustBe routes.MovementReferenceNumberController.onPageReload(mrn).url
             action.visuallyHiddenText.get mustBe "Movement Reference Number (MRN)"
         }
       }

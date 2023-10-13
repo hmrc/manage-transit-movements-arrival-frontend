@@ -17,9 +17,8 @@
 package views.identification
 
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{Mode, MovementReferenceNumber}
+import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -28,12 +27,10 @@ import views.html.identification.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
 
-  private val mode: Mode = arbitrary[Mode].sample.value
-
   override def form: Form[MovementReferenceNumber] = new MovementReferenceNumberFormProvider()()
 
   override def applyView(form: Form[MovementReferenceNumber]): HtmlFormat.Appendable =
-    injector.instanceOf[MovementReferenceNumberView].apply(form, mode)(fakeRequest, messages)
+    injector.instanceOf[MovementReferenceNumberView].apply(form)(fakeRequest, messages)
 
   override val prefix: String = "movementReferenceNumber"
 

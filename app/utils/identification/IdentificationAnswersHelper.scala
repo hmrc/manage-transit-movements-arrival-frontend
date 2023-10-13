@@ -34,7 +34,7 @@ class IdentificationAnswersHelper(
     prefix = "movementReferenceNumber",
     answer = formatAsText(mrn),
     id = None,
-    call = controllers.identification.routes.MovementReferenceNumberController.onPageLoad(mode)
+    call = controllers.identification.routes.MovementReferenceNumberController.onPageReload(mrn)
   )
 
   def destinationOffice: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOffice](

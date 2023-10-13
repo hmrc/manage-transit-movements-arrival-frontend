@@ -17,7 +17,6 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -31,6 +30,6 @@ class RedirectControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
     status(result) mustEqual SEE_OTHER
 
     redirectLocation(result).value mustEqual
-      controllers.identification.routes.MovementReferenceNumberController.onPageLoad(NormalMode).url
+      controllers.identification.routes.MovementReferenceNumberController.onPageLoad().url
   }
 }

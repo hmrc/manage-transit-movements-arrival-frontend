@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -31,6 +30,6 @@ class RedirectController @Inject() (
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
-    Redirect(controllers.identification.routes.MovementReferenceNumberController.onPageLoad(NormalMode))
+    Redirect(controllers.identification.routes.MovementReferenceNumberController.onPageLoad())
   }
 }

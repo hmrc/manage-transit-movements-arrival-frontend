@@ -18,10 +18,10 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{Mode, UserAnswers}
+import models.{CheckMode, Mode, MovementReferenceNumber, NormalMode, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
@@ -43,31 +43,36 @@ class MovementReferenceNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify {
+  def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(form, mode))
+      Ok(view(form))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = identify.async {
+  def onPageReload(mrn: MovementReferenceNumber): Action[AnyContent] = identify {
+    implicit request =>
+      Ok(view(form.fill(mrn)))
+  }
+
+  def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value => {
-            def getOrCreateUserAnswers(): Future[Option[UserAnswers]] =
-              sessionRepository.get(value.toString).flatMap {
-                case None =>
-                  sessionRepository.put(value.toString).flatMap {
-                    _ => sessionRepository.get(value.toString)
-                  }
-                case someUserAnswers =>
-                  Future.successful(someUserAnswers)
+            def redirect(userAnswers: Option[UserAnswers], mode: Mode): Result =
+              userAnswers match {
+                case Some(value) => Redirect(navigatorProvider(mode).nextPage(value))
+                case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
               }
 
-            getOrCreateUserAnswers().map {
-              case Some(userAnswers) => Redirect(navigatorProvider(mode).nextPage(userAnswers))
-              case None              => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+            sessionRepository.get(value.toString).flatMap {
+              case None =>
+                sessionRepository.put(value.toString).flatMap {
+                  _ => sessionRepository.get(value.toString).map(redirect(_, NormalMode))
+                }
+              case userAnswers =>
+                Future.successful(redirect(userAnswers, CheckMode))
             }
           }
         )

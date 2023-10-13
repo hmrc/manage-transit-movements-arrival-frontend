@@ -1,8 +1,7 @@
 
-GET        /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = NormalMode)
-POST       /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onSubmit(mode: Mode = NormalMode)
-GET        /change-movement-reference-number                            controllers.identification.MovementReferenceNumberController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-movement-reference-number                            controllers.identification.MovementReferenceNumberController.onSubmit(mode: Mode = CheckMode)
+GET        /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onPageLoad()
+GET        /:mrn/change-movement-reference-number                       controllers.identification.MovementReferenceNumberController.onPageReload(mrn: MovementReferenceNumber)
+POST       /movement-reference-number                                   controllers.identification.MovementReferenceNumberController.onSubmit()
 
 GET        /:mrn/procedure-type                                         controllers.identification.IsSimplifiedProcedureController.onPageLoad(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
 POST       /:mrn/procedure-type                                         controllers.identification.IsSimplifiedProcedureController.onSubmit(mrn: MovementReferenceNumber, mode: Mode = NormalMode)
