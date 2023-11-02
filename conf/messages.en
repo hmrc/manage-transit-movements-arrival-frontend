@@ -543,12 +543,12 @@ incident.transportMeans.identification.checkYourAnswersLabel = Identification ty
 incident.transportMeans.identification.change.hidden = identification type for the replacement means of transport
 incident.transportMeans.identification.error.required = Select which identification you want to use for the replacement means of transport
 
-incident.transportMeans.identificationNumber.title = What is the identification number for this?
-incident.transportMeans.identificationNumber.heading =  What is the identification number for this?
+incident.transportMeans.identificationNumber.title = What is the identification number for this vehicle?
+incident.transportMeans.identificationNumber.heading =  What is the identification number for this vehicle?
 incident.transportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 incident.transportMeans.identificationNumber.checkYourAnswersLabel = Identification number
 incident.transportMeans.identificationNumber.change.hidden = identification number for the replacement means of transport
-incident.transportMeans.identificationNumber.error.required = Enter the identification number
+incident.transportMeans.identificationNumber.error.required = Enter the identification number for this vehicle
 incident.transportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
 incident.transportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 
