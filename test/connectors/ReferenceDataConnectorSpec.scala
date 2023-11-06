@@ -18,6 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import helper.WireMockServerHandler
 import models.reference._
@@ -224,7 +225,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
-  private val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+  private val emptyResponseJson: String =
+    """
+      |{
+      |  "data": []
+      |}
+      |""".stripMargin
 
   "Reference Data" - {
 
@@ -244,6 +250,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         connector.getCustomsOfficesForCountry(countryCode).futureValue mustBe expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCustomsOfficesForCountry(countryCode))
       }
 
       "must return an exception when an error response is returned" in {
@@ -267,6 +277,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               )
 
               connector.getCountries(listName).futureValue mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          forAll(Gen.alphaNumStr) {
+            listName =>
+              checkNoReferenceDataFoundResponse(s"/$baseUrl/lists/$listName", connector.getCountries(listName))
           }
         }
 
@@ -296,6 +313,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getUnLocodes().futureValue mustBe expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getUnLocodes())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getUnLocodes())
       }
@@ -318,10 +339,15 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getNationalities().futureValue mustBe expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getNationalities())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getNationalities())
       }
     }
+
     "getIncidentCodes" - {
       val url = s"/$baseUrl/lists/IncidentCode"
 
@@ -340,6 +366,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         connector.getIncidentCodes().futureValue mustBe expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getIncidentCodes())
       }
 
       "must return an exception when an error response is returned" in {
@@ -364,6 +394,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getTypesOfLocation().futureValue mustBe expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTypesOfLocation())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTypesOfLocation())
+      }
     }
 
     "getIncidentIdentifications" - {
@@ -380,6 +417,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           QualifierOfIdentification("W", "GPS coordinates")
         )
         connector.getIncidentIdentifications().futureValue mustBe expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getIncidentIdentifications())
       }
 
       "must return an exception when an error response is returned" in {
@@ -404,6 +445,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getIdentifications().futureValue mustBe expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getIdentifications())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getIdentifications())
       }
@@ -424,6 +469,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Identification("20", "Wagon Number")
         )
         connector.getTransportIdentifications().futureValue mustBe expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportIdentifications())
       }
 
       "must return an exception when an error response is returned" in {
@@ -448,13 +497,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountriesWithoutZip().futureValue mustBe expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountriesWithoutZip())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getCountriesWithoutZip())
       }
     }
   }
 
-  private def checkErrorResponse(url: String, result: Future[_]): Assertion =
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    whenReady[Throwable, Assertion](result.failed) {
+      _ mustBe a[NoReferenceDataFoundException]
+    }
+  }
+
+  private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+
     forAll(errorResponses) {
       errorResponse =>
         server.stubFor(
@@ -465,9 +531,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
         )
 
-        whenReady(result.failed) {
+        whenReady[Throwable, Assertion](result.failed) {
           _ mustBe an[Exception]
         }
     }
+  }
 
 }
