@@ -68,7 +68,7 @@ unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
 unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
-arrivals.checkYourAnswers.title = Check your answers
+arrivals.checkYourAnswers.title = Check your answers - Arrivals
 arrivals.checkYourAnswers.heading = Check your answers
 arrivals.checkYourAnswers.authorisations.subheading = Authorisations
 arrivals.checkYourAnswers.authorisations.addOrRemove = Add or remove authorisations
@@ -278,7 +278,7 @@ locationOfGoods.identificationNumber.error.invalidCharacters = The EORI number o
 
 # Incident
 
-incident.checkAnswers.title = Check your answers
+incident.checkAnswers.title = Check your answers - Incidents
 incident.checkAnswers.heading = Check your answers
 
 incident.caption = Arrivals - Incidents
@@ -474,7 +474,7 @@ incident.equipment.remove.title = Are you sure you want to remove transport equi
 incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
 incident.equipment.remove.error.required = Select yes if you want to remove transport equipment {0}
 
-incident.equipment.checkEquipmentAnswers.title = Check your answers
+incident.equipment.checkEquipmentAnswers.title = Check your answers - Transport equipment
 incident.equipment.checkEquipmentAnswers.heading = Check your answers
 
 # Incident - Equipment - Seal
