@@ -67,7 +67,7 @@ class UnLocodesServiceSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockRefDataConnector).getUnLocode(eqTo(unLocode1.unLocodeExtendedCode))(any(), any())
         }
 
-        "must return false when unLocode does not exist in reference data" in {
+        "when UN/LOCODE does not exist in reference data" in {
 
           when(mockRefDataConnector.getUnLocode(any())(any(), any()))
             .thenReturn(Future.failed(new NoReferenceDataFoundException))
