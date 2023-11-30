@@ -243,6 +243,44 @@ class EquipmentsAnswersHelperSpec extends SpecBase with Generators {
           }
         }
       }
+
+      "when user answers populated with multiple complete equipments" - {
+
+        "and add transport equipment yes/no is unanswered" - {
+
+          "and equipment has no container id" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IncidentCodePage(incidentIndex), IncidentCode(SealsBrokenOrTamperedCode, "test"))
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0)), false)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, Index(0), Index(0)), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, Index(0)), false)
+                  .setValue(ContainerIdentificationNumberYesNoPage(incidentIndex, Index(1)), false)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, Index(1), Index(0)), sealId)
+                  .setValue(AddGoodsItemNumberYesNoPage(incidentIndex, Index(1)), false)
+
+                val helper = EquipmentsAnswersHelper(userAnswers, mode, incidentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = "Transport equipment 1",
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, Index(0)).url,
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, Index(0)).url)
+                    )
+                  ),
+                  Right(
+                    ListItem(
+                      name = "Transport equipment 2",
+                      changeUrl = routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, Index(1)).url,
+                      removeUrl = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, Index(1)).url)
+                    )
+                  )
+                )
+            }
+          }
+        }
+      }
     }
   }
 

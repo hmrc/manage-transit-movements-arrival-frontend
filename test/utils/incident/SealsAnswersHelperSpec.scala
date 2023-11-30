@@ -44,6 +44,51 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
         }
       }
 
+      "when user answers populated with a complete seal" - {
+        "and add seal yes/no page is defined" - {
+          "must return list items with remove links" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddSealsYesNoPage(incidentIndex, equipmentIndex), true)
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
+                val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
+                    )
+                  )
+                )
+            }
+          }
+        }
+
+        "and add seal yes/no page is undefined" - {
+          "must return list items with no remove link a index 0" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)), sealId)
+
+                val helper = SealsAnswersHelper(userAnswers, mode, incidentIndex, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    viewModels.ListItem(
+                      name = sealId,
+                      changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
+                      removeUrl = None
+                    )
+                  )
+                )
+            }
+          }
+        }
+      }
+
       "when user answers populated with complete seals" - {
         "and add seal yes/no page is defined" - {
           "must return list items with remove links" in {
@@ -89,7 +134,7 @@ class SealsAnswersHelperSpec extends SpecBase with Generators {
                     viewModels.ListItem(
                       name = sealId,
                       changeUrl = routes.SealIdentificationNumberController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url,
-                      removeUrl = None
+                      removeUrl = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, Index(0)).url)
                     )
                   ),
                   Right(
