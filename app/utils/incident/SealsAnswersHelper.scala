@@ -23,8 +23,7 @@ import pages.incident.equipment.AddSealsYesNoPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.sections.incident.SealsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
-import utils.AnswersHelper
+import utils.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class SealsAnswersHelper(
@@ -38,19 +37,13 @@ class SealsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SealsSection(incidentIndex, equipmentIndex)) {
       sealIndex =>
-        val removeRoute: Option[Call] = if (userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty && sealIndex.isFirst) {
-          None
-        } else {
-          Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
-        }
-
         buildListItem[SealDomain, String](
           page = SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
           formatJourneyDomainModel = _.identificationNumber,
           formatType = identity,
-          removeRoute = removeRoute
+          removeRoute = Some(routes.ConfirmRemoveSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex, sealIndex))
         )(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex), implicitly)
-    }
+    }.checkRemoveLinks(userAnswers.get(AddSealsYesNoPage(incidentIndex, equipmentIndex)).isEmpty)
 }
 
 object SealsAnswersHelper {

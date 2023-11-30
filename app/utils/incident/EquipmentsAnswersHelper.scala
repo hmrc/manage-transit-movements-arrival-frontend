@@ -23,8 +23,7 @@ import pages.incident.AddTransportEquipmentPage
 import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.sections.incident.EquipmentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
-import utils.AnswersHelper
+import utils.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class EquipmentsAnswersHelper(
@@ -37,19 +36,13 @@ class EquipmentsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(EquipmentsSection(incidentIndex)) {
       equipmentIndex =>
-        val removeRoute: Option[Call] = if (userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty && equipmentIndex.isFirst) {
-          None
-        } else {
-          Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
-        }
-
         buildListItemWithDefault[EquipmentDomain, String](
           page = ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
           formatJourneyDomainModel = _.asString,
           formatType = EquipmentDomain.asString(_, equipmentIndex),
-          removeRoute = removeRoute
+          removeRoute = Some(routes.ConfirmRemoveEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
         )(EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex), implicitly)
-    }
+    }.checkRemoveLinks(userAnswers.get(AddTransportEquipmentPage(incidentIndex)).isEmpty)
 }
 
 object EquipmentsAnswersHelper {
