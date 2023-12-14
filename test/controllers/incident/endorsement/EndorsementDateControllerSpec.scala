@@ -38,7 +38,7 @@ class EndorsementDateControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val dateTimeService = injector.instanceOf[DateTimeService]
 
   private val minDate = frontendAppConfig.endorsementDateMin
-  private val maxDate = dateTimeService.yesterday
+  private val maxDate = dateTimeService.today
 
   private val formProvider              = new DateFormProvider()
   private val form                      = formProvider("incident.endorsement.date", minDate, maxDate)
