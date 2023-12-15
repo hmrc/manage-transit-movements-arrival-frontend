@@ -35,21 +35,21 @@
         id = field.id,
         items = Seq(
             InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(field.error, "day")}",
+                classes = s"govuk-input--width-2 ${errorClass(field.errors, "day")}",
                 name = s"${field.id}.day",
                 label = Some(messages("date.day.capitalized")),
                 value = field("day").value,
                 id = s"${field.id}_day"
             ),
             InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(field.error, "month")}",
+                classes = s"govuk-input--width-2 ${errorClass(field.errors, "month")}",
                 name = s"${field.id}.month",
                 label = Some(messages("date.month.capitalized")),
                 value = field("month").value,
                 id = s"${field.id}_month"
             ),
             InputItem(
-                classes = s"govuk-input--width-4 ${errorClass(field.error, "year")}",
+                classes = s"govuk-input--width-4 ${errorClass(field.errors, "year")}",
                 name = s"${field.id}.year",
                 label = Some(messages("date.year.capitalized")),
                 value = field("year").value,
