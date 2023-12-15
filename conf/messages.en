@@ -350,7 +350,7 @@ incident.endorsement.date.error.required.two = The endorsement date must include
 incident.endorsement.date.error.required = The endorsement date must include a {0}
 incident.endorsement.date.error.invalid = Enter a real date for the endorsement
 incident.endorsement.date.error.min.date = The endorsement date must be after {0}
-incident.endorsement.date.error.max.date = The endorsement date must be before today’s date
+incident.endorsement.date.error.max.date = The endorsement date must be on or before today’s date
 
 incident.endorsement.authority.title = What authority made the endorsement?
 incident.endorsement.authority.heading = What authority made the endorsement?
