@@ -16,34 +16,86 @@
 
 package forms.identification
 
+import base.AppWithDefaultMockFixtures
 import forms.behaviours.StringFieldBehaviours
 import models.MovementReferenceNumber
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+import play.api.test.Helpers.running
 
-class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures {
 
-  val requiredKey         = "movementReferenceNumber.error.required"
-  val lengthKey           = "movementReferenceNumber.error.length"
-  val invalidCharacterKey = "movementReferenceNumber.error.invalidCharacter"
-  val invalidMRNKey       = "movementReferenceNumber.error.invalidMRN"
+  private val requiredKey         = "movementReferenceNumber.error.required"
+  private val lengthKey           = "movementReferenceNumber.error.length"
+  private val invalidCharacterKey = "movementReferenceNumber.error.invalidCharacter"
+  private val invalidMRNKey       = "movementReferenceNumber.error.invalidMRN"
 
-  val form = new MovementReferenceNumberFormProvider()()
+  private val mrnLength = MovementReferenceNumber.Constants.length
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      arbitrary[MovementReferenceNumber].map(_.toString)
-    )
+    def runTests(form: Form[MovementReferenceNumber])(implicit arbitraryMrn: Arbitrary[MovementReferenceNumber]): Unit = {
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        arbitrary[MovementReferenceNumber](arbitraryMrn).map(_.toString)
+      )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+
+      behave like fieldWithExactLength(
+        form,
+        fieldName,
+        exactLength = mrnLength,
+        lengthError = FormError(fieldName, lengthKey)
+      )
+
+      "must not bind MRN with invalid characters" in {
+        val str    = List.fill(mrnLength)("§").mkString
+        val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, invalidCharacterKey))
+      }
+
+      "must not bind MRN with invalid format" in {
+        val str    = "51GBLFUWH7WOI085M6"
+        val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, invalidMRNKey))
+      }
+    }
+
+    "during transition" - {
+      val app = transitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[MovementReferenceNumberFormProvider].apply()
+        runTests(form)(arbitraryMovementReferenceNumberTransition)
+
+        "must bind valid MRN with spaces" in {
+          val str    = "24 GB Q4OPL9LU18CNZ 7"
+          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+          result.value.value mustBe str
+        }
+      }
+    }
+
+    "post transition" - {
+      val app = postTransitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[MovementReferenceNumberFormProvider].apply()
+        runTests(form)(arbitraryMovementReferenceNumberFinal)
+
+        "must bind valid MRN with spaces" in {
+          val str    = "51 GB LFUWH7WOI085M 4"
+          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+          result.value.value mustBe str
+        }
+      }
+    }
   }
 }

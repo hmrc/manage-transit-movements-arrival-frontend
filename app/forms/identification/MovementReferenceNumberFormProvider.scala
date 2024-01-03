@@ -16,13 +16,14 @@
 
 package forms.identification
 
+import config.PhaseConfig
 import forms.mappings.Mappings
 import models.MovementReferenceNumber
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class MovementReferenceNumberFormProvider @Inject() extends Mappings {
+class MovementReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(): Form[MovementReferenceNumber] =
     Form(

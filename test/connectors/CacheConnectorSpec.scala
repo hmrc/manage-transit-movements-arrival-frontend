@@ -34,11 +34,11 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
   private lazy val connector: CacheConnector = app.injector.instanceOf[CacheConnector]
 
-  private val json: String =
-    """
+  private lazy val json: String =
+    s"""
       |{
       |    "_id" : "2e8ede47-dbfb-44ea-a1e3-6c57b1fe6fe2",
-      |    "mrn" : "04TAJC68CC4PEKJ4J0",
+      |    "mrn" : "$mrn",
       |    "eoriNumber" : "GB1234567",
       |    "data" : {},
       |    "tasks" : {},
@@ -47,13 +47,13 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
       |}
       |""".stripMargin
 
-  private val userAnswers = Json.parse(json).as[UserAnswers]
+  private lazy val userAnswers = Json.parse(json).as[UserAnswers]
 
   "CacheConnector" - {
 
     "get" - {
 
-      val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}"
+      lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}"
 
       "must return user answers when status is Ok" in {
         server.stubFor(
@@ -78,7 +78,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "post" - {
 
-      val url = s"/manage-transit-movements-arrival-cache/user-answers/${userAnswers.mrn.toString}"
+      lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}"
 
       "must return true when status is Ok" in {
         server.stubFor(post(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
@@ -133,7 +133,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "checkLock" - {
 
-      val url = s"/manage-transit-movements-arrival-cache/user-answers/${userAnswers.mrn.toString.toString}/lock"
+      lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}/lock"
 
       "must return true when status is Ok" in {
         server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
@@ -155,7 +155,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "deleteLock" - {
 
-      val url = s"/manage-transit-movements-arrival-cache/user-answers/${userAnswers.mrn.toString}/lock"
+      lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}/lock"
 
       "must return true when status is Ok" in {
         server.stubFor(delete(urlEqualTo(url)) willReturn aResponse().withStatus(OK))

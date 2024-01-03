@@ -16,27 +16,16 @@
 
 package models
 
-import models.MovementReferenceNumber._
+import config.PhaseConfig
+import models.domain.StringFieldRegex._
 import play.api.libs.json._
 import play.api.mvc.PathBindable
 
-import scala.math.pow
+import scala.util.matching.Regex
 
-final case class MovementReferenceNumber(year: String, countryCode: String, serial: String) {
+final case class MovementReferenceNumber(value: String) {
 
-  override def toString: String = s"$year$countryCode$serial$checkCharacter"
-
-  val checkCharacter: String = {
-
-    val input = s"$year$countryCode$serial"
-
-    val remainder = input.zipWithIndex.map {
-      case (character, index) =>
-        characterWeights(character) * pow(2, index).toInt
-    }.sum % 11
-
-    (remainder % 10).toString
-  }
+  override def toString: String = value
 }
 
 object MovementReferenceNumber {
@@ -46,52 +35,51 @@ object MovementReferenceNumber {
     val validCharactersRegex = """^[a-zA-Z0-9 ]*$"""
   }
 
-  // TODO - verify MRN regex from API XSD '([0-1][0-9]|[2][0-4])[A-Z]{2}[A-Z0-9]{13}[0-9]|([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]'
-  private val mrnFormat = """^(\d{2})([A-Z]{2})([A-Z0-9]{13})(\d)$""".r
-
   def apply(input: String): Option[MovementReferenceNumber] =
-    input.replaceAll("\\s", "") match {
-      case mrnFormat(year, countryCode, serial, checkCharacter) =>
-        val mrn = MovementReferenceNumber(year, countryCode, serial)
+    validate(input, mrnTransitionRegex) orElse
+      validate(input, mrnFinalRegex)
 
-        if (mrn.checkCharacter == checkCharacter) {
-          Some(mrn)
+  def validate(input: String)(implicit phaseConfig: PhaseConfig): Option[MovementReferenceNumber] =
+    validate(input, phaseConfig.mrnRegex)
+
+  private def validate(input: String, regex: Regex): Option[MovementReferenceNumber] =
+    input match {
+      case regex(year, countryCode, serial, checkCharacter) =>
+        if (isCheckCharacterValid(year, countryCode, serial, checkCharacter)) {
+          Some(new MovementReferenceNumber(input))
         } else {
           None
         }
-
       case _ =>
         None
     }
 
-  implicit lazy val reads: Reads[MovementReferenceNumber] = {
+  private def isCheckCharacterValid(year: String, countryCode: String, serial: String, checkCharacter: String): Boolean =
+    getCheckCharacter(year, countryCode, serial) == checkCharacter
 
-    import play.api.libs.json._
+  /** @param year        year in 2-digit form (e.g. 24 = 2024)
+    * @param countryCode country code (e.g. FR = France)
+    * @param serial      serial number made up of 13 alphanumeric characters
+    * @return the check character following these steps:
+    *  1. Assign a numerical value to each letter of the alphabet, beginning with 10 for the letter A (multiples of 11 are omitted, hence B is 12)
+    *  1. Concatenate the year, country code and serial number and determine the numerical value for each character
+    *  1. Multiply each number by 2^position^, where position is the index of the character in the string (starting from 0)
+    *  1. Add all of the results together
+    *  1. Divide the result by 11 and find the remainder
+    *    - If the remainder is 0-9, return the remainder
+    *    - If the remainder is 10, return 0
+    */
+  def getCheckCharacter(year: String, countryCode: String, serial: String): String = {
+    val input = s"$year$countryCode$serial"
 
-    __.read[String].map(MovementReferenceNumber.apply).flatMap {
-      case Some(mrn) =>
-        Reads(
-          _ => JsSuccess(mrn)
-        )
-      case None =>
-        Reads(
-          _ => JsError("Invalid Movement Reference Number")
-        )
+    val multiplicationFactors = input.zipWithIndex.map {
+      case (character, index) =>
+        characterWeights.apply(character) * Math.pow(2, index).toInt
     }
-  }
 
-  implicit lazy val writes: Writes[MovementReferenceNumber] = Writes {
-    mrn =>
-      JsString(mrn.toString)
-  }
+    val remainder = multiplicationFactors.sum % 11
 
-  implicit def pathBindable: PathBindable[MovementReferenceNumber] = new PathBindable[MovementReferenceNumber] {
-
-    override def bind(key: String, value: String): Either[String, MovementReferenceNumber] =
-      MovementReferenceNumber.apply(value).toRight("Invalid Movement Reference Number")
-
-    override def unbind(key: String, value: MovementReferenceNumber): String =
-      value.toString
+    (remainder % 10).toString
   }
 
   private val characterWeights = Map(
@@ -132,4 +120,29 @@ object MovementReferenceNumber {
     'Y' -> 37,
     'Z' -> 38
   )
+
+  implicit lazy val reads: Reads[MovementReferenceNumber] =
+    __.read[String].map(MovementReferenceNumber.apply).flatMap {
+      case Some(mrn) =>
+        Reads(
+          _ => JsSuccess(mrn)
+        )
+      case None =>
+        Reads(
+          _ => JsError("Invalid Movement Reference Number")
+        )
+    }
+
+  implicit lazy val writes: Writes[MovementReferenceNumber] = Writes {
+    mrn => JsString(mrn.toString)
+  }
+
+  implicit def pathBindable: PathBindable[MovementReferenceNumber] = new PathBindable[MovementReferenceNumber] {
+
+    override def bind(key: String, value: String): Either[String, MovementReferenceNumber] =
+      MovementReferenceNumber.apply(value).toRight("Invalid Movement Reference Number")
+
+    override def unbind(key: String, value: MovementReferenceNumber): String =
+      value.toString
+  }
 }

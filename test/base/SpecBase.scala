@@ -17,7 +17,7 @@
 package base
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{EoriNumber, Id, Index, MovementReferenceNumber, UserAnswers}
+import models.{EoriNumber, Id, Index, MovementReferenceNumber, Phase, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -48,10 +48,17 @@ trait SpecBase
     with MockitoSugar
     with EitherValues {
 
-  val eoriNumber: EoriNumber       = EoriNumber("GB123456")
-  val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
+  val eoriNumber: EoriNumber = EoriNumber("GB123456")
 
-  val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
+  lazy val mrn: MovementReferenceNumber = {
+    val value = phaseConfig.phase match {
+      case Phase.Transition     => "24GBQ4OPL9LU18CNZ7"
+      case Phase.PostTransition => "51GBLFUWH7WOI085M4"
+    }
+    new MovementReferenceNumber(value)
+  }
+
+  lazy val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
 
   val authorisationIndex: Index = Index(0)
   val incidentIndex: Index      = Index(0)

@@ -17,15 +17,18 @@
 package generators
 
 import config.Constants.IncidentCode._
+import config.PhaseConfig
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models._
-import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
+import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex, mrnTransitionRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import scala.util.matching.Regex
 
 trait ModelGenerators {
 
@@ -146,17 +149,29 @@ trait ModelGenerators {
       Gen.oneOf(models.identification.ProcedureType.values)
     }
 
-  implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
+  implicit def arbitraryMovementReferenceNumber(implicit phaseConfig: PhaseConfig): Arbitrary[MovementReferenceNumber] =
+    phaseConfig.phase match {
+      case Phase.Transition     => arbitraryMovementReferenceNumberTransition
+      case Phase.PostTransition => arbitraryMovementReferenceNumberFinal
+    }
+
+  lazy val arbitraryMovementReferenceNumberTransition: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
-      for {
-        year <- Gen
-          .choose(0, 99)
-          .map(
-            y => f"$y%02d"
-          )
-        country <- Gen.pick(2, 'A' to 'Z')
-        serial  <- Gen.pick(13, ('A' to 'Z') ++ ('0' to '9'))
-      } yield MovementReferenceNumber(year, country.mkString, serial.mkString)
+      movementReferenceNumberGen(mrnTransitionRegex)
+    }
+
+  lazy val arbitraryMovementReferenceNumberFinal: Arbitrary[MovementReferenceNumber] =
+    Arbitrary {
+      movementReferenceNumberGen(mrnFinalRegex)
+    }
+
+  private def movementReferenceNumberGen(regex: Regex): Gen[MovementReferenceNumber] =
+    RegexpGen.from(regex.toString()).flatMap {
+      case mrn @ regex(year, countryCode, serial, _) =>
+        val checkCharacter = MovementReferenceNumber.getCheckCharacter(year, countryCode, serial)
+        new MovementReferenceNumber(s"${mrn.dropRight(1)}$checkCharacter")
+      case _ =>
+        movementReferenceNumberGen(regex)
     }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
