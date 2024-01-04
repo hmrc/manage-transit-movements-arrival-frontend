@@ -37,6 +37,11 @@ class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks 
       result.get mustEqual "foobar"
     }
 
+    "must bind a valid string with trailing whitespace" in {
+      val result = testForm.bind(Map("value" -> "foobar   "))
+      result.get mustEqual "foobar"
+    }
+
     "must bind a valid string with leading and trailing spaces" in {
       val result = testForm.bind(Map("value" -> "  foobar     "))
       result.get mustEqual "foobar"
@@ -117,6 +122,16 @@ class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks 
     "must bind a valid integer" in {
       val result = testForm.bind(Map("value" -> "1"))
       result.get mustEqual 1
+    }
+
+    "must bind a valid integer with comma separators" in {
+      val result = testForm.bind(Map("value" -> "1,000"))
+      result.get mustEqual 1000
+    }
+
+    "must bind a valid integer spaces" in {
+      val result = testForm.bind(Map("value" -> "1 000 000"))
+      result.get mustEqual 1000000
     }
 
     "must not bind an empty value" in {

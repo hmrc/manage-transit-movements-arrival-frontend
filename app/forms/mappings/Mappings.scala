@@ -34,11 +34,11 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[Boolean] =
     if (condition) boolean(requiredKey, args = args) else of(ignoredFormat(defaultResult))
 
-  protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
-    of(trimmedStringFormatter(errorKey, args))
+  protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
+    adaptedText(errorKey, args)(identity)
 
-  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
-    of(stringFormatter(errorKey, args))
+  protected def adaptedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty)(f: String => String): FieldMapping[String] =
+    of(stringFormatter(errorKey, args)(f))
 
   protected def int(
     requiredKey: String = "error.required",
@@ -74,9 +74,6 @@ trait Mappings extends Formatters with Constraints {
     invalidMRNKey: String
   )(implicit phaseConfig: PhaseConfig): FieldMapping[MovementReferenceNumber] =
     of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
-
-  protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
-    of(spacelessStringFormatter(errorKey))
 
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],

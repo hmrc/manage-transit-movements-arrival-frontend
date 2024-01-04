@@ -33,7 +33,7 @@ class PostalCodeFormProvider @Inject() extends Mappings {
       mapping(
         StreetNumber.field -> {
           val args = Seq(StreetNumber.arg)
-          trimmedText(s"$prefix.error.streetNumber.required", args)
+          text(s"$prefix.error.streetNumber.required", args)
             .verifying(
               StopOnFirstFail[String](
                 maxLength(StreetNumber.length, s"$prefix.error.streetNumber.length", Seq(StreetNumber.arg, StreetNumber.length)),
@@ -43,7 +43,7 @@ class PostalCodeFormProvider @Inject() extends Mappings {
         },
         PostalCode.field -> {
           val args = Seq()
-          trimmedText(s"$prefix.error.postalCode.required", args)
+          text(s"$prefix.error.postalCode.required", args)
             .verifying(
               StopOnFirstFail[String](maxLength(PostalCode.length, s"$prefix.error.postalCode.length", Seq(PostalCode.arg, PostalCode.length))),
               regexp(PostalCode.regex, s"$prefix.error.postalCode.invalidCharacters", Seq(PostalCode.arg))
