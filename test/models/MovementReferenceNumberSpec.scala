@@ -32,9 +32,9 @@ class MovementReferenceNumberSpec extends SpecBase with Generators with EitherVa
 
     "must bind from a url" in {
 
-      val mrn = MovementReferenceNumber("99IT9876AB88901209")
+      val mrn = MovementReferenceNumber("51GBLFUWH7WOI085M4")
 
-      val result = pathBindable.bind("mrn", "99IT9876AB88901209")
+      val result = pathBindable.bind("mrn", "51GBLFUWH7WOI085M4")
 
       result.value mustEqual mrn.value
     }
@@ -129,21 +129,24 @@ class MovementReferenceNumberSpec extends SpecBase with Generators with EitherVa
       }
     }
 
-    "must build from a valid MRN" in {
+    "must build from a valid MRN" - {
 
-      MovementReferenceNumber("99IT9876AB88901209").value mustEqual MovementReferenceNumber("99", "IT", "9876AB8890120")
-      MovementReferenceNumber("18GB0000601001EB15").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EB1")
-      MovementReferenceNumber("18GB0000601001EBD1").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EBD")
-      MovementReferenceNumber("18IT02110010006A10").value mustEqual MovementReferenceNumber("18", "IT", "02110010006A1")
-      MovementReferenceNumber("18IT021100100069F4").value mustEqual MovementReferenceNumber("18", "IT", "021100100069F")
-      MovementReferenceNumber("18GB0000601001EBB5").value mustEqual MovementReferenceNumber("18", "GB", "0000601001EBB")
+      "when transition format" in {
+        val mrn = "24GBQ4OPL9LU18CNZ7"
+        MovementReferenceNumber.apply(mrn).value mustEqual new MovementReferenceNumber(mrn)
+      }
+
+      "when final format" in {
+        val mrn = "51GBLFUWH7WOI085M4"
+        MovementReferenceNumber.apply(mrn).value mustEqual new MovementReferenceNumber(mrn)
+      }
     }
 
     "must treat .apply and .toString as dual" in {
 
       forAll(arbitrary[MovementReferenceNumber]) {
         mrn =>
-          MovementReferenceNumber(mrn.toString).value mustEqual mrn
+          mrn.value mustEqual mrn.toString
       }
     }
 

@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import config.PhaseConfig
 import models.{Enumerable, MovementReferenceNumber, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
@@ -101,19 +102,20 @@ trait Formatters {
     lengthKey: String,
     invalidCharacterKey: String,
     invalidMRNKey: String
-  ): Formatter[MovementReferenceNumber] =
+  )(implicit phaseConfig: PhaseConfig): Formatter[MovementReferenceNumber] =
     new Formatter[MovementReferenceNumber] {
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], MovementReferenceNumber] =
         stringFormatter(requiredKey)
           .bind(key, data)
+          .map(_.removeSpaces())
           .flatMap {
-            case str if str.length > MovementReferenceNumber.Constants.length =>
+            case str if str.length != MovementReferenceNumber.Constants.length =>
               Left(Seq(FormError(key, lengthKey)))
             case str if str.trim.nonEmpty && !str.matches(MovementReferenceNumber.Constants.validCharactersRegex) =>
               Left(Seq(FormError(key, invalidCharacterKey)))
             case str =>
-              MovementReferenceNumber(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidMRNKey))))
+              MovementReferenceNumber.validate(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidMRNKey))))
           }
 
       override def unbind(key: String, value: MovementReferenceNumber): Map[String, String] =

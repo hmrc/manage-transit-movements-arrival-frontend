@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import config.PhaseConfig
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
@@ -71,7 +72,7 @@ trait Mappings extends Formatters with Constraints {
     lengthKey: String,
     invalidCharacterKey: String,
     invalidMRNKey: String
-  ): FieldMapping[MovementReferenceNumber] =
+  )(implicit phaseConfig: PhaseConfig): FieldMapping[MovementReferenceNumber] =
     of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =

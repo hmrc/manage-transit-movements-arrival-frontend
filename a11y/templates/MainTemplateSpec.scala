@@ -17,6 +17,7 @@
 package templates
 
 import a11ySpecBase.A11ySpecBase
+import config.PhaseConfig
 import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary.arbitrary
 import views.html.templates.MainTemplate
@@ -24,7 +25,8 @@ import views.html.templates.MainTemplate
 class MainTemplateSpec extends A11ySpecBase {
 
   "the 'main' template" must {
-    val template = app.injector.instanceOf[MainTemplate]
+    val template                          = app.injector.instanceOf[MainTemplate]
+    implicit val phaseConfig: PhaseConfig = app.injector.instanceOf[PhaseConfig]
 
     val title          = nonEmptyString.sample.value
     val timeoutEnabled = arbitrary[Boolean].sample.value

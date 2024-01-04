@@ -16,16 +16,14 @@
 
 package forms.mappings
 
+import base.SpecBase
 import generators.Generators
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 
-class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings with ScalaCheckPropertyChecks with Generators {
+class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks with Generators {
 
   "text" - {
 
@@ -200,7 +198,16 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
       "must not bind when value is longer than max length" in {
 
-        forAll(stringsLongerThan(MovementReferenceNumber.Constants.length + 1)) {
+        forAll(stringsLongerThan(MovementReferenceNumber.Constants.length)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.length"))
+        }
+      }
+
+      "must not bind when value is shorter than max length" in {
+
+        forAll(stringsWithMaxLength(MovementReferenceNumber.Constants.length - 1)) {
           invalidMrn =>
             val result = testForm.bind(Map("value" -> invalidMrn))
             result.errors must contain(FormError("value", "error.length"))
@@ -208,7 +215,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       }
 
       "must not bind when value contains an invalid character" in {
-        forAll(stringsWithMaxLength(MovementReferenceNumber.Constants.length - 1)) {
+        forAll(stringsWithLength(MovementReferenceNumber.Constants.length - 1)) {
           value =>
             val valueStartingWithUnderscore = s"_$value"
             val result                      = testForm.bind(Map("value" -> valueStartingWithUnderscore))

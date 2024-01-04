@@ -27,7 +27,7 @@ import views.html.identification.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
 
-  override def form: Form[MovementReferenceNumber] = new MovementReferenceNumberFormProvider()()
+  override def form: Form[MovementReferenceNumber] = new MovementReferenceNumberFormProvider().apply()
 
   override def applyView(form: Form[MovementReferenceNumber]): HtmlFormat.Appendable =
     injector.instanceOf[MovementReferenceNumberView].apply(form)(fakeRequest, messages)

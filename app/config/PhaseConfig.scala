@@ -18,18 +18,21 @@ package config
 
 import models.Phase
 import models.Phase.{PostTransition, Transition}
+import models.domain.StringFieldRegex._
+
+import scala.util.matching.Regex
 
 trait PhaseConfig {
   val phase: Phase
-
+  val mrnRegex: Regex
 }
 
 class TransitionConfig() extends PhaseConfig {
-  override val phase: Phase = Transition
-
+  override val phase: Phase    = Transition
+  override val mrnRegex: Regex = mrnTransitionRegex
 }
 
 class PostTransitionConfig() extends PhaseConfig {
-  override val phase: Phase = PostTransition
-
+  override val phase: Phase    = PostTransition
+  override val mrnRegex: Regex = mrnFinalRegex
 }
