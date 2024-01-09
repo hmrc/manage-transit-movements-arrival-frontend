@@ -32,21 +32,20 @@ class ReferenceDataDynamicRadioService @Inject() (
   def getIncidentCodes()(implicit hc: HeaderCarrier): Future[Seq[IncidentCode]] =
     referenceDataConnector
       .getIncidentCodes()
+      .map(_.toList)
       .map(_.sortBy(_.code.toLowerCase))
 
-  def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] = {
-    def filter(typesOfLocation: Seq[TypeOfLocation]): Seq[TypeOfLocation] =
-      typesOfLocation.filterNot(_.code == AuthorisedPlace)
-
+  def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
     referenceDataConnector
       .getTypesOfLocation()
-      .map(filter)
+      .map(_.toList)
+      .map(_.filterNot(_.code == AuthorisedPlace))
       .map(_.sortBy(_.`type`.toLowerCase))
-  }
 
   def getTransportIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
     referenceDataConnector
       .getTransportIdentifications()
+      .map(_.toList)
       .map(_.sortBy(_.`type`.toLowerCase))
 
   def getIdentifications(typeOfLocation: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] = {
@@ -65,14 +64,14 @@ class ReferenceDataDynamicRadioService @Inject() (
 
     referenceDataConnector
       .getIdentifications()
+      .map(_.toList)
       .map(_.sortBy(_.qualifier.toLowerCase))
-      .map(
-        filterQualifierOfIdentificationUserAnswers
-      )
+      .map(filterQualifierOfIdentificationUserAnswers)
   }
 
   def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
     referenceDataConnector
       .getIncidentIdentifications()
+      .map(_.toList)
 
 }

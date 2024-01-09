@@ -31,7 +31,7 @@ class CustomsOfficesService @Inject() (
   def getCustomsOfficesOfArrival(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] = {
 
     def getCustomsOfficesForCountry(countryCode: String): Future[Seq[CustomsOffice]] =
-      referenceDataConnector.getCustomsOfficesForCountry(CountryCode(countryCode))
+      referenceDataConnector.getCustomsOfficesForCountry(CountryCode(countryCode)).map(_.toList)
 
     for {
       gbOffices <- getCustomsOfficesForCountry("GB")

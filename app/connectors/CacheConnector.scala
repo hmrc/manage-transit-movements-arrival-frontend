@@ -20,62 +20,78 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.Status._
+import play.api.libs.json.{JsString, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClient
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
   def get(mrn: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    val url = s"$baseUrl/user-answers/$mrn"
+    val url = url"$baseUrl/user-answers/$mrn"
 
-    http.GET[UserAnswers](url).map {
-      userAnswers => Some(userAnswers)
-    } recover {
-      case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
-    }
+    http
+      .get(url)
+      .execute[UserAnswers]
+      .map(Some(_))
+      .recover {
+        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
+      }
   }
 
   def post(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.mrn}"
+    val url = url"$baseUrl/user-answers/${userAnswers.mrn}"
 
-    http.POST[UserAnswers, HttpResponse](url, userAnswers).map(_.status == OK)
+    http
+      .post(url)
+      .withBody(Json.toJson(userAnswers))
+      .execute[HttpResponse]
+      .map {
+        _.status == OK
+      }
   }
 
   def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.mrn}/lock"
+    val url = url"$baseUrl/user-answers/${userAnswers.mrn}/lock"
 
     http
-      .GET[HttpResponse](url)
+      .get(url)
+      .execute[HttpResponse]
       .map {
         _.status == OK
       }
   }
 
   def deleteLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.mrn}/lock"
+    val url = url"$baseUrl/user-answers/${userAnswers.mrn}/lock"
 
     http
-      .DELETE[HttpResponse](url)
+      .delete(url)
+      .execute[HttpResponse]
       .map {
         _.status == OK
       }
   }
 
   def put(mrn: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers"
+    val url = url"$baseUrl/user-answers"
 
-    http.PUT[String, HttpResponse](url, mrn).map {
-      _.status == OK
-    }
+    http
+      .put(url)
+      .withBody(JsString(mrn))
+      .execute[HttpResponse]
+      .map {
+        _.status == OK
+      }
   }
 
 }
