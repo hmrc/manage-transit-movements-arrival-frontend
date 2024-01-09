@@ -42,6 +42,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
       "must return true when status is Ok" in {
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
 
@@ -55,6 +56,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
@@ -68,6 +70,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
@@ -76,7 +79,5 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
         result.status mustBe status
       }
     }
-
   }
-
 }

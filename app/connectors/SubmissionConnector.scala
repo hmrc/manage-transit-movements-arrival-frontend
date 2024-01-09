@@ -18,25 +18,27 @@ package connectors
 
 import config.FrontendAppConfig
 import play.api.Logging
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClient
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
   def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-
-    val url = s"$baseUrl/declaration/submit"
-
-    http.POST[String, HttpResponse](url, mrn)
-
+    val url = url"$baseUrl/declaration/submit"
+    http
+      .post(url)
+      .withBody(Json.toJson(mrn))
+      .execute[HttpResponse]
   }
 }

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
@@ -84,10 +84,9 @@ class CacheConnector @Inject() (
 
   def put(mrn: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = url"$baseUrl/user-answers"
-
     http
       .put(url)
-      .withBody(JsString(mrn))
+      .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
       .map {
         _.status == OK

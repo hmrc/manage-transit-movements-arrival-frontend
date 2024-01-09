@@ -18,7 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import helper.WireMockServerHandler
@@ -242,6 +242,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
@@ -269,6 +270,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             listName =>
               server.stubFor(
                 get(urlEqualTo(s"/$baseUrl/lists/$listName"))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
                   .willReturn(okJson(countriesResponseJson))
               )
 
@@ -303,6 +305,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of UnLocodes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(unlocodesResponseJson))
         )
 
@@ -329,6 +332,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of Nationalities" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
@@ -355,6 +359,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of IncidentCodes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(incidentCodeResponseJson))
         )
 
@@ -381,6 +386,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of LocationType" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(typeOfLocationResponseJson))
         )
 
@@ -407,6 +413,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of IncidentIdentifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(incidentIdentifiersResponseJson))
         )
 
@@ -432,6 +439,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of Identifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(identifiersResponseJson))
         )
 
@@ -460,6 +468,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of  Identifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(transportIdentifiersResponseJson))
         )
 
@@ -488,6 +497,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of country codes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(countryCodesResponseJson))
         )
 
@@ -515,6 +525,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a country code" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(countryCodesResponseJson))
         )
 
