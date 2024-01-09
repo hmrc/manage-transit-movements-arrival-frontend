@@ -17,8 +17,12 @@
 package helper
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
+import play.api.libs.json.{JsValue, Json, Writes}
+import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 
 trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
@@ -39,4 +43,7 @@ trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
     super.afterAll()
     server.stop()
   }
+
+  def equalToJson[T](t: T)(implicit writes: Writes[T]): StringValuePattern =
+    WireMock.equalToJson(Json.stringify(Json.toJson(t)))
 }
