@@ -16,16 +16,16 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import helper.WireMockServerHandler
+import itbase.ItSpecBase
 import models.UserAnswers
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler {
+class CacheConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -81,7 +81,11 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
       lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}"
 
       "must return true when status is Ok" in {
-        server.stubFor(post(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
+        server.stubFor(
+          post(urlEqualTo(url))
+            .withRequestBody(equalToJson(userAnswers))
+            .willReturn(aResponse().withStatus(OK))
+        )
 
         val result: Boolean = await(connector.post(userAnswers))
 
@@ -93,6 +97,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(userAnswers))
             .willReturn(aResponse().withStatus(status))
         )
 
@@ -109,6 +114,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
       "must return true when status is Ok" in {
         server.stubFor(
           put(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
 

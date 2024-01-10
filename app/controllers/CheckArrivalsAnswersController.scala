@@ -54,14 +54,14 @@ class CheckArrivalsAnswersController @Inject() (
       implicit request =>
         submissionConnector.post(mrn.toString).map {
           case response if is2xx(response.status) =>
-            logger.debug(s"CheckArrivalsAnswersController:onSubmit: success ${response.status}: ${response.body}")
+            logger.debug(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${response.status}")
             Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
           case response if is4xx(response.status) =>
-            logger.warn(s"CheckArrivalsAnswersController:onSubmit: bad request: ${response.status}: ${response.body}")
-            BadRequest(response.body)
+            logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${response.status}")
+            BadRequest
           case e =>
-            logger.warn(s"CheckArrivalsAnswersController:onSubmit: something went wrong: ${e.status}-${e.body}")
-            InternalServerError(e.body)
+            logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${e.status}")
+            InternalServerError
         }
     }
 

@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.{CountryCode, CustomsOffice}
@@ -31,12 +32,12 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  val gbCustomsOffice1: CustomsOffice      = CustomsOffice("1", Some("BOSTON"), None)
-  val gbCustomsOffice2: CustomsOffice      = CustomsOffice("2", Some("Appledore"), None)
-  val xiCustomsOffice1: CustomsOffice      = CustomsOffice("3", Some("Belfast"), None)
-  val xiCustomsOffice2: CustomsOffice      = CustomsOffice("4", None, None)
-  val gbCustomsOffices: Seq[CustomsOffice] = Seq(gbCustomsOffice1, gbCustomsOffice2)
-  val xiCustomsOffices: Seq[CustomsOffice] = Seq(xiCustomsOffice1, xiCustomsOffice2)
+  val gbCustomsOffice1: CustomsOffice               = CustomsOffice("1", Some("BOSTON"), None)
+  val gbCustomsOffice2: CustomsOffice               = CustomsOffice("2", Some("Appledore"), None)
+  val xiCustomsOffice1: CustomsOffice               = CustomsOffice("3", Some("Belfast"), None)
+  val xiCustomsOffice2: CustomsOffice               = CustomsOffice("4", None, None)
+  val gbCustomsOffices: NonEmptyList[CustomsOffice] = NonEmptyList(gbCustomsOffice1, List(gbCustomsOffice2))
+  val xiCustomsOffices: NonEmptyList[CustomsOffice] = NonEmptyList(xiCustomsOffice1, List(xiCustomsOffice2))
 
   val service = new CustomsOfficesService(mockRefDataConnector)
 
@@ -49,8 +50,10 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return a list of GB and NI customs offices" in {
 
-      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("XI")))(any(), any())).thenReturn(Future.successful(xiCustomsOffices))
-      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any())).thenReturn(Future.successful(gbCustomsOffices))
+      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("XI")))(any(), any()))
+        .thenReturn(Future.successful(xiCustomsOffices))
+      when(mockRefDataConnector.getCustomsOfficesForCountry(eqTo(CountryCode("GB")))(any(), any()))
+        .thenReturn(Future.successful(gbCustomsOffices))
 
       service.getCustomsOfficesOfArrival.futureValue mustBe
         SelectableList(Seq(xiCustomsOffice2, gbCustomsOffice2, xiCustomsOffice1, gbCustomsOffice1))

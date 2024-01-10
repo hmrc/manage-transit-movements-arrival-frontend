@@ -16,11 +16,10 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import cats.data.NonEmptyList
+import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import generators.Generators
-import helper.WireMockServerHandler
+import itbase.ItSpecBase
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -30,7 +29,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks with Generators {
+class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -201,11 +200,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |  "data": [
       |    {
       |      "code": "1",
-      |      "description": "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
+      |      "description": "The carrier is obliged to deviate from..."
       |    },
       |    {
       |      "code": "2",
-      |     "description": "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control."
+      |     "description": "Seals are broken or tampered with..."
       |    }
       |  ]
       |}
@@ -234,19 +233,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   "Reference Data" - {
 
-    "getCustomsOfficesOfDepartureForCountry" - {
+    "getCustomsOfficesForCountry" - {
       val countryCode = CountryCode("GB")
       val url         = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=${countryCode.code}&data.roles.role=DES"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GBtestId1", Some("testName1"), Some("testPhoneNumber")),
-          CustomsOffice("GBtestId2", Some("testName2"), None)
+          List(CustomsOffice("GBtestId2", Some("testName2"), None))
         )
 
         connector.getCustomsOfficesForCountry(countryCode).futureValue mustBe expectedResult
@@ -268,12 +268,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             listName =>
               server.stubFor(
                 get(urlEqualTo(s"/$baseUrl/lists/$listName"))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
                   .willReturn(okJson(countriesResponseJson))
               )
 
-              val expectedResult: Seq[Country] = Seq(
+              val expectedResult: NonEmptyList[Country] = NonEmptyList(
                 Country(CountryCode("GB"), "United Kingdom"),
-                Country(CountryCode("AD"), "Andorra")
+                List(Country(CountryCode("AD"), "Andorra"))
               )
 
               connector.getCountries(listName).futureValue mustEqual expectedResult
@@ -302,12 +303,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of UnLocodes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(unlocodesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           UnLocode("code1", "name1"),
-          UnLocode("code2", "name2")
+          List(UnLocode("code2", "name2"))
         )
 
         connector.getUnLocodes().futureValue mustBe expectedResult
@@ -328,12 +330,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of Nationalities" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           Nationality("GB", "United Kingdom"),
-          Nationality("AD", "Andorra")
+          List(Nationality("AD", "Andorra"))
         )
 
         connector.getNationalities().futureValue mustBe expectedResult
@@ -354,15 +357,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of IncidentCodes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(incidentCodeResponseJson))
         )
 
-        val expectedResult = Seq(
-          IncidentCode(
-            "1",
-            "The carrier is obliged to deviate from the itinerary prescribed in accordance with Article 298 of UCC/IA Regulation due to circumstances beyond his control."
-          ),
-          IncidentCode("2", "Seals are broken or tampered with in the course of a transport operation for reasons beyond the carrier`s control.")
+        val expectedResult = NonEmptyList(
+          IncidentCode("1", "The carrier is obliged to deviate from..."),
+          List(IncidentCode("2", "Seals are broken or tampered with..."))
         )
 
         connector.getIncidentCodes().futureValue mustBe expectedResult
@@ -383,12 +384,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of LocationType" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(typeOfLocationResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           TypeOfLocation("A", "Designated location"),
-          TypeOfLocation("B", "Authorised place")
+          List(TypeOfLocation("B", "Authorised place"))
         )
 
         connector.getTypesOfLocation().futureValue mustBe expectedResult
@@ -409,12 +411,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of IncidentIdentifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(incidentIdentifiersResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           QualifierOfIdentification("U", "UN/LOCODE"),
-          QualifierOfIdentification("W", "GPS coordinates")
+          List(QualifierOfIdentification("W", "GPS coordinates"))
         )
         connector.getIncidentIdentifications().futureValue mustBe expectedResult
       }
@@ -434,13 +437,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of Identifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(identifiersResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           QualifierOfIdentification("T", "Postal code"),
-          QualifierOfIdentification("U", "UN/LOCODE"),
-          QualifierOfIdentification("W", "GPS coordinates")
+          List(
+            QualifierOfIdentification("U", "UN/LOCODE"),
+            QualifierOfIdentification("W", "GPS coordinates")
+          )
         )
         connector.getIdentifications().futureValue mustBe expectedResult
       }
@@ -460,13 +466,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of  Identifications" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(transportIdentifiersResponseJson))
         )
 
-        val expectedResult: Seq[Identification] = Seq(
+        val expectedResult: NonEmptyList[Identification] = NonEmptyList(
           Identification("10", "IMO Ship Identification Number"),
-          Identification("11", "Name of the sea-going vessel"),
-          Identification("20", "Wagon Number")
+          List(
+            Identification("11", "Name of the sea-going vessel"),
+            Identification("20", "Wagon Number")
+          )
         )
         connector.getTransportIdentifications().futureValue mustBe expectedResult
       }
@@ -486,12 +495,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return a successful future response with a sequence of country codes" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(countryCodesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CountryCode("GB"),
-          CountryCode("AD")
+          List(CountryCode("AD"))
         )
 
         connector.getCountriesWithoutZip().futureValue mustBe expectedResult
@@ -503,6 +513,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getCountriesWithoutZip())
+      }
+    }
+
+    "getCountryWithoutZip" - {
+      val countryCode = CountryCode("GB")
+      val url         = s"/$baseUrl/filtered-lists/CountryWithoutZip?data.code=${countryCode.code}"
+
+      "must return a successful future response with a country code" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(countryCodesResponseJson))
+        )
+
+        connector.getCountryWithoutZip(countryCode).futureValue mustBe countryCode
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountryWithoutZip(countryCode))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getCountryWithoutZip(countryCode))
       }
     }
   }

@@ -16,15 +16,14 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import helper.WireMockServerHandler
+import itbase.ItSpecBase
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 
-class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler {
+class SubmissionConnectorSpec extends ItSpecBase {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -42,6 +41,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
       "must return true when status is Ok" in {
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
 
@@ -55,6 +55,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
@@ -68,6 +69,7 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
@@ -76,7 +78,5 @@ class SubmissionConnectorSpec extends SpecBase with AppWithDefaultMockFixtures w
         result.status mustBe status
       }
     }
-
   }
-
 }
