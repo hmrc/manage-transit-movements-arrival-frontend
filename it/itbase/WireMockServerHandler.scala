@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package helper
+package itbase
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
-import play.api.libs.json.{JsValue, Json, Writes}
-import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.StringValuePattern
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
+import play.api.libs.json.{Json, Writes}
 
 trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>

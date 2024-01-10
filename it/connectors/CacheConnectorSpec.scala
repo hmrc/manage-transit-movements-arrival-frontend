@@ -16,16 +16,16 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import helper.WireMockServerHandler
+import itbase.ItSpecBase
 import models.UserAnswers
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler {
+class CacheConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
