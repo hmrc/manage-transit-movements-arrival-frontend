@@ -56,7 +56,7 @@ lazy val root = (project in file("."))
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
-    scalaVersion    := "2.13.8",
+    scalaVersion    := "2.13.12",
     resolvers += Resolver.jcenterRepo,
     Concat.groups := Seq(
       "javascripts/application.js" -> group(Seq("javascripts/ctc.js"))
