@@ -19,7 +19,6 @@ package models.journeyDomain.incident.equipment
 import base.SpecBase
 import config.Constants.IncidentCode._
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.IncidentCode
 import org.scalacheck.Gen
 import pages.incident.equipment.{ContainerIdentificationNumberPage, ContainerIdentificationNumberYesNoPage}
@@ -37,10 +36,9 @@ class EquipmentsDomainSpec extends SpecBase {
 
             val expectedResult = EquipmentsDomain(Nil)(incidentIndex)
 
-            val result: EitherType[EquipmentsDomain] =
-              UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+            val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
         }
       }
 
@@ -56,10 +54,9 @@ class EquipmentsDomainSpec extends SpecBase {
 
                 val expectedResult = EquipmentsDomain(Nil)(incidentIndex)
 
-                val result: EitherType[EquipmentsDomain] =
-                  UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+                val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -68,8 +65,7 @@ class EquipmentsDomainSpec extends SpecBase {
 
     "can not be parsed from user answers" - {
       "when incident code is unanswered" in {
-        val result: EitherType[EquipmentsDomain] =
-          UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(emptyUserAnswers)
+        val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IncidentCodePage(incidentIndex)
       }
@@ -81,8 +77,7 @@ class EquipmentsDomainSpec extends SpecBase {
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
 
-              val result: EitherType[EquipmentsDomain] =
-                UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+              val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe ContainerIndicatorYesNoPage(incidentIndex)
           }
@@ -96,8 +91,7 @@ class EquipmentsDomainSpec extends SpecBase {
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
 
-                val result: EitherType[EquipmentsDomain] =
-                  UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+                val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddTransportEquipmentPage(incidentIndex)
             }
@@ -111,8 +105,7 @@ class EquipmentsDomainSpec extends SpecBase {
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), false)
                   .setValue(AddTransportEquipmentPage(incidentIndex), true)
 
-                val result: EitherType[EquipmentsDomain] =
-                  UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+                val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
             }
@@ -127,8 +120,7 @@ class EquipmentsDomainSpec extends SpecBase {
                   .setValue(IncidentCodePage(incidentIndex), incidentCode)
                   .setValue(ContainerIndicatorYesNoPage(incidentIndex), true)
 
-                val result: EitherType[EquipmentsDomain] =
-                  UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+                val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ContainerIdentificationNumberPage(incidentIndex, Index(0))
             }
@@ -143,8 +135,7 @@ class EquipmentsDomainSpec extends SpecBase {
               val userAnswers = emptyUserAnswers
                 .setValue(IncidentCodePage(incidentIndex), incidentCode)
 
-              val result: EitherType[EquipmentsDomain] =
-                UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(incidentIndex)).run(userAnswers)
+              val result = EquipmentsDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
           }
@@ -152,5 +143,4 @@ class EquipmentsDomainSpec extends SpecBase {
       }
     }
   }
-
 }

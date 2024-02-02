@@ -62,7 +62,7 @@ class MovementReferenceNumberController @Inject() (
           value => {
             def redirect(userAnswers: Option[UserAnswers], mode: Mode): Result =
               userAnswers match {
-                case Some(value) => Redirect(navigatorProvider(mode).nextPage(value))
+                case Some(value) => Redirect(navigatorProvider(mode).nextPage(value, None))
                 case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
               }
 

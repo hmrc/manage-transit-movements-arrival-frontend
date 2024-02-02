@@ -18,7 +18,6 @@ package models.journeyDomain.incident.equipment.itemNumber
 
 import base.SpecBase
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 
 class ItemNumbersDomainSpec extends SpecBase {
@@ -37,21 +36,18 @@ class ItemNumbersDomainSpec extends SpecBase {
           )
         )
 
-        val result: EitherType[ItemNumbersDomain] =
-          UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
+        val result = ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
     "cannot be read from user answers" - {
       "when there are no item numbers" in {
-        val result: EitherType[ItemNumbersDomain] =
-          UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(emptyUserAnswers)
+        val result = ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ItemNumberPage(incidentIndex, equipmentIndex, Index(0))
       }
     }
   }
-
 }

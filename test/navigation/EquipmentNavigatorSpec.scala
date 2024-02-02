@@ -36,7 +36,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.incident.equipment.routes.CheckEquipmentAnswersController.onPageLoad(answers.mrn, mode, incidentIndex, equipmentIndex))
           }
         }
@@ -54,7 +54,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(answers.mrn, mode, incidentIndex))
           }
         }

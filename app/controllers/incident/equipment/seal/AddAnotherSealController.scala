@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.EquipmentNavigatorProvider
+import pages.sections.incident.SealsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +67,8 @@ class AddAnotherSealController @Inject() (
           {
             case true =>
               Redirect(routes.SealIdentificationNumberController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(viewModel.numberOfSeals)))
-            case false => Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers))
+            case false =>
+              Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers, Some(SealsSection(incidentIndex, equipmentIndex))))
           }
         )
   }

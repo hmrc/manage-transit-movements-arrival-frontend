@@ -42,8 +42,6 @@ import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage,
 import pages.incident.location.{UnLocodePage, QualifierOfIdentificationPage => IncidentQualifierOfIdentificationPage}
 import pages.incident.transportMeans.{IdentificationPage, TransportNationalityPage, IdentificationNumberPage => TransportMeansIdentificationNumberPage}
 import pages.locationOfGoods._
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
 
@@ -54,22 +52,11 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
   private val transportIdentification = arbitrary[Identification].sample.value
   private val typeOfLocation          = arbitrary[TypeOfLocation].sample.value
 
-  val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[PhaseConfig].toInstance(mockPhaseConfig)
-      )
-
   "ArrivalDomain" - {
 
     "when post-transition" - {
-
+      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
 
       "can be parsed from UserAnswers" in {
 
@@ -101,18 +88,15 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           )
         )
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+        val result = ArrivalDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
-
+        result.value.value mustBe expectedResult
       }
     }
 
     "when pre-transition" - {
-
+      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
-
-      implicit val reader: UserAnswersReader[ArrivalDomain] = ArrivalDomain.userAnswersReader
 
       "can be parsed from UserAnswers" in {
 
@@ -208,13 +192,10 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
           )
         )
 
-        val result: EitherType[ArrivalDomain] = UserAnswersReader[ArrivalDomain].run(userAnswers)
+        val result = ArrivalDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
-
+        result.value.value mustBe expectedResult
       }
     }
-
   }
-
 }

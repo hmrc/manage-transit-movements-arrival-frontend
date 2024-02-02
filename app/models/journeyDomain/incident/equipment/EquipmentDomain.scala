@@ -16,12 +16,11 @@
 
 package models.journeyDomain.incident.equipment
 
-import cats.implicits._
 import config.Constants.IncidentCode._
 import controllers.incident.equipment.routes
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage, UserAnswersReader}
 import models.reference.IncidentCode._
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment._
@@ -51,52 +50,63 @@ object EquipmentDomain {
 
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
-  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[EquipmentDomain] = {
-    lazy val sealsReads       = UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex))
-    lazy val itemNumbersReads = UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex))
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): Read[EquipmentDomain] = {
+    lazy val sealsReads: Read[SealsDomain] =
+      SealsDomain.userAnswersReader(incidentIndex, equipmentIndex)
 
-    lazy val optionalSealsReads = AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
-      case true  => sealsReads
-      case false => UserAnswersReader.apply(SealsDomain(Nil))
-    }
+    lazy val itemNumbersReads: Read[ItemNumbersDomain] =
+      ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex)
 
-    lazy val optionalItemNumbersReads = AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
-      case true  => itemNumbersReads
-      case false => UserAnswersReader.apply(ItemNumbersDomain(Nil))
-    }
-
-    lazy val sealsReadsByIncidentCode: UserAnswersReader[SealsDomain] = IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
-      case SealsBrokenOrTamperedCode => sealsReads
-      case _                         => optionalSealsReads
-    }
-
-    lazy val readsWithContainerId: UserAnswersReader[EquipmentDomain] = (
-      ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.map(Some(_)),
-      sealsReadsByIncidentCode,
-      optionalItemNumbersReads
-    ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
-
-    lazy val readsWithOptionalContainerId: UserAnswersReader[EquipmentDomain] =
-      ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.flatMap {
-        case true => readsWithContainerId
-        case false =>
-          (
-            UserAnswersReader[Option[String]](None),
-            sealsReads,
-            optionalItemNumbersReads
-          ).tupled.map((EquipmentDomain.apply _).tupled).map(_(incidentIndex, equipmentIndex))
+    lazy val optionalSealsReads: Read[SealsDomain] =
+      AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.to {
+        case true  => sealsReads
+        case false => UserAnswersReader.success(SealsDomain(Nil))
       }
 
-    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
+    lazy val optionalItemNumbersReads: Read[ItemNumbersDomain] =
+      AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex).reader.to {
+        case true  => itemNumbersReads
+        case false => UserAnswersReader.success(ItemNumbersDomain(Nil))
+      }
 
-      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
-        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true  => readsWithContainerId
-          case false => readsWithOptionalContainerId
+    lazy val sealsReadsByIncidentCode: Read[SealsDomain] =
+      IncidentCodePage(incidentIndex).reader.to {
+        _.code match {
+          case SealsBrokenOrTamperedCode => sealsReads
+          case _                         => optionalSealsReads
         }
-      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readsWithOptionalContainerId
-      case _                                                        => UserAnswersReader.fail(IncidentCodePage(incidentIndex))
+      }
 
+    lazy val readsWithContainerId: Read[EquipmentDomain] = (
+      ContainerIdentificationNumberPage(incidentIndex, equipmentIndex).reader.toOption,
+      sealsReadsByIncidentCode,
+      optionalItemNumbersReads
+    ).map(EquipmentDomain.apply(_, _, _)(incidentIndex, equipmentIndex))
+
+    lazy val readsWithOptionalContainerId: Read[EquipmentDomain] =
+      ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex).reader.to {
+        case true =>
+          readsWithContainerId
+        case false =>
+          (
+            UserAnswersReader.none[String],
+            sealsReads,
+            optionalItemNumbersReads
+          ).map(EquipmentDomain.apply(_, _, _)(incidentIndex, equipmentIndex))
+      }
+
+    IncidentCodePage(incidentIndex).reader.to {
+      _.code match {
+        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+          ContainerIndicatorYesNoPage(incidentIndex).reader.to {
+            case true  => readsWithContainerId
+            case false => readsWithOptionalContainerId
+          }
+        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode =>
+          readsWithOptionalContainerId
+        case _ =>
+          UserAnswersReader.error(IncidentCodePage(incidentIndex))
+      }
     }
   }
 

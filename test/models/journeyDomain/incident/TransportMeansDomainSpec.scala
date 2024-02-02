@@ -18,7 +18,6 @@ package models.journeyDomain.incident
 
 import base.SpecBase
 import generators.Generators
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Identification, Nationality}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -46,20 +45,16 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
           nationality = nationality
         )
 
-        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-          TransportMeansDomain.userAnswersReader(incidentIndex)
-        ).run(userAnswers)
+        val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
     "cannot be parsed from user answers" - {
       "when transport means type is unanswered" in {
 
-        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-          TransportMeansDomain.userAnswersReader(incidentIndex)
-        ).run(emptyUserAnswers)
+        val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IdentificationPage(incidentIndex)
       }
@@ -69,9 +64,7 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
         val userAnswers = emptyUserAnswers
           .setValue(IdentificationPage(incidentIndex), identification)
 
-        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-          TransportMeansDomain.userAnswersReader(incidentIndex)
-        ).run(userAnswers)
+        val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage(incidentIndex)
       }
@@ -82,13 +75,10 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
           .setValue(IdentificationPage(incidentIndex), identification)
           .setValue(IdentificationNumberPage(incidentIndex), identificationNumber)
 
-        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-          TransportMeansDomain.userAnswersReader(incidentIndex)
-        ).run(userAnswers)
+        val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe TransportNationalityPage(incidentIndex)
       }
     }
   }
-
 }

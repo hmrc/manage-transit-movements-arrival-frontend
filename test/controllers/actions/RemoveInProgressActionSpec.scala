@@ -21,12 +21,13 @@ import config.Constants.IncidentCode._
 import generators.Generators
 import models.Index
 import models.journeyDomain.incident.equipment.EquipmentDomain
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, Read}
 import models.reference.IncidentCode
 import models.requests._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Gen
+import org.scalatest.Assertion
 import pages.incident.IncidentCodePage
 import pages.incident.equipment._
 import pages.incident.equipment.seal.SealIdentificationNumberPage
@@ -46,7 +47,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
   private class Harness[T <: JourneyDomainModel](
     array: Section[JsArray],
     indexedValue: Index => Section[JsObject]
-  )(implicit userAnswersReader: Index => UserAnswersReader[T])
+  )(implicit userAnswersReader: Index => Read[T])
       extends RemoveInProgressAction[T](array, indexedValue)(mockSessionRepository) {
 
     def callRefine[A](
@@ -68,7 +69,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         val futureResult = action.callRefine(request)
 
-        whenReady(futureResult) {
+        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
           r =>
             r.value mustBe request
         }
@@ -96,10 +97,10 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         val futureResult = action.callRefine(request)
 
-        whenReady(futureResult) {
+        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
           r =>
-            r.value mustBe request
             verify(mockSessionRepository).set(eqTo(userAnswers))(any())
+            r.value mustBe request
         }
       }
     }
@@ -131,10 +132,10 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         val expectedAnswers = userAnswers
           .removeValue(EquipmentSection(index, Index(1)))
 
-        whenReady(futureResult) {
+        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
           r =>
-            r.value.userAnswers mustBe expectedAnswers
             verify(mockSessionRepository).set(eqTo(expectedAnswers))(any())
+            r.value.userAnswers mustBe expectedAnswers
         }
       }
     }

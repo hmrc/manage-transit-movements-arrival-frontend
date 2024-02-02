@@ -16,24 +16,28 @@
 
 package models.journeyDomain.incident.endorsement
 
-import cats.implicits._
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
 import models.reference.Country
 import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 
 import java.time.LocalDate
 
-case class EndorsementDomain(date: LocalDate, authority: String, country: Country, location: String)
+case class EndorsementDomain(
+  date: LocalDate,
+  authority: String,
+  country: Country,
+  location: String
+) extends JourneyDomainModel
 
 object EndorsementDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[EndorsementDomain] =
+  def userAnswersReader(index: Index): Read[EndorsementDomain] =
     (
       EndorsementDatePage(index).reader,
       EndorsementAuthorityPage(index).reader,
       EndorsementCountryPage(index).reader,
       EndorsementLocationPage(index).reader
-    ).tupled.map((EndorsementDomain.apply _).tupled)
+    ).map(EndorsementDomain.apply)
 
 }

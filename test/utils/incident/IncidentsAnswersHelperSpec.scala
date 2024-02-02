@@ -19,7 +19,6 @@ package utils.incident
 import base.SpecBase
 import controllers.incident.routes
 import generators.Generators
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.IncidentDomain
 import models.reference.{Country, IncidentCode}
 import models.{Index, Mode}
@@ -109,13 +108,13 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
         "when incident is defined" in {
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val incident = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(incidentIndex)).run(userAnswers).value
+              val incident = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers).value
 
               val helper = IncidentsAnswersHelper(userAnswers, mode)
               val result = helper.incident(index).get
 
               result.key.value mustBe s"Incident ${incidentIndex.display}"
-              result.value.value mustBe s"Incident ${incidentIndex.display} - ${incident.incidentCode.description}"
+              result.value.value mustBe s"Incident ${incidentIndex.display} - ${incident.value.incidentCode.description}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -181,12 +180,12 @@ class IncidentsAnswersHelperSpec extends SpecBase with Generators {
         "must return one list item" in {
           forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val incident = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(incidentIndex)).run(userAnswers).value
+              val incident = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers).value
               val helper   = IncidentsAnswersHelper(userAnswers, mode)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"Incident ${incidentIndex.display} - ${incident.incidentCode.description}",
+                    name = s"Incident ${incidentIndex.display} - ${incident.value.incidentCode.description}",
                     changeUrl = routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url,
                     removeUrl = Some(routes.ConfirmRemoveIncidentController.onPageLoad(userAnswers.mrn, mode, incidentIndex).url)
                   )

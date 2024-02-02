@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.actions.Actions
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.IncidentsNavigatorProvider
+import pages.sections.incident.IncidentSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,7 +45,7 @@ class CheckIncidentAnswersController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(mrn) {
     implicit request =>
-      Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+      Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(IncidentSection(index))))
   }
 
 }

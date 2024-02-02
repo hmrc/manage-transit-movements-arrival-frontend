@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, Read}
 import models.requests.DataRequest
 import models.{Index, RichJsArray}
 import pages.sections.Section
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveInProgressAction[T <: JourneyDomainModel](
   array: Section[JsArray],
   indexedValue: Index => Section[JsObject]
-)(sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext, userAnswersReader: Index => UserAnswersReader[T])
+)(sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext, userAnswersReader: Index => Read[T])
     extends ActionRefiner[DataRequest, DataRequest]
     with Logging {
 
@@ -43,7 +43,7 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
       case Some(value) =>
         val indexesToRemove = value
           .filterWithIndex {
-            (_, i) => userAnswersReader(i).run(userAnswers).isLeft
+            (_, i) => userAnswersReader(i).apply(Nil).run(userAnswers).isLeft
           }
           .map(_._2)
 
@@ -65,7 +65,7 @@ class RemoveInProgressAction[T <: JourneyDomainModel](
 trait RemoveInProgressActionProvider {
 
   def apply[T <: JourneyDomainModel](array: Section[JsArray], indexedValue: Index => Section[JsObject])(implicit
-    userAnswersReader: Index => UserAnswersReader[T]
+    userAnswersReader: Index => Read[T]
   ): ActionRefiner[DataRequest, DataRequest]
 }
 
@@ -73,7 +73,7 @@ class RemoveInProgressActionProviderImpl @Inject() (sessionRepository: SessionRe
     extends RemoveInProgressActionProvider {
 
   override def apply[T <: JourneyDomainModel](array: Section[JsArray], indexedValue: Index => Section[JsObject])(implicit
-    userAnswersReader: Index => UserAnswersReader[T]
+    userAnswersReader: Index => Read[T]
   ): ActionRefiner[DataRequest, DataRequest] =
     new RemoveInProgressAction(array, indexedValue)(sessionRepository)
 }

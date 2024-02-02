@@ -16,21 +16,24 @@
 
 package models.journeyDomain.incident.equipment.seal
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
 import models.{Index, RichJsArray}
 import pages.sections.incident.SealsSection
 
-case class SealsDomain(seals: Seq[SealDomain])
+case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
 
 object SealsDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[SealsDomain] =
-    SealsSection(incidentIndex, equipmentIndex).reader
-      .flatMap {
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): Read[SealsDomain] = {
+
+    val sealsReader: Read[Seq[SealDomain]] =
+      SealsSection(incidentIndex, equipmentIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0))).map(Seq(_))
+          SealDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0)).toSeq
         case x =>
-          x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _))
+          x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _).apply(_))
       }
-      .map(SealsDomain(_))
+
+    sealsReader.map(SealsDomain.apply)
+  }
 }

@@ -18,7 +18,7 @@ package models.journeyDomain.incident.equipment.seal
 
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.Stage._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.mvc.Call
@@ -40,6 +40,6 @@ case class SealDomain(
 
 object SealDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): UserAnswersReader[SealDomain] =
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Read[SealDomain] =
     SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex).reader.map(SealDomain(_)(incidentIndex, equipmentIndex, sealIndex))
 }

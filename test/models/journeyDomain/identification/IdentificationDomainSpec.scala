@@ -19,7 +19,6 @@ package models.journeyDomain.identification
 import base.SpecBase
 import generators.Generators
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -46,9 +45,9 @@ class IdentificationDomainSpec extends SpecBase with Generators {
           authorisationReferenceNumber = None
         )
 
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
+        val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
 
       "when a simplified journey and at least one authorisation" in {
@@ -68,9 +67,9 @@ class IdentificationDomainSpec extends SpecBase with Generators {
           authorisationReferenceNumber = Some(referenceNumber)
         )
 
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
+        val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
@@ -78,7 +77,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
       "when is simplified question unanswered" in {
 
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(emptyUserAnswers)
+        val result = IdentificationDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe DestinationOfficePage
       }
@@ -90,7 +89,7 @@ class IdentificationDomainSpec extends SpecBase with Generators {
           .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
 
-        val result: EitherType[IdentificationDomain] = UserAnswersReader[IdentificationDomain].run(userAnswers)
+        val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AuthorisationReferenceNumberPage
       }

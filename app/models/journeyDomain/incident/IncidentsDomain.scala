@@ -16,9 +16,8 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits._
 import controllers.incident.routes
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read, Stage}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.incident.IncidentsSection
 import play.api.mvc.Call
@@ -31,14 +30,14 @@ case class IncidentsDomain(incidents: Seq[IncidentDomain]) extends JourneyDomain
 
 object IncidentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[IncidentsDomain] =
-    IncidentsSection.reader
-      .flatMap {
+  implicit val userAnswersReader: Read[IncidentsDomain] =
+    IncidentsSection.arrayReader
+      .to {
         case x if x.isEmpty =>
-          UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(Index(0))).map(Seq(_))
+          IncidentDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[IncidentDomain](IncidentDomain.userAnswersReader)
+          x.traverse[IncidentDomain](IncidentDomain.userAnswersReader(_).apply(_))
       }
-      .map(IncidentsDomain(_))
+      .map(IncidentsDomain.apply)
 
 }

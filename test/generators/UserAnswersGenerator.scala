@@ -17,13 +17,14 @@
 package generators
 
 import config.PhaseConfig
+import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
 import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
-import models.journeyDomain.{ArrivalDomain, ReaderError, UserAnswersReader}
+import models.journeyDomain.{ArrivalDomain, Read}
 import models.{EoriNumber, Index, MovementReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -42,11 +43,11 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   protected def buildUserAnswers[T](
     initialUserAnswers: UserAnswers
-  )(implicit userAnswersReader: UserAnswersReader[T]): Gen[UserAnswers] = {
+  )(implicit userAnswersReader: Read[T]): Gen[UserAnswers] = {
 
     def rec(userAnswers: UserAnswers): Gen[UserAnswers] =
-      userAnswersReader.run(userAnswers) match {
-        case Left(ReaderError(page, _)) =>
+      userAnswersReader.apply(Nil).run(userAnswers) match {
+        case Left(ReaderError(page, _, _)) =>
           generateAnswer
             .apply(page)
             .map {

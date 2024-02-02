@@ -16,37 +16,40 @@
 
 package models.journeyDomain.identification
 
-import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
-import pages.identification.{AuthorisationReferenceNumberPage, _}
+import pages.identification._
 
 case class IdentificationDomain(
   mrn: MovementReferenceNumber,
   destinationOffice: CustomsOffice,
-  identificationNumber: String,
   procedureType: ProcedureType,
+  identificationNumber: String,
   authorisationReferenceNumber: Option[String]
-)
+) extends JourneyDomainModel
 
 object IdentificationDomain {
 
-  private val mrnReader: UserAnswersReader[MovementReferenceNumber] = {
-    val fn: UserAnswers => EitherType[MovementReferenceNumber] = ua => Right(ua.mrn)
-    UserAnswersReader(fn)
-  }
+  private val mrnReader: Read[MovementReferenceNumber] =
+    UserAnswersReader.success {
+      (ua: UserAnswers) => ua.mrn
+    }
 
-  implicit val userAnswersReader: UserAnswersReader[IdentificationDomain] =
-    for {
-      mrn                  <- mrnReader
-      destinationOffice    <- DestinationOfficePage.reader
-      isSimplified         <- IsSimplifiedProcedurePage.reader
-      identificationNumber <- IdentificationNumberPage.reader
-      authorisationNumber <- isSimplified match {
-        case ProcedureType.Normal     => none[String].pure[UserAnswersReader]
-        case ProcedureType.Simplified => AuthorisationReferenceNumberPage.reader.map(Some(_))
-      }
-    } yield IdentificationDomain(mrn, destinationOffice, identificationNumber, isSimplified, authorisationNumber)
+  implicit val userAnswersReader: Read[IdentificationDomain] =
+    (
+      mrnReader,
+      DestinationOfficePage.reader,
+      IsSimplifiedProcedurePage.reader,
+      IdentificationNumberPage.reader
+    ).to {
+      case (mrn, destinationOffice, isSimplified, identificationNumber) =>
+        val authorisationNumberReads: Read[Option[String]] = isSimplified match {
+          case ProcedureType.Normal     => UserAnswersReader.none
+          case ProcedureType.Simplified => AuthorisationReferenceNumberPage.reader.toOption
+        }
+
+        authorisationNumberReads.map(IdentificationDomain.apply(mrn, destinationOffice, isSimplified, identificationNumber, _))
+    }
 }

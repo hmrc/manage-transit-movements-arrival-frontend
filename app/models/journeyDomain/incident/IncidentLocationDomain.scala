@@ -16,25 +16,27 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits._
 import config.Constants.QualifierCode._
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
 import models.{Coordinates, DynamicAddress, Index}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 
-sealed trait IncidentLocationDomain
+sealed trait IncidentLocationDomain extends JourneyDomainModel
 
 object IncidentLocationDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentLocationDomain] =
-    QualifierOfIdentificationPage(index).reader.map(_.code).flatMap {
-      case CoordinatesCode =>
-        UserAnswersReader[IncidentCoordinatesLocationDomain](IncidentCoordinatesLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
-      case UnlocodeCode =>
-        UserAnswersReader[IncidentUnLocodeLocationDomain](IncidentUnLocodeLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
-      case AddressCode =>
-        UserAnswersReader[IncidentAddressLocationDomain](IncidentAddressLocationDomain.userAnswersReader(index)).widen[IncidentLocationDomain]
-      case _ => UserAnswersReader.fail(QualifierOfIdentificationPage(index))
+  def userAnswersReader(index: Index): Read[IncidentLocationDomain] =
+    QualifierOfIdentificationPage(index).reader.to {
+      _.code match {
+        case CoordinatesCode =>
+          IncidentCoordinatesLocationDomain.userAnswersReader(index)
+        case UnlocodeCode =>
+          IncidentUnLocodeLocationDomain.userAnswersReader(index)
+        case AddressCode =>
+          IncidentAddressLocationDomain.userAnswersReader(index)
+        case _ =>
+          UserAnswersReader.error(QualifierOfIdentificationPage(index))
+      }
     }
 
 }
@@ -43,22 +45,22 @@ case class IncidentCoordinatesLocationDomain(coordinates: Coordinates) extends I
 
 object IncidentCoordinatesLocationDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentCoordinatesLocationDomain] =
-    CoordinatesPage(index).reader.map(IncidentCoordinatesLocationDomain(_))
+  def userAnswersReader(index: Index): Read[IncidentLocationDomain] =
+    CoordinatesPage(index).reader.map(IncidentCoordinatesLocationDomain.apply)
 }
 
 case class IncidentUnLocodeLocationDomain(unLocode: String) extends IncidentLocationDomain
 
 object IncidentUnLocodeLocationDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentUnLocodeLocationDomain] =
-    UnLocodePage(index).reader.map(IncidentUnLocodeLocationDomain(_))
+  def userAnswersReader(index: Index): Read[IncidentLocationDomain] =
+    UnLocodePage(index).reader.map(IncidentUnLocodeLocationDomain.apply)
 }
 
 case class IncidentAddressLocationDomain(address: DynamicAddress) extends IncidentLocationDomain
 
 object IncidentAddressLocationDomain {
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentAddressLocationDomain] =
-    AddressPage(index).reader.map(IncidentAddressLocationDomain(_))
+  def userAnswersReader(index: Index): Read[IncidentLocationDomain] =
+    AddressPage(index).reader.map(IncidentAddressLocationDomain.apply)
 }

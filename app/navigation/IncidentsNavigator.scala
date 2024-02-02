@@ -18,7 +18,7 @@ package navigation
 
 import config.PhaseConfig
 import models._
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.Read
 import models.journeyDomain.incident.IncidentsDomain
 
 import javax.inject.{Inject, Singleton}
@@ -41,6 +41,6 @@ class IncidentsNavigator(override val mode: Mode) extends UserAnswersNavigator {
 
   override type T = IncidentsDomain
 
-  implicit override val reader: UserAnswersReader[IncidentsDomain] =
+  implicit override val reader: Read[IncidentsDomain] =
     IncidentsDomain.userAnswersReader
 }

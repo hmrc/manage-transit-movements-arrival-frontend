@@ -16,11 +16,10 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits.catsSyntaxTuple7Semigroupal
 import config.Constants.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read, Stage}
 import models.reference.IncidentCode._
 import models.reference.{Country, IncidentCode}
 import models.{Index, Mode, UserAnswers}
@@ -51,22 +50,23 @@ object IncidentDomain {
   def asString(index: Index, incidentCode: IncidentCode)(implicit messages: Messages): String =
     messages("incident.value", index.display, incidentCode.description)
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
+  def userAnswersReader(index: Index): Read[IncidentDomain] = {
 
-    val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
-      .filterOptionalDependent(
-        x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
-      )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
+    val transportMeansReads: Read[Option[TransportMeansDomain]] =
+      IncidentCodePage(index)
+        .filterOptionalDependent(
+          x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
+        )(TransportMeansDomain.userAnswersReader(index))
 
     (
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
-      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
-      UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
-      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index)),
+      AddEndorsementPage(index).filterOptionalDependent(identity)(EndorsementDomain.userAnswersReader(index)),
+      IncidentLocationDomain.userAnswersReader(index),
+      EquipmentsDomain.userAnswersReader(index),
       transportMeansReads
-    ).tupled.map((IncidentDomain.apply _).tupled).map(_(index))
+    ).map(IncidentDomain.apply(_, _, _, _, _, _, _)(index))
   }
 
 }
