@@ -25,6 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.incident._
+import pages.sections.incident.IncidentSection
 
 class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -42,9 +43,10 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
               userAnswers =>
-                val result = IncidentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
+                val result = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
                 result.value.value.transportMeans must be(defined)
+                result.value.pages.last mustBe IncidentSection(incidentIndex)
             }
         }
       }
@@ -58,7 +60,7 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
               userAnswers =>
-                val result = IncidentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
+                val result = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
                 result.value.value.transportMeans must not be defined
             }

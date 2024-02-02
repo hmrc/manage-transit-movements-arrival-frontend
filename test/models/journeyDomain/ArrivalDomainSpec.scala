@@ -42,6 +42,7 @@ import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage,
 import pages.incident.location.{UnLocodePage, QualifierOfIdentificationPage => IncidentQualifierOfIdentificationPage}
 import pages.incident.transportMeans.{IdentificationPage, TransportNationalityPage, IdentificationNumberPage => TransportMeansIdentificationNumberPage}
 import pages.locationOfGoods._
+import pages.sections.incident._
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
 
@@ -62,8 +63,8 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, idNumber)
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(IdentificationNumberPage, idNumber)
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(CountryPage, country)
@@ -91,6 +92,16 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
         val result = ArrivalDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DestinationOfficePage,
+          IsSimplifiedProcedurePage,
+          IdentificationNumberPage,
+          TypeOfLocationPage,
+          QualifierOfIdentificationPage,
+          CountryPage,
+          AddressPage,
+          AddContactPersonPage
+        )
       }
     }
 
@@ -107,8 +118,8 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, idNumber)
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(IdentificationNumberPage, idNumber)
           .setValue(TypeOfLocationPage, typeOfLocation)
           .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(AddressCode).sample.value)
           .setValue(CountryPage, country)
@@ -168,14 +179,14 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
                               identificationNumber = text
                             )(incidentIndex, equipmentIndex, sealIndex)
                           )
-                        ),
+                        )(incidentIndex, equipmentIndex),
                         itemNumbers = ItemNumbersDomain(
                           Seq(
                             ItemNumberDomain(
                               itemNumber = "1234"
                             )(incidentIndex, equipmentIndex, itemNumberIndex)
                           )
-                        )
+                        )(incidentIndex, equipmentIndex)
                       )(incidentIndex, equipmentIndex)
                     )
                   )(incidentIndex),
@@ -195,6 +206,38 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
         val result = ArrivalDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DestinationOfficePage,
+          IsSimplifiedProcedurePage,
+          IdentificationNumberPage,
+          TypeOfLocationPage,
+          QualifierOfIdentificationPage,
+          CountryPage,
+          AddressPage,
+          AddContactPersonPage,
+          IncidentFlagPage,
+          IncidentCountryPage(incidentIndex),
+          IncidentCodePage(incidentIndex),
+          IncidentTextPage(incidentIndex),
+          AddEndorsementPage(incidentIndex),
+          IncidentQualifierOfIdentificationPage(incidentIndex),
+          UnLocodePage(incidentIndex),
+          ContainerIndicatorYesNoPage(incidentIndex),
+          ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+          AddSealsYesNoPage(incidentIndex, equipmentIndex),
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+          SealsSection(incidentIndex, equipmentIndex),
+          AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+          ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex),
+          ItemsSection(incidentIndex, equipmentIndex),
+          EquipmentSection(incidentIndex, equipmentIndex),
+          EquipmentsSection(incidentIndex),
+          IdentificationPage(incidentIndex),
+          TransportMeansIdentificationNumberPage(incidentIndex),
+          TransportNationalityPage(incidentIndex),
+          IncidentSection(incidentIndex),
+          IncidentsSection
+        )
       }
     }
   }

@@ -61,6 +61,13 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
           val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            TypeOfLocationPage,
+            QualifierOfIdentificationPage,
+            CountryPage,
+            AddressPage,
+            AddContactPersonPage
+          )
       }
     }
 
@@ -85,6 +92,10 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
       val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        AuthorisationNumberPage,
+        AddContactPersonPage
+      )
     }
 
     "cannot be parsed from UserAnswers" - {

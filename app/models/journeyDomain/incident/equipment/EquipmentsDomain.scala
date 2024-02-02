@@ -17,18 +17,19 @@
 package models.journeyDomain.incident.equipment
 
 import config.Constants.IncidentCode._
-import controllers.incident.equipment.routes
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Read, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Read, UserAnswersReader}
 import models.reference.IncidentCode._
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
+import pages.sections.Section
 import pages.sections.incident.EquipmentsSection
-import play.api.mvc.Call
 
-case class EquipmentsDomain(equipments: Seq[EquipmentDomain])(incidentIndex: Index) extends JourneyDomainModel {
+case class EquipmentsDomain(
+  value: Seq[EquipmentDomain]
+)(incidentIndex: Index)
+    extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentsSection(incidentIndex))
 }
 
 object EquipmentsDomain {

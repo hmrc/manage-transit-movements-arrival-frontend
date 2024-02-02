@@ -30,6 +30,7 @@ import pages.incident.equipment._
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
+import pages.sections.incident.{EquipmentSection, ItemsSection, SealsSection}
 
 class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -60,13 +61,29 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-                    ItemNumbersDomain(Nil)
+                    SealsDomain(
+                      Seq(
+                        SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                      )
+                    )(incidentIndex, equipmentIndex),
+                    ItemNumbersDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex)
                   )(incidentIndex, equipmentIndex)
 
                   val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    IncidentCodePage(incidentIndex),
+                    ContainerIndicatorYesNoPage(incidentIndex),
+                    ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                    AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                    SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+                    SealsSection(incidentIndex, equipmentIndex),
+                    AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                    EquipmentSection(incidentIndex, equipmentIndex)
+                  )
               }
             }
 
@@ -82,13 +99,25 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(Nil),
-                    ItemNumbersDomain(Nil)
+                    SealsDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex),
+                    ItemNumbersDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex)
                   )(incidentIndex, equipmentIndex)
 
                   val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    IncidentCodePage(incidentIndex),
+                    ContainerIndicatorYesNoPage(incidentIndex),
+                    ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                    AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                    AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                    EquipmentSection(incidentIndex, equipmentIndex)
+                  )
               }
             }
           }
@@ -111,13 +140,30 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-                    ItemNumbersDomain(Nil)
+                    SealsDomain(
+                      Seq(
+                        SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                      )
+                    )(incidentIndex, equipmentIndex),
+                    ItemNumbersDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex)
                   )(incidentIndex, equipmentIndex)
 
                   val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    IncidentCodePage(incidentIndex),
+                    ContainerIndicatorYesNoPage(incidentIndex),
+                    ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                    ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                    AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                    SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+                    SealsSection(incidentIndex, equipmentIndex),
+                    AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                    EquipmentSection(incidentIndex, equipmentIndex)
+                  )
               }
             }
 
@@ -134,13 +180,26 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                   val expectedResult = EquipmentDomain(
                     Some(containerId),
-                    SealsDomain(Nil),
-                    ItemNumbersDomain(Nil)
+                    SealsDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex),
+                    ItemNumbersDomain(
+                      Nil
+                    )(incidentIndex, equipmentIndex)
                   )(incidentIndex, equipmentIndex)
 
                   val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    IncidentCodePage(incidentIndex),
+                    ContainerIndicatorYesNoPage(incidentIndex),
+                    ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                    ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                    AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                    AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                    EquipmentSection(incidentIndex, equipmentIndex)
+                  )
               }
             }
           }
@@ -157,13 +216,28 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                 val expectedResult = EquipmentDomain(
                   None,
-                  SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-                  ItemNumbersDomain(Nil)
+                  SealsDomain(
+                    Seq(
+                      SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                    )
+                  )(incidentIndex, equipmentIndex),
+                  ItemNumbersDomain(
+                    Nil
+                  )(incidentIndex, equipmentIndex)
                 )(incidentIndex, equipmentIndex)
 
                 val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                 result.value.value mustBe expectedResult
+                result.value.pages mustBe Seq(
+                  IncidentCodePage(incidentIndex),
+                  ContainerIndicatorYesNoPage(incidentIndex),
+                  ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                  SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+                  SealsSection(incidentIndex, equipmentIndex),
+                  AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                  EquipmentSection(incidentIndex, equipmentIndex)
+                )
             }
           }
         }
@@ -182,13 +256,28 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             val expectedResult = EquipmentDomain(
               Some(containerId),
-              SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-              ItemNumbersDomain(Nil)
+              SealsDomain(
+                Seq(
+                  SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                )
+              )(incidentIndex, equipmentIndex),
+              ItemNumbersDomain(
+                Nil
+              )(incidentIndex, equipmentIndex)
             )(incidentIndex, equipmentIndex)
 
             val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IncidentCodePage(incidentIndex),
+              ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+              ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+              SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+              SealsSection(incidentIndex, equipmentIndex),
+              AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+              EquipmentSection(incidentIndex, equipmentIndex)
+            )
           }
 
           "and incident code is 4" - {
@@ -203,13 +292,29 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val expectedResult = EquipmentDomain(
                 Some(containerId),
-                SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-                ItemNumbersDomain(Nil)
+                SealsDomain(
+                  Seq(
+                    SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                  )
+                )(incidentIndex, equipmentIndex),
+                ItemNumbersDomain(
+                  Nil
+                )(incidentIndex, equipmentIndex)
               )(incidentIndex, equipmentIndex)
 
               val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                IncidentCodePage(incidentIndex),
+                ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+                SealsSection(incidentIndex, equipmentIndex),
+                AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                EquipmentSection(incidentIndex, equipmentIndex)
+              )
             }
 
             "and not adding seals" in {
@@ -222,13 +327,25 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val expectedResult = EquipmentDomain(
                 Some(containerId),
-                SealsDomain(Nil),
-                ItemNumbersDomain(Nil)
+                SealsDomain(
+                  Nil
+                )(incidentIndex, equipmentIndex),
+                ItemNumbersDomain(
+                  Nil
+                )(incidentIndex, equipmentIndex)
               )(incidentIndex, equipmentIndex)
 
               val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                IncidentCodePage(incidentIndex),
+                ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                AddSealsYesNoPage(incidentIndex, equipmentIndex),
+                AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                EquipmentSection(incidentIndex, equipmentIndex)
+              )
             }
           }
         }
@@ -244,13 +361,27 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val expectedResult = EquipmentDomain(
                 None,
-                SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-                ItemNumbersDomain(Nil)
+                SealsDomain(
+                  Seq(
+                    SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                  )
+                )(incidentIndex, equipmentIndex),
+                ItemNumbersDomain(
+                  Nil
+                )(incidentIndex, equipmentIndex)
               )(incidentIndex, equipmentIndex)
 
               val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                IncidentCodePage(incidentIndex),
+                ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+                SealsSection(incidentIndex, equipmentIndex),
+                AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+                EquipmentSection(incidentIndex, equipmentIndex)
+              )
           }
         }
       }
@@ -267,13 +398,31 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             val expectedResult = EquipmentDomain(
               None,
-              SealsDomain(Seq(SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex))),
-              ItemNumbersDomain(Seq(ItemNumberDomain(goodsItemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)))
+              SealsDomain(
+                Seq(
+                  SealDomain(sealId)(incidentIndex, equipmentIndex, sealIndex)
+                )
+              )(incidentIndex, equipmentIndex),
+              ItemNumbersDomain(
+                Seq(
+                  ItemNumberDomain(goodsItemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)
+                )
+              )(incidentIndex, equipmentIndex)
             )(incidentIndex, equipmentIndex)
 
             val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IncidentCodePage(incidentIndex),
+              ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+              SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex),
+              SealsSection(incidentIndex, equipmentIndex),
+              AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex),
+              ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex),
+              ItemsSection(incidentIndex, equipmentIndex),
+              EquipmentSection(incidentIndex, equipmentIndex)
+            )
         }
       }
     }
@@ -293,6 +442,11 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)
+                result.left.value.pages mustBe Seq(
+                  IncidentCodePage(incidentIndex),
+                  ContainerIndicatorYesNoPage(incidentIndex),
+                  ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)
+                )
             }
           }
 
@@ -307,6 +461,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddSealsYesNoPage(incidentIndex, equipmentIndex)
+                result.left.value.pages mustBe Seq(
+                  IncidentCodePage(incidentIndex),
+                  ContainerIndicatorYesNoPage(incidentIndex),
+                  ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+                  AddSealsYesNoPage(incidentIndex, equipmentIndex)
+                )
             }
           }
         }
@@ -321,7 +481,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                 val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, Index(0))
+                result.left.value.page mustBe ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex)
+                result.left.value.pages mustBe Seq(
+                  IncidentCodePage(incidentIndex),
+                  ContainerIndicatorYesNoPage(incidentIndex),
+                  ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex)
+                )
             }
           }
 
@@ -335,7 +500,13 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
                 val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
+                result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+                result.left.value.pages mustBe Seq(
+                  IncidentCodePage(incidentIndex),
+                  ContainerIndicatorYesNoPage(incidentIndex),
+                  ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                  SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+                )
             }
           }
         }
@@ -353,6 +524,11 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
               val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)
+              result.left.value.pages mustBe Seq(
+                IncidentCodePage(incidentIndex),
+                ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+                ContainerIdentificationNumberPage(incidentIndex, equipmentIndex)
+              )
           }
         }
 
@@ -364,7 +540,13 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
           val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
+          result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+          result.left.value.pages mustBe Seq(
+            IncidentCodePage(incidentIndex),
+            ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+            ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+            SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+          )
         }
 
         "and incident code is 4" in {
@@ -376,6 +558,12 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
           val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddSealsYesNoPage(incidentIndex, equipmentIndex)
+          result.left.value.pages mustBe Seq(
+            IncidentCodePage(incidentIndex),
+            ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+            ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+            AddSealsYesNoPage(incidentIndex, equipmentIndex)
+          )
         }
       }
 
@@ -388,6 +576,9 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
             val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe IncidentCodePage(incidentIndex)
+            result.left.value.pages mustBe Seq(
+              IncidentCodePage(incidentIndex)
+            )
         }
       }
 
@@ -401,6 +592,13 @@ class EquipmentDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val result = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex)
+        result.left.value.pages mustBe Seq(
+          IncidentCodePage(incidentIndex),
+          ContainerIdentificationNumberYesNoPage(incidentIndex, equipmentIndex),
+          ContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+          AddSealsYesNoPage(incidentIndex, equipmentIndex),
+          AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex)
+        )
       }
     }
   }

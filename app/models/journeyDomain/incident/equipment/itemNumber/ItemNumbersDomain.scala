@@ -17,10 +17,17 @@
 package models.journeyDomain.incident.equipment.itemNumber
 
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
-import models.{Index, RichJsArray}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.incident.ItemsSection
 
-case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain]) extends JourneyDomainModel
+case class ItemNumbersDomain(
+  value: Seq[ItemNumberDomain]
+)(incidentIndex: Index, equipmentIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemsSection(incidentIndex, equipmentIndex))
+}
 
 object ItemNumbersDomain {
 
@@ -34,6 +41,6 @@ object ItemNumbersDomain {
           x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _).apply(_))
       }
 
-    itemsReader.map(ItemNumbersDomain.apply)
+    itemsReader.map(ItemNumbersDomain.apply(_)(incidentIndex, equipmentIndex))
   }
 }

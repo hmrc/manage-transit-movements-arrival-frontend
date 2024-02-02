@@ -47,6 +47,10 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
         val result = IncidentLocationDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          QualifierOfIdentificationPage(index),
+          CoordinatesPage(index)
+        )
       }
 
       "when qualifierOfIdentification is UnLocode" in {
@@ -61,6 +65,10 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
         val result = IncidentLocationDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          QualifierOfIdentificationPage(index),
+          UnLocodePage(index)
+        )
       }
 
       "when qualifierOfIdentification is Address" in {
@@ -75,8 +83,11 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
         val result = IncidentLocationDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          QualifierOfIdentificationPage(index),
+          AddressPage(index)
+        )
       }
-
     }
 
     "cannot be parsed from UserAnswer" - {
@@ -84,6 +95,9 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
         val result = IncidentLocationDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe QualifierOfIdentificationPage(index)
+        result.left.value.pages mustBe Seq(
+          QualifierOfIdentificationPage(index)
+        )
       }
 
       "when qualifierOfIdentification is not one of the location values" in {
@@ -95,6 +109,9 @@ class IncidentLocationDomainSpec extends SpecBase with Generators with ScalaChec
             val result = IncidentLocationDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe QualifierOfIdentificationPage(index)
+            result.left.value.pages mustBe Seq(
+              QualifierOfIdentificationPage(index)
+            )
         }
       }
     }

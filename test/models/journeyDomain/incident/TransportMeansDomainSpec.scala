@@ -48,6 +48,11 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
         val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationPage(incidentIndex),
+          IdentificationNumberPage(incidentIndex),
+          TransportNationalityPage(incidentIndex)
+        )
       }
     }
 
@@ -57,6 +62,9 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
         val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IdentificationPage(incidentIndex)
+        result.left.value.pages mustBe Seq(
+          IdentificationPage(incidentIndex)
+        )
       }
 
       "when transport means id number is unanswered" in {
@@ -67,6 +75,10 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
         val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage(incidentIndex)
+        result.left.value.pages mustBe Seq(
+          IdentificationPage(incidentIndex),
+          IdentificationNumberPage(incidentIndex)
+        )
       }
 
       "when transport means nationality is unanswered" in {
@@ -78,6 +90,11 @@ class TransportMeansDomainSpec extends SpecBase with Generators {
         val result = TransportMeansDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe TransportNationalityPage(incidentIndex)
+        result.left.value.pages mustBe Seq(
+          IdentificationPage(incidentIndex),
+          IdentificationNumberPage(incidentIndex),
+          TransportNationalityPage(incidentIndex)
+        )
       }
     }
   }

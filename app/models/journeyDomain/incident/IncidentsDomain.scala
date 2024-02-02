@@ -19,13 +19,13 @@ package models.journeyDomain.incident
 import controllers.incident.routes
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read, Stage}
 import models.{Index, Mode, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.incident.IncidentsSection
 import play.api.mvc.Call
 
 case class IncidentsDomain(incidents: Seq[IncidentDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(routes.AddAnotherIncidentController.onPageLoad(userAnswers.mrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(IncidentsSection)
 }
 
 object IncidentsDomain {

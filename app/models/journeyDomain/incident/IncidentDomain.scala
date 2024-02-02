@@ -19,13 +19,14 @@ package models.journeyDomain.incident
 import config.Constants.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read}
 import models.reference.IncidentCode._
 import models.reference.{Country, IncidentCode}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.sections.Section
+import pages.sections.incident.IncidentSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 case class IncidentDomain(
   incidentCountry: Country,
@@ -41,8 +42,7 @@ case class IncidentDomain(
   def asString()(implicit messages: Messages): String =
     IncidentDomain.asString(index, incidentCode)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(IncidentSection(index))
 }
 
 object IncidentDomain {

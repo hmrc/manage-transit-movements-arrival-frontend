@@ -36,6 +36,9 @@ class ItemNumberDomainSpec extends SpecBase {
         val result = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        )
       }
     }
 
@@ -44,6 +47,9 @@ class ItemNumberDomainSpec extends SpecBase {
         val result = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        result.left.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        )
       }
     }
   }

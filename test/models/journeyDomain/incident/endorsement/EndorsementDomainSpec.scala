@@ -48,6 +48,12 @@ class EndorsementDomainSpec extends SpecBase with Generators {
       val result = EndorsementDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
       result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        EndorsementDatePage(index),
+        EndorsementAuthorityPage(index),
+        EndorsementCountryPage(index),
+        EndorsementLocationPage(index)
+      )
     }
 
     "cannot be parsed from UserAnswer" - {

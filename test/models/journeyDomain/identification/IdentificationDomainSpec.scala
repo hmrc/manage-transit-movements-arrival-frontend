@@ -34,20 +34,25 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when not a simplified journey" in {
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+          .setValue(IdentificationNumberPage, "identificationNumber")
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           destinationOffice = destinationOffice,
-          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Normal,
+          identificationNumber = "identificationNumber",
           authorisationReferenceNumber = None
         )
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DestinationOfficePage,
+          IsSimplifiedProcedurePage,
+          IdentificationNumberPage
+        )
       }
 
       "when a simplified journey and at least one authorisation" in {
@@ -55,43 +60,55 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(AuthorisationReferenceNumberPage, referenceNumber)
 
         val expectedResult = IdentificationDomain(
           mrn = userAnswers.mrn,
           destinationOffice = destinationOffice,
-          identificationNumber = "identificationNumber",
           procedureType = ProcedureType.Simplified,
+          identificationNumber = "identificationNumber",
           authorisationReferenceNumber = Some(referenceNumber)
         )
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          DestinationOfficePage,
+          IsSimplifiedProcedurePage,
+          IdentificationNumberPage,
+          AuthorisationReferenceNumberPage
+        )
       }
     }
 
     "cannot be parsed from user answers" - {
-
       "when is simplified question unanswered" in {
-
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe DestinationOfficePage
+        result.left.value.pages mustBe Seq(
+          DestinationOfficePage
+        )
       }
 
       "when a simplified journey and no authorisations" in {
-
         val userAnswers = emptyUserAnswers
           .setValue(DestinationOfficePage, destinationOffice)
-          .setValue(IdentificationNumberPage, "identificationNumber")
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)
+          .setValue(IdentificationNumberPage, "identificationNumber")
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AuthorisationReferenceNumberPage
+        result.left.value.pages mustBe Seq(
+          DestinationOfficePage,
+          IsSimplifiedProcedurePage,
+          IdentificationNumberPage,
+          AuthorisationReferenceNumberPage
+        )
       }
     }
   }

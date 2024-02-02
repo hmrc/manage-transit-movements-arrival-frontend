@@ -19,6 +19,7 @@ package models.journeyDomain.incident.equipment.itemNumber
 import base.SpecBase
 import models.Index
 import pages.incident.equipment.itemNumber.ItemNumberPage
+import pages.sections.incident.ItemsSection
 
 class ItemNumbersDomainSpec extends SpecBase {
 
@@ -34,11 +35,16 @@ class ItemNumbersDomainSpec extends SpecBase {
             ItemNumberDomain("foo")(incidentIndex, equipmentIndex, Index(0)),
             ItemNumberDomain("bar")(incidentIndex, equipmentIndex, Index(1))
           )
-        )
+        )(incidentIndex, equipmentIndex)
 
         val result = ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, Index(0)),
+          ItemNumberPage(incidentIndex, equipmentIndex, Index(1)),
+          ItemsSection(incidentIndex, equipmentIndex)
+        )
       }
     }
 
@@ -47,6 +53,9 @@ class ItemNumbersDomainSpec extends SpecBase {
         val result = ItemNumbersDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ItemNumberPage(incidentIndex, equipmentIndex, Index(0))
+        result.left.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, Index(0))
+        )
       }
     }
   }

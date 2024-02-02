@@ -36,6 +36,9 @@ class SealDomainSpec extends SpecBase {
         val result = SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+        )
       }
     }
 
@@ -44,6 +47,9 @@ class SealDomainSpec extends SpecBase {
         val result = SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+        result.left.value.pages mustBe Seq(
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
+        )
       }
     }
   }

@@ -17,10 +17,17 @@
 package models.journeyDomain.incident.equipment.seal
 
 import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
-import models.{Index, RichJsArray}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.incident.SealsSection
 
-case class SealsDomain(seals: Seq[SealDomain]) extends JourneyDomainModel
+case class SealsDomain(
+  value: Seq[SealDomain]
+)(incidentIndex: Index, equipmentIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SealsSection(incidentIndex, equipmentIndex))
+}
 
 object SealsDomain {
 
@@ -34,6 +41,6 @@ object SealsDomain {
           x.traverse[SealDomain](SealDomain.userAnswersReader(incidentIndex, equipmentIndex, _).apply(_))
       }
 
-    sealsReader.map(SealsDomain.apply)
+    sealsReader.map(SealsDomain.apply(_)(incidentIndex, equipmentIndex))
   }
 }

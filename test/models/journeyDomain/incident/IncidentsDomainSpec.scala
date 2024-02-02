@@ -21,6 +21,7 @@ import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.incident._
+import pages.sections.incident.IncidentsSection
 
 class IncidentsDomainSpec extends SpecBase with Generators {
 
@@ -38,6 +39,7 @@ class IncidentsDomainSpec extends SpecBase with Generators {
       val result = IncidentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value.incidents.length mustBe numberOfIncidents
+      result.value.pages.last mustBe IncidentsSection
     }
 
     "cannot be parsed from UserAnswer" - {
@@ -47,6 +49,9 @@ class IncidentsDomainSpec extends SpecBase with Generators {
         val result = IncidentsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IncidentCountryPage(Index(0))
+        result.left.value.pages mustBe Seq(
+          IncidentCountryPage(Index(0))
+        )
       }
     }
   }

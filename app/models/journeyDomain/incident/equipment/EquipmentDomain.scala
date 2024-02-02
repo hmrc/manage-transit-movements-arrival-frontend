@@ -17,16 +17,16 @@
 package models.journeyDomain.incident.equipment
 
 import config.Constants.IncidentCode._
-import controllers.incident.equipment.routes
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
 import models.reference.IncidentCode._
-import models.{Index, Mode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.incident.equipment._
 import pages.incident.{ContainerIndicatorYesNoPage, IncidentCodePage}
+import pages.sections.Section
+import pages.sections.incident.EquipmentSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 case class EquipmentDomain(
   containerId: Option[String],
@@ -37,8 +37,7 @@ case class EquipmentDomain(
 
   def asString(implicit messages: Messages): String = EquipmentDomain.asString(containerId, equipmentIndex)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(routes.CheckEquipmentAnswersController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentSection(incidentIndex, equipmentIndex))
 }
 
 object EquipmentDomain {
@@ -60,13 +59,13 @@ object EquipmentDomain {
     lazy val optionalSealsReads: Read[SealsDomain] =
       AddSealsYesNoPage(incidentIndex, equipmentIndex).reader.to {
         case true  => sealsReads
-        case false => UserAnswersReader.success(SealsDomain(Nil))
+        case false => UserAnswersReader.success(SealsDomain(Nil)(incidentIndex, equipmentIndex))
       }
 
     lazy val optionalItemNumbersReads: Read[ItemNumbersDomain] =
       AddGoodsItemNumberYesNoPage(incidentIndex, equipmentIndex).reader.to {
         case true  => itemNumbersReads
-        case false => UserAnswersReader.success(ItemNumbersDomain(Nil))
+        case false => UserAnswersReader.success(ItemNumbersDomain(Nil)(incidentIndex, equipmentIndex))
       }
 
     lazy val sealsReadsByIncidentCode: Read[SealsDomain] =

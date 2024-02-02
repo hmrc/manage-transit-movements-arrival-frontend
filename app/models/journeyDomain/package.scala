@@ -104,12 +104,15 @@ package object journeyDomain {
 
     def reader(implicit reads: Reads[A]): Read[A] = reader(None)
 
+    def readerNoAppend(implicit reads: Reads[A]): Read[A] = reader(None, append = false)
+
     def reader(message: String)(implicit reads: Reads[A]): Read[A] = reader(Some(message))
 
-    private def reader(message: Option[String])(implicit reads: Reads[A]): Read[A] = pages => {
+    private def reader(message: Option[String], append: Boolean = true)(implicit reads: Reads[A]): Read[A] = pages => {
+      lazy val updatedPages = if (append) pages.append(a) else pages
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _.get(a) match {
-        case Some(value) => Right(ReaderSuccess(value, pages.append(a)))
-        case None        => Left(ReaderError(a, pages.append(a), message))
+        case Some(value) => Right(ReaderSuccess(value, updatedPages))
+        case None        => Left(ReaderError(a, updatedPages, message))
       }
       UserAnswersReader(fn)
     }

@@ -32,7 +32,7 @@ trait QualifierOfIdentificationDomain extends JourneyDomainModel {
 object QualifierOfIdentificationDomain {
 
   implicit val userAnswersReader: Read[QualifierOfIdentificationDomain] =
-    IsSimplifiedProcedurePage.reader.to {
+    IsSimplifiedProcedurePage.readerNoAppend.to {
       case ProcedureType.Simplified =>
         AuthorisationNumberDomain.userAnswersReader
       case ProcedureType.Normal =>

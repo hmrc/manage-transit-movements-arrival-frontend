@@ -16,9 +16,11 @@
 
 package pages.sections.incident
 
-import models.Index
+import controllers.incident.equipment.itemNumber.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class ItemsSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsArray] {
 
@@ -26,4 +28,6 @@ case class ItemsSection(incidentIndex: Index, equipmentIndex: Index) extends Sec
 
   override def toString: String = "itemNumbers"
 
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherItemNumberYesNoController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }

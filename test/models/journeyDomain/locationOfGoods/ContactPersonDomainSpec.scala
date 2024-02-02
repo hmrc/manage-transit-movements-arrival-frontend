@@ -42,6 +42,10 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
     }
 
@@ -50,6 +54,9 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ContactPersonNamePage
+        result.left.value.pages mustBe Seq(
+          ContactPersonNamePage
+        )
       }
 
       "when telephone number is unanswered" in {
@@ -58,6 +65,10 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe ContactPersonTelephonePage
+        result.left.value.pages mustBe Seq(
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
     }
   }
