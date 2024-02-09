@@ -22,6 +22,7 @@ import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -74,7 +75,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Declaration Submitted Controller" in {
+    "must redirect to Declaration Submitted when submission succeeds" in {
       setExistingUserAnswers(emptyUserAnswers)
 
       when(mockSubmissionConnector.post(any())(any()))
@@ -91,5 +92,25 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
     }
 
+    "must redirect to technical difficulties when submission fails" in {
+      forAll(Gen.choose(400: Int, 599: Int)) {
+        errorCode =>
+          beforeEach()
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          when(mockSubmissionConnector.post(any())(any()))
+            .thenReturn(response(errorCode))
+
+          val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            routes.ErrorController.technicalDifficulties().url
+      }
+    }
   }
 }
