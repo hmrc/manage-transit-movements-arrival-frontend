@@ -51,11 +51,11 @@ class IncidentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "when answers complete" - {
         "must redirect to check your answers" in {
-          forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
+          forAll(arbitraryIncidentsAnswers(emptyUserAnswers)) {
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
+                .mustBe(controllers.incident.routes.AddAnotherIncidentController.onPageLoad(answers.mrn, mode))
           }
         }
       }

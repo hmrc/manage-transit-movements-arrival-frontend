@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.PhaseConfig
 import models.journeyDomain.Read
 import models.journeyDomain.incident.IncidentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,12 +23,12 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends IncidentNavigatorProvider {
+class IncidentNavigatorProviderImpl @Inject() extends IncidentNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
       case NormalMode => new IncidentNavigator(mode, index)
-      case CheckMode  => new ArrivalNavigator(mode)
+      case CheckMode  => new IncidentsNavigator(mode)
     }
 }
 
