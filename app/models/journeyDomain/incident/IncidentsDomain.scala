@@ -16,12 +16,10 @@
 
 package models.journeyDomain.incident
 
-import controllers.incident.routes
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read, Stage}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.incident.IncidentsSection
-import play.api.mvc.Call
 
 case class IncidentsDomain(incidents: Seq[IncidentDomain]) extends JourneyDomainModel {
 
