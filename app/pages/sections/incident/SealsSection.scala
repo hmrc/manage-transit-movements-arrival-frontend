@@ -16,9 +16,11 @@
 
 package pages.sections.incident
 
-import models.Index
+import controllers.incident.equipment.seal.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class SealsSection(incidentIndex: Index, equipmentIndex: Index) extends Section[JsArray] {
 
@@ -26,4 +28,6 @@ case class SealsSection(incidentIndex: Index, equipmentIndex: Index) extends Sec
 
   override def toString: String = "seals"
 
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherSealController.onPageLoad(userAnswers.mrn, mode, incidentIndex, equipmentIndex))
 }

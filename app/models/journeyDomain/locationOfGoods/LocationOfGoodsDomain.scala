@@ -16,9 +16,8 @@
 
 package models.journeyDomain.locationOfGoods
 
-import cats.implicits._
 import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
 import models.reference.TypeOfLocation
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage
@@ -26,13 +25,21 @@ import pages.locationOfGoods.TypeOfLocationPage
 case class LocationOfGoodsDomain(
   typeOfLocation: Option[TypeOfLocation],
   qualifierOfIdentificationDetails: QualifierOfIdentificationDomain
-)
+) extends JourneyDomainModel
 
 object LocationOfGoodsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[LocationOfGoodsDomain] = (
-    IsSimplifiedProcedurePage.filterOptionalDependent(_ == ProcedureType.Normal)(TypeOfLocationPage.reader),
-    UserAnswersReader[QualifierOfIdentificationDomain]
-  ).tupled.map((LocationOfGoodsDomain.apply _).tupled)
+  implicit val userAnswersReader: Read[LocationOfGoodsDomain] = {
+    lazy val typeOfLocationReader: Read[Option[TypeOfLocation]] =
+      IsSimplifiedProcedurePage.readerNoAppend.to {
+        case ProcedureType.Normal => TypeOfLocationPage.reader.toOption
+        case _                    => UserAnswersReader.none
+      }
+
+    (
+      typeOfLocationReader,
+      QualifierOfIdentificationDomain.userAnswersReader
+    ).map(LocationOfGoodsDomain.apply)
+  }
 
 }

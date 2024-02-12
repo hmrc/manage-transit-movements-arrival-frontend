@@ -18,39 +18,40 @@ package navigation
 
 import config.PhaseConfig
 import models.{Index, Mode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeArrivalNavigator(desiredRoute: Call, mode: Mode)(implicit phaseConfig: PhaseConfig) extends ArrivalNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeIncidentsNavigator(desiredRoute: Call, mode: Mode) extends IncidentsNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeIncidentNavigator(desiredRoute: Call, index: Index, mode: Mode) extends IncidentNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeEquipmentsNavigator(desiredRoute: Call, incidentIndex: Index, mode: Mode) extends EquipmentsNavigator(mode, incidentIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeEquipmentNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, mode: Mode)
     extends EquipmentNavigator(mode, incidentIndex, equipmentIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeSealNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, mode: Mode)
     extends SealNavigator(mode, incidentIndex, equipmentIndex, sealIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeItemNumberNavigator(desiredRoute: Call, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index, mode: Mode)
     extends ItemNumberNavigator(mode, incidentIndex, equipmentIndex, itemNumberIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }

@@ -16,12 +16,16 @@
 
 package pages.sections.incident
 
-import models.Index
+import controllers.incident.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
 
 case class IncidentSection(index: Index) extends Section[JsObject] {
 
   override def path: JsPath = IncidentsSection.path \ index.position
 
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
 }

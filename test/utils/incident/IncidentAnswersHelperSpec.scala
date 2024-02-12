@@ -24,7 +24,6 @@ import controllers.incident.location.{routes => locationRoutes}
 import controllers.incident.routes
 import controllers.incident.transportMeans.{routes => transportMeansRoutes}
 import generators.Generators
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.reference._
 import models.{Coordinates, DynamicAddress, Index, Mode}
@@ -118,13 +117,13 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, incidentIndex, equipmentIndex), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers).value
+              val equipment = EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers).value
 
               val helper = IncidentAnswersHelper(userAnswers, mode, incidentIndex)
               val result = helper.equipment(index).get
 
               result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe s"Transport equipment 1 - container ${equipment.containerId.get}"
+              result.value.value mustBe s"Transport equipment 1 - container ${equipment.value.containerId.get}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

@@ -36,7 +36,7 @@ class IncidentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           forAll(arbitraryIncidentsAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.incident.routes.AddAnotherIncidentController.onPageLoad(answers.mrn, mode))
           }
         }
@@ -54,7 +54,7 @@ class IncidentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }

@@ -16,16 +16,15 @@
 
 package models.journeyDomain.locationOfGoods
 
-import cats.implicits._
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
 import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
 
-case class ContactPersonDomain(name: String, phoneNumber: String)
+case class ContactPersonDomain(name: String, phoneNumber: String) extends JourneyDomainModel
 
 object ContactPersonDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[ContactPersonDomain] = (
+  implicit val userAnswersReader: Read[ContactPersonDomain] = (
     ContactPersonNamePage.reader,
     ContactPersonTelephonePage.reader
-  ).tupled.map((ContactPersonDomain.apply _).tupled)
+  ).map(ContactPersonDomain.apply)
 }

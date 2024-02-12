@@ -21,7 +21,6 @@ import config.Constants.QualifierCode._
 import generators.Generators
 import models.DynamicAddress
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, TypeOfLocation}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -59,9 +58,16 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
               )
             )
 
-          val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(userAnswers)
+          val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            TypeOfLocationPage,
+            QualifierOfIdentificationPage,
+            CountryPage,
+            AddressPage,
+            AddContactPersonPage
+          )
       }
     }
 
@@ -83,9 +89,13 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
           )
         )
 
-      val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(userAnswers)
+      val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        AuthorisationNumberPage,
+        AddContactPersonPage
+      )
     }
 
     "cannot be parsed from UserAnswers" - {
@@ -108,7 +118,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
           mandatoryPage =>
             val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(updatedUserAnswers)
+            val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }
@@ -129,7 +139,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
           mandatoryPage =>
             val updatedUserAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[LocationOfGoodsDomain] = UserAnswersReader[LocationOfGoodsDomain].run(updatedUserAnswers)
+            val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }

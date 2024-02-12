@@ -16,9 +16,8 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits._
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
 import models.reference.{Identification, Nationality}
 import pages.incident.transportMeans._
 
@@ -26,14 +25,14 @@ case class TransportMeansDomain(
   identificationType: Identification,
   identificationNumber: String,
   nationality: Nationality
-)
+) extends JourneyDomainModel
 
 object TransportMeansDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index): UserAnswersReader[TransportMeansDomain] =
+  implicit def userAnswersReader(incidentIndex: Index): Read[TransportMeansDomain] =
     (
       IdentificationPage(incidentIndex).reader,
       IdentificationNumberPage(incidentIndex).reader,
       TransportNationalityPage(incidentIndex).reader
-    ).tupled.map((TransportMeansDomain.apply _).tupled)
+    ).map(TransportMeansDomain.apply)
 }

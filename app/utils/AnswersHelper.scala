@@ -16,8 +16,9 @@
 
 package utils
 
+import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.AccessingJourney
-import models.journeyDomain.{JourneyDomainModel, ReaderError, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, Read, ReaderSuccess}
 import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichOptionJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -62,17 +63,18 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     prefix: String,
     id: Option[String],
     args: Any*
-  )(implicit userAnswersReader: UserAnswersReader[A]): Option[SummaryListRow] =
+  )(implicit userAnswersReader: Read[A]): Option[SummaryListRow] =
     userAnswersReader
+      .apply(Nil)
       .run(userAnswers)
       .map(
         x =>
           buildSimpleRow(
             prefix = prefix,
             label = messages(s"$prefix.label", args: _*),
-            answer = formatAnswer(x),
+            answer = formatAnswer(x.value),
             id = id,
-            call = Some(UserAnswersNavigator.nextPage[A](userAnswers, mode, AccessingJourney)),
+            call = Some(UserAnswersNavigator.nextPage[A](userAnswers, None, mode, AccessingJourney)),
             args = args: _*
           )
       )
@@ -92,7 +94,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     formatJourneyDomainModel: A => String,
     formatType: B => String,
     removeRoute: Option[Call]
-  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
+  )(implicit userAnswersReader: Read[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
     buildListItem(
       formatJourneyDomainModel,
       removeRoute
@@ -118,7 +120,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     formatJourneyDomainModel: A => String,
     formatType: Option[B] => String,
     removeRoute: Option[Call]
-  )(implicit userAnswersReader: UserAnswersReader[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
+  )(implicit userAnswersReader: Read[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
     buildListItem(
       formatJourneyDomainModel,
       removeRoute
@@ -138,11 +140,11 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
   private def buildListItem[A <: JourneyDomainModel](
     formatJourneyDomainModel: A => String,
     removeRoute: Option[Call]
-  )(f: ReaderError => Option[Either[ListItem, ListItem]])(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ListItem, ListItem]] =
-    userAnswersReader.run(userAnswers) match {
+  )(f: ReaderError => Option[Either[ListItem, ListItem]])(implicit userAnswersReader: Read[A]): Option[Either[ListItem, ListItem]] =
+    userAnswersReader.apply(Nil).run(userAnswers) match {
       case Left(readerError) =>
         f(readerError)
-      case Right(journeyDomainModel) =>
+      case Right(ReaderSuccess(journeyDomainModel, _)) =>
         journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(

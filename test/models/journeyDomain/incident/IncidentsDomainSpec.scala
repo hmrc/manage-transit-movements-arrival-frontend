@@ -19,9 +19,9 @@ package models.journeyDomain.incident
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.incident._
+import pages.sections.incident.IncidentsSection
 
 class IncidentsDomainSpec extends SpecBase with Generators {
 
@@ -36,21 +36,23 @@ class IncidentsDomainSpec extends SpecBase with Generators {
           arbitraryIncidentAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(userAnswers)
+      val result = IncidentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.incidents.length mustBe numberOfIncidents
-
+      result.value.value.incidents.length mustBe numberOfIncidents
+      result.value.pages.last mustBe IncidentsSection
     }
 
     "cannot be parsed from UserAnswer" - {
 
       "when there are no incidents" in {
 
-        val result: EitherType[IncidentsDomain] = UserAnswersReader[IncidentsDomain].run(emptyUserAnswers)
+        val result = IncidentsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IncidentCountryPage(Index(0))
+        result.left.value.pages mustBe Seq(
+          IncidentCountryPage(Index(0))
+        )
       }
     }
   }
-
 }

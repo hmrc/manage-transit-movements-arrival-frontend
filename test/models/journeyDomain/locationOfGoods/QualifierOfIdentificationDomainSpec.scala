@@ -20,7 +20,6 @@ import base.SpecBase
 import config.Constants.QualifierCode._
 import generators.Generators
 import models.identification.ProcedureType
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
@@ -58,10 +57,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
-
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        CountryPage,
+        AddressPage,
+        AddContactPersonPage
+      )
     }
 
     "can be parsed from UserAnswers from EoriNumberDomain" in {
@@ -77,10 +81,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
-
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        IdentificationNumberPage,
+        AddContactPersonPage
+      )
     }
 
     "can be parsed from UserAnswers from AuthorisationNumberDomain" in {
@@ -96,10 +104,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
-
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        AuthorisationNumberPage,
+        AddContactPersonPage
+      )
     }
 
     "can be parsed from UserAnswers from CoordinatesDomain" in {
@@ -117,10 +129,16 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         Some(ContactPersonDomain(name, tel))
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
-
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        CoordinatesPage,
+        AddContactPersonPage,
+        ContactPersonNamePage,
+        ContactPersonTelephonePage
+      )
     }
 
     "can be parsed from UserAnswers from CustomsOfficeDomain" in {
@@ -132,9 +150,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val expectedResult = CustomsOfficeDomain(customsOffice)
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        CustomsOfficePage
+      )
     }
 
     "can be parsed from UserAnswers from UnlocodeDomain" in {
@@ -150,9 +172,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        UnlocodePage,
+        AddContactPersonPage
+      )
     }
 
     "can be parsed from UserAnswers from PostalCode" in {
@@ -168,19 +195,28 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[QualifierOfIdentificationDomain] = UserAnswersReader[QualifierOfIdentificationDomain].run(userAnswers)
+      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        QualifierOfIdentificationPage,
+        PostalCodePage,
+        AddContactPersonPage
+      )
     }
 
     "cannot be parsed from UserAnswer" - {
 
       "when a mandatory page is missing" in {
 
-        val result: EitherType[QualifierOfIdentificationDomain] =
-          UserAnswersReader[QualifierOfIdentificationDomain].run(emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal))
+        val userAnswers = emptyUserAnswers.setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
+
+        val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe QualifierOfIdentificationPage
+        result.left.value.pages mustBe Seq(
+          QualifierOfIdentificationPage
+        )
       }
     }
   }
@@ -203,9 +239,16 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         Some(ContactPersonDomain(name, tel))
       )
 
-      val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(userAnswers)
+      val result = AddressDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        CountryPage,
+        AddressPage,
+        AddContactPersonPage,
+        ContactPersonNamePage,
+        ContactPersonTelephonePage
+      )
     }
 
     "can be parsed from UserAnswers without contact person" in {
@@ -222,9 +265,14 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(userAnswers)
+      val result = AddressDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        CountryPage,
+        AddressPage,
+        AddContactPersonPage
+      )
     }
 
     "cannot be parsed from UserAnswers" - {
@@ -245,7 +293,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           page =>
             val updatedUserAnswers = userAnswers.removeValue(page)
 
-            val result: EitherType[AddressDomain] = UserAnswersReader[AddressDomain].run(updatedUserAnswers)
+            val result = AddressDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
             result.left.value.page mustBe page
         }
@@ -269,9 +317,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         Some(ContactPersonDomain(name, tel))
       )
 
-      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
+      val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        IdentificationNumberPage,
+        AddContactPersonPage,
+        ContactPersonNamePage,
+        ContactPersonTelephonePage
+      )
     }
 
     "can be parsed from UserAnswers without contact person" - {
@@ -286,9 +340,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
         None
       )
 
-      val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(userAnswers)
+      val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        IdentificationNumberPage,
+        AddContactPersonPage
+      )
     }
 
     "cannot be parsed from UserAnswers" - {
@@ -308,13 +366,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           page =>
             val updatedUserAnswers = userAnswers.removeValue(page)
 
-            val result: EitherType[EoriNumberDomain] = UserAnswersReader[EoriNumberDomain].run(updatedUserAnswers)
+            val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
             result.left.value.page mustBe page
         }
       }
     }
-
   }
 
   "AuthorisationNumberDomain" - {
@@ -334,9 +391,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           Some(ContactPersonDomain(name, tel))
         )
 
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
+        val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          AuthorisationNumberPage,
+          AddContactPersonPage,
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
 
       "can be parsed from UserAnswers without contact person" in {
@@ -351,9 +414,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           None
         )
 
-        val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(userAnswers)
+        val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          AuthorisationNumberPage,
+          AddContactPersonPage
+        )
       }
 
       "cannot be parsed from UserAnswers" - {
@@ -373,13 +440,12 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
             page =>
               val updatedUserAnswers = userAnswers.removeValue(page)
 
-              val result: EitherType[AuthorisationNumberDomain] = UserAnswersReader[AuthorisationNumberDomain].run(updatedUserAnswers)
+              val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
               result.left.value.page mustBe page
           }
         }
       }
-
     }
 
     "CoordinatesDomain" - {
@@ -398,9 +464,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           Some(ContactPersonDomain(name, tel))
         )
 
-        val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
+        val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          CoordinatesPage,
+          AddContactPersonPage,
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
 
       "can be parsed from UserAnswers without contact person" in {
@@ -415,9 +487,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           None
         )
 
-        val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(userAnswers)
+        val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          CoordinatesPage,
+          AddContactPersonPage
+        )
       }
 
       "cannot be parsed from UserAnswers" - {
@@ -437,7 +513,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
             page =>
               val updatedUserAnswers = userAnswers.removeValue(page)
 
-              val result: EitherType[CoordinatesDomain] = UserAnswersReader[CoordinatesDomain].run(updatedUserAnswers)
+              val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
               result.left.value.page mustBe page
           }
@@ -455,18 +531,24 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val expectedResult = CustomsOfficeDomain(customsOffice)
 
-        val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(userAnswers)
+        val result = CustomsOfficeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          CustomsOfficePage
+        )
       }
 
       "cannot be parsed from UserAnswers" - {
 
         "when a mandatory page is missing" in {
 
-          val result: EitherType[CustomsOfficeDomain] = UserAnswersReader[CustomsOfficeDomain].run(emptyUserAnswers)
+          val result = CustomsOfficeDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe CustomsOfficePage
+          result.left.value.pages mustBe Seq(
+            CustomsOfficePage
+          )
         }
       }
     }
@@ -487,9 +569,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           Some(ContactPersonDomain(name, tel))
         )
 
-        val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
+        val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          UnlocodePage,
+          AddContactPersonPage,
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
 
       "can be parsed from UserAnswers without contact person" in {
@@ -504,9 +592,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           None
         )
 
-        val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(userAnswers)
+        val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          UnlocodePage,
+          AddContactPersonPage
+        )
       }
 
       "cannot be parsed from UserAnswers" - {
@@ -526,7 +618,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
             page =>
               val updatedUserAnswers = userAnswers.removeValue(page)
 
-              val result: EitherType[UnlocodeDomain] = UserAnswersReader[UnlocodeDomain].run(updatedUserAnswers)
+              val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
               result.left.value.page mustBe page
           }
@@ -550,9 +642,15 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           Some(ContactPersonDomain(name, tel))
         )
 
-        val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
+        val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          PostalCodePage,
+          AddContactPersonPage,
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
 
       "can be parsed from UserAnswers without contact person" in {
@@ -567,9 +665,13 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
           None
         )
 
-        val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(userAnswers)
+        val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          PostalCodePage,
+          AddContactPersonPage
+        )
       }
 
       "cannot be parsed from UserAnswers" - {
@@ -589,7 +691,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
             page =>
               val updatedUserAnswers = userAnswers.removeValue(page)
 
-              val result: EitherType[PostalCodeDomain] = UserAnswersReader[PostalCodeDomain].run(updatedUserAnswers)
+              val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
               result.left.value.page mustBe page
           }

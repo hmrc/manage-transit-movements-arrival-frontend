@@ -18,7 +18,6 @@ package models.journeyDomain.incident.endorsement
 
 import base.SpecBase
 import generators.Generators
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -46,10 +45,15 @@ class EndorsementDomainSpec extends SpecBase with Generators {
 
       val expectedResult = EndorsementDomain(localDate, authority, country, location)
 
-      val result: EitherType[EndorsementDomain] = UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)).run(userAnswers)
+      val result = EndorsementDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-      result.value mustBe expectedResult
-
+      result.value.value mustBe expectedResult
+      result.value.pages mustBe Seq(
+        EndorsementDatePage(index),
+        EndorsementAuthorityPage(index),
+        EndorsementCountryPage(index),
+        EndorsementLocationPage(index)
+      )
     }
 
     "cannot be parsed from UserAnswer" - {
@@ -73,7 +77,7 @@ class EndorsementDomainSpec extends SpecBase with Generators {
           mandatoryPage =>
             val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[EndorsementDomain] = UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index)).run(updatedAnswers)
+            val result = EndorsementDomain.userAnswersReader(index).apply(Nil).run(updatedAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }

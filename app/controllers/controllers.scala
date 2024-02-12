@@ -16,7 +16,7 @@
 
 import cats.data.ReaderT
 import models.UserAnswers
-import models.journeyDomain.WriterError
+import models.journeyDomain.OpsError.WriterError
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
 import pages.QuestionPage
@@ -83,7 +83,7 @@ package object controllers {
 
     def navigate()(implicit navigator: Navigator, executionContext: ExecutionContext): Future[Result] =
       navigate {
-        case (_, userAnswers) => navigator.nextPage(userAnswers)
+        case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
 
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =

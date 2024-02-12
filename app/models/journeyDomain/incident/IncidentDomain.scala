@@ -16,17 +16,17 @@
 
 package models.journeyDomain.incident
 
-import cats.implicits.catsSyntaxTuple7Semigroupal
 import config.Constants.IncidentCode._
 import models.journeyDomain.incident.endorsement.EndorsementDomain
 import models.journeyDomain.incident.equipment.EquipmentsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read}
 import models.reference.IncidentCode._
 import models.reference.{Country, IncidentCode}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.incident.{AddEndorsementPage, IncidentCodePage, IncidentCountryPage, IncidentTextPage}
+import pages.sections.Section
+import pages.sections.incident.IncidentSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 case class IncidentDomain(
   incidentCountry: Country,
@@ -42,8 +42,7 @@ case class IncidentDomain(
   def asString()(implicit messages: Messages): String =
     IncidentDomain.asString(index, incidentCode)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(userAnswers.mrn, mode, index))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(IncidentSection(index))
 }
 
 object IncidentDomain {
@@ -51,22 +50,23 @@ object IncidentDomain {
   def asString(index: Index, incidentCode: IncidentCode)(implicit messages: Messages): String =
     messages("incident.value", index.display, incidentCode.description)
 
-  def userAnswersReader(index: Index): UserAnswersReader[IncidentDomain] = {
+  def userAnswersReader(index: Index): Read[IncidentDomain] = {
 
-    val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] = IncidentCodePage(index)
-      .filterOptionalDependent(
-        x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
-      )(UserAnswersReader[TransportMeansDomain](TransportMeansDomain.userAnswersReader(index)))
+    val transportMeansReads: Read[Option[TransportMeansDomain]] =
+      IncidentCodePage(index)
+        .filterOptionalDependent(
+          x => x.code == TransferredToAnotherTransportCode || x.code == UnexpectedlyChangedCode
+        )(TransportMeansDomain.userAnswersReader(index))
 
     (
       IncidentCountryPage(index).reader,
       IncidentCodePage(index).reader,
       IncidentTextPage(index).reader,
-      AddEndorsementPage(index).filterOptionalDependent(identity)(UserAnswersReader[EndorsementDomain](EndorsementDomain.userAnswersReader(index))),
-      UserAnswersReader[IncidentLocationDomain](IncidentLocationDomain.userAnswersReader(index)),
-      UserAnswersReader[EquipmentsDomain](EquipmentsDomain.userAnswersReader(index)),
+      AddEndorsementPage(index).filterOptionalDependent(identity)(EndorsementDomain.userAnswersReader(index)),
+      IncidentLocationDomain.userAnswersReader(index),
+      EquipmentsDomain.userAnswersReader(index),
       transportMeansReads
-    ).tupled.map((IncidentDomain.apply _).tupled).map(_(index))
+    ).map(IncidentDomain.apply(_, _, _, _, _, _, _)(index))
   }
 
 }

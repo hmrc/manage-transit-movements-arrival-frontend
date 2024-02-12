@@ -35,7 +35,7 @@ class ArrivalNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
@@ -52,7 +52,7 @@ class ArrivalNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }

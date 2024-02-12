@@ -19,13 +19,13 @@ package models.journeyDomain.incident
 import base.SpecBase
 import forms.Constants
 import generators.Generators
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, IncidentCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.incident._
+import pages.sections.incident.IncidentSection
 
 class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -43,11 +43,10 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
               userAnswers =>
-                val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](
-                  IncidentDomain.userAnswersReader(index)
-                ).run(userAnswers)
+                val result = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
-                result.value.transportMeans must be(defined)
+                result.value.value.transportMeans must be(defined)
+                result.value.pages.last mustBe IncidentSection(incidentIndex)
             }
         }
       }
@@ -61,11 +60,9 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             forAll(arbitraryIncidentAnswers(initialAnswers, incidentIndex)) {
               userAnswers =>
-                val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](
-                  IncidentDomain.userAnswersReader(index)
-                ).run(userAnswers)
+                val result = IncidentDomain.userAnswersReader(incidentIndex).apply(Nil).run(userAnswers)
 
-                result.value.transportMeans must not be defined
+                result.value.value.transportMeans must not be defined
             }
         }
       }
@@ -92,14 +89,11 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           mandatoryPage =>
             val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-            val result: EitherType[IncidentDomain] = UserAnswersReader[IncidentDomain](IncidentDomain.userAnswersReader(index)).run(updatedAnswers)
+            val result = IncidentDomain.userAnswersReader(index).apply(Nil).run(updatedAnswers)
 
             result.left.value.page mustBe mandatoryPage
         }
-
       }
-
     }
   }
-
 }

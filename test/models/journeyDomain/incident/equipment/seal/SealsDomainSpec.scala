@@ -18,8 +18,8 @@ package models.journeyDomain.incident.equipment.seal
 
 import base.SpecBase
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
+import pages.sections.incident.SealsSection
 
 class SealsDomainSpec extends SpecBase {
 
@@ -35,23 +35,28 @@ class SealsDomainSpec extends SpecBase {
             SealDomain("foo")(incidentIndex, equipmentIndex, Index(0)),
             SealDomain("bar")(incidentIndex, equipmentIndex, Index(1))
           )
+        )(incidentIndex, equipmentIndex)
+
+        val result = SealsDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(userAnswers)
+
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0)),
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(1)),
+          SealsSection(incidentIndex, equipmentIndex)
         )
-
-        val result: EitherType[SealsDomain] =
-          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(userAnswers)
-
-        result.value mustBe expectedResult
       }
     }
 
     "cannot be read from user answers" - {
       "when there are no seals" in {
-        val result: EitherType[SealsDomain] =
-          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(incidentIndex, equipmentIndex)).run(emptyUserAnswers)
+        val result = SealsDomain.userAnswersReader(incidentIndex, equipmentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
+        result.left.value.pages mustBe Seq(
+          SealIdentificationNumberPage(incidentIndex, equipmentIndex, Index(0))
+        )
       }
     }
   }
-
 }

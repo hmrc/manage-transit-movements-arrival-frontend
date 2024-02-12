@@ -18,7 +18,7 @@ package navigation
 
 import config.PhaseConfig
 import models.Mode
-import models.journeyDomain.{ArrivalDomain, UserAnswersReader}
+import models.journeyDomain.{ArrivalDomain, Read}
 
 import javax.inject.{Inject, Singleton}
 
@@ -37,6 +37,6 @@ class ArrivalNavigator(override val mode: Mode)(implicit phaseConfig: PhaseConfi
 
   override type T = ArrivalDomain
 
-  implicit override val reader: UserAnswersReader[ArrivalDomain] =
+  implicit override val reader: Read[ArrivalDomain] =
     ArrivalDomain.userAnswersReader
 }

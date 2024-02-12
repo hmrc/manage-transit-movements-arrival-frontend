@@ -16,7 +16,7 @@
 
 package navigation
 
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.Read
 import models.journeyDomain.incident.equipment.seal.SealDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
@@ -40,6 +40,6 @@ class SealNavigator(override val mode: Mode, incidentIndex: Index, equipmentInde
 
   override type T = SealDomain
 
-  implicit override val reader: UserAnswersReader[SealDomain] =
+  implicit override val reader: Read[SealDomain] =
     SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex)
 }

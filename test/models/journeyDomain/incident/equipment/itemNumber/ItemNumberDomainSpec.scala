@@ -17,7 +17,6 @@
 package models.journeyDomain.incident.equipment.itemNumber
 
 import base.SpecBase
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.incident.equipment.itemNumber.ItemNumberPage
 
@@ -34,21 +33,24 @@ class ItemNumberDomainSpec extends SpecBase {
 
         val expectedResult = ItemNumberDomain(itemNumber)(incidentIndex, equipmentIndex, itemNumberIndex)
 
-        val result: EitherType[ItemNumberDomain] =
-          UserAnswersReader[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex)).run(userAnswers)
+        val result = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        )
       }
     }
 
     "can not be read from user answers" - {
       "when item number page is unanswered" in {
-        val result: EitherType[ItemNumberDomain] =
-          UserAnswersReader[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex)).run(emptyUserAnswers)
+        val result = ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        result.left.value.pages mustBe Seq(
+          ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex)
+        )
       }
     }
   }
-
 }

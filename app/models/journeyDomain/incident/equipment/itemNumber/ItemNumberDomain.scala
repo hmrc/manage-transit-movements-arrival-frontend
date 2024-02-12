@@ -18,7 +18,7 @@ package models.journeyDomain.incident.equipment.itemNumber
 
 import controllers.incident.equipment.itemNumber.routes
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import play.api.mvc.Call
@@ -40,7 +40,7 @@ case class ItemNumberDomain(
 
 object ItemNumberDomain {
 
-  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersReader[ItemNumberDomain] =
+  def userAnswersReader(incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Read[ItemNumberDomain] =
     ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).reader.map(ItemNumberDomain(_)(incidentIndex, equipmentIndex, itemNumberIndex))
 
 }

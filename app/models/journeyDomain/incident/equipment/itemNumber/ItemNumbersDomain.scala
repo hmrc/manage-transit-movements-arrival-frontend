@@ -16,21 +16,31 @@
 
 package models.journeyDomain.incident.equipment.itemNumber
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.incident.ItemsSection
 
-case class ItemNumbersDomain(itemNumbers: Seq[ItemNumberDomain])
+case class ItemNumbersDomain(
+  value: Seq[ItemNumberDomain]
+)(incidentIndex: Index, equipmentIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemsSection(incidentIndex, equipmentIndex))
+}
 
 object ItemNumbersDomain {
 
-  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): UserAnswersReader[ItemNumbersDomain] =
-    ItemsSection(incidentIndex, equipmentIndex).reader
-      .flatMap {
+  implicit def userAnswersReader(incidentIndex: Index, equipmentIndex: Index): Read[ItemNumbersDomain] = {
+
+    val itemsReader: Read[Seq[ItemNumberDomain]] =
+      ItemsSection(incidentIndex, equipmentIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0))).map(Seq(_))
+          ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, Index(0)).toSeq
         case x =>
-          x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _))
+          x.traverse[ItemNumberDomain](ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, _).apply(_))
       }
-      .map(ItemNumbersDomain(_))
+
+    itemsReader.map(ItemNumbersDomain.apply(_)(incidentIndex, equipmentIndex))
+  }
 }

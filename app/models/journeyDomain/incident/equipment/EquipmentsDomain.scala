@@ -17,47 +17,52 @@
 package models.journeyDomain.incident.equipment
 
 import config.Constants.IncidentCode._
-import controllers.incident.equipment.routes
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Read, UserAnswersReader}
 import models.reference.IncidentCode._
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
+import pages.sections.Section
 import pages.sections.incident.EquipmentsSection
-import play.api.mvc.Call
 
-case class EquipmentsDomain(equipments: Seq[EquipmentDomain])(incidentIndex: Index) extends JourneyDomainModel {
+case class EquipmentsDomain(
+  value: Seq[EquipmentDomain]
+)(incidentIndex: Index)
+    extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(routes.AddAnotherEquipmentController.onPageLoad(userAnswers.mrn, mode, incidentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentsSection(incidentIndex))
 }
 
 object EquipmentsDomain {
 
   // scalastyle:off cyclomatic.complexity
-  implicit def userAnswersReader(incidentIndex: Index): UserAnswersReader[EquipmentsDomain] = {
-    lazy val readEquipments: UserAnswersReader[EquipmentsDomain] =
-      EquipmentsSection(incidentIndex).reader
-        .flatMap {
+  implicit def userAnswersReader(incidentIndex: Index): Read[EquipmentsDomain] = {
+    lazy val readEquipments: Read[EquipmentsDomain] =
+      EquipmentsSection(incidentIndex).arrayReader
+        .to {
           case x if x.isEmpty =>
-            UserAnswersReader(EquipmentDomain.userAnswersReader(incidentIndex, Index(0))).map(Seq(_))
+            EquipmentDomain.userAnswersReader(incidentIndex, Index(0)).toSeq
           case x =>
-            x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _))
+            x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(incidentIndex, _).apply(_))
         }
         .map(EquipmentsDomain(_)(incidentIndex))
 
-    IncidentCodePage(incidentIndex).reader.map(_.code).flatMap {
-      case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
-        ContainerIndicatorYesNoPage(incidentIndex).reader.flatMap {
-          case true => readEquipments
-          case false =>
-            AddTransportEquipmentPage(incidentIndex).reader.flatMap {
-              case true  => readEquipments
-              case false => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
-            }
-        }
-      case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode => readEquipments
-      case _                                                        => UserAnswersReader(EquipmentsDomain(Nil)(incidentIndex))
-
+    IncidentCodePage(incidentIndex).reader.to {
+      _.code match {
+        case TransferredToAnotherTransportCode | UnexpectedlyChangedCode =>
+          ContainerIndicatorYesNoPage(incidentIndex).reader.to {
+            case true =>
+              readEquipments
+            case false =>
+              AddTransportEquipmentPage(incidentIndex).reader.to {
+                case true  => readEquipments
+                case false => UserAnswersReader.success(EquipmentsDomain(Nil)(incidentIndex))
+              }
+          }
+        case SealsBrokenOrTamperedCode | PartiallyOrFullyUnloadedCode =>
+          readEquipments
+        case _ =>
+          UserAnswersReader.success(EquipmentsDomain(Nil)(incidentIndex))
+      }
     }
   }
   // scalastyle:on cyclomatic.complexity

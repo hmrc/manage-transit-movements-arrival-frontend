@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.EquipmentNavigatorProvider
+import pages.sections.incident.ItemsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -72,7 +73,8 @@ class AddAnotherItemNumberYesNoController @Inject() (
                 controllers.incident.equipment.itemNumber.routes.ItemNumberController
                   .onPageLoad(mrn, mode, incidentIndex, equipmentIndex, Index(viewModel.numberOfItemNumbers))
               )
-            case false => Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers))
+            case false =>
+              Redirect(navigatorProvider(mode, incidentIndex, equipmentIndex).nextPage(request.userAnswers, Some(ItemsSection(incidentIndex, equipmentIndex))))
           }
         )
   }

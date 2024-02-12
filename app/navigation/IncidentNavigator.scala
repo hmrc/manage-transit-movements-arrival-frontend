@@ -17,7 +17,7 @@
 package navigation
 
 import config.PhaseConfig
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.Read
 import models.journeyDomain.incident.IncidentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
@@ -41,6 +41,6 @@ class IncidentNavigator(override val mode: Mode, index: Index) extends UserAnswe
 
   override type T = IncidentDomain
 
-  implicit override val reader: UserAnswersReader[IncidentDomain] =
+  implicit override val reader: Read[IncidentDomain] =
     IncidentDomain.userAnswersReader(index)
 }

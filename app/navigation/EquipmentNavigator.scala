@@ -16,7 +16,7 @@
 
 package navigation
 
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.Read
 import models.journeyDomain.incident.equipment.EquipmentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
@@ -40,6 +40,6 @@ class EquipmentNavigator(override val mode: Mode, incidentIndex: Index, equipmen
 
   override type T = EquipmentDomain
 
-  implicit override val reader: UserAnswersReader[EquipmentDomain] =
+  implicit override val reader: Read[EquipmentDomain] =
     EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex)
 }

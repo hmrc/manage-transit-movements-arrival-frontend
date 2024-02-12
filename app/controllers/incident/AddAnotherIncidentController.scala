@@ -71,11 +71,12 @@ class AddAnotherIncidentController @Inject() (
             case true =>
               Redirect(
                 UserAnswersNavigator
-                  .nextPage[IncidentDomain](request.userAnswers, mode)(
+                  .nextPage[IncidentDomain](request.userAnswers, Some(IncidentsSection), mode)(
                     IncidentDomain.userAnswersReader(Index(viewModel.numberOfIncidents))
                   )
               )
-            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+            case false =>
+              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(IncidentsSection)))
           }
         )
   }

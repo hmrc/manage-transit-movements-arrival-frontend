@@ -18,7 +18,6 @@ package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
 import generators.Generators
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
 
@@ -40,27 +39,37 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
           phoneNumber = tel
         )
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
     }
 
     "cannot be parsed from user answers" - {
       "when name is unanswered" in {
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(emptyUserAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe ContactPersonNamePage
+        result.left.value.pages mustBe Seq(
+          ContactPersonNamePage
+        )
       }
 
       "when telephone number is unanswered" in {
         val userAnswers = emptyUserAnswers.setValue(ContactPersonNamePage, name)
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe ContactPersonTelephonePage
+        result.left.value.pages mustBe Seq(
+          ContactPersonNamePage,
+          ContactPersonTelephonePage
+        )
       }
     }
   }
-
 }

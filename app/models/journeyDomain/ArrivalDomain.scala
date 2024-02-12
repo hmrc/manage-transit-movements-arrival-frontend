@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import config.PhaseConfig
-import cats.implicits._
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
@@ -35,9 +34,9 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 
 object ArrivalDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[ArrivalDomain] = phaseConfig.phase match {
-    case Phase.Transition     => UserAnswersReader[ArrivalTransitionDomain].widen[ArrivalDomain]
-    case Phase.PostTransition => UserAnswersReader[ArrivalPostTransitionDomain].widen[ArrivalDomain]
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[ArrivalDomain] = phaseConfig.phase match {
+    case Phase.Transition     => ArrivalTransitionDomain.userAnswersReader
+    case Phase.PostTransition => ArrivalPostTransitionDomain.userAnswersReader
   }
 
 }
@@ -49,12 +48,11 @@ case class ArrivalPostTransitionDomain(
 
 object ArrivalPostTransitionDomain {
 
-  implicit val userAnswersReaderArrivalPostTransitionDomain: UserAnswersReader[ArrivalPostTransitionDomain] = {
-    for {
-      identification  <- UserAnswersReader[IdentificationDomain]
-      locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-    } yield ArrivalPostTransitionDomain(identification, locationOfGoods)
-  }
+  implicit val userAnswersReader: Read[ArrivalDomain] =
+    (
+      IdentificationDomain.userAnswersReader,
+      LocationOfGoodsDomain.userAnswersReader
+    ).map(ArrivalPostTransitionDomain.apply)
 }
 
 case class ArrivalTransitionDomain(
@@ -65,11 +63,10 @@ case class ArrivalTransitionDomain(
 
 object ArrivalTransitionDomain {
 
-  implicit val userAnswersReaderArrivalTransitionDomain: UserAnswersReader[ArrivalTransitionDomain] = {
-    for {
-      identification  <- UserAnswersReader[IdentificationDomain]
-      locationOfGoods <- UserAnswersReader[LocationOfGoodsDomain]
-      incidents       <- IncidentFlagPage.filterOptionalDependent(identity)(UserAnswersReader[IncidentsDomain])
-    } yield ArrivalTransitionDomain(identification, locationOfGoods, incidents)
-  }
+  implicit val userAnswersReader: Read[ArrivalDomain] =
+    (
+      IdentificationDomain.userAnswersReader,
+      LocationOfGoodsDomain.userAnswersReader,
+      IncidentFlagPage.filterOptionalDependent(identity)(IncidentsDomain.userAnswersReader)
+    ).map(ArrivalTransitionDomain.apply)
 }
