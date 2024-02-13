@@ -51,11 +51,11 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "when answers complete" - {
         "must redirect to incident answers page" in {
-          forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
+          forAll(arbitraryEquipmentsAnswers(emptyUserAnswers, incidentIndex)) {
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.incident.routes.CheckIncidentAnswersController.onPageLoad(answers.mrn, mode, incidentIndex))
+                .mustBe(controllers.incident.equipment.routes.AddAnotherEquipmentController.onPageLoad(answers.mrn, mode, incidentIndex))
           }
         }
       }
