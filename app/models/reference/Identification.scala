@@ -16,11 +16,12 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
 case class Identification(`type`: String, description: String) extends Radioable[Identification] {
-  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+  override val messageKeyPrefix: String = "incident.transportMeans.identification"
   override def toString: String         = description
 
   override val code: String = `type`
@@ -29,5 +30,7 @@ case class Identification(`type`: String, description: String) extends Radioable
 object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
-  val messageKeyPrefix = "incident.transportMeans.identification"
+  implicit val order: Order[Identification] = (x: Identification, y: Identification) => {
+    x.`type`.compareToIgnoreCase(y.`type`)
+  }
 }

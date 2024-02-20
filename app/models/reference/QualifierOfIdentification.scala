@@ -16,12 +16,13 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
 case class QualifierOfIdentification(qualifier: String, description: String) extends Radioable[QualifierOfIdentification] {
   override def toString: String         = description
-  override val messageKeyPrefix: String = QualifierOfIdentification.messageKeyPrefix
+  override val messageKeyPrefix: String = "qualifierOfIdentification"
   override val code: String             = qualifier
 
   def isOneOf(codes: String*): Boolean = codes.contains(code)
@@ -30,6 +31,7 @@ case class QualifierOfIdentification(qualifier: String, description: String) ext
 object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdentification] {
   implicit val format: Format[QualifierOfIdentification] = Json.format[QualifierOfIdentification]
 
-  val messageKeyPrefix: String = "qualifierOfIdentification"
-
+  implicit val order: Order[QualifierOfIdentification] = (x: QualifierOfIdentification, y: QualifierOfIdentification) => {
+    x.qualifier.compareToIgnoreCase(y.qualifier)
+  }
 }

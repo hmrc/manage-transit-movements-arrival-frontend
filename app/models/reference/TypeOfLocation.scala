@@ -16,18 +16,20 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
 case class TypeOfLocation(`type`: String, description: String) extends Radioable[TypeOfLocation] {
   override def toString: String         = description
-  override val messageKeyPrefix: String = TypeOfLocation.messageKeyPrefix
+  override val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
   override val code: String             = `type`
 }
 
 object TypeOfLocation extends DynamicEnumerableType[TypeOfLocation] {
   implicit val format: Format[TypeOfLocation] = Json.format[TypeOfLocation]
 
-  val messageKeyPrefix: String = "locationOfGoods.typeOfLocation"
-
+  implicit val order: Order[TypeOfLocation] = (x: TypeOfLocation, y: TypeOfLocation) => {
+    x.`type`.compareToIgnoreCase(y.`type`)
+  }
 }

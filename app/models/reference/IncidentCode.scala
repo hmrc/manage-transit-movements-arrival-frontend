@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
@@ -28,5 +29,8 @@ case class IncidentCode(code: String, description: String) extends Radioable[Inc
 
 object IncidentCode extends DynamicEnumerableType[IncidentCode] {
   implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
-  val messageKeyPrefix: String              = "incident.incidentCode"
+
+  implicit val order: Order[IncidentCode] = (x: IncidentCode, y: IncidentCode) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }
