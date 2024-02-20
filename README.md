@@ -10,17 +10,24 @@ Service manager port: 10121
 Run unit tests:
 <pre>sbt test</pre>  
 Run integration tests:  
-<pre>sbt it:test</pre>  
-or
-<pre>sbt IntegrationTest/test</pre>  
+<pre>sbt it/test</pre>
+Run accessibility linter tests:
+<pre>sbt A11y/test</pre>
 
 ### Running manually or for journey tests
 
+#### Transition
 <pre>
-sm --start CTC_TRADERS_ARRIVAL_P5_ACCEPTANCE -r OR
-sm --start CTC_TRADERS_ARRIVAL_P5_ACCEPTANCE CTC_TRADERS_API -r // with API running
-sm --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND
-sbt run
+sm2 --start CTC_TRADERS_P5_ACCEPTANCE_TRANSITION
+sm2 --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND_TRANSITION
+sbt -Dplay.aditional.module=config.TransitionModule run
+</pre>
+
+#### Final
+<pre>
+sm2 --start CTC_TRADERS_P5_ACCEPTANCE
+sm2 --stop MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND
+sbt -Dplay.aditional.module=config.PostTransitionModule run
 </pre>
 
 If you hit an entry point before running the journey tests, it gets the compile out of the way and can help keep the first tests from failing.  
