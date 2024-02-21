@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import config.Constants.LocationType._
 import connectors.ReferenceDataConnector
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
@@ -41,7 +41,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
   private val authNumber: QualifierOfIdentification              = QualifierOfIdentification("Y", "Authorisation number")
   private val address: QualifierOfIdentification                 = QualifierOfIdentification("Z", "Free text")
 
-  private val ids = NonEmptyList(postalCode, List(unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address))
+  private val ids = NonEmptySet.of(postalCode, unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -57,7 +57,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted incidentCodes" in {
 
         when(mockRefDataConnector.getIncidentCodes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(incidentCode1, List(incidentCode2))))
+          .thenReturn(Future.successful(NonEmptySet.of(incidentCode1, incidentCode2)))
 
         service.getIncidentCodes().futureValue mustBe Seq(incidentCode2, incidentCode1)
 
@@ -69,7 +69,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       val typeOfLocation1: TypeOfLocation = TypeOfLocation("C", "TestA")
       val typeOfLocation2: TypeOfLocation = TypeOfLocation("B", "TestB")
       val typeOfLocation3: TypeOfLocation = TypeOfLocation("A", "TestC")
-      val typesOfLocation                 = NonEmptyList(typeOfLocation1, List(typeOfLocation2, typeOfLocation3))
+      val typesOfLocation                 = NonEmptySet.of(typeOfLocation1, typeOfLocation2, typeOfLocation3)
 
       "must return a list of sorted TypeOfLocation filtered -without B" in {
 
@@ -88,7 +88,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted transport identifications" in {
 
         when(mockRefDataConnector.getTransportIdentifications()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(transportId1, List(transportId2))))
+          .thenReturn(Future.successful(NonEmptySet.of(transportId1, transportId2)))
 
         service.getTransportIdentifications().futureValue mustBe Seq(transportId2, transportId1)
 
@@ -139,7 +139,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
     "getIncidentIdentifications" - {
       val postalCode: QualifierOfIdentification = QualifierOfIdentification("T", "Postal code")
       val unlocode: QualifierOfIdentification   = QualifierOfIdentification("U", "UN/LOCODE")
-      val ids                                   = NonEmptyList(postalCode, List(unlocode))
+      val ids                                   = NonEmptySet.of(postalCode, unlocode)
 
       "must return a list of sorted transport identifications" in {
 

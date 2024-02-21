@@ -39,11 +39,7 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   private def getCountries(listName: String)(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries(listName)
-      .map(_.toList)
-      .map(sort)
-
-  private def sort(countries: Seq[Country]): SelectableList[Country] =
-    SelectableList(countries.sortBy(_.description.toLowerCase))
+      .map(SelectableList(_))
 
   def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
@@ -58,5 +54,5 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
     referenceDataConnector
       .getCountriesWithoutZip()
-      .map(_.toList)
+      .map(_.toSeq)
 }

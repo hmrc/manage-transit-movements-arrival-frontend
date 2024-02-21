@@ -16,7 +16,7 @@
 
 package connectors
 
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.ItSpecBase
@@ -224,6 +224,17 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
       |}
       |""".stripMargin
 
+  private val countryCodeResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "GB"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   private val emptyResponseJson: String =
     """
       |{
@@ -234,8 +245,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
   "Reference Data" - {
 
     "getCustomsOfficesForCountry" - {
-      val countryCode = CountryCode("GB")
-      val url         = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=${countryCode.code}&data.roles.role=DES"
+      val countryIds = Seq("GB", "XI")
+      val url        = s"/$baseUrl/lists/CustomsOffices?data.countryId=XI&data.countryId=GB&data.roles.role=DES"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         server.stubFor(
@@ -244,20 +255,24 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           CustomsOffice("GBtestId1", Some("testName1"), Some("testPhoneNumber")),
-          List(CustomsOffice("GBtestId2", Some("testName2"), None))
+          CustomsOffice("GBtestId2", Some("testName2"), None)
         )
 
-        connector.getCustomsOfficesForCountry(countryCode).futureValue mustBe expectedResult
+        connector.getCustomsOfficesForCountry(countryIds: _*).futureValue mustBe expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCustomsOfficesForCountry(countryCode))
+        val countryId = "AR"
+        val url       = s"/$baseUrl/lists/CustomsOffices?data.countryId=AR&data.roles.role=DES"
+        checkNoReferenceDataFoundResponse(url, connector.getCustomsOfficesForCountry(countryId))
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCustomsOfficesForCountry(countryCode))
+        val countryId = "GB"
+        val url       = s"/$baseUrl/lists/CustomsOffices?data.countryId=GB&data.roles.role=DES"
+        checkErrorResponse(url, connector.getCustomsOfficesForCountry(countryId))
       }
     }
 
@@ -272,9 +287,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
                   .willReturn(okJson(countriesResponseJson))
               )
 
-              val expectedResult: NonEmptyList[Country] = NonEmptyList(
+              val expectedResult = NonEmptySet.of(
                 Country(CountryCode("GB"), "United Kingdom"),
-                List(Country(CountryCode("AD"), "Andorra"))
+                Country(CountryCode("AD"), "Andorra")
               )
 
               connector.getCountries(listName).futureValue mustEqual expectedResult
@@ -307,9 +322,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(unlocodesResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           UnLocode("code1", "name1"),
-          List(UnLocode("code2", "name2"))
+          UnLocode("code2", "name2")
         )
 
         connector.getUnLocodes().futureValue mustBe expectedResult
@@ -334,9 +349,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           Nationality("GB", "United Kingdom"),
-          List(Nationality("AD", "Andorra"))
+          Nationality("AD", "Andorra")
         )
 
         connector.getNationalities().futureValue mustBe expectedResult
@@ -361,9 +376,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(incidentCodeResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           IncidentCode("1", "The carrier is obliged to deviate from..."),
-          List(IncidentCode("2", "Seals are broken or tampered with..."))
+          IncidentCode("2", "Seals are broken or tampered with...")
         )
 
         connector.getIncidentCodes().futureValue mustBe expectedResult
@@ -388,9 +403,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(typeOfLocationResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           TypeOfLocation("A", "Designated location"),
-          List(TypeOfLocation("B", "Authorised place"))
+          TypeOfLocation("B", "Authorised place")
         )
 
         connector.getTypesOfLocation().futureValue mustBe expectedResult
@@ -415,9 +430,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(incidentIdentifiersResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           QualifierOfIdentification("U", "UN/LOCODE"),
-          List(QualifierOfIdentification("W", "GPS coordinates"))
+          QualifierOfIdentification("W", "GPS coordinates")
         )
         connector.getIncidentIdentifications().futureValue mustBe expectedResult
       }
@@ -441,12 +456,10 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(identifiersResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           QualifierOfIdentification("T", "Postal code"),
-          List(
-            QualifierOfIdentification("U", "UN/LOCODE"),
-            QualifierOfIdentification("W", "GPS coordinates")
-          )
+          QualifierOfIdentification("U", "UN/LOCODE"),
+          QualifierOfIdentification("W", "GPS coordinates")
         )
         connector.getIdentifications().futureValue mustBe expectedResult
       }
@@ -470,12 +483,10 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(transportIdentifiersResponseJson))
         )
 
-        val expectedResult: NonEmptyList[Identification] = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           Identification("10", "IMO Ship Identification Number"),
-          List(
-            Identification("11", "Name of the sea-going vessel"),
-            Identification("20", "Wagon Number")
-          )
+          Identification("11", "Name of the sea-going vessel"),
+          Identification("20", "Wagon Number")
         )
         connector.getTransportIdentifications().futureValue mustBe expectedResult
       }
@@ -499,9 +510,9 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
             .willReturn(okJson(countryCodesResponseJson))
         )
 
-        val expectedResult = NonEmptyList(
+        val expectedResult = NonEmptySet.of(
           CountryCode("GB"),
-          List(CountryCode("AD"))
+          CountryCode("AD")
         )
 
         connector.getCountriesWithoutZip().futureValue mustBe expectedResult
@@ -518,13 +529,13 @@ class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyCheck
 
     "getCountryWithoutZip" - {
       val countryCode = CountryCode("GB")
-      val url         = s"/$baseUrl/filtered-lists/CountryWithoutZip?data.code=${countryCode.code}"
+      val url         = s"/$baseUrl/lists/CountryWithoutZip?data.code=${countryCode.code}"
 
       "must return a successful future response with a country code" in {
         server.stubFor(
           get(urlEqualTo(url))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(countryCodesResponseJson))
+            .willReturn(okJson(countryCodeResponseJson))
         )
 
         connector.getCountryWithoutZip(countryCode).futureValue mustBe countryCode

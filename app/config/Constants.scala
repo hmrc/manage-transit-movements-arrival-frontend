@@ -18,6 +18,9 @@ package config
 
 object Constants {
 
+  val GB = "GB"
+  val XI = "XI"
+
   object IncidentCode {
     lazy val DeviatedFromItineraryCode         = "1"
     lazy val SealsBrokenOrTamperedCode         = "2"

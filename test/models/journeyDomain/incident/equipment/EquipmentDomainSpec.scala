@@ -19,7 +19,6 @@ package models.journeyDomain.incident.equipment
 import base.SpecBase
 import config.Constants.IncidentCode._
 import generators.Generators
-import models.Index
 import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
 import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
 import models.reference.IncidentCode

@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.Nationality
@@ -36,7 +36,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val nationality2: Nationality = Nationality("Code2", "Desc2")
   val nationality3: Nationality = Nationality("Code3", "Desc3")
 
-  val nationalities: NonEmptyList[Nationality] = NonEmptyList(nationality2, List(nationality1, nationality3))
+  val nationalities: NonEmptySet[Nationality] = NonEmptySet.of(nationality2, nationality1, nationality3)
 
   val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
 
