@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import itbase.ItSpecBase
+import itbase.{ItSpecBase, WireMockServerHandler}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class EnrolmentStoreConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
+class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
