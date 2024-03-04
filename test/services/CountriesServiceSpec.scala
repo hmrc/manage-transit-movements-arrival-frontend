@@ -103,7 +103,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       "must return true" - {
         "when countries without zip doesn't contain this country" in {
           when(mockRefDataConnector.getCountryWithoutZip(any())(any(), any()))
-            .thenReturn(Future.failed(new NoReferenceDataFoundException))
+            .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
 
           val result = service.doesCountryRequireZip(country1).futureValue
 
