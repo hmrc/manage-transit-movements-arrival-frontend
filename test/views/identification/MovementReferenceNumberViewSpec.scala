@@ -26,17 +26,15 @@ import views.behaviours.InputTextViewBehaviours
 import views.html.identification.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
+  override val prefix: String          = "movementReferenceNumber"
+  override val urlContainsMrn: Boolean = false
 
   override def form: Form[MovementReferenceNumber] = new MovementReferenceNumberFormProvider().apply()
 
-  override def applyView(form: Form[MovementReferenceNumber]): HtmlFormat.Appendable =
-    injector.instanceOf[MovementReferenceNumberView].apply(form)(fakeRequest, messages)
-
-  override val prefix: String = "movementReferenceNumber"
-
   implicit override val arbitraryT: Arbitrary[MovementReferenceNumber] = arbitraryMovementReferenceNumber
 
-  override val urlContainsMrn: Boolean = false
+  override def applyView(form: Form[MovementReferenceNumber]): HtmlFormat.Appendable =
+    injector.instanceOf[MovementReferenceNumberView].apply(form)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -49,6 +47,8 @@ class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementRe
   behave like pageWithHint(
     "This will be 18 characters long and include both letters and numbers."
   )
+
+  behave like pageWithContent("p", "You can find this in the top-right corner of the Transit Accompanying Document (TAD) that’s with the goods.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
