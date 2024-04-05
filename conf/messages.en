@@ -53,6 +53,7 @@ technicalDifficulties.contact.link = Contact the New Computerised Transit System
 
 movementReferenceNumber.title = What is the Movement Reference Number (MRN)?
 movementReferenceNumber.heading = What is the Movement Reference Number (MRN)?
+movementReferenceNumber.paragraph = You can find this in the top-right corner of the Transit Accompanying Document (TAD) that’s with the goods.
 movementReferenceNumber.hintText = This will be 18 characters long and include both letters and numbers.
 movementReferenceNumber.checkYourAnswersLabel = Movement Reference Number (MRN)
 movementReferenceNumber.change.hidden = Movement Reference Number (MRN)

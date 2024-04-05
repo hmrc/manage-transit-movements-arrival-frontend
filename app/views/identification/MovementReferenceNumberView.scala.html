@@ -40,9 +40,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("movementReferenceNumber.heading"),
-                caption = Some(messages("site.caption"))
+                caption = Some(messages("site.caption")),
+                additionalHtml = messages("movementReferenceNumber.paragraph").toParagraph
             ),
             hint = Some(messages("movementReferenceNumber.hintText")),
             inputClass = InputSize.Width20
