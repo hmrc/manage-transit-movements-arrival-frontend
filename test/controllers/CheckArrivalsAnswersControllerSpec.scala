@@ -19,6 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.SubmissionConnector
 import generators.Generators
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -42,6 +43,8 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       .guiceApplicationBuilder()
       .overrides(bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider))
       .overrides(bind(classOf[SubmissionConnector]).toInstance(mockSubmissionConnector))
+
+  private val userAnswersGen = arbitraryArrivalAnswers(emptyUserAnswers)
 
   "Check your Answers Controller" - {
 
@@ -76,28 +79,32 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must redirect to Declaration Submitted when submission succeeds" in {
-      setExistingUserAnswers(emptyUserAnswers)
+      forAll(userAnswersGen) {
+        userAnswers =>
+          beforeEach()
 
-      when(mockSubmissionConnector.post(any())(any()))
-        .thenReturn(response(OK))
+          setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
+          when(mockSubmissionConnector.post(any())(any()))
+            .thenReturn(response(OK))
 
-      val result = route(app, request).value
+          val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
 
-      status(result) mustEqual SEE_OTHER
+          val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual
-        routes.DeclarationSubmittedController.onPageLoad(mrn).url
+          status(result) mustEqual SEE_OTHER
 
+          redirectLocation(result).value mustEqual
+            routes.DeclarationSubmittedController.onPageLoad(mrn).url
+      }
     }
 
     "must redirect to technical difficulties when submission fails" in {
-      forAll(Gen.choose(400: Int, 599: Int)) {
-        errorCode =>
+      forAll(arbitraryArrivalAnswers(emptyUserAnswers), Gen.choose(400: Int, 599: Int)) {
+        (userAnswers, errorCode) =>
           beforeEach()
 
-          setExistingUserAnswers(emptyUserAnswers)
+          setExistingUserAnswers(userAnswers)
 
           when(mockSubmissionConnector.post(any())(any()))
             .thenReturn(response(errorCode))
@@ -111,6 +118,22 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
           redirectLocation(result).value mustEqual
             routes.ErrorController.technicalDifficulties().url
       }
+    }
+
+    "must redirect to unanswered page when answers incomplete" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockSubmissionConnector.post(any())(any()))
+        .thenReturn(response(OK))
+
+      val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.identification.routes.DestinationOfficeController.onPageLoad(mrn, NormalMode).url
     }
   }
 }
