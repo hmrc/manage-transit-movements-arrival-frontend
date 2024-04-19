@@ -17,10 +17,13 @@
 package controllers
 
 import com.google.inject.Inject
+import config.PhaseConfig
 import connectors.SubmissionConnector
 import controllers.actions.Actions
 import logging.Logging
-import models.MovementReferenceNumber
+import models.journeyDomain.ArrivalDomain
+import models.{MovementReferenceNumber, NormalMode}
+import navigation.UserAnswersNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HttpReads.is2xx
@@ -28,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import views.html.CheckArrivalsAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckArrivalsAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -36,7 +39,8 @@ class CheckArrivalsAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
-  submissionConnector: SubmissionConnector
+  submissionConnector: SubmissionConnector,
+  phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with Logging
@@ -52,12 +56,20 @@ class CheckArrivalsAnswersController @Inject() (
     .requireData(mrn)
     .async {
       implicit request =>
-        submissionConnector.post(mrn.toString).map {
-          case response if is2xx(response.status) =>
-            Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
-          case e =>
-            logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${e.status}")
-            Redirect(routes.ErrorController.technicalDifficulties())
+        ArrivalDomain.userAnswersReader(phaseConfig).apply(Nil).run(request.userAnswers) match {
+          case Right(_) =>
+            submissionConnector.post(mrn.toString).map {
+              case response if is2xx(response.status) =>
+                Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
+              case e =>
+                logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${e.status}")
+                Redirect(routes.ErrorController.technicalDifficulties())
+            }
+          case Left(value) =>
+            logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: Answers incomplete. Redirecting.")
+            Future.successful {
+              Redirect(UserAnswersNavigator.nextPage(value.page.route(request.userAnswers, NormalMode)))
+            }
         }
     }
 

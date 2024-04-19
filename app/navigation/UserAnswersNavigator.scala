@@ -45,14 +45,15 @@ object UserAnswersNavigator extends Logging {
     currentPage: Option[Page],
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: Read[T]): Call =
-    nextPage(
+  )(implicit userAnswersReader: Read[T]): Call = {
+    val call = nextPage(
       currentPage,
       userAnswersReader.apply(Nil).run(userAnswers),
       mode
-    ).apply(userAnswers, stage).getOrElse {
-      controllers.routes.ErrorController.notFound()
-    }
+    ).apply(userAnswers, stage)
+
+    nextPage(call)
+  }
 
   def nextPage[T <: JourneyDomainModel](
     currentPage: Option[Page],
@@ -86,4 +87,9 @@ object UserAnswersNavigator extends Logging {
         }
     }
   }
+
+  def nextPage(call: Option[Call]): Call =
+    call.getOrElse {
+      controllers.routes.ErrorController.notFound()
+    }
 }
