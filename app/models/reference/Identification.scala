@@ -31,6 +31,6 @@ object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
   implicit val order: Order[Identification] = (x: Identification, y: Identification) => {
-    x.`type`.compareToIgnoreCase(y.`type`)
+    (x, y).compareBy(_.`type`)
   }
 }

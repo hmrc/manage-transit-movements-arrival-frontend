@@ -30,6 +30,6 @@ object TypeOfLocation extends DynamicEnumerableType[TypeOfLocation] {
   implicit val format: Format[TypeOfLocation] = Json.format[TypeOfLocation]
 
   implicit val order: Order[TypeOfLocation] = (x: TypeOfLocation, y: TypeOfLocation) => {
-    x.`type`.compareToIgnoreCase(y.`type`)
+    (x, y).compareBy(_.`type`)
   }
 }

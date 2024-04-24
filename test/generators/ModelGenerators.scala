@@ -180,7 +180,8 @@ trait ModelGenerators {
         id          <- nonEmptyString
         name        <- nonEmptyString
         phoneNumber <- Gen.option(Gen.alphaNumStr)
-      } yield CustomsOffice(id, Some(name), phoneNumber)
+        countryId   <- nonEmptyString
+      } yield CustomsOffice(id, name, phoneNumber, countryId)
     }
 
   implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {

@@ -20,12 +20,9 @@ import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class CustomsOffice(id: String, name: Option[String], phoneNumber: Option[String]) extends Selectable {
+case class CustomsOffice(id: String, name: String, phoneNumber: Option[String], countryId: String) extends Selectable {
 
-  override def toString: String = name match {
-    case Some(value) => s"$value ($id)"
-    case None        => id
-  }
+  override def toString: String = s"$name ($id)"
 
   override val value: String = id
 }
@@ -34,6 +31,6 @@ object CustomsOffice {
   implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
 
   implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => {
-    x.toString.compareToIgnoreCase(y.toString)
+    (x, y).compareBy(_.toString)
   }
 }

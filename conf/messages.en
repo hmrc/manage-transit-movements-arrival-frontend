@@ -589,7 +589,5 @@ declarationSubmitted.what.next = What happens next
 declarationSubmitted.paragraph.1 = to find out when goods have been released.
 declarationSubmitted.paragraph.2.1 = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 declarationSubmitted.paragraph.2.2 = If the goods are not released when expected or you have another problem, contact Customs at {0}.
-declarationSubmitted.paragraph.2.3 = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
-declarationSubmitted.paragraph.2.4 = If the goods are not released when expected or you have another problem, contact Customs office {0}.
 declarationSubmitted.new.arrival = Make another arrival notification
 declarationSubmitted.status.notifications = Check the status of arrival notifications

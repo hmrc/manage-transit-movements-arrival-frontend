@@ -31,6 +31,6 @@ object Nationality {
   implicit val format: Format[Nationality] = Json.format[Nationality]
 
   implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => {
-    x.description.compareToIgnoreCase(y.description)
+    (x, y).compareBy(_.description, _.code)
   }
 }
