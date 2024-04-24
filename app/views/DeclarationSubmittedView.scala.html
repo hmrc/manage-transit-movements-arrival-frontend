@@ -29,10 +29,8 @@
 
 @customsOfficeDetail = @{
     (officeOfDestination.name, officeOfDestination.phoneNumber) match {
-        case (Some(name), Some(tel)) => messages("declarationSubmitted.paragraph.2.1", name, tel)
-        case (Some(name), None)      => messages("declarationSubmitted.paragraph.2.2", name)
-        case (None, Some(tel))       => messages("declarationSubmitted.paragraph.2.3", officeOfDestination.id, tel)
-        case _                       => messages("declarationSubmitted.paragraph.2.4", officeOfDestination.id)
+        case (name, Some(tel)) => messages("declarationSubmitted.paragraph.2.1", name, tel)
+        case (name, None)      => messages("declarationSubmitted.paragraph.2.2", name)
     }
 }
 

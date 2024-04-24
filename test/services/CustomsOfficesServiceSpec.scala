@@ -33,10 +33,10 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  val gbCustomsOffice1: CustomsOffice = CustomsOffice("1", Some("BOSTON"), None)
-  val gbCustomsOffice2: CustomsOffice = CustomsOffice("2", Some("Appledore"), None)
-  val xiCustomsOffice1: CustomsOffice = CustomsOffice("3", Some("Belfast"), None)
-  val xiCustomsOffice2: CustomsOffice = CustomsOffice("4", None, None)
+  val gbCustomsOffice1: CustomsOffice = CustomsOffice("1", "BOSTON", None, "GB")
+  val gbCustomsOffice2: CustomsOffice = CustomsOffice("2", "Appledore", None, "GB")
+  val xiCustomsOffice1: CustomsOffice = CustomsOffice("3", "Belfast", None, "XI")
+  val xiCustomsOffice2: CustomsOffice = CustomsOffice("4", "Blah", None, "XI")
 
   val customsOffices: NonEmptySet[CustomsOffice] = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2, xiCustomsOffice1, xiCustomsOffice2)
 
@@ -55,7 +55,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(customsOffices))
 
       service.getCustomsOfficesOfArrival.futureValue mustBe
-        SelectableList(Seq(xiCustomsOffice2, gbCustomsOffice2, xiCustomsOffice1, gbCustomsOffice1))
+        SelectableList(Seq(gbCustomsOffice2, xiCustomsOffice1, xiCustomsOffice2, gbCustomsOffice1))
 
       val varargsCaptor: ArgumentCaptor[Seq[String]] = ArgumentCaptor.forClass(classOf[Seq[String]])
       verify(mockRefDataConnector).getCustomsOfficesForCountry(varargsCaptor.capture(): _*)(any(), any())

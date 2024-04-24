@@ -31,6 +31,6 @@ object IncidentCode extends DynamicEnumerableType[IncidentCode] {
   implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
 
   implicit val order: Order[IncidentCode] = (x: IncidentCode, y: IncidentCode) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.code)
   }
 }

@@ -77,12 +77,14 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |      "id" : "GBtestId1",
       |      "name" : "testName1",
       |      "roles" : ["DES"],
-      |      "phoneNumber" : "testPhoneNumber"
+      |      "phoneNumber" : "testPhoneNumber",
+      |      "countryId" : "GB"
       |    },
       |    {
       |      "id" : "GBtestId2",
       |      "name" : "testName2",
-      |      "roles" : ["DES"]
+      |      "roles" : ["DES"],
+      |      "countryId" : "GB"
       |    }
       |  ]
       |}
@@ -256,8 +258,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectedResult = NonEmptySet.of(
-          CustomsOffice("GBtestId1", Some("testName1"), Some("testPhoneNumber")),
-          CustomsOffice("GBtestId2", Some("testName2"), None)
+          CustomsOffice("GBtestId1", "testName1", Some("testPhoneNumber"), "GB"),
+          CustomsOffice("GBtestId2", "testName2", None, "GB")
         )
 
         connector.getCustomsOfficesForCountry(countryIds: _*).futureValue mustBe expectedResult

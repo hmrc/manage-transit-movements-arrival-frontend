@@ -19,24 +19,20 @@ package views
 import models.reference.CustomsOffice
 import org.scalacheck.Gen
 import play.twirl.api.HtmlFormat
-import views.html.DeclarationSubmittedView
 import views.behaviours.PanelViewBehaviours
+import views.html.DeclarationSubmittedView
 
 class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
 
   override val prefix: String = "declarationSubmitted"
 
-  val officeOfDestination: CustomsOffice            = new CustomsOffice("ABC12345", Some("Test"), Some("+44 7760663422"))
-  val officeOfDestinationNoTel: CustomsOffice       = new CustomsOffice("ABC12345", Some("Test"), None)
-  val officeOfDestinationNoNameTel: CustomsOffice   = new CustomsOffice("ABC12345", None, Some("+44 7760663422"))
-  val officeOfDestinationNoNameNoTel: CustomsOffice = new CustomsOffice("ABC12345", None, None)
+  val officeOfDestination: CustomsOffice      = new CustomsOffice("ABC12345", "Test", Some("+44 7760663422"), "AB")
+  val officeOfDestinationNoTel: CustomsOffice = new CustomsOffice("ABC12345", "Test", None, "AB")
 
   val oneOfOffices = Gen
     .oneOf(
       officeOfDestination,
-      officeOfDestinationNoTel,
-      officeOfDestinationNoNameTel,
-      officeOfDestinationNoNameNoTel
+      officeOfDestinationNoTel
     )
     .sample
     .value
@@ -68,7 +64,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
     expectedHref = "/manage-transit-movements/arrivals"
   )
 
-  "Customs office with name and telephone" - {
+  "Customs office with telephone" - {
     val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestination)(fakeRequest, messages)
 
     val doc = parseView(view)
@@ -81,7 +77,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
 
   }
 
-  "Customs office with name and no telephone" - {
+  "Customs office with no telephone" - {
     val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoTel)(fakeRequest, messages)
 
     val doc = parseView(view)
@@ -90,32 +86,6 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
       doc,
       "p",
       s"If the goods are not released when expected or you have another problem, contact Customs at Test."
-    )
-
-  }
-
-  "Customs office with no name and a telephone" - {
-    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoNameTel)(fakeRequest, messages)
-
-    val doc = parseView(view)
-
-    behave like pageWithContent(
-      doc,
-      "p",
-      s"If the goods are not released when expected or you have another problem, contact Customs office ABC12345 on +44 7760663422."
-    )
-
-  }
-
-  "Customs office with no name and no telephone" - {
-    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoNameNoTel)(fakeRequest, messages)
-
-    val doc = parseView(view)
-
-    behave like pageWithContent(
-      doc,
-      "p",
-      s"If the goods are not released when expected or you have another problem, contact Customs office ABC12345."
     )
 
   }
