@@ -706,14 +706,14 @@ class IncidentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = IncidentAnswersHelper(answers, mode, incidentIndex)
               val result = helper.transportMeansIdentificationNumber.get
 
-              result.key.value mustBe "Identification number"
+              result.key.value mustBe "Identification"
               result.value.value mustBe identificationNumber
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe transportMeansRoutes.IdentificationNumberController.onPageLoad(answers.mrn, mode, incidentIndex).url
-              action.visuallyHiddenText.get mustBe "identification number for the replacement means of transport"
+              action.visuallyHiddenText.get mustBe "identification for the replacement means of transport"
               action.id mustBe "change-transport-means-identification-number"
           }
         }
