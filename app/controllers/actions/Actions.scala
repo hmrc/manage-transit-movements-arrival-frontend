@@ -27,7 +27,7 @@ import javax.inject.Inject
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction,
+  dataRequiredAction: DataRequiredActionProvider,
   indexRequiredAction: IndexRequiredActionProvider
 ) {
 
@@ -35,7 +35,10 @@ class Actions @Inject() (
     identifierAction andThen dataRetrievalActionProvider(mrn)
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
-    getData(mrn) andThen dataRequiredAction
+    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = false)
+
+  def requireDataIgnoreSubmissionStatus(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
+    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = true)
 
   def requireIndex(mrn: MovementReferenceNumber, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
     requireData(mrn) andThen indexRequiredAction(section, addAnother)

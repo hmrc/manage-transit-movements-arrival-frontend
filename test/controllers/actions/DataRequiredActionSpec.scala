@@ -32,47 +32,92 @@ import scala.concurrent.Future
 
 class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
-  private object Harness extends DataRequiredActionImpl {
+  private class Harness(ignoreSubmissionStatus: Boolean) extends DataRequiredAction(ignoreSubmissionStatus) {
     def callRefine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = refine(request)
   }
 
   "Data Required Action" - {
 
-    "when there are no UserAnswers" - {
+    "when not ignoring submission status" - {
 
-      "must return Left and redirect to session expired" in {
+      val ignoreSubmissionStatus = false
 
-        val harness = Harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None))
+      "when there are no UserAnswers" - {
 
-        val result = harness.map(_.left.value)
-
-        status(result) mustBe 303
-        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
-      }
-    }
-
-    "when there are UserAnswers" - {
-
-      "and answers have previously been submitted" - {
         "must return Left and redirect to session expired" in {
-          val userAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), submissionStatus = SubmissionStatus.Submitted)
 
-          val harness = Harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
+          val harness = new Harness(ignoreSubmissionStatus)
 
-          val result = harness.map(_.left.value)
+          val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None)).map(_.left.value)
 
           status(result) mustBe 303
           redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
         }
       }
 
-      "and answers have not previously been submitted" - {
+      "when there are UserAnswers" - {
+
+        "and answers have previously been submitted" - {
+          "must return Left and redirect to session expired" in {
+            val userAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), submissionStatus = SubmissionStatus.Submitted)
+
+            val harness = new Harness(ignoreSubmissionStatus)
+
+            val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers))).map(_.left.value)
+
+            status(result) mustBe 303
+            redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+          }
+        }
+
+        "and answers have not previously been submitted" - {
+          "must return Right with DataRequest" in {
+            forAll(Gen.oneOf(SubmissionStatus.NotSubmitted, SubmissionStatus.Amending)) {
+              submissionStatus =>
+                val userAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), submissionStatus = submissionStatus)
+
+                val harness = new Harness(ignoreSubmissionStatus)
+
+                val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
+
+                whenReady[Either[Result, DataRequest[_]], Assertion](result) {
+                  result =>
+                    result.value.userAnswers mustBe userAnswers
+                    result.value.eoriNumber mustBe eoriNumber
+                }
+            }
+          }
+        }
+      }
+    }
+
+    "when ignoring submission status" - {
+
+      val ignoreSubmissionStatus = true
+
+      "when there are no UserAnswers" - {
+
+        "must return Left and redirect to session expired" in {
+
+          val harness = new Harness(ignoreSubmissionStatus)
+
+          val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None)).map(_.left.value)
+
+          status(result) mustBe 303
+          redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+        }
+      }
+
+      "when there are UserAnswers" - {
+
         "must return Right with DataRequest" in {
-          forAll(Gen.oneOf(SubmissionStatus.NotSubmitted, SubmissionStatus.Amending)) {
+          forAll(Gen.oneOf(SubmissionStatus.NotSubmitted, SubmissionStatus.Submitted, SubmissionStatus.Amending)) {
             submissionStatus =>
               val userAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), submissionStatus = submissionStatus)
 
-              val result = Harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
+              val harness = new Harness(ignoreSubmissionStatus)
+
+              val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
 
               whenReady[Either[Result, DataRequest[_]], Assertion](result) {
                 result =>

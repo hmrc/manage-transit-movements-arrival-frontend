@@ -25,15 +25,24 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class DataRequiredAction(ignoreSubmissionStatus: Boolean)(implicit val executionContext: ExecutionContext)
+    extends ActionRefiner[OptionalDataRequest, DataRequest] {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
-      case Some(data) if data.submissionStatus != SubmissionStatus.Submitted =>
+      case Some(data) if ignoreSubmissionStatus || data.submissionStatus != SubmissionStatus.Submitted =>
         Future.successful(Right(DataRequest(request.request, request.eoriNumber, data)))
       case _ =>
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
     }
 }
 
-trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+trait DataRequiredActionProvider {
+  def apply(ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest]
+}
+
+class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredActionProvider {
+
+  override def apply(ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest] =
+    new DataRequiredAction(ignoreSubmissionStatus)
+}
