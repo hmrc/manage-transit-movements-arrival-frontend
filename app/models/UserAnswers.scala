@@ -17,7 +17,6 @@
 package models
 
 import pages._
-import pages.identification.DestinationOfficePage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -28,7 +27,8 @@ final case class UserAnswers(
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
   arrivalId: Option[ArrivalId] = None,
-  id: Id = Id()
+  id: Id = Id(),
+  submissionStatus: SubmissionStatus.Value = SubmissionStatus.NotSubmitted
 ) {
 
   def get[A](gettable: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -58,12 +58,6 @@ final case class UserAnswers(
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
   }
-
-  def purge: UserAnswers =
-    data.transform(DestinationOfficePage.path.json.pickBranch) match {
-      case JsSuccess(value, _) => this.copy(data = value)
-      case JsError(_)          => this.copy(data = Json.obj())
-    }
 }
 
 object UserAnswers {
@@ -76,7 +70,8 @@ object UserAnswers {
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
         (__ \ "arrivalId").readNullable[ArrivalId] and
-        (__ \ "_id").read[Id]
+        (__ \ "_id").read[Id] and
+        (__ \ "submissionStatus").read[models.SubmissionStatus.Value]
     )(UserAnswers.apply _)
 
   implicit lazy val writes: Writes[UserAnswers] =
@@ -85,7 +80,8 @@ object UserAnswers {
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
         (__ \ "arrivalId").writeNullable[ArrivalId] and
-        (__ \ "_id").write[Id]
+        (__ \ "_id").write[Id] and
+        (__ \ "submissionStatus").write[models.SubmissionStatus.Value]
     )(unlift(UserAnswers.unapply))
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
