@@ -18,7 +18,7 @@ package controllers.identification
 
 import controllers.actions._
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{CheckMode, Mode, MovementReferenceNumber, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -59,22 +59,32 @@ class MovementReferenceNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-          value => {
-            def redirect(userAnswers: Option[UserAnswers], mode: Mode): Result =
-              userAnswers match {
-                case Some(value) => Redirect(navigatorProvider(mode).nextPage(value, None))
-                case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
-              }
-
+          value =>
             sessionRepository.get(value.toString).flatMap {
               case None =>
+                def redirect(userAnswers: Option[UserAnswers], mode: Mode): Result =
+                  userAnswers match {
+                    case Some(value) => Redirect(navigatorProvider(mode).nextPage(value, None))
+                    case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+                  }
+
                 sessionRepository.put(value.toString).flatMap {
                   _ => sessionRepository.get(value.toString).map(redirect(_, NormalMode))
                 }
-              case userAnswers =>
-                Future.successful(redirect(userAnswers, CheckMode))
+              case Some(userAnswers) =>
+                def redirect(userAnswers: UserAnswers): Result =
+                  Redirect(navigatorProvider(CheckMode).nextPage(userAnswers, None))
+
+                userAnswers.submissionStatus match {
+                  case SubmissionStatus.Submitted =>
+                    val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+                    sessionRepository.set(updatedUserAnswers).map {
+                      _ => redirect(updatedUserAnswers)
+                    }
+                  case _ =>
+                    Future.successful(redirect(userAnswers))
+                }
             }
-          }
         )
   }
 }

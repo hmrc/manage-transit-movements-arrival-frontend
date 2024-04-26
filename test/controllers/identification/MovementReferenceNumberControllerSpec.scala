@@ -18,9 +18,11 @@ package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.identification.MovementReferenceNumberFormProvider
-import models.MovementReferenceNumber
+import models.{MovementReferenceNumber, SubmissionStatus, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -72,7 +74,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         view(filledForm)(request, messages).toString
     }
 
-    "must redirect to the next page with NormalMode when valid data is submitted and user answers found in session repository" in {
+    "must redirect to the next page with NormalMode when valid data is submitted and user answers not found in session repository" in {
 
       when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None) thenReturn Future.successful(Some(emptyUserAnswers))
       when(mockSessionRepository.put(any())(any())) thenReturn Future.successful(true)
@@ -92,23 +94,55 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       verify(mockSessionRepository).put(eqTo(mrn.toString))(any())
     }
 
-    "must redirect to the next page with CheckMode when valid data is submitted and user answers not found in session repository" in {
+    "must redirect to the next page with CheckMode when valid data is submitted and user answers found in session repository" - {
 
-      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+      "and answers have previously been submitted" in {
+        val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(userAnswers))
 
-      setNoExistingUserAnswers()
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, movementReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", mrn.toString))
+        val request = FakeRequest(POST, movementReferenceNumberRoute)
+          .withFormUrlEncodedBody(("value", mrn.toString))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual
-        s"/manage-transit-movements/arrivals/$mrn/identification/change-office-of-destination"
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual
+          s"/manage-transit-movements/arrivals/$mrn/identification/change-office-of-destination"
 
-      verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
-      verify(mockSessionRepository, never()).put(any())(any())
+        verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
+        verify(mockSessionRepository, never()).put(any())(any())
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue mustBe userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+      }
+
+      "and answers have not previously been submitted" in {
+        forAll(Gen.oneOf(SubmissionStatus.NotSubmitted, SubmissionStatus.Amending)) {
+          submissionStatus =>
+            beforeEach()
+
+            val userAnswers = emptyUserAnswers.copy(submissionStatus = submissionStatus)
+            when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(userAnswers))
+
+            setNoExistingUserAnswers()
+
+            val request = FakeRequest(POST, movementReferenceNumberRoute)
+              .withFormUrlEncodedBody(("value", mrn.toString))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual
+              s"/manage-transit-movements/arrivals/$mrn/identification/change-office-of-destination"
+
+            verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
+            verify(mockSessionRepository, never()).put(any())(any())
+            verify(mockSessionRepository, never()).set(any())(any())
+        }
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
