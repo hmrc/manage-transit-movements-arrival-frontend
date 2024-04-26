@@ -20,6 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.requests._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
@@ -69,6 +70,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getFirst" - {
 
+      type T = Either[Result, SpecificDataRequestProvider1[String]#SpecificDataRequest[_]]
+
       def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
         DataRequest(fakeRequest, eoriNumber, userAnswers)
 
@@ -81,7 +84,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
             val futureResult = action.callRefine(request(emptyUserAnswers))
 
-            whenReady(futureResult) {
+            whenReady[T, Assertion](futureResult) {
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
@@ -101,7 +104,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val futureResult = action.callRefine(request(userAnswers))
 
-                whenReady(futureResult) {
+                whenReady[T, Assertion](futureResult) {
                   _.value.arg mustBe str
                 }
             }
@@ -124,7 +127,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val futureResult = action.callRefine(request(userAnswers))
 
-                whenReady(futureResult) {
+                whenReady[T, Assertion](futureResult) {
                   _.value.arg mustBe foo
                 }
             }
@@ -142,7 +145,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val futureResult = action.callRefine(request(userAnswers))
 
-                whenReady(futureResult) {
+                whenReady[T, Assertion](futureResult) {
                   _.value.arg mustBe bar
                 }
             }
@@ -156,7 +159,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
             val futureResult = action.callRefine(request(emptyUserAnswers))
 
-            whenReady(futureResult) {
+            whenReady[T, Assertion](futureResult) {
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
@@ -168,6 +171,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "getSecond" - {
+
+      type T = Either[Result, SpecificDataRequestProvider2[String, String]#SpecificDataRequest[_]]
 
       def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] =
         new SpecificDataRequestProvider1[String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, arg1)
@@ -181,7 +186,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
             str1 =>
               val futureResult = action.callRefine(request(emptyUserAnswers, str1))
 
-              whenReady(futureResult) {
+              whenReady[T, Assertion](futureResult) {
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
@@ -202,7 +207,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               val futureResult = action.callRefine(request(userAnswers, str1))
 
-              whenReady(futureResult) {
+              whenReady[T, Assertion](futureResult) {
                 r =>
                   r.value.arg._1 mustBe str1
                   r.value.arg._2 mustBe str2
@@ -213,6 +218,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "getThird" - {
+
+      type T = Either[Result, SpecificDataRequestProvider3[String, String, String]#SpecificDataRequest[_]]
 
       def request(
         userAnswers: UserAnswers,
@@ -230,7 +237,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
             (str1, str2) =>
               val futureResult = action.callRefine(request(emptyUserAnswers, str1, str2))
 
-              whenReady(futureResult) {
+              whenReady[T, Assertion](futureResult) {
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
@@ -251,7 +258,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               val futureResult = action.callRefine(request(userAnswers, str1, str2))
 
-              whenReady(futureResult) {
+              whenReady[T, Assertion](futureResult) {
                 r =>
                   r.value.arg._1 mustBe str1
                   r.value.arg._2 mustBe str2

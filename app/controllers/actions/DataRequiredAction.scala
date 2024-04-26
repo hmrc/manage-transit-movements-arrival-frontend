@@ -17,6 +17,7 @@
 package controllers.actions
 
 import controllers.routes
+import models.SubmissionStatus
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -28,10 +29,10 @@ class DataRequiredActionImpl @Inject() (implicit val executionContext: Execution
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
-      case None =>
-        Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
-      case Some(data) =>
+      case Some(data) if data.submissionStatus != SubmissionStatus.Submitted =>
         Future.successful(Right(DataRequest(request.request, request.eoriNumber, data)))
+      case _ =>
+        Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
     }
 }
 
