@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
-import models.MovementReferenceNumber
+import models.{MovementReferenceNumber, SubmissionStatus}
 import pages.identification.DestinationOfficePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,11 +39,11 @@ class DeclarationSubmittedController @Inject() (
     with I18nSupport {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
-    .requireData(mrn)
+    .requireDataIgnoreSubmissionStatus(mrn)
     .andThen(getMandatoryPage(DestinationOfficePage))
     .async {
       implicit request =>
-        sessionRepository.set(request.userAnswers.purge).map {
+        sessionRepository.set(request.userAnswers.copy(submissionStatus = SubmissionStatus.Submitted)).map {
           _ => Ok(view(request.userAnswers.mrn.toString, request.arg))
         }
     }

@@ -18,8 +18,8 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.UserAnswers
 import models.reference.CustomsOffice
+import models.{SubmissionStatus, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -63,7 +63,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
               val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
               verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-              userAnswersCaptor.getValue.data mustBe emptyUserAnswers.setValue(DestinationOfficePage, customsOffice).data
+              userAnswersCaptor.getValue mustBe userAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
           }
       }
     }
