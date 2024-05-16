@@ -26,6 +26,8 @@ import java.time.LocalDate
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
+  lazy val countriesOfDestination: Seq[String] = configuration.get[Seq[String]]("countriesOfDestination")
+
   val contactHost: String = configuration.get[String]("contact-frontend.host")
 
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")

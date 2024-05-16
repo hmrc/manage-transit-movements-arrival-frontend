@@ -16,7 +16,7 @@
 
 package services
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.SelectableList
@@ -24,14 +24,19 @@ import models.reference.CustomsOffice
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class CustomsOfficesServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   val gbCustomsOffice1: CustomsOffice = CustomsOffice("1", "BOSTON", None, "GB")
   val gbCustomsOffice2: CustomsOffice = CustomsOffice("2", "Appledore", None, "GB")
@@ -40,7 +45,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   val customsOffices: NonEmptySet[CustomsOffice] = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2, xiCustomsOffice1, xiCustomsOffice2)
 
-  val service = new CustomsOfficesService(mockRefDataConnector)
+  val service = app.injector.instanceOf[CustomsOfficesService]
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
