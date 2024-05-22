@@ -16,12 +16,13 @@
 
 package controllers
 
+import connectors.SubmissionConnector
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
-import models.{MovementReferenceNumber, SubmissionStatus}
+import models.MovementReferenceNumber
 import pages.identification.DestinationOfficePage
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationSubmittedView
 
@@ -29,22 +30,29 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DeclarationSubmittedController @Inject() (
-  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   cc: MessagesControllerComponents,
-  view: DeclarationSubmittedView
+  view: DeclarationSubmittedView,
+  submissionConnector: SubmissionConnector
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
     .requireDataIgnoreSubmissionStatus(mrn)
     .andThen(getMandatoryPage(DestinationOfficePage))
     .async {
       implicit request =>
-        sessionRepository.set(request.userAnswers.copy(submissionStatus = SubmissionStatus.Submitted)).map {
-          _ => Ok(view(request.userAnswers.mrn.toString, request.arg))
+        submissionConnector.getMessages(mrn).map {
+          messages =>
+            if (messages.contains("IE007")) {
+              Ok(view(mrn.value, request.arg))
+            } else {
+              logger.warn(s"IE007 not found for MRN $mrn")
+              InternalServerError
+            }
         }
     }
 }

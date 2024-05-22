@@ -18,6 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import itbase.{ItSpecBase, WireMockServerHandler}
+import models.{ArrivalMessage, ArrivalMessages}
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
@@ -76,6 +77,41 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
         val result: HttpResponse = await(connector.post(mrn.toString))
 
         result.status mustBe status
+      }
+    }
+
+    "getMessages" - {
+
+      val url = s"/manage-transit-movements-arrival-cache/messages/$mrn"
+
+      val json =
+        """
+          |{
+          |  "messages" : [
+          |    {
+          |      "type" : "IE007"
+          |    },
+          |    {
+          |      "type" : "IE043"
+          |    }
+          |  ]
+          |}
+          |""".stripMargin
+
+      "must return messages when status is Ok" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(json))
+        )
+
+        val result: ArrivalMessages = await(connector.getMessages(mrn))
+
+        result mustBe ArrivalMessages(
+          Seq(
+            ArrivalMessage("IE007"),
+            ArrivalMessage("IE043")
+          )
+        )
       }
     }
   }

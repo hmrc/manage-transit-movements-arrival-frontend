@@ -17,15 +17,17 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.SubmissionConnector
 import generators.Generators
 import models.reference.CustomsOffice
-import models.{SubmissionStatus, UserAnswers}
-import org.mockito.ArgumentCaptor
+import models.{ArrivalMessage, ArrivalMessages}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.DestinationOfficePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DeclarationSubmittedView
@@ -34,6 +36,18 @@ import scala.concurrent.Future
 
 class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
+  private val mockSubmissionConnector: SubmissionConnector = mock[SubmissionConnector]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[SubmissionConnector]).toInstance(mockSubmissionConnector))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSubmissionConnector)
+  }
+
   private lazy val declarationSubmittedRoute = routes.DeclarationSubmittedController.onPageLoad(mrn).url
 
   "Declaration Submitted Controller" - {
@@ -41,30 +55,24 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return OK and the correct view for a GET and purge the cache" in {
       forAll(arbitrary[CustomsOffice]) {
         customsOffice =>
-          val initialAnswers = emptyUserAnswers.setValue(DestinationOfficePage, customsOffice)
+          beforeEach()
 
-          forAll(arbitraryArrivalAnswers(initialAnswers)) {
-            userAnswers =>
-              reset(mockSessionRepository)
-              when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSubmissionConnector.getMessages(any())(any()))
+            .thenReturn(Future.successful(ArrivalMessages(Seq(ArrivalMessage("IE007")))))
 
-              setExistingUserAnswers(userAnswers)
+          val userAnswers = emptyUserAnswers.setValue(DestinationOfficePage, customsOffice)
+          setExistingUserAnswers(userAnswers)
 
-              val request = FakeRequest(GET, declarationSubmittedRoute)
+          val request = FakeRequest(GET, declarationSubmittedRoute)
 
-              val result = route(app, request).value
+          val result = route(app, request).value
 
-              val view = injector.instanceOf[DeclarationSubmittedView]
+          val view = injector.instanceOf[DeclarationSubmittedView]
 
-              status(result) mustEqual OK
+          status(result) mustEqual OK
 
-              contentAsString(result) mustEqual
-                view(mrn.toString, customsOffice)(request, messages).toString
-
-              val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-              verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-              userAnswersCaptor.getValue mustBe userAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
-          }
+          contentAsString(result) mustEqual
+            view(mrn.toString, customsOffice)(request, messages).toString
       }
     }
 
