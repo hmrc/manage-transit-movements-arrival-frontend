@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.{ArrivalMessages, MovementReferenceNumber}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -40,5 +41,12 @@ class SubmissionConnector @Inject() (
       .post(url)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
+  }
+
+  def getMessages(mrn: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[ArrivalMessages] = {
+    val url = url"$baseUrl/messages/$mrn"
+    http
+      .get(url)
+      .execute[ArrivalMessages]
   }
 }
