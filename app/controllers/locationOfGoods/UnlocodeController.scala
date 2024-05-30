@@ -65,11 +65,11 @@ class UnlocodeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value =>
-            unLocodesService.doesUnLocodeExist(value.toUpperCase).flatMap {
+            unLocodesService.doesUnLocodeExist(value).flatMap {
               case true =>
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 UnlocodePage
-                  .writeToUserAnswers(value.toUpperCase)
+                  .writeToUserAnswers(value)
                   .writeToSession()
                   .navigate()
               case false =>
