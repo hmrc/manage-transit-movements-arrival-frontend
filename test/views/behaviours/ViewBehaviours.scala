@@ -20,7 +20,7 @@ import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
-import play.api.mvc.AnyContent
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import play.twirl.api.TwirlHelperImports._
@@ -30,7 +30,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   private val path = "foo"
 
-  override def fakeRequest = FakeRequest("GET", path)
+  override def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", path)
   def view: HtmlFormat.Appendable
 
   def parseView(view: HtmlFormat.Appendable): Document = Jsoup.parse(view.toString())

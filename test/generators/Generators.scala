@@ -30,6 +30,11 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
   lazy val maxListLength   = 10
   lazy val stringMaxLength = 36
 
+  def stringsWithExactLength(length: Int): Gen[String] =
+    for {
+      chars <- listOfN(length, Gen.alphaNumChar)
+    } yield chars.mkString
+
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
     val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
