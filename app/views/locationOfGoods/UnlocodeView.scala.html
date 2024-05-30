@@ -42,9 +42,10 @@
 
         @inputText(
           field = form("value"),
-          inputTextType = OrdinaryTextInput(
+          inputTextType = TextInputWithHiddenLabel(
             heading = messages("locationOfGoods.unlocode.heading"),
-            caption = Some(messages("locationOfGoods.caption"))
+            caption = Some(messages("locationOfGoods.caption")),
+            additionalHtml = messages("locationOfGoods.unLocode.paragraph").toParagraph
           ),
           hint = Some(messages("locationOfGoods.unlocode.hintText")),
           inputType = "text"

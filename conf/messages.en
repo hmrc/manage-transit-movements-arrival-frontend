@@ -262,13 +262,13 @@ locationOfGoods.typeOfLocation.error.required = Select which type of location th
 
 locationOfGoods.unlocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unlocode.heading = What is the UN/LOCODE for the location of goods?
-locationOfGoods.unlocode.hintText = This is a 5-character code used to identify a transit-related location, like DEBER.
-locationOfGoods.unlocode.placeholder = Select a UN/LOCODE.
+locationOfGoods.unlocode.hintText = Enter the code, like DEBER or ESMAD.
 locationOfGoods.unlocode.change.hidden = UN/LOCODE for the location of goods
 locationOfGoods.unlocode.checkYourAnswersLabel = UN/LOCODE
 locationOfGoods.unlocode.error.required = Enter the UN/LOCODE for the location of goods
-locationOfGoods.unlocode.error.length = The UN/LOCODE must be exactly 5 characters long
-locationOfGoods.unlocode.error.invalid = The UN/LOCODE number must only include letters A to Z and numbers 0 to 9.
+locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+locationOfGoods.unlocode.error.length = The UN/LOCODE must be 5 characters long
+locationOfGoods.unlocode.error.invalid = The UN/LOCODE number must only include letters a to z and numbers 0 to 9
 locationOfGoods.unlocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
 
 locationOfGoods.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
