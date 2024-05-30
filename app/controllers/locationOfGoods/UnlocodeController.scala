@@ -69,7 +69,7 @@ class UnlocodeController @Inject() (
               case true =>
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 UnlocodePage
-                  .writeToUserAnswers(value)
+                  .writeToUserAnswers(value.toUpperCase)
                   .writeToSession()
                   .navigate()
               case false =>
