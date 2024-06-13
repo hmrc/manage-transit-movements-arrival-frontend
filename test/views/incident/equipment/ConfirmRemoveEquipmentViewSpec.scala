@@ -17,20 +17,24 @@
 package views.incident.equipment
 
 import forms.YesNoFormProvider
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.incident.equipment.ConfirmRemoveEquipmentView
 
-class ConfirmRemoveEquipmentViewSpec extends YesNoViewBehaviours {
+class ConfirmRemoveEquipmentViewSpec extends YesNoViewBehaviours with Generators {
+
+  val containerIdentificationNumber: Option[String] = Some(Gen.alphaNumStr.sample.value)
 
   override def form: Form[Boolean] = new YesNoFormProvider()(prefix, equipmentIndex.display)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[ConfirmRemoveEquipmentView]
-      .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex)(fakeRequest, messages)
+      .apply(form, mrn, NormalMode, incidentIndex, equipmentIndex, containerIdentificationNumber)(fakeRequest, messages)
 
   override val prefix: String = "incident.equipment.remove"
 
@@ -41,6 +45,8 @@ class ConfirmRemoveEquipmentViewSpec extends YesNoViewBehaviours {
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading(equipmentIndex.display)
+
+  behave like pageWithInsetText(s"Container: ${containerIdentificationNumber.value}")
 
   behave like pageWithRadioItems(args = Seq(equipmentIndex.display))
 

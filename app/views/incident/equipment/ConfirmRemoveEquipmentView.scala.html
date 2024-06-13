@@ -16,18 +16,19 @@
 
 @import controllers.incident.equipment.routes
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
-    button: Button
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        errorSummary: ErrorSummary,
+        insetText: InsetText,
+        button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, containerIdentificationNumber: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.equipment.remove.title", equipmentIndex.display),
@@ -40,9 +41,11 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("incident.equipment.remove.heading", equipmentIndex.display),
-                caption = Some(messages("incident.caption"))
+                caption = Some(messages("incident.caption")),
+                additionalHtml = containerIdentificationNumber.map(
+                    containerIdentificationNumber => insetText(messages("incident.equipment.remove.insetText", containerIdentificationNumber)))
             )
         )
 
