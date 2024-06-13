@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
+import pages.incident.IncidentTextPage
 import pages.sections.incident.IncidentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -51,7 +52,8 @@ class ConfirmRemoveIncidentController @Inject() (
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
     .requireIndex(mrn, IncidentSection(incidentIndex), addAnother(mrn, mode)) {
       implicit request =>
-        Ok(view(form(incidentIndex), mrn, mode, incidentIndex))
+        val incidentDescription = request.userAnswers.get(IncidentTextPage(incidentIndex))
+        Ok(view(form(incidentIndex), mrn, mode, incidentIndex, incidentDescription))
     }
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index): Action[AnyContent] = actions
@@ -61,7 +63,10 @@ class ConfirmRemoveIncidentController @Inject() (
         form(incidentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex))),
+            formWithErrors => {
+              val incidentDescription = request.userAnswers.get(IncidentTextPage(incidentIndex))
+              Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, incidentDescription)))
+            },
             {
               case true =>
                 IncidentSection(incidentIndex)

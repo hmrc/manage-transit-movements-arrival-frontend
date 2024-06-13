@@ -16,16 +16,20 @@
 
 package views.incident
 
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.incident.ConfirmRemoveIncidentView
 
-class ConfirmRemoveIncidentViewSpec extends YesNoViewBehaviours {
+class ConfirmRemoveIncidentViewSpec extends YesNoViewBehaviours with Generators {
+
+  val incidentDescripion: Option[String] = Some(Gen.alphaStr.sample.value)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveIncidentView].apply(form, mrn, NormalMode, incidentIndex)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveIncidentView].apply(form, mrn, NormalMode, incidentIndex, incidentDescripion)(fakeRequest, messages)
 
   override val prefix: String = "incident.remove"
 
@@ -36,6 +40,8 @@ class ConfirmRemoveIncidentViewSpec extends YesNoViewBehaviours {
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
   behave like pageWithHeading(incidentIndex.display)
+
+  behave like pageWithInsetText(incidentDescripion.value)
 
   behave like pageWithRadioItems(args = Seq(incidentIndex.display))
 

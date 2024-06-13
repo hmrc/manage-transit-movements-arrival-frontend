@@ -16,18 +16,19 @@
 
 @import controllers.incident.routes
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
-    button: Button
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        errorSummary: ErrorSummary,
+        insetText: InsetText,
+        button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, incidentDescription: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.remove.title", incidentIndex.display),
@@ -41,10 +42,11 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("incident.remove.heading", incidentIndex.display),
-                caption = Some(messages("incident.caption"))
-            )
+                caption = Some(messages("incident.caption")),
+                additionalHtml = incidentDescription.map(
+                    incidentDescription => insetText(incidentDescription))))
         )
 
         @button(attributes = Map("id" -> "submit"))
