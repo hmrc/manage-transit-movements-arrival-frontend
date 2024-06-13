@@ -46,7 +46,7 @@
                 heading = messages("incident.remove.heading", incidentIndex.display),
                 caption = Some(messages("incident.caption")),
                 additionalHtml = incidentDescription.map(
-                    incidentDescription => insetText(incidentDescription))))
+                    incidentDescription => insetText(incidentDescription)))
         )
 
         @button(attributes = Map("id" -> "submit"))

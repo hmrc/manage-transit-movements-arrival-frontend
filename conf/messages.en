@@ -478,7 +478,7 @@ incident.equipment.addAnotherTransportEquipment.maxLimit.label = You cannot add 
 
 incident.equipment.remove.title = Are you sure you want to remove transport equipment {0}?
 incident.equipment.remove.heading = Are you sure you want to remove transport equipment {0}?
-incident.equipment.remove.insetText = Container: {0}
+incident.equipment.remove.insetText = Container {0}
 incident.equipment.remove.error.required = Select yes if you want to remove transport equipment {0}
 
 incident.equipment.checkEquipmentAnswers.title = Check your answers - Transport equipment
@@ -510,8 +510,8 @@ incident.equipment.seal.addAnotherSeal.maxLimit.label = You cannot add any more 
 incident.equipment.seal.addAnotherSeal.edit.hidden = Change seal {0}
 incident.equipment.seal.addAnotherSeal.delete.hidden = Remove seal {0}
 
-incident.equipment.seal.remove.title = Are you sure you want to remove seal?
-incident.equipment.seal.remove.heading = Are you sure you want to remove seal?
+incident.equipment.seal.remove.title = Are you sure you want to remove this seal?
+incident.equipment.seal.remove.heading = Are you sure you want to remove this seal?
 incident.equipment.seal.remove.error.required = Select yes if you want to remove this seal
 
 # Incident - Equipment - Goods item Number

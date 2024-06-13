@@ -46,7 +46,7 @@ class ConfirmRemoveEquipmentViewSpec extends YesNoViewBehaviours with Generators
 
   behave like pageWithHeading(equipmentIndex.display)
 
-  behave like pageWithInsetText(s"Container: ${containerIdentificationNumber.value}")
+  behave like pageWithInsetText(s"Container ${containerIdentificationNumber.value}")
 
   behave like pageWithRadioItems(args = Seq(equipmentIndex.display))
 
