@@ -16,21 +16,22 @@
 
 @import controllers.incident.equipment.seal.routes
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
-    button: Button
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        errorSummary: ErrorSummary,
+        insetText: InsetText,
+        button: Button
 )
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, identificationNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("incident.equipment.seal.remove.title", identificationNumber),
+    title = messages("incident.equipment.seal.remove.title"),
     showBackLink = true,
     mrn = Some(mrn)
 ) {
@@ -40,10 +41,11 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("incident.equipment.seal.remove.heading", identificationNumber),
-                caption = Some(messages("incident.caption"))
-            )
+            yesNoType = InputYesNoViewModel(
+                heading = messages("incident.equipment.seal.remove.heading"),
+                caption = Some(messages("incident.caption")),
+                additionalHtml = Some(insetText(identificationNumber))
+        )
         )
 
         @button(attributes = Map("id" -> "submit"))
