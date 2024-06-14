@@ -20,10 +20,10 @@ import com.google.inject.Inject
 import config.PhaseConfig
 import connectors.SubmissionConnector
 import controllers.actions.Actions
-import logging.Logging
 import models.journeyDomain.ArrivalDomain
 import models.{MovementReferenceNumber, NormalMode}
 import navigation.UserAnswersNavigator
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HttpReads.is2xx
