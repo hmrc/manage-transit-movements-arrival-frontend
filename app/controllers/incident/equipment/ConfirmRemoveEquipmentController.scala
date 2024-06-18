@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
+import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.sections.incident.EquipmentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,29 +49,35 @@ class ConfirmRemoveEquipmentController @Inject() (
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("incident.equipment.remove", equipmentIndex.display)
 
-  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex)) {
-      implicit request =>
-        Ok(view(form(equipmentIndex), mrn, mode, incidentIndex, equipmentIndex))
-    }
+  def onPageLoad(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] =
+    actions
+      .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex)) {
+        implicit request =>
+          val containerIdentificationNumber: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
+          Ok(view(form(equipmentIndex), mrn, mode, incidentIndex, equipmentIndex, containerIdentificationNumber))
+      }
 
-  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex))
-    .async {
-      implicit request =>
-        form(equipmentIndex)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex))),
-            {
-              case true =>
-                EquipmentSection(incidentIndex, equipmentIndex)
-                  .removeFromUserAnswers()
-                  .writeToSession()
-                  .navigateTo(addAnother(mrn, mode, incidentIndex))
-              case false =>
-                Future.successful(Redirect(addAnother(mrn, mode, incidentIndex)))
-            }
-          )
-    }
+  def onSubmit(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Action[AnyContent] =
+    actions
+      .requireIndex(mrn, EquipmentSection(incidentIndex, equipmentIndex), addAnother(mrn, mode, incidentIndex))
+      .async {
+        implicit request =>
+          form(equipmentIndex)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val containerIdentificationNumber: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex))
+                Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, containerIdentificationNumber)))
+              },
+              {
+                case true =>
+                  EquipmentSection(incidentIndex, equipmentIndex)
+                    .removeFromUserAnswers()
+                    .writeToSession()
+                    .navigateTo(addAnother(mrn, mode, incidentIndex))
+                case false =>
+                  Future.successful(Redirect(addAnother(mrn, mode, incidentIndex)))
+              }
+            )
+      }
 }

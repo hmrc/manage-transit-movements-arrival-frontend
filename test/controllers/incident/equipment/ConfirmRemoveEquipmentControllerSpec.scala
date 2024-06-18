@@ -23,6 +23,8 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
+import org.scalacheck.Gen
+import pages.incident.equipment.ContainerIdentificationNumberPage
 import pages.sections.incident.EquipmentSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,19 +32,23 @@ import views.html.incident.equipment.ConfirmRemoveEquipmentView
 
 class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val prefix       = "incident.equipment.remove"
-  private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider(prefix, equipmentIndex.display)
-
+  private val prefix                  = "incident.equipment.remove"
+  private val formProvider            = new YesNoFormProvider()
+  private val form                    = formProvider(prefix, equipmentIndex.display)
   private val mode                    = NormalMode
   private lazy val confirmRemoveRoute = routes.ConfirmRemoveEquipmentController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex).url
+
+  private val containerIdentificationNumber: Option[String] = Some(Gen.alphaNumStr.sample.value)
 
   "ConfirmRemoveSeal Controller" - {
 
     "must return OK and the correct view for a GET" in {
       forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerIdentificationNumber.value)
+          )
 
           val request = FakeRequest(GET, confirmRemoveRoute)
           val result  = route(app, request).value
@@ -52,7 +58,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
           val view = injector.instanceOf[ConfirmRemoveEquipmentView]
 
           contentAsString(result) mustEqual
-            view(form, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+            view(form, mrn, mode, incidentIndex, equipmentIndex, containerIdentificationNumber)(request, messages).toString
       }
     }
 
@@ -61,7 +67,10 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
         userAnswers =>
           beforeEach()
 
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerIdentificationNumber.value)
+          )
 
           val request = FakeRequest(POST, confirmRemoveRoute)
             .withFormUrlEncodedBody(("value", "true"))
@@ -82,7 +91,10 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
     "must redirect to the next page when valid data is submitted and call to remove a transport equipment is false" in {
       forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerIdentificationNumber.value)
+          )
 
           val request = FakeRequest(POST, confirmRemoveRoute)
             .withFormUrlEncodedBody(("value", "false"))
@@ -101,7 +113,10 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
     "must return a Bad Request and errors when invalid data is submitted" in {
       forAll(arbitraryEquipmentAnswers(emptyUserAnswers, incidentIndex, equipmentIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(ContainerIdentificationNumberPage(incidentIndex, equipmentIndex), containerIdentificationNumber.value)
+          )
 
           val request   = FakeRequest(POST, confirmRemoveRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
@@ -112,7 +127,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
           val view = injector.instanceOf[ConfirmRemoveEquipmentView]
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, mode, incidentIndex, equipmentIndex)(request, messages).toString
+            view(boundForm, mrn, mode, incidentIndex, equipmentIndex, containerIdentificationNumber)(request, messages).toString
       }
     }
 
