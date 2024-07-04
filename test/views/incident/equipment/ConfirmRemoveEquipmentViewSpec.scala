@@ -19,7 +19,6 @@ package views.incident.equipment
 import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
-import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -27,7 +26,7 @@ import views.html.incident.equipment.ConfirmRemoveEquipmentView
 
 class ConfirmRemoveEquipmentViewSpec extends YesNoViewBehaviours with Generators {
 
-  val containerIdentificationNumber: Option[String] = Some(Gen.alphaNumStr.sample.value)
+  val containerIdentificationNumber: Option[String] = Some(nonEmptyString.sample.value)
 
   override def form: Form[Boolean] = new YesNoFormProvider()(prefix, equipmentIndex.display)
 
