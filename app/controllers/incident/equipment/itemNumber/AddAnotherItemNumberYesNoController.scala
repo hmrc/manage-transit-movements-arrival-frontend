@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 class AddAnotherItemNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherItemFormProvider,

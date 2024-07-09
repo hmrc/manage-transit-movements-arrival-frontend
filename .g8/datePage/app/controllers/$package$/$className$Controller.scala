@@ -21,7 +21,7 @@ import java.time.LocalDate
 
 class $className;format="cap"$Controller @Inject()(
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: $navRoute$NavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
@@ -55,7 +55,7 @@ class $className;format="cap"$Controller @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
         value => {
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-          $className$Page.writeToUserAnswers(value).writeToSession().navigate()
+          $className$Page.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
         }
       )
   }

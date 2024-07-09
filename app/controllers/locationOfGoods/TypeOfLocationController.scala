@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TypeOfLocationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -83,7 +83,7 @@ class TypeOfLocationController @Inject() (
                   formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, typesOfLocation, mode))),
                   value => {
                     implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                    TypeOfLocationPage.writeToUserAnswers(value).writeToSession().navigate()
+                    TypeOfLocationPage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
                   }
                 )
           }

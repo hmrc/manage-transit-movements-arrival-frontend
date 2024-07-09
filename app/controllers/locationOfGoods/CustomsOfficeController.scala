@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsOfficeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -70,7 +70,7 @@ class CustomsOfficeController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.values, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                CustomsOfficePage.writeToUserAnswers(value).writeToSession().navigate()
+                CustomsOfficePage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

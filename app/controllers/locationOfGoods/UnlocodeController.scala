@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnlocodeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   formProvider: UnLocodeFormProvider,
   unLocodesService: UnLocodeService,
@@ -70,8 +70,8 @@ class UnlocodeController @Inject() (
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 UnlocodePage
                   .writeToUserAnswers(value)
-                  .writeToSession()
-                  .navigate()
+                  .writeToSession(sessionRepository)
+                  .navigateWith(navigator)
               case false =>
                 val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, mrn, mode)))

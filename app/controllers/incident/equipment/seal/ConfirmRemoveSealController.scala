@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
@@ -73,7 +73,7 @@ class ConfirmRemoveSealController @Inject() (
               case true =>
                 SealSection(incidentIndex, equipmentIndex, sealIndex)
                   .removeFromUserAnswers()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(mrn, mode, incidentIndex, equipmentIndex))
               case false =>
                 Future.successful(Redirect(addAnother(mrn, mode, incidentIndex, equipmentIndex)))

@@ -22,7 +22,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class $className;format="cap"$Controller @Inject()(
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: $navRoute$NavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -63,7 +63,7 @@ class $className;format="cap"$Controller @Inject()(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, name))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              $className$Page.writeToUserAnswers(value).writeToSession().navigate()
+              $className$Page.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

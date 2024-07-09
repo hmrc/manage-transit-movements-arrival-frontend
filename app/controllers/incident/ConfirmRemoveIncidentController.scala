@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveIncidentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -71,7 +71,7 @@ class ConfirmRemoveIncidentController @Inject() (
               case true =>
                 IncidentSection(incidentIndex)
                   .removeFromUserAnswers()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(mrn, mode))
               case false =>
                 Future.successful(Redirect(addAnother(mrn, mode)))

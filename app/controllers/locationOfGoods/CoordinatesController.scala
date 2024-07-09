@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CoordinatesController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   formProvider: CoordinatesFormProvider,
   actions: Actions,
@@ -62,7 +62,7 @@ class CoordinatesController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            CoordinatesPage.writeToUserAnswers(value).writeToSession().navigate()
+            CoordinatesPage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }
