@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
@@ -73,7 +73,7 @@ class ConfirmRemoveEquipmentController @Inject() (
                 case true =>
                   EquipmentSection(incidentIndex, equipmentIndex)
                     .removeFromUserAnswers()
-                    .writeToSession()
+                    .writeToSession(sessionRepository)
                     .navigateTo(addAnother(mrn, mode, incidentIndex))
                 case false =>
                   Future.successful(Redirect(addAnother(mrn, mode, incidentIndex)))

@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EndorsementDateController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
@@ -71,8 +71,8 @@ class EndorsementDateController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, index, mode))),
           value => {
-            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            EndorsementDatePage(index).writeToUserAnswers(value).writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            EndorsementDatePage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

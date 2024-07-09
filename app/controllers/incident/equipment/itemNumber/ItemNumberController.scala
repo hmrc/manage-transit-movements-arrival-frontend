@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ItemNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ItemNumberNavigatorProvider,
   formProvider: ItemNumberFormProvider,
   actions: Actions,
@@ -64,8 +64,8 @@ class ItemNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
-              ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
+              ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

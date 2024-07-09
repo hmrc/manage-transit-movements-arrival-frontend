@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddressController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -85,8 +85,8 @@ class AddressController @Inject() (
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index, isPostalCodeRequired))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                  AddressPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                  AddressPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )
         }

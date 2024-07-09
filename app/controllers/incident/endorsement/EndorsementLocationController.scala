@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EndorsementLocationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   formProvider: EndorsementLocationFormProvider,
   actions: Actions,
@@ -71,8 +71,8 @@ class EndorsementLocationController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, country.description, mode, index))),
               value => {
-                implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                EndorsementLocationPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }
