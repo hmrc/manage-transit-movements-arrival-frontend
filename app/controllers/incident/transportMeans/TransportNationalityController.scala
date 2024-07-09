@@ -69,7 +69,7 @@ class TransportNationalityController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, nationalityList.values, mode, incidentIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
                 TransportNationalityPage(incidentIndex).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

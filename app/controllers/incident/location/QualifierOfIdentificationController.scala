@@ -72,7 +72,7 @@ class QualifierOfIdentificationController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, qualifiers, mode, index))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 QualifierOfIdentificationPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

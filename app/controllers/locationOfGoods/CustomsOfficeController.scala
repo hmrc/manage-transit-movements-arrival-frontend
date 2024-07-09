@@ -69,7 +69,7 @@ class CustomsOfficeController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, customsOfficeList.values, mode))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 CustomsOfficePage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

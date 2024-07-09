@@ -72,7 +72,7 @@ class IdentificationController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, incidentIdentifications, mode, incidentIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
                 IdentificationPage(incidentIndex).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

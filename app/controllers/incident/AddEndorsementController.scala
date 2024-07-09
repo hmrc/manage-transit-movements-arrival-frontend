@@ -62,7 +62,7 @@ class AddEndorsementController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             AddEndorsementPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )

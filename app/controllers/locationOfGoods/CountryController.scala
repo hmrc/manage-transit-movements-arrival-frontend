@@ -71,7 +71,7 @@ class CountryController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.values, mode))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 CountryPage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

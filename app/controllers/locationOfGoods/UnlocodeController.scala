@@ -67,7 +67,7 @@ class UnlocodeController @Inject() (
           value =>
             unLocodesService.doesUnLocodeExist(value).flatMap {
               case true =>
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 UnlocodePage
                   .writeToUserAnswers(value)
                   .writeToSession(sessionRepository)

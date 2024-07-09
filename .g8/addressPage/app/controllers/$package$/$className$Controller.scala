@@ -72,7 +72,7 @@ class $className;format="cap"$Controller @Inject()(
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, name, isPostalCodeRequired))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   $className$Page.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )

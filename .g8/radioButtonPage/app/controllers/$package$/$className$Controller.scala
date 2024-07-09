@@ -47,7 +47,7 @@ class $className$Controller @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, $className$.values, mode))),
         value => {
-          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+          val navigator: UserAnswersNavigator = navigatorProvider(mode)
           $className$Page.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
         }
       )

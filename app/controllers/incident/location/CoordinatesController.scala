@@ -61,7 +61,7 @@ class CoordinatesController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
             CoordinatesPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )

@@ -64,7 +64,7 @@ class ItemNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, itemNumberIndex))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, itemNumberIndex)
               ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
             }
           )

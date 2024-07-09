@@ -82,7 +82,7 @@ class TypeOfLocationController @Inject() (
                 .fold(
                   formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, typesOfLocation, mode))),
                   value => {
-                    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                    val navigator: UserAnswersNavigator = navigatorProvider(mode)
                     TypeOfLocationPage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
                   }
                 )

@@ -69,7 +69,7 @@ class EndorsementCountryController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, countryList.values, mode, index))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 EndorsementCountryPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )

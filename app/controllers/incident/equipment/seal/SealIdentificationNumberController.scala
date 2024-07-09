@@ -86,7 +86,7 @@ class SealIdentificationNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, incidentIndex, equipmentIndex, sealIndex, prefix))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, sealIndex)
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex, equipmentIndex, sealIndex)
               SealIdentificationNumberPage(incidentIndex, equipmentIndex, sealIndex)
                 .writeToUserAnswers(value)
                 .writeToSession(sessionRepository)

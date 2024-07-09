@@ -63,7 +63,7 @@ class IsSimplifiedProcedureController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, ProcedureType.values, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
             IsSimplifiedProcedurePage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )

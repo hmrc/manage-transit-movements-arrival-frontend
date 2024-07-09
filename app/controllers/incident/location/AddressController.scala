@@ -85,7 +85,7 @@ class AddressController @Inject() (
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode, index, isPostalCodeRequired))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                   AddressPage(index).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )
