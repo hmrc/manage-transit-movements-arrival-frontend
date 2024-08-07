@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContactPersonNameController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   formProvider: NameFormProvider,
   actions: Actions,
@@ -61,8 +61,8 @@ class ContactPersonNameController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            ContactPersonNamePage.writeToUserAnswers(value).writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            ContactPersonNamePage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

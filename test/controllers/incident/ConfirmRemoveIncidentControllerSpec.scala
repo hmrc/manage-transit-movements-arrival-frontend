@@ -23,7 +23,9 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.incident.IncidentTextPage
 import pages.sections.incident.IncidentSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,12 +38,17 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
   private val mode                            = NormalMode
   private lazy val confirmRemoveIncidentRoute = routes.ConfirmRemoveIncidentController.onPageLoad(mrn, mode, incidentIndex).url
 
+  private val incidentDescripton = Some(Gen.alphaStr.sample.value)
+
   "ConfirmRemoveIncident Controller" - {
 
     "must return OK and the correct view for a GET" in {
       forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(IncidentTextPage(incidentIndex), incidentDescripton.value)
+          )
 
           val request = FakeRequest(GET, confirmRemoveIncidentRoute)
           val result  = route(app, request).value
@@ -51,7 +58,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, mode, incidentIndex)(request, messages).toString
+            view(form, mrn, mode, incidentIndex, incidentDescripton)(request, messages).toString
       }
     }
 
@@ -60,7 +67,10 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
         userAnswers =>
           beforeEach()
 
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(IncidentTextPage(incidentIndex), incidentDescripton.value)
+          )
 
           val request =
             FakeRequest(POST, confirmRemoveIncidentRoute)
@@ -81,7 +91,10 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
     "must return a Bad Request and errors when invalid data is submitted" in {
       forAll(arbitraryIncidentAnswers(emptyUserAnswers, incidentIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(
+            userAnswers
+              .setValue(IncidentTextPage(incidentIndex), incidentDescripton.value)
+          )
 
           val request   = FakeRequest(POST, confirmRemoveIncidentRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
@@ -93,7 +106,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
           val view = injector.instanceOf[ConfirmRemoveIncidentView]
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, mode, incidentIndex)(request, messages).toString
+            view(boundForm, mrn, mode, incidentIndex, incidentDescripton)(request, messages).toString
       }
     }
 

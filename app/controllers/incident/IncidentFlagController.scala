@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentFlagController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -62,8 +62,8 @@ class IncidentFlagController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value => {
-            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            IncidentFlagPage.writeToUserAnswers(value).writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            IncidentFlagPage.writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

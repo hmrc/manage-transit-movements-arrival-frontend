@@ -37,13 +37,15 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "incident.equipment.seal.remove"
 
-  behave like pageWithTitle(identificationNumber)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithHeading(identificationNumber)
+  behave like pageWithHeading()
+
+  behave like pageWithInsetText(identificationNumber)
 
   behave like pageWithRadioItems(args = Seq(identificationNumber))
 

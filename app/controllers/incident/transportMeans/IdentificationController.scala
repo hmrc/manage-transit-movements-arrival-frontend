@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
   incidentCodeService: ReferenceDataDynamicRadioService,
@@ -72,8 +72,8 @@ class IdentificationController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, incidentIdentifications, mode, incidentIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
-                IdentificationPage(incidentIndex).writeToUserAnswers(value).writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, incidentIndex)
+                IdentificationPage(incidentIndex).writeToUserAnswers(value).writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }
