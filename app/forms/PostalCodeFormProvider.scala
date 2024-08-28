@@ -52,6 +52,8 @@ class PostalCodeFormProvider @Inject() extends Mappings {
         AddressLine.Country.field -> {
           selectable(countryList, s"$prefix.error.country.required", Seq())
         }
-      )(PostalCodeAddress.apply)(PostalCodeAddress.unapply)
+      )(PostalCodeAddress.apply)(
+        pa => Some(Tuple.fromProductTyped(pa))
+      )
     )
 }

@@ -60,7 +60,7 @@ class EndorsementDomainSpec extends SpecBase with Generators {
 
       "when a mandatory page is missing" in {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(
           EndorsementDatePage(index),
           EndorsementAuthorityPage(index),
           EndorsementCountryPage(index),

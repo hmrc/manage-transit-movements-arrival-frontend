@@ -181,7 +181,6 @@ package object models {
             .slice(index + 1, valueToRemoveFrom.value.size)
           JsSuccess(JsArray(updatedJsArray))
         case valueToRemoveFrom: JsArray => JsError(s"array index out of bounds: $index, $valueToRemoveFrom")
-        case _                          => JsError(s"cannot set an index on $valueToRemoveFrom")
       }
     }
 
@@ -197,7 +196,6 @@ package object models {
       }
     }
 
-    @nowarn("msg=Exhaustivity analysis reached max recursion depth, not all missing cases are reported.")
     @nowarn("msg=match may not be exhaustive")
     // scalastyle:off cyclomatic.complexity
     def remove(path: JsPath): JsResult[JsValue] =
@@ -212,7 +210,7 @@ package object models {
             .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
             .reads(oldValue)
             .flatMap {
-              opt: Option[JsValue] =>
+              (opt: Option[JsValue]) =>
                 opt
                   .map(JsSuccess(_))
                   .getOrElse {

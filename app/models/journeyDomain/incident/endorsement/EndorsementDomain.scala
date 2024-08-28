@@ -17,7 +17,7 @@
 package models.journeyDomain.incident.endorsement
 
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
+import models.journeyDomain._
 import models.reference.Country
 import pages.incident.endorsement.{EndorsementAuthorityPage, EndorsementCountryPage, EndorsementDatePage, EndorsementLocationPage}
 
@@ -33,11 +33,7 @@ case class EndorsementDomain(
 object EndorsementDomain {
 
   def userAnswersReader(index: Index): Read[EndorsementDomain] =
-    (
-      EndorsementDatePage(index).reader,
-      EndorsementAuthorityPage(index).reader,
-      EndorsementCountryPage(index).reader,
-      EndorsementLocationPage(index).reader
-    ).map(EndorsementDomain.apply)
+    (EndorsementDatePage(index).reader, EndorsementAuthorityPage(index).reader, EndorsementCountryPage(index).reader, EndorsementLocationPage(index).reader)
+      .map(EndorsementDomain.apply)
 
 }

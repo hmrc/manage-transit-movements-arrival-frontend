@@ -19,7 +19,7 @@ package models.journeyDomain.incident.equipment
 import config.Constants.IncidentCode._
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumbersDomain
 import models.journeyDomain.incident.equipment.seal.SealsDomain
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.IncidentCode._
 import models.{Index, UserAnswers}
 import pages.incident.equipment._
@@ -37,7 +37,7 @@ case class EquipmentDomain(
 
   def asString(implicit messages: Messages): String = EquipmentDomain.asString(containerId, equipmentIndex)
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentSection(incidentIndex, equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(EquipmentSection(incidentIndex, equipmentIndex))
 }
 
 object EquipmentDomain {

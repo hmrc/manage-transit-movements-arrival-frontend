@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  private class Harness1[T1](pages: Gettable[T1]*)(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](pages: _*) {
+  private class Harness1[T1](pages: Gettable[T1]*)(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](pages *) {
 
     def callRefine[A](
       request: DataRequest[A]
@@ -70,7 +70,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getFirst" - {
 
-      type T = Either[Result, SpecificDataRequestProvider1[String]#SpecificDataRequest[_]]
+      type T = Either[Result, SpecificDataRequestProvider1[String]#SpecificDataRequest[?]]
 
       def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
         DataRequest(fakeRequest, eoriNumber, userAnswers)
@@ -172,7 +172,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getSecond" - {
 
-      type T = Either[Result, SpecificDataRequestProvider2[String, String]#SpecificDataRequest[_]]
+      type T = Either[Result, SpecificDataRequestProvider2[String, String]#SpecificDataRequest[?]]
 
       def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] =
         new SpecificDataRequestProvider1[String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, arg1)
@@ -219,7 +219,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getThird" - {
 
-      type T = Either[Result, SpecificDataRequestProvider3[String, String, String]#SpecificDataRequest[_]]
+      type T = Either[Result, SpecificDataRequestProvider3[String, String, String]#SpecificDataRequest[?]]
 
       def request(
         userAnswers: UserAnswers,

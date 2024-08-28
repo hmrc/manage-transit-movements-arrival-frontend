@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import config.Constants.QualifierCode._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
+import models.journeyDomain._
 import models.{Coordinates, DynamicAddress, Index}
 import pages.incident.location.{AddressPage, CoordinatesPage, QualifierOfIdentificationPage, UnLocodePage}
 

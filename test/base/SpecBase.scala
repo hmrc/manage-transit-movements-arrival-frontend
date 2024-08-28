@@ -86,7 +86,7 @@ trait SpecBase
     def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       userAnswers.set(page, value).success.value
 
-    def removeValue(page: QuestionPage[_]): UserAnswers =
+    def removeValue(page: QuestionPage[?]): UserAnswers =
       userAnswers.remove(page).success.value
   }
 

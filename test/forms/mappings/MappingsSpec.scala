@@ -164,9 +164,10 @@ class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks 
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(
-        Seq(Bar, Baz).map(
-          v => v.toString -> v
-        ): _*
+        Seq(Bar, Baz)
+          .map(
+            v => v.toString -> v
+          ) *
       )
 
     val testForm = Form(

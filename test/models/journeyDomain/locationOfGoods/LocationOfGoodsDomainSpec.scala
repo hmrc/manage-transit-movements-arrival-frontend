@@ -102,7 +102,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       "when a mandatory page is missing for procedure type normal" in {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(TypeOfLocationPage, QualifierOfIdentificationPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(TypeOfLocationPage, QualifierOfIdentificationPage)
 
         val typeOfLocation = arbitrary[TypeOfLocation].sample.value
 
@@ -128,7 +128,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         val authorisationReference = Gen.alphaNumStr.sample.value
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(AuthorisationNumberPage)
 
         val userAnswers = emptyUserAnswers
           .setValue(IsSimplifiedProcedurePage, ProcedureType.Simplified)

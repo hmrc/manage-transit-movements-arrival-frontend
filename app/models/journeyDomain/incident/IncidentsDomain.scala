@@ -16,14 +16,14 @@
 
 package models.journeyDomain.incident
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.incident.IncidentsSection
 
 case class IncidentsDomain(incidents: Seq[IncidentDomain]) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(IncidentsSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(IncidentsSection)
 }
 
 object IncidentsDomain {

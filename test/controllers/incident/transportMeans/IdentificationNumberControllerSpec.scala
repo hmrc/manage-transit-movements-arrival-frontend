@@ -101,7 +101,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           .setValue(IdentificationPage(incidentIndex), identification)
       )
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, identificationNumberRoute)
         .withFormUrlEncodedBody(("value", validAnswer))

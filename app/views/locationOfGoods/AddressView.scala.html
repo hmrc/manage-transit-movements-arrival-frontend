@@ -31,7 +31,7 @@
     mrn: MovementReferenceNumber,
     mode: Mode,
     isPostalCodeRequired: Boolean
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.address.title"),

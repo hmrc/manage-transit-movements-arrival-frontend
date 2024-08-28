@@ -17,7 +17,7 @@
 package models.journeyDomain.locationOfGoods
 
 import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.TypeOfLocation
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods.TypeOfLocationPage

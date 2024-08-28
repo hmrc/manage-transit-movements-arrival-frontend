@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[CustomsOffice], mrn: MovementReferenceNumber, customsOfficeList: Seq[CustomsOffice], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], mrn: MovementReferenceNumber, customsOfficeList: Seq[CustomsOffice], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.destinationOffice.title"),

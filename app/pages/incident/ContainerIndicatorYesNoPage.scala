@@ -49,11 +49,11 @@ case class ContainerIndicatorYesNoPage(index: Index) extends QuestionPage[Boolea
 
     value match {
       case Some(false) =>
-        removeEquipmentPage(ContainerIdentificationNumberPage, userAnswers)
+        removeEquipmentPage(ContainerIdentificationNumberPage.apply, userAnswers)
       case Some(true) =>
         userAnswers
           .remove(AddTransportEquipmentPage(index))
-          .flatMap(removeEquipmentPage(ContainerIdentificationNumberYesNoPage, _))
+          .flatMap(removeEquipmentPage(ContainerIdentificationNumberYesNoPage.apply, _))
       case _ =>
         super.cleanup(value, userAnswers)
     }

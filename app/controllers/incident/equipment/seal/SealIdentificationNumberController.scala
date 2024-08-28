@@ -49,15 +49,15 @@ class SealIdentificationNumberController @Inject() (
   private val prefix = "incident.equipment.seal.sealIdentificationNumber"
 
   private def form(prefix: String, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, args: Seq[String] = Seq.empty)(implicit
-    request: DataRequest[_]
+    request: DataRequest[?]
   ): Form[String] =
     formProvider(
       prefix,
       otherSealIdentificationNumbers(incidentIndex, equipmentIndex, sealIndex),
-      args: _*
+      args *
     )
 
-  private def otherSealIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherSealIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(incidentIndex, equipmentIndex)).length
     (0 until numberOfSeals)
       .map(Index(_))

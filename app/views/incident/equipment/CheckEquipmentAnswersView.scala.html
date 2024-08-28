@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sections: Seq[Section])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.equipment.checkEquipmentAnswers.title"),

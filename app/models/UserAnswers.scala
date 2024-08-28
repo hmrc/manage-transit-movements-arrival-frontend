@@ -72,7 +72,7 @@ object UserAnswers {
         (__ \ "arrivalId").readNullable[ArrivalId] and
         (__ \ "_id").read[Id] and
         (__ \ "submissionStatus").read[models.SubmissionStatus.Value]
-    )(UserAnswers.apply _)
+    )(UserAnswers.apply)
 
   implicit lazy val writes: Writes[UserAnswers] =
     (
@@ -82,7 +82,9 @@ object UserAnswers {
         (__ \ "arrivalId").writeNullable[ArrivalId] and
         (__ \ "_id").write[Id] and
         (__ \ "submissionStatus").write[models.SubmissionStatus.Value]
-    )(unlift(UserAnswers.unapply))
+    )(
+      ua => Tuple.fromProductTyped(ua)
+    )
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 

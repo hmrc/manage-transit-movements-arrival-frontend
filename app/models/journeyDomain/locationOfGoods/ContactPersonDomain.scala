@@ -16,7 +16,7 @@
 
 package models.journeyDomain.locationOfGoods
 
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
+import models.journeyDomain._
 import pages.locationOfGoods.{ContactPersonNamePage, ContactPersonTelephonePage}
 
 case class ContactPersonDomain(name: String, phoneNumber: String) extends JourneyDomainModel

@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Nationality], mrn: MovementReferenceNumber, nationalities: Seq[Nationality], mode: Mode, incidentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], mrn: MovementReferenceNumber, nationalities: Seq[Nationality], mode: Mode, incidentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.transportMeans.transportNationality.title"),

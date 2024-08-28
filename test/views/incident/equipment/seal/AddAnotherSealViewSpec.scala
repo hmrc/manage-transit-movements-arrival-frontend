@@ -64,9 +64,9 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Arrivals - Incidents")
 
-  behave like pageWithMoreItemsAllowed(viewModelWithSealsNotMaxedOut.args: _*)()
+  behave like pageWithMoreItemsAllowed(viewModelWithSealsNotMaxedOut.args *)()
 
-  behave like pageWithItemsMaxedOut(viewModelWithSealsMaxedOut.args: _*)
+  behave like pageWithItemsMaxedOut(viewModelWithSealsMaxedOut.args *)
 
   behave like pageWithSubmitButton("Continue")
 }

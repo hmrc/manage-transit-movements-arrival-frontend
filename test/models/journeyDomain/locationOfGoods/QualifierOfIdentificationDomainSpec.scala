@@ -277,7 +277,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(AddressPage, AddContactPersonPage)
+      val mandatoryPages: Seq[QuestionPage[?]] = Seq(AddressPage, AddContactPersonPage)
 
       "when a mandatory page is missing" in {
 
@@ -351,7 +351,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
     "cannot be parsed from UserAnswers" - {
 
-      val mandatoryPages: Seq[QuestionPage[_]] = Seq(IdentificationNumberPage, AddContactPersonPage)
+      val mandatoryPages: Seq[QuestionPage[?]] = Seq(IdentificationNumberPage, AddContactPersonPage)
 
       "when a mandatory page is missing" in {
 
@@ -425,7 +425,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "cannot be parsed from UserAnswers" - {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(AuthorisationNumberPage, AddContactPersonPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(AuthorisationNumberPage, AddContactPersonPage)
 
         "when a mandatory page is missing" in {
 
@@ -498,7 +498,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "cannot be parsed from UserAnswers" - {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(CoordinatesPage, AddContactPersonPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(CoordinatesPage, AddContactPersonPage)
 
         "when a mandatory page is missing" in {
 
@@ -603,7 +603,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "cannot be parsed from UserAnswers" - {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(UnlocodePage, AddContactPersonPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(UnlocodePage, AddContactPersonPage)
 
         "when a mandatory page is missing" in {
 
@@ -676,7 +676,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       "cannot be parsed from UserAnswers" - {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(PostalCodePage, AddContactPersonPage)
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(PostalCodePage, AddContactPersonPage)
 
         "when a mandatory page is missing" in {
 

@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[ProcedureType], mrn: MovementReferenceNumber, procedureTypes: Seq[ProcedureType], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[ProcedureType], mrn: MovementReferenceNumber, procedureTypes: Seq[ProcedureType], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("identification.isSimplifiedProcedure.title"),

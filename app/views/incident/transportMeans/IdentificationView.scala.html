@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Identification], mrn: MovementReferenceNumber, identifiers: Seq[Identification], mode: Mode, incidentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], mrn: MovementReferenceNumber, identifiers: Seq[Identification], mode: Mode, incidentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.transportMeans.identification.title"),

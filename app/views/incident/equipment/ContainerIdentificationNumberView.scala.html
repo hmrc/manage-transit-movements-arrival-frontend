@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.equipment.containerIdentificationNumber.title"),

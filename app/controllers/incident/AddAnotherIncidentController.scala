@@ -51,7 +51,7 @@ class AddAnotherIncidentController @Inject() (
 
   def onPageLoad(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(mrn)
-    .andThen(removeInProgressIncidents[IncidentDomain](IncidentsSection, IncidentSection)(IncidentDomain.userAnswersReader)) {
+    .andThen(removeInProgressIncidents[IncidentDomain](IncidentsSection, IncidentSection.apply)(IncidentDomain.userAnswersReader)) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, mode)
         viewModel.numberOfIncidents match {
