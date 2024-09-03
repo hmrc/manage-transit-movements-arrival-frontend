@@ -16,23 +16,45 @@
 
 package config
 
+import com.typesafe.config.Config
+import config.PhaseConfig.Values
 import models.Phase
 import models.Phase.{PostTransition, Transition}
 import models.domain.StringFieldRegex._
+import play.api.{ConfigLoader, Configuration}
 
+import javax.inject.Inject
 import scala.util.matching.Regex
 
 trait PhaseConfig {
+  val values: Values
   val phase: Phase
   val mrnRegex: Regex
 }
 
-class TransitionConfig() extends PhaseConfig {
-  override val phase: Phase    = Transition
-  override val mrnRegex: Regex = mrnTransitionRegex
-}
+object PhaseConfig {
 
-class PostTransitionConfig() extends PhaseConfig {
-  override val phase: Phase    = PostTransition
-  override val mrnRegex: Regex = mrnFinalRegex
+  class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
+    override val phase: Phase    = Transition
+    override val mrnRegex: Regex = mrnTransitionRegex
+    override val values: Values  = configuration.get[Values]("phase.transitional")
+  }
+
+  class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
+    override val phase: Phase    = PostTransition
+    override val mrnRegex: Regex = mrnFinalRegex
+    override val values: Values  = configuration.get[Values]("phase.final")
+  }
+
+  case class Values(apiVersion: Double)
+
+  object Values {
+
+    implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
+      config.getConfig(path) match {
+        case phase =>
+          val apiVersion = phase.getDouble("apiVersion")
+          Values(apiVersion)
+      }
+  }
 }

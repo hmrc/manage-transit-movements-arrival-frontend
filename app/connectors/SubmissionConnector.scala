@@ -16,9 +16,10 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{ArrivalMessages, MovementReferenceNumber}
 import play.api.Logging
+import play.api.http.HeaderNames._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -30,16 +31,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2
+  http: HttpClientV2,
+  phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
+  private val headers = Seq(
+    ACCEPT -> {
+      val version = phaseConfig.values.apiVersion
+      s"application/vnd.hmrc.$version+json"
+    }
+  )
+
   def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
+      .setHeader(headers: _*)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
   }
@@ -48,6 +58,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/messages/$mrn"
     http
       .get(url)
+      .setHeader(headers: _*)
       .execute[ArrivalMessages]
   }
 }
