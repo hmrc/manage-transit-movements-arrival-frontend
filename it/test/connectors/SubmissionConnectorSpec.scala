@@ -43,6 +43,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
         server.stubFor(
           post(urlEqualTo(url))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("APIVersion", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
@@ -58,6 +59,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
         server.stubFor(
           post(urlEqualTo(url))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("APIVersion", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
@@ -73,6 +75,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
         server.stubFor(
           post(urlEqualTo(url))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("APIVersion", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
@@ -105,6 +108,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
         server.stubFor(
           get(urlEqualTo(url))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
