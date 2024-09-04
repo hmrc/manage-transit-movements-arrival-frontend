@@ -19,7 +19,6 @@ package connectors
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{ArrivalMessages, MovementReferenceNumber}
 import play.api.Logging
-import play.api.http.HeaderNames._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -37,13 +36,9 @@ class SubmissionConnector @Inject() (
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  private val headers = {
-    val version = phaseConfig.values.apiVersion.toString
-    Seq(
-      ACCEPT       -> s"application/vnd.hmrc.$version+json",
-      "APIVersion" -> version
-    )
-  }
+  private val headers = Seq(
+    "APIVersion" -> phaseConfig.values.apiVersion.toString
+  )
 
   def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
