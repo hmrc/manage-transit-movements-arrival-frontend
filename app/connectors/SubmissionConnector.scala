@@ -37,12 +37,13 @@ class SubmissionConnector @Inject() (
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  private val headers = Seq(
-    ACCEPT -> {
-      val version = phaseConfig.values.apiVersion
-      s"application/vnd.hmrc.$version+json"
-    }
-  )
+  private val headers = {
+    val version = phaseConfig.values.apiVersion.toString
+    Seq(
+      ACCEPT       -> s"application/vnd.hmrc.$version+json",
+      "APIVersion" -> version
+    )
+  }
 
   def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
