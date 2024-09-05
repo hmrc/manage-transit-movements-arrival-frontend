@@ -177,9 +177,9 @@ locationOfGoods.authorisationNumber.title = What is the authorisation number for
 locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
 locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
 locationOfGoods.authorisationNumber.change.hidden = authorisation number for the location of goods
-locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
-locationOfGoods.authorisationNumber.error.maxLength = The authorisation number must be 35 characters or less.
-locationOfGoods.authorisationNumber.error.invalidCharacters = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.maxLength = The authorisation number must be 35 characters or less
+locationOfGoods.authorisationNumber.error.invalidCharacters = The authorisation number must only include letters a to z, numbers 0 to 9 and spaces
 locationOfGoods.authorisationNumber.hintText = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.contactPersonName.title = Who is the contact for the location of goods?
