@@ -18,7 +18,7 @@ package models.journeyDomain.incident.equipment.itemNumber
 
 import controllers.incident.equipment.itemNumber.routes
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain._
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import play.api.mvc.Call

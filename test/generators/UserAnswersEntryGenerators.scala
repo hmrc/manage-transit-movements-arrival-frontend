@@ -29,25 +29,25 @@ import java.time.LocalDate
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+  def generateAnswer: PartialFunction[Gettable[?], Gen[JsValue]] =
     generateIdentificationAnswer orElse
       generateLocationOfGoodsAnswer orElse
       generateIncidentAnswer
 
-  private def generateIdentificationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIdentificationAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.identification._
     {
       case DestinationOfficePage            => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case IdentificationNumberPage         => Gen.alphaNumStr.map(JsString)
+      case IdentificationNumberPage         => Gen.alphaNumStr.map(JsString.apply)
       case IsSimplifiedProcedurePage        => arbitrary[ProcedureType].map(Json.toJson(_))
-      case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString)
+      case AuthorisationReferenceNumberPage => Gen.alphaNumStr.map(JsString.apply)
     }
   }
 
-  private def generateLocationOfGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateLocationOfGoodsAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
-      val log: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      val log: PartialFunction[Gettable[?], Gen[JsValue]] = {
         case TypeOfLocationPage            => arbitrary[TypeOfLocation].map(Json.toJson(_))
         case QualifierOfIdentificationPage => arbitrary[QualifierOfIdentification].map(Json.toJson(_))
         case AddContactPersonPage          => arbitrary[Boolean].map(JsBoolean)
@@ -59,35 +59,35 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generateLocationOfGoodsIdentifierAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateLocationOfGoodsIdentifierAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
       case PostalCodePage           => arbitrary[PostalCodeAddress].map(Json.toJson(_))
-      case AuthorisationNumberPage  => Gen.alphaNumStr.map(JsString)
+      case AuthorisationNumberPage  => Gen.alphaNumStr.map(JsString.apply)
       case CoordinatesPage          => arbitrary[Coordinates].map(Json.toJson(_))
       case CustomsOfficePage        => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case IdentificationNumberPage => Gen.alphaNumStr.map(JsString)
+      case IdentificationNumberPage => Gen.alphaNumStr.map(JsString.apply)
       case CountryPage              => arbitrary[Country].map(Json.toJson(_))
       case AddressPage              => arbitrary[DynamicAddress].map(Json.toJson(_))
       case UnlocodePage             => arbitrary[String].map(Json.toJson(_))
     }
   }
 
-  private def generateLocationOfGoodsContactAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateLocationOfGoodsContactAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.locationOfGoods._
     {
-      case ContactPersonNamePage      => Gen.alphaNumStr.map(JsString)
-      case ContactPersonTelephonePage => Gen.alphaNumStr.map(JsString)
+      case ContactPersonNamePage      => Gen.alphaNumStr.map(JsString.apply)
+      case ContactPersonTelephonePage => Gen.alphaNumStr.map(JsString.apply)
     }
   }
 
-  private def generateIncidentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident._
-    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    val pf: PartialFunction[Gettable[?], Gen[JsValue]] = {
       case IncidentFlagPage               => arbitrary[Boolean].map(JsBoolean)
       case IncidentCountryPage(_)         => arbitrary[Country].map(Json.toJson(_))
       case IncidentCodePage(_)            => arbitrary[IncidentCode].map(Json.toJson(_))
-      case IncidentTextPage(_)            => Gen.alphaNumStr.map(JsString)
+      case IncidentTextPage(_)            => Gen.alphaNumStr.map(JsString.apply)
       case AddEndorsementPage(_)          => arbitrary[Boolean].map(JsBoolean)
       case ContainerIndicatorYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
       case AddTransportEquipmentPage(_)   => arbitrary[Boolean].map(JsBoolean)
@@ -102,17 +102,17 @@ trait UserAnswersEntryGenerators {
       generateIncidentTransportMeansAnswer
   }
 
-  private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentEndorsementAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.endorsement._
     {
       case EndorsementDatePage(_)      => arbitrary[LocalDate].map(Json.toJson(_))
-      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString)
-      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString)
+      case EndorsementAuthorityPage(_) => Gen.alphaNumStr.map(JsString.apply)
+      case EndorsementLocationPage(_)  => Gen.alphaNumStr.map(JsString.apply)
       case EndorsementCountryPage(_)   => arbitrary[Country].map(Json.toJson(_))
     }
   }
 
-  private def generateIncidentLocationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentLocationAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.location._
     {
       case QualifierOfIdentificationPage(_) => arbitrary[QualifierOfIdentification].map(Json.toJson(_))
@@ -122,35 +122,35 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generateIncidentEquipmentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentEquipmentAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.equipment._
     {
       case ContainerIdentificationNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
-      case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString)
+      case ContainerIdentificationNumberPage(_, _)      => Gen.alphaNumStr.map(JsString.apply)
       case AddSealsYesNoPage(_, _)                      => arbitrary[Boolean].map(JsBoolean)
       case AddGoodsItemNumberYesNoPage(_, _)            => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
-  private def generateIncidentEquipmentSealAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentEquipmentSealAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.equipment.seal._
     {
-      case SealIdentificationNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString)
+      case SealIdentificationNumberPage(_, _, _) => Gen.alphaNumStr.map(JsString.apply)
     }
   }
 
-  private def generateIncidentEquipmentItemNumberAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentEquipmentItemNumberAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.equipment.itemNumber._
     {
-      case ItemNumberPage(_, _, _) => Gen.numStr.map(JsString)
+      case ItemNumberPage(_, _, _) => Gen.numStr.map(JsString.apply)
     }
   }
 
-  private def generateIncidentTransportMeansAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateIncidentTransportMeansAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.incident.transportMeans._
     {
       case IdentificationPage(_)       => arbitrary[Identification].map(Json.toJson(_))
-      case IdentificationNumberPage(_) => Gen.alphaNumStr.map(JsString)
+      case IdentificationNumberPage(_) => Gen.alphaNumStr.map(JsString.apply)
       case TransportNationalityPage(_) => arbitrary[Nationality].map(Json.toJson(_))
     }
   }

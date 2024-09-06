@@ -18,7 +18,7 @@ package models.journeyDomain.incident.equipment.seal
 
 import controllers.incident.equipment.seal.routes
 import models.journeyDomain.Stage._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain._
 import models.{Index, Mode, UserAnswers}
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import play.api.mvc.Call

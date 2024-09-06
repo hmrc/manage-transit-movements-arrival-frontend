@@ -17,7 +17,7 @@
 package models.journeyDomain.identification
 
 import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.CustomsOffice
 import models.{MovementReferenceNumber, UserAnswers}
 import pages.identification._
@@ -38,18 +38,14 @@ object IdentificationDomain {
     }
 
   implicit val userAnswersReader: Read[IdentificationDomain] =
-    (
-      mrnReader,
-      DestinationOfficePage.reader,
-      IsSimplifiedProcedurePage.reader,
-      IdentificationNumberPage.reader
-    ).to {
-      case (mrn, destinationOffice, isSimplified, identificationNumber) =>
-        val authorisationNumberReads: Read[Option[String]] = isSimplified match {
-          case ProcedureType.Normal     => UserAnswersReader.none
-          case ProcedureType.Simplified => AuthorisationReferenceNumberPage.reader.toOption
-        }
+    (mrnReader, DestinationOfficePage.reader, IsSimplifiedProcedurePage.reader, IdentificationNumberPage.reader)
+      .to {
+        case (mrn, destinationOffice, isSimplified, identificationNumber) =>
+          val authorisationNumberReads: Read[Option[String]] = isSimplified match {
+            case ProcedureType.Normal     => UserAnswersReader.none
+            case ProcedureType.Simplified => AuthorisationReferenceNumberPage.reader.toOption
+          }
 
-        authorisationNumberReads.map(IdentificationDomain.apply(mrn, destinationOffice, isSimplified, identificationNumber, _))
-    }
+          authorisationNumberReads.map(IdentificationDomain.apply(mrn, destinationOffice, isSimplified, identificationNumber, _))
+      }
 }

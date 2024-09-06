@@ -69,7 +69,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         val futureResult = action.callRefine(request)
 
-        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
+        whenReady[Either[Result, DataRequest[?]], Assertion](futureResult) {
           r =>
             r.value mustBe request
         }
@@ -97,7 +97,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
 
         val futureResult = action.callRefine(request)
 
-        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
+        whenReady[Either[Result, DataRequest[?]], Assertion](futureResult) {
           r =>
             verify(mockSessionRepository).set(eqTo(userAnswers))(any())
             r.value mustBe request
@@ -132,7 +132,7 @@ class RemoveInProgressActionSpec extends SpecBase with Generators {
         val expectedAnswers = userAnswers
           .removeValue(EquipmentSection(index, Index(1)))
 
-        whenReady[Either[Result, DataRequest[_]], Assertion](futureResult) {
+        whenReady[Either[Result, DataRequest[?]], Assertion](futureResult) {
           r =>
             verify(mockSessionRepository).set(eqTo(expectedAnswers))(any())
             r.value.userAnswers mustBe expectedAnswers

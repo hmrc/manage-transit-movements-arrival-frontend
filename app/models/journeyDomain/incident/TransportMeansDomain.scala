@@ -17,7 +17,7 @@
 package models.journeyDomain.incident
 
 import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read}
+import models.journeyDomain._
 import models.reference.{Identification, Nationality}
 import pages.incident.transportMeans._
 
@@ -30,9 +30,6 @@ case class TransportMeansDomain(
 object TransportMeansDomain {
 
   implicit def userAnswersReader(incidentIndex: Index): Read[TransportMeansDomain] =
-    (
-      IdentificationPage(incidentIndex).reader,
-      IdentificationNumberPage(incidentIndex).reader,
-      TransportNationalityPage(incidentIndex).reader
-    ).map(TransportMeansDomain.apply)
+    (IdentificationPage(incidentIndex).reader, IdentificationNumberPage(incidentIndex).reader, TransportNationalityPage(incidentIndex).reader)
+      .map(TransportMeansDomain.apply)
 }

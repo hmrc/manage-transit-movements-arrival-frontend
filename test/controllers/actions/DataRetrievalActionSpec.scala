@@ -58,7 +58,7 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
       .invokeBlock(
         IdentifierRequest(FakeRequest(GET, "/").asInstanceOf[Request[AnyContent]], EoriNumber("")),
         {
-          request: OptionalDataRequest[AnyContent] =>
+          (request: OptionalDataRequest[AnyContent]) =>
             f(request)
             Future.successful(Results.Ok)
         }
@@ -72,7 +72,7 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
 
       "where there are no existing answers for this MRN" in {
 
-        when(sessionRepository.get(any())(any())) thenReturn Future.successful(None)
+        when(sessionRepository.get(any())(any())) `thenReturn` Future.successful(None)
 
         harness(mrn, request => request.userAnswers must not be defined)
       }
@@ -82,7 +82,7 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
 
       "when there are existing answers for this MRN" in {
 
-        when(sessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(mrn, eoriNumber)))
+        when(sessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(UserAnswers(mrn, eoriNumber)))
 
         harness(mrn, request => request.userAnswers mustBe defined)
       }

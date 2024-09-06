@@ -34,12 +34,12 @@ import repositories.SessionRepository
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite with SpecBase =>
+  self: TestSuite & SpecBase =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
 
-    when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+    when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
   }
 
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]
@@ -50,10 +50,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .build()
 
   protected def setExistingUserAnswers(answers: UserAnswers): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(Some(answers))
+    when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(Some(answers))
 
   protected def setNoExistingUserAnswers(): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(None)
+    when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(None)
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 

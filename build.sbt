@@ -6,17 +6,17 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "manage-transit-movements-arrival-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "3.5.0"
 ThisBuild / scalafmtOnCompile := true
 
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(A11yTest)
-  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
-  .settings(DefaultBuildSettings.scalaSettings: _*)
-  .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(headerSettings(A11yTest): _*)
+  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings) *)
+  .settings(DefaultBuildSettings.scalaSettings *)
+  .settings(DefaultBuildSettings.defaultSettings() *)
+  .settings(headerSettings(A11yTest) *)
   .settings(automateHeaderSettings(A11yTest))
   .settings(
     name := appName,
@@ -40,7 +40,7 @@ lazy val microservice = (project in file("."))
       ".*ControllerConfiguration;.*TestOnlyController;.*LabelSize;.*LegendSize",
     ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*",
     ScoverageKeys.coverageMinimumStmtTotal := 85,
-    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageFailOnMinimum := false, // TODO set coverageFailOnMinimum true after https://github.com/scoverage/sbt-scoverage/issues/550 is fixed
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq(
       "-feature",
@@ -48,7 +48,7 @@ lazy val microservice = (project in file("."))
       "-language:postfixOps",
       "-language:higherKinds",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:src=html/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,

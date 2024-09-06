@@ -63,7 +63,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must redirect to the next page and remove item number when yes is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val userAnswers = emptyUserAnswers
         .setValue(ItemNumberPage(incidentIndex, equipmentIndex, itemNumberIndex), itemNumber)

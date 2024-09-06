@@ -72,7 +72,7 @@ class IncidentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
       "when a mandatory page is missing" in {
 
-        val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+        val mandatoryPages: Seq[QuestionPage[?]] = Seq(
           IncidentCountryPage(index),
           IncidentCodePage(index),
           IncidentTextPage(index),

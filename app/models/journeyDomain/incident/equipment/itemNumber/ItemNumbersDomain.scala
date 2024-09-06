@@ -16,7 +16,7 @@
 
 package models.journeyDomain.incident.equipment.itemNumber
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.incident.ItemsSection
@@ -26,7 +26,7 @@ case class ItemNumbersDomain(
 )(incidentIndex: Index, equipmentIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemsSection(incidentIndex, equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(ItemsSection(incidentIndex, equipmentIndex))
 }
 
 object ItemNumbersDomain {

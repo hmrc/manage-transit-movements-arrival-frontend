@@ -17,7 +17,7 @@
 package models.journeyDomain.incident.equipment
 
 import config.Constants.IncidentCode._
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Read, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.IncidentCode._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.incident.{AddTransportEquipmentPage, ContainerIndicatorYesNoPage, IncidentCodePage}
@@ -29,7 +29,7 @@ case class EquipmentsDomain(
 )(incidentIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentsSection(incidentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(EquipmentsSection(incidentIndex))
 }
 
 object EquipmentsDomain {

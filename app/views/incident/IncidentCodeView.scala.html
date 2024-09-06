@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[IncidentCode], mrn: MovementReferenceNumber, incidentCodes: Seq[IncidentCode], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[IncidentCode], mrn: MovementReferenceNumber, incidentCodes: Seq[IncidentCode], mode: Mode, index: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentCode.title"),

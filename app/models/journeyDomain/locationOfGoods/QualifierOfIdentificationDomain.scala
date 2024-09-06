@@ -18,7 +18,7 @@ package models.journeyDomain.locationOfGoods
 
 import config.Constants.QualifierCode._
 import models.identification.ProcedureType
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read}
+import models.journeyDomain._
 import models.reference.QualifierOfIdentification._
 import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, PostalCodeAddress}

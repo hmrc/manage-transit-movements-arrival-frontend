@@ -28,7 +28,7 @@
         button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, identificationNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index, identificationNumber: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.equipment.seal.remove.title"),

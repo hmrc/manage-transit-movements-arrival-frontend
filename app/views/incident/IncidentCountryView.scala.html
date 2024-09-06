@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Country], mrn: MovementReferenceNumber, countryList: Seq[Country], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], mrn: MovementReferenceNumber, countryList: Seq[Country], mode: Mode, index: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("incident.incidentCountry.title"),

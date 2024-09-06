@@ -45,7 +45,7 @@ class ConfirmRemoveItemNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[?]
 
   private def addAnother(mrn: MovementReferenceNumber, mode: Mode, incidentIndex: Index, equipmentIndex: Index): Call =
     routes.AddAnotherItemNumberYesNoController.onPageLoad(mrn, mode, incidentIndex, equipmentIndex)

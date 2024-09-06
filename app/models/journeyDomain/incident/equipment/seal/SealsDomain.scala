@@ -16,7 +16,7 @@
 
 package models.journeyDomain.incident.equipment.seal
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.incident.SealsSection
@@ -26,7 +26,7 @@ case class SealsDomain(
 )(incidentIndex: Index, equipmentIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SealsSection(incidentIndex, equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(SealsSection(incidentIndex, equipmentIndex))
 }
 
 object SealsDomain {

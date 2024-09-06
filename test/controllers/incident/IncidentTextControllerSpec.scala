@@ -84,7 +84,7 @@ class IncidentTextControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, incidentTextRoute)
         .withFormUrlEncodedBody(("value", "test string."))

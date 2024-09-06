@@ -76,8 +76,8 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must redirect to the next page with NormalMode when valid data is submitted and user answers not found in session repository" in {
 
-      when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None) thenReturn Future.successful(Some(emptyUserAnswers))
-      when(mockSessionRepository.put(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(None) `thenReturn` Future.successful(Some(emptyUserAnswers))
+      when(mockSessionRepository.put(any())(any())) `thenReturn` Future.successful(true)
 
       setNoExistingUserAnswers()
 
@@ -98,7 +98,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       "and answers have previously been submitted" in {
         val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
-        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(userAnswers))
+        when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
 
         setNoExistingUserAnswers()
 
@@ -125,7 +125,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
             beforeEach()
 
             val userAnswers = emptyUserAnswers.copy(submissionStatus = submissionStatus)
-            when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(userAnswers))
+            when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
 
             setNoExistingUserAnswers()
 

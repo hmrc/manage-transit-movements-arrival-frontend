@@ -143,7 +143,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}/lock"
 
       "must return true when status is Ok" in {
-        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
+        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(OK))
 
         val result: Boolean = await(connector.checkLock(userAnswers))
 
@@ -152,7 +152,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
       "return false for other responses" in {
 
-        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(BAD_REQUEST))
+        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(BAD_REQUEST))
 
         val result: Boolean = await(connector.checkLock(userAnswers))
 
@@ -165,7 +165,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}/lock"
 
       "must return true when status is Ok" in {
-        server.stubFor(delete(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
+        server.stubFor(delete(urlEqualTo(url)) `willReturn` aResponse().withStatus(OK))
 
         val result: Boolean = await(connector.deleteLock(userAnswers))
 

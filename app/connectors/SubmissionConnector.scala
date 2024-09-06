@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import play.api.libs.ws.JsonBodyWritables._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +45,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
-      .setHeader(headers: _*)
+      .setHeader(headers *)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
   }
@@ -53,7 +54,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/messages/$mrn"
     http
       .get(url)
-      .setHeader(headers: _*)
+      .setHeader(headers *)
       .execute[ArrivalMessages]
   }
 }
