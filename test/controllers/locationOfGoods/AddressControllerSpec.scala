@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val testAddress = arbitrary[DynamicAddress].sample.value
+  private val testAddress = DynamicAddress("21 Test Lane", "Test Town", Some("TE1 1ST"))
   private val country     = arbitrary[Country].sample.value
 
   private val formProvider                        = new DynamicAddressFormProvider()
@@ -167,6 +167,13 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val view = injector.instanceOf[AddressView]
 
         status(result) mustEqual OK
+
+        println(contentAsString(result))
+        println("*******************")
+        println("*******************")
+        println("*******************")
+        println("*******************")
+        println(view(filledForm, mrn, mode, isPostalCodeRequired)(request, messages).toString)
 
         contentAsString(result) mustEqual
           view(filledForm, mrn, mode, isPostalCodeRequired)(request, messages).toString
