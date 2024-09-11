@@ -168,13 +168,6 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         status(result) mustEqual OK
 
-        println(contentAsString(result))
-        println("*******************")
-        println("*******************")
-        println("*******************")
-        println("*******************")
-        println(view(filledForm, mrn, mode, isPostalCodeRequired)(request, messages).toString)
-
         contentAsString(result) mustEqual
           view(filledForm, mrn, mode, isPostalCodeRequired)(request, messages).toString
       }
