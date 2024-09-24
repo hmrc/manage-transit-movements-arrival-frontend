@@ -45,7 +45,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
   }
@@ -54,7 +54,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/messages/$mrn"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[ArrivalMessages]
   }
 }

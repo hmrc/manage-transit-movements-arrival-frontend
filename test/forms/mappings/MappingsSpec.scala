@@ -167,7 +167,7 @@ class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks 
         Seq(Bar, Baz)
           .map(
             v => v.toString -> v
-          ) *
+          )*
       )
 
     val testForm = Form(

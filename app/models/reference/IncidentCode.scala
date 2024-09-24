@@ -30,7 +30,5 @@ case class IncidentCode(code: String, description: String) extends Radioable[Inc
 object IncidentCode extends DynamicEnumerableType[IncidentCode] {
   implicit val format: Format[IncidentCode] = Json.format[IncidentCode]
 
-  implicit val order: Order[IncidentCode] = (x: IncidentCode, y: IncidentCode) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[IncidentCode] = (x: IncidentCode, y: IncidentCode) => (x, y).compareBy(_.code)
 }

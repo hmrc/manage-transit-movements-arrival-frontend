@@ -39,8 +39,8 @@ import pages.incident._
 import pages.incident.equipment.itemNumber.ItemNumberPage
 import pages.incident.equipment.seal.SealIdentificationNumberPage
 import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage}
-import pages.incident.location.{UnLocodePage, QualifierOfIdentificationPage => IncidentQualifierOfIdentificationPage}
-import pages.incident.transportMeans.{IdentificationPage, TransportNationalityPage, IdentificationNumberPage => TransportMeansIdentificationNumberPage}
+import pages.incident.location.{QualifierOfIdentificationPage => IncidentQualifierOfIdentificationPage, UnLocodePage}
+import pages.incident.transportMeans.{IdentificationNumberPage => TransportMeansIdentificationNumberPage, IdentificationPage, TransportNationalityPage}
 import pages.locationOfGoods._
 import pages.sections.incident._
 

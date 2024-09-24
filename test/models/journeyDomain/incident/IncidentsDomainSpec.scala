@@ -31,10 +31,10 @@ class IncidentsDomainSpec extends SpecBase with Generators {
 
       val numberOfIncidents = Gen.choose(1, frontendAppConfig.maxIncidents).sample.value
 
-      val userAnswers = (0 until numberOfIncidents).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfIncidents).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryIncidentAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = IncidentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 

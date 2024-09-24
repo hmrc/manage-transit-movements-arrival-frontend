@@ -35,8 +35,8 @@ case class AddAnotherSealViewModel(
 
   val (prefix, args) = ("incident.equipment.seal.addAnotherSeal", Seq(numberOfSeals))
 
-  def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", args *)
-  def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", args *)
+  def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", args*)
+  def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", args*)
   def legend(implicit messages: Messages): String  = messages(s"$prefix.label")
 
   def allowMoreSeals(implicit config: FrontendAppConfig): Boolean = numberOfSeals < config.maxSeals

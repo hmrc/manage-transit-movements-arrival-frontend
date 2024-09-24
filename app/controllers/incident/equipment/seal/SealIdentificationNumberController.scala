@@ -54,7 +54,7 @@ class SealIdentificationNumberController @Inject() (
     formProvider(
       prefix,
       otherSealIdentificationNumbers(incidentIndex, equipmentIndex, sealIndex),
-      args *
+      args*
     )
 
   private def otherSealIdentificationNumbers(incidentIndex: Index, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
