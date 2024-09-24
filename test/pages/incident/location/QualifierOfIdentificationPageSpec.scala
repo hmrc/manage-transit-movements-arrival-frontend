@@ -32,6 +32,7 @@ class QualifierOfIdentificationPageSpec extends PageBehaviours {
 
     beRemovable[QualifierOfIdentification](QualifierOfIdentificationPage(index))
   }
+
   "cleanup" - {
     "when Coordinates is selected" - {
       "must remove Unlocode page" in {

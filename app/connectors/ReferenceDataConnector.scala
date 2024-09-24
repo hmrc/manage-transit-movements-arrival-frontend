@@ -37,14 +37,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[List[A]], order: Order[A]): HttpReads[NonEmptySet[A]] =
-    (_: String, url: String, response: HttpResponse) => {
+    (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
           (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail *)
+              NonEmptySet.of(head, tail*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }
@@ -52,15 +52,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
           logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
           throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
-    }
 
   def getCustomsOfficesForCountry(countryCodes: String*)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {
     val query = countryCodes.map("data.countryId" -> _) :+ ("data.roles.role" -> "DES")
     val url   = url"${config.customsReferenceDataUrl}/lists/CustomsOffices"
     http
       .get(url)
-      .transform(_.withQueryStringParameters(query *))
-      .setHeader(headers *)
+      .transform(_.withQueryStringParameters(query*))
+      .setHeader(headers*)
       .execute[NonEmptySet[CustomsOffice]]
   }
 
@@ -68,7 +67,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/$listName"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[Country]]
   }
 
@@ -76,7 +75,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/Nationality"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[Nationality]]
   }
 
@@ -84,7 +83,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/UnLocodeExtended"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[UnLocode]]
   }
 
@@ -93,7 +92,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.unLocodeExtendedCode" -> unLocode))
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[UnLocode]]
       .map(_.head)
   }
@@ -102,7 +101,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/IncidentCode"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[IncidentCode]]
   }
 
@@ -110,7 +109,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfIdentificationIncident"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[QualifierOfIdentification]]
   }
 
@@ -118,7 +117,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfTheIdentification"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[QualifierOfIdentification]]
   }
 
@@ -126,7 +125,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/TypeOfLocation"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[TypeOfLocation]]
   }
 
@@ -134,7 +133,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[Identification]]
   }
 
@@ -142,7 +141,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.customsReferenceDataUrl}/lists/CountryWithoutZip"
     http
       .get(url)
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[CountryCode]]
   }
 
@@ -151,7 +150,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> country.code))
-      .setHeader(headers *)
+      .setHeader(headers*)
       .execute[NonEmptySet[CountryCode]]
       .map(_.head)
   }

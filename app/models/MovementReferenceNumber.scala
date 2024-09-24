@@ -57,17 +57,21 @@ object MovementReferenceNumber {
   private def isCheckCharacterValid(year: String, countryCode: String, serial: String, checkCharacter: String): Boolean =
     getCheckCharacter(year, countryCode, serial) == checkCharacter
 
-  /** @param year        year in 2-digit form (e.g. 24 = 2024)
-    * @param countryCode country code (e.g. FR = France)
-    * @param serial      serial number made up of 13 alphanumeric characters
-    * @return the check character following these steps:
-    *  1. Assign a numerical value to each letter of the alphabet, beginning with 10 for the letter A (multiples of 11 are omitted, hence B is 12)
-    *  1. Concatenate the year, country code and serial number and determine the numerical value for each character
-    *  1. Multiply each number by 2^position^, where position is the index of the character in the string (starting from 0)
-    *  1. Add all of the results together
-    *  1. Divide the result by 11 and find the remainder
-    *    - If the remainder is 0-9, return the remainder
-    *    - If the remainder is 10, return 0
+  /** @param year
+    *   year in 2-digit form (e.g. 24 = 2024)
+    * @param countryCode
+    *   country code (e.g. FR = France)
+    * @param serial
+    *   serial number made up of 13 alphanumeric characters
+    * @return
+    *   the check character following these steps:
+    *   1. Assign a numerical value to each letter of the alphabet, beginning with 10 for the letter A (multiples of 11 are omitted, hence B is 12)
+    *   1. Concatenate the year, country code and serial number and determine the numerical value for each character
+    *   1. Multiply each number by 2^position^, where position is the index of the character in the string (starting from 0)
+    *   1. Add all of the results together
+    *   1. Divide the result by 11 and find the remainder
+    *      - If the remainder is 0-9, return the remainder
+    *      - If the remainder is 10, return 0
     */
   def getCheckCharacter(year: String, countryCode: String, serial: String): String = {
     val input = s"$year$countryCode$serial"
