@@ -5,8 +5,6 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
-import navigation.Navigator
-import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -2,9 +2,7 @@ package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.$navRoute$
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.$package$.$className$Page
@@ -13,10 +11,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$package$.$className$View
-import navigation.{$navRoute$NavigatorProvider, Navigator}
+import navigation.$navRoute$NavigatorProvider
 import services.DateTimeService
 
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -82,7 +80,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, $className;format="decap"$Route)
         .withFormUrlEncodedBody(
