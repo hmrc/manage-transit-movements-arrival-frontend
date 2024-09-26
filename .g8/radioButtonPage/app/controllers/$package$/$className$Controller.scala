@@ -5,15 +5,13 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.{Mode, MovementReferenceNumber}
 import models.$package$.$className$
-import navigation.Navigator
-import navigation.annotations.$navRoute$
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$package$.$className$View
-import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
