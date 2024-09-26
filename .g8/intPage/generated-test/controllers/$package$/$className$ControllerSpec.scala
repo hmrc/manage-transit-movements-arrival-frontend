@@ -2,9 +2,8 @@ package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.$formProvider$
-import models.{NormalMode, UserAnswers}
-import navigation.Navigator
-import navigation.annotations.$navRoute$
+import models.NormalMode
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.$package$.$className$Page
@@ -13,7 +12,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$package$.$className$View
-import navigation.{$navRoute$NavigatorProvider, Navigator}
 
 import scala.concurrent.Future
 
@@ -71,7 +69,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, $className;format="decap"$Route)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
