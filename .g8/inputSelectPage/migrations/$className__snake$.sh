@@ -6,12 +6,29 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.$package$.routes"
 
 if [ ! -f ../conf/app.$package$.routes ]; then
-  echo "Write into prod.routes file"
-  awk '/health.Routes/ {\
-    print;\
-    print "";\
-    print "->         /manage-transit-movements/arrivals                   app.$package$.Routes"
-    next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
+  echo "Write into app.routes file"
+  awk '
+  /# microservice specific routes/ {
+    print;
+    print "";
+    next;
+  }
+  /^\$/ {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                                 app.$package$.Routes";
+      next;
+    }
+    print;
+    next;
+  }
+  {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                                 app.$package$.Routes";
+    }
+    print
+  }' ../conf/app.routes > tmp && mv tmp ../conf/app.routes
 fi
 
 echo "" >> ../conf/app.$package$.routes
@@ -28,7 +45,6 @@ echo "$package$.$className;format="decap"$.heading = $title$" >> ../conf/message
 echo "$package$.$className;format="decap"$.hintText = $title$ hint" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.label = $title$ label" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.placeholder = Select a $referenceClass;format="decap"$" >> ../conf/messages.en
-echo "$package$.$className;format="decap"$.change.hidden = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.required = Select the $referenceClass;format="decap"$" >> ../conf/messages.en
 
