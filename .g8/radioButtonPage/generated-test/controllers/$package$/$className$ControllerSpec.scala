@@ -2,10 +2,9 @@ package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import models.$package$.$className$
-import navigation.Navigator
-import navigation.annotations.$navRoute$
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.$package$.$className$Page
@@ -14,7 +13,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$package$.$className$View
-import navigation.{$navRoute$NavigatorProvider, Navigator}
 
 import scala.concurrent.Future
 
@@ -69,7 +67,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -7,7 +7,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DateInputViewBehaviours
 import views.html.$package$.$className$View
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 class $className$ViewSpec extends DateInputViewBehaviours {
 
@@ -27,7 +27,7 @@ class $className$ViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithDateInput
+  behave like pageWithDateInput()
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -4,8 +4,6 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.{Mode, MovementReferenceNumber}
-import navigation.Navigator
-import navigation.annotations.$navRoute$
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

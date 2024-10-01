@@ -6,12 +6,29 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.$package$.routes"
 
 if [ ! -f ../conf/app.$package$.routes ]; then
-  echo "Write into prod.routes file"
-  awk '/health.Routes/ {\
-    print;\
-    print "";\
-    print "->         /manage-transit-movements/arrival                   app.$package$.Routes"
-    next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
+  echo "Write into app.routes file"
+  awk '
+  /# microservice specific routes/ {
+    print;
+    print "";
+    next;
+  }
+  /^\$/ {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                                 app.$package$.Routes";
+      next;
+    }
+    print;
+    next;
+  }
+  {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                                 app.$package$.Routes";
+    }
+    print
+  }' ../conf/app.routes > tmp && mv tmp ../conf/app.routes
 fi
 
 echo "" >> ../conf/app.$package$.routes
@@ -28,7 +45,7 @@ echo "$package$.$className;format="decap"$.heading = $title$" >> ../conf/message
 echo "$package$.$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.hint = For example, 14 1 2020" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.required.all = Enter the date for $title$" >> ../conf/messages.en
-echo "$package$.$className;format="decap"$.error.required.two = The date for $title$" must include {0} and {1} >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.error.required.multiple = The date for $title$" must include {0} and {1} >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.required = The date for $title$ must include {0}" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.invalid = Enter a real date for $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.min.date = The date must be after {0}" >> ../conf/messages.en
