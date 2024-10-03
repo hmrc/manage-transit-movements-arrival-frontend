@@ -18,10 +18,6 @@ site.caption = Arrivals
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
-date.day.capitalized = Day
-date.month.capitalized = Month
-date.year.capitalized = Year
-
 address.postalCode = postal code
 address.country = country
 address.numberAndStreet = number and street name
