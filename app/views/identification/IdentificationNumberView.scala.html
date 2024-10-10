@@ -29,6 +29,11 @@
 
 @(form: Form[String], mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[?], messages: Messages)
 
+@html = {
+    <p class="govuk-body">@messages("identification.identificationNumber.paragraph1")</p>
+    <p class="govuk-body">@messages("identification.identificationNumber.paragraph2")</p>
+}
+
 @mainTemplate(
     title = messages("identification.identificationNumber.title"),
     showBackLink = true,
@@ -44,7 +49,7 @@
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("identification.identificationNumber.heading"),
                 caption = Some(messages("site.caption")),
-                additionalHtml = messages("identification.identificationNumber.paragraph").toParagraph,
+                additionalHtml = html
             ),
             hint = Some(messages("identification.identificationNumber.hint")),
             inputClass = InputSize.Width20

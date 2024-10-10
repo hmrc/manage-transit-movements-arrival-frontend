@@ -139,7 +139,8 @@ identification.authorisation.authorisationReferenceNumber.error.length = The aut
 
 identification.identificationNumber.title = What is the consignee’s EORI number or Trader Identification Number (TIN)?
 identification.identificationNumber.heading = What is the consignee’s EORI number or Trader Identification Number (TIN)?
-identification.identificationNumber.paragraph = The consignee is the person or organisation receiving the goods.
+identification.identificationNumber.paragraph1 = EORI number stands for Economic Operators Registration and Identification number. Both EORIs and TINs are unique references used to identify a business or individual that trades internationally in the EU.
+identification.identificationNumber.paragraph2 = The consignee is the person or organisation receiving the goods.
 identification.identificationNumber.hint = This number can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 identification.identificationNumber.checkYourAnswersLabel = Consignee EORI number or Trader Identification Number (TIN)
 identification.identificationNumber.error.required = Enter the consignee’s EORI number or Trader Identification Number (TIN)
