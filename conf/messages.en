@@ -153,7 +153,8 @@ locationOfGoods.caption = Arrivals - Location of goods
 
 locationOfGoods.addContactPerson.title = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.heading = Do you want to add a contact for the location of goods?
-locationOfGoods.addContactPerson.heading.paragraph = This is additional contact information for if Customs have any queries.
+locationOfGoods.addContactPerson.paragraph = This is additional contact information for if Customs have any queries.
+locationOfGoods.addContactPerson.hint = Adding a contact is optional.
 locationOfGoods.addContactPerson.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
 locationOfGoods.addContactPerson.change.hidden = if you want to add a contact for the location of goods
 locationOfGoods.addContactPerson.error.required = Select yes if you want to add a contact for the location of goods.

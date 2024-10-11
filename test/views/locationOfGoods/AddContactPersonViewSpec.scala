@@ -37,6 +37,10 @@ class AddContactPersonViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is additional contact information for if Customs have any queries.")
+
+  behave like pageWithHint("Adding a contact is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

@@ -44,8 +44,9 @@
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("locationOfGoods.addContactPerson.heading"),
                 caption = Some(messages("locationOfGoods.caption")),
-                additionalHtml = messages("locationOfGoods.addContactPerson.heading.paragraph").toParagraph
-            )
+                additionalHtml = messages("locationOfGoods.addContactPerson.paragraph").toParagraph
+            ),
+            hint = Some(Text(messages("locationOfGoods.addContactPerson.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
