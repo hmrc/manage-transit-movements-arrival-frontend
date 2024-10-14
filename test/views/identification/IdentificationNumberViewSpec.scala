@@ -44,6 +44,11 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent(
+    "p",
+    "EORI number stands for Economic Operators Registration and Identification number. Both EORIs and TINs are unique references used to identify a business or individual that trades internationally in the EU."
+  )
+
   behave like pageWithContent("p", "The consignee is the person or organisation receiving the goods.")
 
   behave like pageWithHint(
