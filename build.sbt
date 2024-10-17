@@ -39,7 +39,7 @@ lazy val microservice = (project in file("."))
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*TestOnlyController;.*LabelSize;.*LegendSize",
     ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 85,
+    ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq(
