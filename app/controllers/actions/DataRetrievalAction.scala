@@ -16,9 +16,11 @@
 
 package controllers.actions
 
+import connectors.CacheConnector.APIVersionHeaderMismatchException
 import models.MovementReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.mvc.ActionTransformer
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -26,28 +28,34 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository, ec: ExecutionContext) extends DataRetrievalActionProvider {
+class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository)(implicit ec: ExecutionContext) extends DataRetrievalActionProvider {
 
-  def apply(mrn: MovementReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
-    new DataRetrievalAction(mrn, ec, sessionRepository)
+  def apply(mrn: MovementReferenceNumber): ActionRefiner[IdentifierRequest, OptionalDataRequest] =
+    new DataRetrievalAction(mrn, sessionRepository)
 }
 
 trait DataRetrievalActionProvider {
 
-  def apply(mrn: MovementReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest]
+  def apply(mrn: MovementReferenceNumber): ActionRefiner[IdentifierRequest, OptionalDataRequest]
 }
 
 class DataRetrievalAction(
   mrn: MovementReferenceNumber,
-  implicit protected val executionContext: ExecutionContext,
   sessionRepository: SessionRepository
-) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+)(implicit protected val executionContext: ExecutionContext)
+    extends ActionRefiner[IdentifierRequest, OptionalDataRequest] {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    sessionRepository.get(mrn.toString).map {
-      userAnswers =>
-        OptionalDataRequest(request.request, request.eoriNumber, userAnswers)
-    }
+    sessionRepository
+      .get(mrn.toString)
+      .map {
+        userAnswers =>
+          Right(OptionalDataRequest(request.request, request.eoriNumber, userAnswers))
+      }
+      .recover {
+        case _: APIVersionHeaderMismatchException =>
+          Left(Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad()))
+      }
   }
 }

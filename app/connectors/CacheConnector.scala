@@ -17,14 +17,15 @@
 package connectors
 
 import config.{FrontendAppConfig, PhaseConfig}
+import connectors.CacheConnector.APIVersionHeaderMismatchException
 import models.UserAnswers
 import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.*
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
-import play.api.libs.ws.JsonBodyWritables.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +37,7 @@ class CacheConnector @Inject() (
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  private val baseUrl = s"${config.cacheUrl}"
+  private val baseUrl = config.cacheUrl
 
   private val headers = Seq(
     "APIVersion" -> phaseConfig.values.apiVersion.toString
@@ -51,7 +52,10 @@ class CacheConnector @Inject() (
       .execute[UserAnswers]
       .map(Some(_))
       .recover {
-        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
+        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
+          None
+        case e: UpstreamErrorResponse if e.statusCode == BAD_REQUEST =>
+          throw new APIVersionHeaderMismatchException()
       }
   }
 
@@ -101,4 +105,9 @@ class CacheConnector @Inject() (
       }
   }
 
+}
+
+object CacheConnector {
+
+  class APIVersionHeaderMismatchException extends Exception("APIVersion header did not align with saved user answers")
 }

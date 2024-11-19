@@ -17,53 +17,29 @@
 package controllers.actions
 
 import base.SpecBase
+import connectors.CacheConnector.APIVersionHeaderMismatchException
 import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
-import org.scalatest.OptionValues
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{Assertion, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContent, Request, Results}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.mvc.Result
+import play.api.test.Helpers.*
 import repositories.SessionRepository
+import uk.gov.hmrc.http.BadRequestException
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
 
-  val sessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
-  override lazy val app: Application = {
-
-    import play.api.inject._
-
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[SessionRepository].toInstance(sessionRepository)
-      )
-      .build()
-  }
-
-  def harness(mrn: MovementReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
-
-    lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
-
-    actionProvider(mrn)
-      .invokeBlock(
-        IdentifierRequest(FakeRequest(GET, "/").asInstanceOf[Request[AnyContent]], EoriNumber("")),
-        {
-          (request: OptionalDataRequest[AnyContent]) =>
-            f(request)
-            Future.successful(Results.Ok)
-        }
-      )
-      .futureValue
+  private class Harness(sessionRepository: SessionRepository) extends DataRetrievalAction(mrn, sessionRepository) {
+    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = refine(request)
   }
 
   "a data retrieval action" - {
@@ -72,9 +48,17 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
 
       "where there are no existing answers for this MRN" in {
 
-        when(sessionRepository.get(any())(any())) `thenReturn` Future.successful(None)
+        when(mockSessionRepository.get(any())(any()))
+          .thenReturn(Future.successful(None))
 
-        harness(mrn, request => request.userAnswers must not be defined)
+        val harness = new Harness(mockSessionRepository)
+
+        val result = harness.callRefine(IdentifierRequest(fakeRequest, eoriNumber))
+
+        whenReady[Either[Result, OptionalDataRequest[?]], Assertion](result) {
+          result =>
+            result.value.userAnswers must not be defined
+        }
       }
     }
 
@@ -82,9 +66,33 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
 
       "when there are existing answers for this MRN" in {
 
-        when(sessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(UserAnswers(mrn, eoriNumber)))
+        when(mockSessionRepository.get(any())(any()))
+          .thenReturn(Future.successful(Some(emptyUserAnswers)))
 
-        harness(mrn, request => request.userAnswers mustBe defined)
+        val harness = new Harness(mockSessionRepository)
+
+        val result = harness.callRefine(IdentifierRequest(fakeRequest, eoriNumber))
+
+        whenReady[Either[Result, OptionalDataRequest[?]], Assertion](result) {
+          result =>
+            result.value.userAnswers mustBe defined
+        }
+      }
+    }
+
+    "must redirect to 'This arrival notification is no longer available'" - {
+
+      "when call returns a 400" in {
+
+        when(mockSessionRepository.get(any())(any()))
+          .thenReturn(Future.failed(new APIVersionHeaderMismatchException()))
+
+        val harness = new Harness(mockSessionRepository)
+
+        val result = harness.callRefine(IdentifierRequest(fakeRequest, eoriNumber)).map(_.left.value)
+
+        status(result) mustBe 303
+        redirectLocation(result).value mustBe controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
       }
     }
   }
