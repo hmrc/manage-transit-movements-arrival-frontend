@@ -264,7 +264,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           CustomsOffice("GBtestId2", "testName2", None, "GB")
         )
 
-        connector.getCustomsOfficesForCountry(countryIds: _*).futureValue mustBe expectedResult
+        connector.getCustomsOfficesForCountry(countryIds*).futureValue mustBe expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {

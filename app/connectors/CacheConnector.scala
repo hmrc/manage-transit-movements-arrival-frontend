@@ -16,32 +16,38 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.UserAnswers
 import play.api.Logging
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
-import play.api.libs.ws.JsonBodyWritables._
+import play.api.libs.ws.JsonBodyWritables.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2
+  http: HttpClientV2,
+  phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
+
+  private val headers = Seq(
+    "APIVersion" -> phaseConfig.values.apiVersion.toString
+  )
 
   def get(mrn: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     val url = url"$baseUrl/user-answers/$mrn"
 
     http
       .get(url)
+      .setHeader(headers*)
       .execute[UserAnswers]
       .map(Some(_))
       .recover {
@@ -87,6 +93,7 @@ class CacheConnector @Inject() (
     val url = url"$baseUrl/user-answers"
     http
       .put(url)
+      .setHeader(headers*)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
       .map {
