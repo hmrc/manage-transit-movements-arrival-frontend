@@ -37,7 +37,7 @@ class DraftNoLongerAvailableViewSpec extends ViewBehaviours {
 
   behave like pageWithContent(
     "p",
-    "You cannot access any arrival notification you started before the NCTS 5 update on 21 January."
+    "You cannot access any arrival notifications you started before the NCTS 5 update on 21 January."
   )
 
   behave like pageWithLink(

@@ -31,7 +31,7 @@ error.summary.title = There is a problem
 
 draftNoLongerAvailable.title = This arrival notification is no longer available
 draftNoLongerAvailable.heading = This arrival notification is no longer available
-draftNoLongerAvailable.paragraph = You cannot access any arrival notification you started before the NCTS 5 update on 21 January.
+draftNoLongerAvailable.paragraph = You cannot access any arrival notifications you started before the NCTS 5 update on 21 January.
 draftNoLongerAvailable.newArrival = Make a new arrival notification
 draftNoLongerAvailable.button = View arrival notifications
 
