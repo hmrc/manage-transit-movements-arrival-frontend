@@ -16,7 +16,8 @@
 
 package controllers.identification
 
-import controllers.actions._
+import connectors.CacheConnector.APIVersionHeaderMismatchException
+import controllers.actions.*
 import forms.identification.MovementReferenceNumberFormProvider
 import models.{CheckMode, Mode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
 import navigation.ArrivalNavigatorProvider
@@ -84,6 +85,9 @@ class MovementReferenceNumberController @Inject() (
                   case _ =>
                     Future.successful(redirect(userAnswers))
                 }
+            } recover {
+              case _: APIVersionHeaderMismatchException =>
+                Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad())
             }
         )
   }

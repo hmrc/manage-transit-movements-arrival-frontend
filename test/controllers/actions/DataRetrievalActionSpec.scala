@@ -29,7 +29,6 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.Result
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import uk.gov.hmrc.http.BadRequestException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -85,7 +84,7 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
       "when call returns a 400" in {
 
         when(mockSessionRepository.get(any())(any()))
-          .thenReturn(Future.failed(new APIVersionHeaderMismatchException()))
+          .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn.value)))
 
         val harness = new Harness(mockSessionRepository)
 

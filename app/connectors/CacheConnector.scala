@@ -55,7 +55,7 @@ class CacheConnector @Inject() (
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           None
         case e: UpstreamErrorResponse if e.statusCode == BAD_REQUEST =>
-          throw new APIVersionHeaderMismatchException()
+          throw new APIVersionHeaderMismatchException(mrn)
       }
   }
 
@@ -109,5 +109,5 @@ class CacheConnector @Inject() (
 
 object CacheConnector {
 
-  class APIVersionHeaderMismatchException extends Exception("APIVersion header did not align with saved user answers")
+  class APIVersionHeaderMismatchException(mrn: String) extends Exception(s"APIVersion header did not align with saved user answers for MRN $mrn")
 }
