@@ -25,13 +25,28 @@ import javax.inject.Inject
 
 class MovementReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
+  private val requiredKey: String         = "movementReferenceNumber.error.required"
+  private val lengthKey: String           = "movementReferenceNumber.error.length"
+  private val invalidCharacterKey: String = "movementReferenceNumber.error.invalidCharacter"
+  private val invalidMRNKey: String       = "movementReferenceNumber.error.invalidMRN"
+
   def apply(): Form[MovementReferenceNumber] =
     Form(
       "value" -> mrn(
-        "movementReferenceNumber.error.required",
-        "movementReferenceNumber.error.length",
-        "movementReferenceNumber.error.invalidCharacter",
-        "movementReferenceNumber.error.invalidMRN"
+        requiredKey,
+        lengthKey,
+        invalidCharacterKey,
+        invalidMRNKey
+      )
+    )
+
+  def applyUnsafe(): Form[MovementReferenceNumber] =
+    Form(
+      "value" -> mrnUnsafe(
+        requiredKey,
+        lengthKey,
+        invalidCharacterKey,
+        invalidMRNKey
       )
     )
 }

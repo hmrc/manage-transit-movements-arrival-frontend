@@ -16,14 +16,15 @@
 
 package forms.mappings
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.PhaseConfig
 import generators.Generators
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 
-class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks with Generators {
+class MappingsSpec extends SpecBase with AppWithDefaultMockFixtures with Mappings with ScalaCheckPropertyChecks with Generators {
 
   "text" - {
 
@@ -197,16 +198,106 @@ class MappingsSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks 
 
   "mrn" - {
 
-    val testForm = Form(
-      "value" -> mrn("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")
+    def testFormBuilder(implicit phaseConfig: PhaseConfig) = Form(
+      "value" -> mrn("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")(phaseConfig)
     )
 
-    "must bind valid MRNs" in {
+    val testForm = testFormBuilder
 
-      forAll(arbitrary[MovementReferenceNumber]) {
-        mrn =>
-          val result = testForm.bind(Map("value" -> mrn.toString))
-          result.get mustEqual mrn
+    "must bind valid MRNs" - {
+
+      "when transition" in {
+        val app         = transitionApplicationBuilder().build()
+        val phaseConfig = app.injector.instanceOf[PhaseConfig]
+
+        val testForm = testFormBuilder(phaseConfig)
+
+        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber(phaseConfig))) {
+          mrn =>
+            val result = testForm.bind(Map("value" -> mrn.toString))
+            result.get mustEqual mrn
+        }
+      }
+
+      "when final" in {
+        val app         = postTransitionApplicationBuilder().build()
+        val phaseConfig = app.injector.instanceOf[PhaseConfig]
+
+        val testForm = testFormBuilder(phaseConfig)
+
+        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber(phaseConfig))) {
+          mrn =>
+            val result = testForm.bind(Map("value" -> mrn.toString))
+            result.get mustEqual mrn
+        }
+      }
+    }
+
+    "must not bind invalid MRNs" - {
+
+      "must not bind when value is longer than max length" in {
+
+        forAll(stringsLongerThan(MovementReferenceNumber.Constants.length)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.length"))
+        }
+      }
+
+      "must not bind when value is shorter than max length" in {
+
+        forAll(stringsWithMaxLength(MovementReferenceNumber.Constants.length - 1)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.length"))
+        }
+      }
+
+      "must not bind when value contains an invalid character" in {
+        forAll(stringsWithLength(MovementReferenceNumber.Constants.length - 1)) {
+          value =>
+            val valueStartingWithUnderscore = s"_$value"
+            val result                      = testForm.bind(Map("value" -> valueStartingWithUnderscore))
+            result.errors must contain(FormError("value", "error.invalid.invalidCharacter"))
+        }
+      }
+
+      "must not bind when value is not a valid MRN" in {
+
+        forAll(alphaStringWithLength(MovementReferenceNumber.Constants.length)) {
+          invalidMrn =>
+            val result = testForm.bind(Map("value" -> invalidMrn))
+            result.errors must contain(FormError("value", "error.invalidMRN"))
+        }
+      }
+    }
+
+  }
+
+  "mrnUnsafe" - {
+
+    val testForm = Form(
+      "value" -> mrnUnsafe("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")
+    )
+
+    "must bind valid MRNs" - {
+
+      "when transition" in {
+
+        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumberTransition)) {
+          mrn =>
+            val result = testForm.bind(Map("value" -> mrn.toString))
+            result.get mustEqual mrn
+        }
+      }
+
+      "when final" in {
+
+        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumberFinal)) {
+          mrn =>
+            val result = testForm.bind(Map("value" -> mrn.toString))
+            result.get mustEqual mrn
+        }
       }
     }
 

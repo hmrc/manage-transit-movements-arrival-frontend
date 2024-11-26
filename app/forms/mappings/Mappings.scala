@@ -74,6 +74,14 @@ trait Mappings extends Formatters with Constraints {
   )(implicit phaseConfig: PhaseConfig): FieldMapping[MovementReferenceNumber] =
     of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
 
+  protected def mrnUnsafe(
+    requiredKey: String,
+    lengthKey: String,
+    invalidCharacterKey: String,
+    invalidMRNKey: String
+  ): FieldMapping[MovementReferenceNumber] =
+    of(mrnFormatterUnsafe(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
+
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],
     errorKey: String = "error.required",

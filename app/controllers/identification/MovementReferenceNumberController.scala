@@ -19,8 +19,10 @@ package controllers.identification
 import connectors.CacheConnector.APIVersionHeaderMismatchException
 import controllers.actions.*
 import forms.identification.MovementReferenceNumberFormProvider
-import models.{CheckMode, Mode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
+import models.requests.IdentifierRequest
+import models.{CheckMode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
 import navigation.ArrivalNavigatorProvider
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -42,7 +44,9 @@ class MovementReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.apply()
+
+  private val unsafeForm = formProvider.applyUnsafe()
 
   def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
@@ -56,39 +60,54 @@ class MovementReferenceNumberController @Inject() (
 
   def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-          value =>
-            sessionRepository.get(value.toString).flatMap {
-              case None =>
-                def redirect(userAnswers: Option[UserAnswers], mode: Mode): Result =
+      bind(unsafeForm) {
+        value =>
+          sessionRepository.get(value.toString).flatMap {
+            userAnswers =>
+              bind(form) {
+                mrn =>
                   userAnswers match {
-                    case Some(value) => Redirect(navigatorProvider(mode).nextPage(value, None))
-                    case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+                    case None =>
+                      def redirect(userAnswers: Option[UserAnswers]): Result =
+                        userAnswers match {
+                          case Some(value) => Redirect(navigatorProvider(NormalMode).nextPage(value, None))
+                          case None        => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+                        }
+
+                      sessionRepository.put(mrn.toString).flatMap {
+                        _ => sessionRepository.get(mrn.toString).map(redirect)
+                      }
+                    case Some(userAnswers) =>
+                      def redirect(userAnswers: UserAnswers): Result =
+                        Redirect(navigatorProvider(CheckMode).nextPage(userAnswers, None))
+
+                      userAnswers.submissionStatus match {
+                        case SubmissionStatus.Submitted =>
+                          val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+                          sessionRepository.set(updatedUserAnswers).map {
+                            _ => redirect(updatedUserAnswers)
+                          }
+                        case _ =>
+                          Future.successful(redirect(userAnswers))
+                      }
                   }
-
-                sessionRepository.put(value.toString).flatMap {
-                  _ => sessionRepository.get(value.toString).map(redirect(_, NormalMode))
-                }
-              case Some(userAnswers) =>
-                def redirect(userAnswers: UserAnswers): Result =
-                  Redirect(navigatorProvider(CheckMode).nextPage(userAnswers, None))
-
-                userAnswers.submissionStatus match {
-                  case SubmissionStatus.Submitted =>
-                    val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
-                    sessionRepository.set(updatedUserAnswers).map {
-                      _ => redirect(updatedUserAnswers)
-                    }
-                  case _ =>
-                    Future.successful(redirect(userAnswers))
-                }
-            } recover {
-              case _: APIVersionHeaderMismatchException =>
-                Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad())
-            }
-        )
+              }
+          } recover {
+            case _: APIVersionHeaderMismatchException =>
+              Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad())
+          }
+      }
   }
+
+  private def bind(
+    form: Form[MovementReferenceNumber]
+  )(
+    block: MovementReferenceNumber => Future[Result]
+  )(implicit request: IdentifierRequest[?]): Future[Result] =
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        block
+      )
 }
