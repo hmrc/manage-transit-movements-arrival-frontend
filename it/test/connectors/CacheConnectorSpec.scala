@@ -16,14 +16,16 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import connectors.CacheConnector.APIVersionHeaderMismatchException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.UserAnswers
 import org.scalacheck.Gen
+import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
 
@@ -59,6 +61,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "must return user answers when status is Ok" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
@@ -68,12 +71,27 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "return None when no cached data found for provided mrn" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(notFound())
         )
 
         val result: Option[UserAnswers] = await(connector.get(mrn.toString))
 
         result mustBe None
+      }
+
+      "throw BadRequestException when 400 returned" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
+            .willReturn(badRequest())
+        )
+
+        lazy val result = connector.get(mrn.toString)
+
+        whenReady[Throwable, Assertion](result.failed) {
+          _ mustBe an[APIVersionHeaderMismatchException]
+        }
       }
     }
 
@@ -115,6 +133,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "must return true when status is Ok" in {
         server.stubFor(
           put(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
@@ -129,6 +148,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         server.stubFor(
           put(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(aResponse().withStatus(status))
         )
 

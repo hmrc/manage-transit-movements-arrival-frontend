@@ -17,15 +17,16 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.CacheConnector.APIVersionHeaderMismatchException
 import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, SubmissionStatus, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.identification.MovementReferenceNumberView
 
 import scala.concurrent.Future
@@ -164,6 +165,52 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       contentAsString(result) mustEqual
         view(filledForm)(request, messages).toString
+    }
+
+    "must redirect to 'draft no longer available' for a APIVersionHeaderMismatchException exception" - {
+      val mrn = "01YH1DI5N73MAQI1Y8" // only valid against MRN regex in transition
+
+      "when transition" in {
+        val app = transitionApplicationBuilder().build()
+        running(app) {
+          when(mockSessionRepository.get(any())(any()))
+            .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
+
+          val request = FakeRequest(POST, movementReferenceNumberRoute)
+            .withFormUrlEncodedBody(("value", mrn))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
+
+          verify(mockSessionRepository, times(1)).get(eqTo(mrn))(any())
+          verify(mockSessionRepository, never()).put(any())(any())
+        }
+      }
+
+      "when final" in {
+        val app = postTransitionApplicationBuilder().build()
+        running(app) {
+          when(mockSessionRepository.get(any())(any()))
+            .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
+
+          val request = FakeRequest(POST, movementReferenceNumberRoute)
+            .withFormUrlEncodedBody(("value", mrn))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
+
+          verify(mockSessionRepository, times(1)).get(eqTo(mrn))(any())
+          verify(mockSessionRepository, never()).put(any())(any())
+        }
+      }
     }
   }
 }

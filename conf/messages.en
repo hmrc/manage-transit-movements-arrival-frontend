@@ -29,6 +29,12 @@ qualifierOfIdentification.Z = Address
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+draftNoLongerAvailable.title = This arrival notification is no longer available
+draftNoLongerAvailable.heading = This arrival notification is no longer available
+draftNoLongerAvailable.paragraph = You cannot access any arrival notifications you started before the NCTS 5 update on 21 January.
+draftNoLongerAvailable.newArrival = Make a new arrival notification
+draftNoLongerAvailable.button = View arrival notifications
+
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.paragraph1 = We saved your answers. They will be available for 30 days.

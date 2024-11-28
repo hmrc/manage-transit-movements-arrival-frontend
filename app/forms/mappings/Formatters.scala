@@ -104,6 +104,23 @@ trait Formatters {
     invalidCharacterKey: String,
     invalidMRNKey: String
   )(implicit phaseConfig: PhaseConfig): Formatter[MovementReferenceNumber] =
+    mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey, MovementReferenceNumber.validate)
+
+  private[mappings] def mrnFormatterUnsafe(
+    requiredKey: String,
+    lengthKey: String,
+    invalidCharacterKey: String,
+    invalidMRNKey: String
+  ): Formatter[MovementReferenceNumber] =
+    mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey, MovementReferenceNumber.apply)
+
+  private def mrnFormatter(
+    requiredKey: String,
+    lengthKey: String,
+    invalidCharacterKey: String,
+    invalidMRNKey: String,
+    f: String => Option[MovementReferenceNumber]
+  ): Formatter[MovementReferenceNumber] =
     new Formatter[MovementReferenceNumber] {
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], MovementReferenceNumber] =
@@ -115,7 +132,7 @@ trait Formatters {
             case str if str.trim.nonEmpty && !str.matches(MovementReferenceNumber.Constants.validCharactersRegex) =>
               Left(Seq(FormError(key, invalidCharacterKey)))
             case str =>
-              MovementReferenceNumber.validate(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidMRNKey))))
+              f(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidMRNKey))))
           }
 
       override def unbind(key: String, value: MovementReferenceNumber): Map[String, String] =
