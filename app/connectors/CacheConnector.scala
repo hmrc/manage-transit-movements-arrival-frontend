@@ -18,7 +18,8 @@ package connectors
 
 import config.{FrontendAppConfig, PhaseConfig}
 import connectors.CacheConnector.APIVersionHeaderMismatchException
-import models.UserAnswers
+import models.LockCheck.*
+import models.{LockCheck, UserAnswers}
 import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.Json
@@ -71,14 +72,18 @@ class CacheConnector @Inject() (
       }
   }
 
-  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[LockCheck] = {
     val url = url"$baseUrl/user-answers/${userAnswers.mrn}/lock"
 
     http
       .get(url)
       .execute[HttpResponse]
       .map {
-        _.status == OK
+        _.status match {
+          case OK     => Unlocked
+          case LOCKED => Locked
+          case _      => LockCheckFailure
+        }
       }
   }
 

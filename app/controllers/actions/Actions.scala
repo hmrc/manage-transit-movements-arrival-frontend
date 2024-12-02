@@ -28,17 +28,18 @@ class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredActionProvider,
-  indexRequiredAction: IndexRequiredActionProvider
+  indexRequiredAction: IndexRequiredActionProvider,
+  lockAction: LockActionProvider
 ) {
 
   def getData(mrn: MovementReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
     identifierAction andThen dataRetrievalActionProvider(mrn)
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
-    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = false)
+    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = false) andThen lockAction()
 
   def requireDataIgnoreSubmissionStatus(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
-    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = true)
+    getData(mrn) andThen dataRequiredAction(ignoreSubmissionStatus = true) andThen lockAction()
 
   def requireIndex(mrn: MovementReferenceNumber, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
     requireData(mrn) andThen indexRequiredAction(section, addAnother)
