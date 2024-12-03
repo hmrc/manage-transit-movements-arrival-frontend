@@ -33,4 +33,6 @@ GET        /cannot-use-service-no-eori                       controllers.Unautho
 GET        /cannot-open                                      controllers.LockedController.onPageLoad()
 POST       /cannot-open                                      controllers.LockedController.onSubmit()
 
+GET        /:mrn/delete-lock                                 controllers.DeleteLockController.delete(mrn: MovementReferenceNumber, continue: Option[RedirectUrl])
+
 GET        /:mrn/arrival-sent                                controllers.DeclarationSubmittedController.onPageLoad(mrn: MovementReferenceNumber)
