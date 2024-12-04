@@ -120,7 +120,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "no incident is found" in {
@@ -147,7 +147,7 @@ class ConfirmRemoveIncidentControllerSpec extends SpecBase with AppWithDefaultMo
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when no incident is found" in {

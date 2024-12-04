@@ -23,7 +23,7 @@
     button: Button
 )
 
-@()(implicit request: Request[?], messages: Messages)
+@(mrn: Option[MovementReferenceNumber])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("session_expired.title"),
@@ -31,7 +31,7 @@
     canSignOut = false
 ) {
 
-    @formHelper(action = routes.SessionExpiredController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SessionExpiredController.onSubmit(mrn), Symbol("autoComplete") -> "off") {
         @heading(messages("session_expired.heading"))
 
         <p class="govuk-body">@messages("session_expired.paragraph1")</p>

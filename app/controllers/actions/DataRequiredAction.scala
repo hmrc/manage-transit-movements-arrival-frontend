@@ -17,7 +17,7 @@
 package controllers.actions
 
 import controllers.routes
-import models.SubmissionStatus
+import models.{MovementReferenceNumber, SubmissionStatus}
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -25,7 +25,7 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredAction(ignoreSubmissionStatus: Boolean)(implicit val executionContext: ExecutionContext)
+class DataRequiredAction(mrn: MovementReferenceNumber, ignoreSubmissionStatus: Boolean)(implicit val executionContext: ExecutionContext)
     extends ActionRefiner[OptionalDataRequest, DataRequest] {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
@@ -33,16 +33,16 @@ class DataRequiredAction(ignoreSubmissionStatus: Boolean)(implicit val execution
       case Some(data) if ignoreSubmissionStatus || data.submissionStatus != SubmissionStatus.Submitted =>
         Future.successful(Right(DataRequest(request.request, request.eoriNumber, data)))
       case _ =>
-        Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
+        Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad(Some(mrn)))))
     }
 }
 
 trait DataRequiredActionProvider {
-  def apply(ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest]
+  def apply(mrn: MovementReferenceNumber, ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest]
 }
 
 class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredActionProvider {
 
-  override def apply(ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest] =
-    new DataRequiredAction(ignoreSubmissionStatus)
+  override def apply(mrn: MovementReferenceNumber, ignoreSubmissionStatus: Boolean): ActionRefiner[OptionalDataRequest, DataRequest] =
+    new DataRequiredAction(mrn, ignoreSubmissionStatus)
 }
