@@ -35,7 +35,10 @@ class LockedViewSpec extends ViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "Another person from your organisation is currently working on this declaration. You cannot open it until they’re finished.")
+  behave like pageWithContent(
+    "p",
+    "Another person from your organisation is currently working on this arrivals notification. You cannot open it until they’re finished."
+  )
 
-  behave like pageWithSubmitButton("Return to drafts")
+  behave like pageWithSubmitButton("Return to arrivals notifications")
 }
