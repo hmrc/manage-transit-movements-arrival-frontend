@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
-  private class Harness(ignoreSubmissionStatus: Boolean) extends DataRequiredAction(ignoreSubmissionStatus) {
+  private class Harness(ignoreSubmissionStatus: Boolean) extends DataRequiredAction(mrn, ignoreSubmissionStatus) {
     def callRefine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = refine(request)
   }
 
@@ -51,7 +51,7 @@ class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefa
           val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None)).map(_.left.value)
 
           status(result) mustBe 303
-          redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad(Some(mrn)).url
         }
       }
 
@@ -66,7 +66,7 @@ class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefa
             val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers))).map(_.left.value)
 
             status(result) mustBe 303
-            redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+            redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad(Some(mrn)).url
           }
         }
 
@@ -104,7 +104,7 @@ class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefa
           val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None)).map(_.left.value)
 
           status(result) mustBe 303
-          redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad(Some(mrn)).url
         }
       }
 

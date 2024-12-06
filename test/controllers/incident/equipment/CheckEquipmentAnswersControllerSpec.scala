@@ -77,7 +77,7 @@ class CheckEquipmentAnswersControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
     }
 
     "must redirect to next page" in {

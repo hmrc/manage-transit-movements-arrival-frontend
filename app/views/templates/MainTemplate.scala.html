@@ -48,7 +48,7 @@
             timeout = Some(appConfig.timeoutSeconds),
             countdown = Some(appConfig.countdownSeconds),
             keepAliveUrl = Some(routes.KeepAliveController.keepAlive(mrn.map(_.toString)).url),
-            signOutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+            signOutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad(mrn).url)
         ))
     }
 
@@ -70,7 +70,7 @@
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
             serviceUrl = Some(appConfig.serviceUrl),
-            signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
+            signOutUrl = if (canSignOut) Some(appConfig.signOutAndUnlockUrl(mrn)) else None,
         ),
         banners = Banners(
             phaseBanner = Some(betaBanner()),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,33 @@
 package controllers
 
 import config.FrontendAppConfig
-import models.MovementReferenceNumber
-import play.api.i18n.I18nSupport
+import controllers.actions.*
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SessionExpiredView
+import views.html.LockedView
 
 import javax.inject.Inject
 
-class SessionExpiredController @Inject() (
+class LockedController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  val config: FrontendAppConfig,
-  view: SessionExpiredView
+  view: LockedView,
+  config: FrontendAppConfig
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mrn: Option[MovementReferenceNumber]): Action[AnyContent] = Action {
+  def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
     implicit request =>
-      Ok(view(mrn))
+      Ok(view())
   }
 
-  def onSubmit(mrn: Option[MovementReferenceNumber]): Action[AnyContent] = Action {
-    _ =>
-      val url = s"${config.manageTransitMovementsUrl}/what-do-you-want-to-do"
+  def onSubmit(): Action[AnyContent] =
+    (Action andThen identify) {
+      Redirect {
+        config.manageTransitMovementsViewArrivalsUrl
+      }
+    }
 
-      mrn match
-        case Some(value) => Redirect(controllers.routes.DeleteLockController.delete(value, Some(RedirectUrl(url)))).withNewSession
-        case None        => Redirect(url).withNewSession
-  }
 }

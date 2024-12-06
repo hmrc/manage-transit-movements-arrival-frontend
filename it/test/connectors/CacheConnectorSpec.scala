@@ -19,7 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.CacheConnector.APIVersionHeaderMismatchException
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.UserAnswers
+import models.{LockCheck, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -162,21 +162,32 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
       lazy val url = s"/manage-transit-movements-arrival-cache/user-answers/${mrn.toString}/lock"
 
-      "must return true when status is Ok" in {
+      "must return Unlocked when status is Ok" in {
         server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(OK))
 
-        val result: Boolean = await(connector.checkLock(userAnswers))
+        val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe true
+        result mustBe LockCheck.Unlocked
       }
 
-      "return false for other responses" in {
+      "must return locked when status is locked" in {
+        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(LOCKED))
 
-        server.stubFor(get(urlEqualTo(url)) `willReturn` aResponse().withStatus(BAD_REQUEST))
+        val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        val result: Boolean = await(connector.checkLock(userAnswers))
+        result mustBe LockCheck.Locked
+      }
 
-        result mustBe false
+      "return LockCheckFailure for other responses" in {
+
+        forAll(Gen.choose(400: Int, 599: Int).retryUntil(_ != LOCKED)) {
+          errorStatus =>
+            server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(errorStatus)))
+
+            val result: LockCheck = await(connector.checkLock(userAnswers))
+
+            result mustBe LockCheck.LockCheckFailure
+        }
       }
     }
 

@@ -130,7 +130,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
 
     }
 
@@ -146,7 +146,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
 
     }
   }

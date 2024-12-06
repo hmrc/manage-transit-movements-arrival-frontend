@@ -20,6 +20,7 @@ import config.Constants.IncidentCode._
 import config.PhaseConfig
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models._
+import models.LockCheck.*
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex, mrnTransitionRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -239,4 +240,8 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 }

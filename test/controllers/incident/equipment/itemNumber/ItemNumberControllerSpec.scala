@@ -127,7 +127,7 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -141,7 +141,7 @@ class ItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
     }
   }
 }

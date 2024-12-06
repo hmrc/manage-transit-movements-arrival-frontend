@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,28 @@
  *@
 
 @import views.html.components.{Button, Heading}
+@import config.FrontendAppConfig
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    button: Button
+    button: Button,
+    config: FrontendAppConfig
 )
 
-@(mrn: Option[MovementReferenceNumber])(implicit request: Request[?], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("session_expired.title"),
-    showBackLink = false,
-    canSignOut = false
+    title = messages("locked.title"),
+    showBackLink = true
 ) {
+    @formHelper(action = routes.LockedController.onSubmit(), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = routes.SessionExpiredController.onSubmit(mrn), Symbol("autoComplete") -> "off") {
-        @heading(messages("session_expired.heading"))
+        @heading(messages("locked.heading"))
 
-        <p class="govuk-body">@messages("session_expired.paragraph1")</p>
+        <p class="govuk-body">@messages("locked.paragraph")</p>
 
-        <p class="govuk-body">@messages("session_expired.paragraph2")</p>
-
-        @button(messageKey = "session_expired.button", attributes = Map("id" -> "submit"))
+        @button(messageKey = "locked.button", attributes = Map("id" -> "submit"))
     }
 }

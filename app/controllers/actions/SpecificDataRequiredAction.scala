@@ -90,7 +90,7 @@ trait SpecificDataRequiredAction extends Logging {
     def rec(pages: List[Gettable[T]]): Either[Result, R] = pages match {
       case Nil =>
         logger.warn(s"${pages.mkString(", ")} are missing from user answers. Redirecting.")
-        Left(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Left(Redirect(controllers.routes.SessionExpiredController.onPageLoad(Some(userAnswers.mrn))))
       case head :: tail =>
         userAnswers.get(head) match {
           case Some(value) => Right(block(value))
