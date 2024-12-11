@@ -141,7 +141,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when no equipment is found" in {
@@ -169,7 +169,7 @@ class ConfirmRemoveEquipmentControllerSpec extends SpecBase with AppWithDefaultM
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when no equipment is found" in {

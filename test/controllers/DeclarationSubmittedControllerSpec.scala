@@ -86,7 +86,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when destination office is undefined" in {
@@ -98,7 +98,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
     }
   }

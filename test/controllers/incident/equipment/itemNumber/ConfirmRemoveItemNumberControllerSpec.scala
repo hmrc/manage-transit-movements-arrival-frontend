@@ -135,7 +135,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when no item number is found" in {
@@ -163,7 +163,7 @@ class ConfirmRemoveItemNumberControllerSpec extends SpecBase with AppWithDefault
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad(Some(mrn)).url
       }
 
       "when no item number is found" in {

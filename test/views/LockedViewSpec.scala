@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,27 @@ package views
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.SessionExpiredView
+import views.html.LockedView
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+class LockedViewSpec extends ViewBehaviours {
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[SessionExpiredView].apply(Some(mrn))(fakeRequest, messages)
+  override def view: HtmlFormat.Appendable = applyView()
 
-  override val prefix: String = "session_expired"
+  private def applyView(): HtmlFormat.Appendable =
+    injector.instanceOf[LockedView].apply()(fakeRequest, messages)
 
-  override def hasSignOutLink: Boolean = false
+  override val prefix: String = "locked"
 
   behave like pageWithTitle()
 
-  behave like pageWithoutBackLink()
+  behave like pageWithBackLink()
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "We saved your answers. They will be available for 30 days.")
+  behave like pageWithContent(
+    "p",
+    "Another person from your organisation is currently working on this arrival notification. You cannot open it until they’re finished."
+  )
 
-  behave like pageWithContent("p", "Sign in to view and send your notification.")
-
-  behave like pageWithSubmitButton("Sign in")
+  behave like pageWithSubmitButton("Return to arrival notifications")
 }

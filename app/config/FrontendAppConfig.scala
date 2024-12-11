@@ -17,6 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import controllers.routes
+import models.MovementReferenceNumber
 import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.mvc.Request
@@ -77,9 +79,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val cacheUrl: String = configuration.get[Service]("microservice.services.manage-transit-movements-arrival-cache").fullServiceUrl
 
-  val isTraderTest: Boolean = configuration.get[Boolean]("trader-test.enabled")
-  val feedbackEmail: String = configuration.get[String]("trader-test.feedback.email")
-  val feedbackForm: String  = configuration.get[String]("trader-test.feedback.link")
+  val isTraderTest: Boolean            = configuration.get[Boolean]("trader-test.enabled")
+  val feedbackEmail: String            = configuration.get[String]("trader-test.feedback.email")
+  val feedbackForm: String             = configuration.get[String]("trader-test.feedback.link")
+  val allowedRedirectUrls: Seq[String] = configuration.get[Seq[String]]("urls.allowedRedirects")
+
+  def signOutAndUnlockUrl(mrn: Option[MovementReferenceNumber]): String = mrn.map(routes.DeleteLockController.delete(_, None).url).getOrElse(signOutUrl)
 
   def mailto(implicit request: Request[?], messages: Messages): String = {
     val subject = messages("site.email.subject")

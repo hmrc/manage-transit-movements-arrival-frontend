@@ -48,6 +48,11 @@ unauthorised.paragraph2 = If you are waiting for an EORI number to be activated,
 unauthorised.signIn = sign in to HMRC services
 unauthorised.again.later = again later.
 
+locked.title = You cannot open this arrival notification right now
+locked.heading = You cannot open this arrival notification right now
+locked.paragraph = Another person from your organisation is currently working on this arrival notification. You cannot open it until they’re finished.
+locked.button = Return to arrival notifications
+
 technicalDifficulties.title = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.

@@ -19,7 +19,7 @@ package models
 import config.PhaseConfig
 import models.domain.StringFieldRegex._
 import play.api.libs.json._
-import play.api.mvc.PathBindable
+import play.api.mvc.{JavascriptLiteral, PathBindable}
 
 import scala.util.matching.Regex
 
@@ -149,4 +149,6 @@ object MovementReferenceNumber {
     override def unbind(key: String, value: MovementReferenceNumber): String =
       value.toString
   }
+
+  implicit val mrnJSLBinder: JavascriptLiteral[MovementReferenceNumber] = (value: MovementReferenceNumber) => s"""'${value.toString}'"""
 }

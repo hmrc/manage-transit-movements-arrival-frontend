@@ -11,8 +11,10 @@ GET        /assets/*file                                     controllers.Assets.
 GET        /keep-alive                                       controllers.KeepAliveController.keepAlive(mrn: Option[String] = None)
 GET        /:mrn/keep-alive                                  controllers.KeepAliveController.keepAlive(mrn: Option[String])
 
-GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
-POST       /this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit()
+GET        /this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad(mrn: Option[MovementReferenceNumber] = None)
+GET        /:mrn/this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad(mrn: Option[MovementReferenceNumber])
+POST       /this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit(mrn: Option[MovementReferenceNumber] = None)
+POST       /:mrn/this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit(mrn: Option[MovementReferenceNumber])
 
 GET        /bad-request                                      controllers.ErrorController.badRequest()
 GET        /not-found                                        controllers.ErrorController.notFound()
@@ -29,5 +31,10 @@ POST       /arrival-notification-not-available               controllers.DraftNo
 
 GET        /unauthorised-group-access                        controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 GET        /cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
+
+GET        /arrival-notification-cannot-open                controllers.LockedController.onPageLoad()
+POST       /arrival-notification-cannot-open                controllers.LockedController.onSubmit()
+
+GET        /:mrn/delete-lock                                 controllers.DeleteLockController.delete(mrn: MovementReferenceNumber, continue: Option[RedirectUrl])
 
 GET        /:mrn/arrival-sent                                controllers.DeclarationSubmittedController.onPageLoad(mrn: MovementReferenceNumber)
