@@ -38,7 +38,7 @@ object StringFieldRegex {
   val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
   val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
 
-  val mrnTransitionRegex: Regex = "([0-1][0-9]|[2][0-4])([A-Z]{2})([A-Z0-9]{13})([0-9])".r
+  val mrnTransitionRegex: Regex = "([0-1][0-9]|[2][0-5])([A-Z]{2})([A-Z0-9]{13})([0-9])".r
   val mrnFinalRegex: Regex      = "([2][4-9]|[3-9][0-9])([A-Z]{2})([A-Z0-9]{12}[J-M])([0-9])".r
 
 }
