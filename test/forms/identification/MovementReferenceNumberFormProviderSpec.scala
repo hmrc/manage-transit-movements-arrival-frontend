@@ -81,6 +81,12 @@ class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours with
           val result = form.bind(Map(fieldName -> str)).apply(fieldName)
           result.value.value mustBe str
         }
+
+        "must bind MRNs beginning with 25" in {
+          val str    = "25BE532000233131J2"
+          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+          result.value.value mustBe str
+        }
       }
     }
 
