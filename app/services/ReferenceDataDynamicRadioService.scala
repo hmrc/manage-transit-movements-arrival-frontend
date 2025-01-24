@@ -51,7 +51,7 @@ class ReferenceDataDynamicRadioService @Inject() (
     ): Seq[QualifierOfIdentification] =
       typeOfLocation.code match {
         case DesignatedLocation =>
-          qualifiersOfIdentification.filterNot(_.isOneOf(PostalCodeCode, CoordinatesCode, EoriNumberCode, AuthorisationNumberCode, AddressCode))
+          qualifiersOfIdentification.filterNot(_.isOneOf(CoordinatesCode, EoriNumberCode, AuthorisationNumberCode, AddressCode))
         case ApprovedPlace =>
           qualifiersOfIdentification.filterNot(_.isOneOf(CustomsOfficeCode, AuthorisationNumberCode))
         case Other =>

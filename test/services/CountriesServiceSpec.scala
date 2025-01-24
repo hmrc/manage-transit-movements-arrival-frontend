@@ -73,19 +73,6 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       }
     }
 
-    "getAddressPostcodeBasedCountries" - {
-      "must return a list of sorted address postcode based countries" in {
-
-        when(mockRefDataConnector.getCountries(any())(any(), any()))
-          .thenReturn(Future.successful(countries))
-
-        service.getAddressPostcodeBasedCountries().futureValue mustBe
-          SelectableList(Seq(country2, country3, country1))
-
-        verify(mockRefDataConnector).getCountries(eqTo("CountryAddressPostcodeBased"))(any(), any())
-      }
-    }
-
     "getCountriesWithoutZip" - {
       "must return a list of countries without ZIP codes" in {
 

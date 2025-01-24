@@ -18,7 +18,7 @@ package generators
 
 import config.Constants.IncidentCode._
 import config.PhaseConfig
-import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
+import models.AddressLine.{City, NumberAndStreet, PostalCode}
 import models._
 import models.LockCheck.*
 import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex, mrnTransitionRegex}
@@ -94,15 +94,6 @@ trait ModelGenerators {
       )
     }
 
-  implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
-    Arbitrary {
-      for {
-        streetNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
-        postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
-        country      <- arbitrary[Country]
-      } yield PostalCodeAddress(streetNumber, postalCode, country)
-    }
-
   implicit lazy val arbitraryUnLocode: Arbitrary[String] =
     Arbitrary {
       for {
@@ -132,7 +123,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
       for {
-        code        <- Gen.oneOf("T", "U", "V", "W", "X", "Y", "Z")
+        code        <- Gen.oneOf("U", "V", "W", "X", "Y", "Z")
         description <- nonEmptyString
       } yield QualifierOfIdentification(code, description)
     }
@@ -140,7 +131,7 @@ trait ModelGenerators {
   lazy val arbitraryNonLocationQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
     Arbitrary {
       for {
-        code        <- Gen.oneOf("T", "V", "X", "Y")
+        code        <- Gen.oneOf("V", "X", "Y")
         description <- nonEmptyString
       } yield QualifierOfIdentification(code, description)
     }

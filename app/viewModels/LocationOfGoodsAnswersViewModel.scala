@@ -45,7 +45,6 @@ object LocationOfGoodsAnswersViewModel {
           helper.unLocode,
           helper.country,
           helper.address,
-          helper.postalCode,
           helper.contactYesNo,
           helper.contactName,
           helper.contactPhoneNumber

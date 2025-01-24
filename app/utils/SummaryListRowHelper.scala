@@ -17,11 +17,11 @@
 package utils
 
 import models.reference.Country
-import models.{DynamicAddress, PostalCodeAddress, Radioable}
+import models.{DynamicAddress, Radioable}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.html.components._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import utils.Format.RichLocalDate
 
 import java.time.LocalDate
@@ -36,9 +36,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     }
 
   protected def formatAsDynamicAddress(address: DynamicAddress): Content =
-    HtmlContent(address.toString)
-
-  def formatAsPostalCodeAddress(address: PostalCodeAddress): Content =
     HtmlContent(address.toString)
 
   def formatAsText[T](answer: T): Content = s"$answer".toText

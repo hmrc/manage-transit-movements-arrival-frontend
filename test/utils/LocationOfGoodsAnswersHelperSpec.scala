@@ -20,11 +20,11 @@ import base.SpecBase
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
-import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods._
+import pages.locationOfGoods.*
 
 class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -340,41 +340,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
               action.visuallyHiddenText.get mustBe "address for the location of goods"
               action.id mustBe "address"
-          }
-        }
-      }
-    }
-
-    "postalCode" - {
-      "must return None" - {
-        "when AddressPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.postalCode
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddressPage defined" in {
-          forAll(arbitrary[PostalCodeAddress], arbitrary[Mode]) {
-            (address, mode) =>
-              val answers = emptyUserAnswers.setValue(PostalCodePage, address)
-
-              val helper = LocationOfGoodsAnswersHelper(answers, mode)
-              val result = helper.postalCode.get
-
-              result.key.value mustBe "Postal code"
-              result.value.value mustBe address.toString
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.PostalCodeController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "postal code for the location of goods"
-              action.id mustBe "postal-code"
           }
         }
       }
