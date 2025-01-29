@@ -16,14 +16,14 @@
 
 package models.journeyDomain.locationOfGoods
 
-import config.Constants.QualifierCode._
+import config.Constants.QualifierCode.*
 import models.identification.ProcedureType
-import models.journeyDomain._
-import models.reference.QualifierOfIdentification._
+import models.journeyDomain.*
+import models.reference.QualifierOfIdentification.*
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress}
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods._
+import pages.locationOfGoods.*
 
 trait QualifierOfIdentificationDomain extends JourneyDomainModel {
   val contactPerson: Option[ContactPersonDomain]
@@ -44,7 +44,6 @@ object QualifierOfIdentificationDomain {
             case CoordinatesCode         => CoordinatesDomain.userAnswersReader
             case CustomsOfficeCode       => CustomsOfficeDomain.userAnswersReader
             case UnlocodeCode            => UnlocodeDomain.userAnswersReader
-            case PostalCodeCode          => PostalCodeDomain.userAnswersReader
             case code                    => throw new Exception(s"Unexpected qualifier code $code")
           }
         }
@@ -115,15 +114,4 @@ object UnlocodeDomain {
       UnlocodePage.reader,
       AddContactPersonPage.filterOptionalDependent(identity)(ContactPersonDomain.userAnswersReader)
     ).map(UnlocodeDomain.apply)
-}
-
-case class PostalCodeDomain(address: PostalCodeAddress, contactPerson: Option[ContactPersonDomain]) extends QualifierOfIdentificationDomain
-
-object PostalCodeDomain {
-
-  implicit val userAnswersReader: Read[QualifierOfIdentificationDomain] =
-    (
-      PostalCodePage.reader,
-      AddContactPersonPage.filterOptionalDependent(identity)(ContactPersonDomain.userAnswersReader)
-    ).map(PostalCodeDomain.apply)
 }

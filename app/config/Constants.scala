@@ -31,7 +31,6 @@ object Constants {
   }
 
   object QualifierCode {
-    lazy val PostalCodeCode          = "T"
     lazy val UnlocodeCode            = "U"
     lazy val CustomsOfficeCode       = "V"
     lazy val CoordinatesCode         = "W"

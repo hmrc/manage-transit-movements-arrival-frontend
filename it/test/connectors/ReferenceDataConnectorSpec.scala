@@ -183,10 +183,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |{
       |  "data": [
       |    {
-      |     "qualifier": "T",
-      |     "description": "Postal code"
-      |    },
-      |    {
       |     "qualifier": "U",
       |     "description": "UN/LOCODE"
       |    },
@@ -461,7 +457,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectedResult = NonEmptySet.of(
-          QualifierOfIdentification("T", "Postal code"),
           QualifierOfIdentification("U", "UN/LOCODE"),
           QualifierOfIdentification("W", "GPS coordinates")
         )

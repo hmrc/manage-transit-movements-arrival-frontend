@@ -291,46 +291,6 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
           }
         }
       }
-
-      "when PostalCode qualifier" - {
-        val qualifier = qualifierOfIdentificationGen(PostalCodeCode).sample.value
-
-        "with no contact person" - {
-          "must have 4 rows" in {
-            val initialAnswers = emptyUserAnswers
-              .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-              .setValue(QualifierOfIdentificationPage, qualifier)
-              .setValue(AddContactPersonPage, false)
-
-            forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-              (mode, answers) =>
-                val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
-                section.addAnotherLink must not be defined
-            }
-          }
-        }
-
-        "with contact person" - {
-          "must have 6 rows" in {
-            val initialAnswers = emptyUserAnswers
-              .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-              .setValue(QualifierOfIdentificationPage, qualifier)
-              .setValue(AddContactPersonPage, true)
-
-            forAll(arbitrary[Mode], arbitraryLocationOfGoodsAnswers(initialAnswers)) {
-              (mode, answers) =>
-                val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
-
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 6
-                section.addAnotherLink must not be defined
-            }
-          }
-        }
-      }
     }
   }
 }

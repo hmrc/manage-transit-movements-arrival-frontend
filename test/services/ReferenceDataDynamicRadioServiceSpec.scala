@@ -33,7 +33,6 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
   private val mockRefDataConnector: ReferenceDataConnector       = mock[ReferenceDataConnector]
   private val service                                            = new ReferenceDataDynamicRadioService(mockRefDataConnector)
-  private val postalCode: QualifierOfIdentification              = QualifierOfIdentification("T", "Postal code")
   private val unlocode: QualifierOfIdentification                = QualifierOfIdentification("U", "UN/LOCODE")
   private val customsOfficeIdentifier: QualifierOfIdentification = QualifierOfIdentification("V", "Customs office identifier")
   private val coordinates: QualifierOfIdentification             = QualifierOfIdentification("W", "GPS coordinates")
@@ -41,7 +40,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
   private val authNumber: QualifierOfIdentification              = QualifierOfIdentification("Y", "Authorisation number")
   private val address: QualifierOfIdentification                 = QualifierOfIdentification("Z", "Free text")
 
-  private val ids = NonEmptySet.of(postalCode, unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address)
+  private val ids = NonEmptySet.of(unlocode, customsOfficeIdentifier, coordinates, eoriNumberIdentifier, authNumber, address)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -116,7 +115,6 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
           service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustBe
             Seq(
-              postalCode,
               unlocode,
               coordinates,
               eoriNumberIdentifier,
@@ -130,23 +128,23 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(ids))
 
-          service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(postalCode, unlocode, coordinates, address)
+          service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(unlocode, coordinates, address)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }
       }
     }
     "getIncidentIdentifications" - {
-      val postalCode: QualifierOfIdentification = QualifierOfIdentification("T", "Postal code")
-      val unlocode: QualifierOfIdentification   = QualifierOfIdentification("U", "UN/LOCODE")
-      val ids                                   = NonEmptySet.of(postalCode, unlocode)
+      val unlocode: QualifierOfIdentification    = QualifierOfIdentification("U", "UN/LOCODE")
+      val coordinates: QualifierOfIdentification = QualifierOfIdentification("W", "GPS coordinates")
+      val ids                                    = NonEmptySet.of(coordinates, unlocode)
 
       "must return a list of sorted transport identifications" in {
 
         when(mockRefDataConnector.getIncidentIdentifications()(any(), any()))
           .thenReturn(Future.successful(ids))
 
-        service.getIncidentIdentifications().futureValue mustBe Seq(postalCode, unlocode)
+        service.getIncidentIdentifications().futureValue mustBe Seq(unlocode, coordinates)
 
         verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
       }

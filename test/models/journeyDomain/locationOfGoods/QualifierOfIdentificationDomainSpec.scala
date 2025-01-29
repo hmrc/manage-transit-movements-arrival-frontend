@@ -17,16 +17,16 @@
 package models.journeyDomain.locationOfGoods
 
 import base.SpecBase
-import config.Constants.QualifierCode._
+import config.Constants.QualifierCode.*
 import generators.Generators
 import models.identification.ProcedureType
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods._
+import pages.locationOfGoods.*
 
 class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
   private val name          = Gen.alphaNumStr.sample.value
   private val tel           = Gen.alphaNumStr.sample.value
   private val unLocode      = arbitrary[String].sample.value
-  private val postalCode    = arbitrary[PostalCodeAddress].sample.value
 
   "QualifierOfIdentificationDomain" - {
 
@@ -178,29 +177,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
       result.value.pages mustBe Seq(
         QualifierOfIdentificationPage,
         UnlocodePage,
-        AddContactPersonPage
-      )
-    }
-
-    "can be parsed from UserAnswers from PostalCode" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-        .setValue(QualifierOfIdentificationPage, qualifierOfIdentificationGen(PostalCodeCode).sample.value)
-        .setValue(PostalCodePage, postalCode)
-        .setValue(AddContactPersonPage, false)
-
-      val expectedResult = PostalCodeDomain(
-        postalCode,
-        None
-      )
-
-      val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
-
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
-        QualifierOfIdentificationPage,
-        PostalCodePage,
         AddContactPersonPage
       )
     }
@@ -619,79 +595,6 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
               val updatedUserAnswers = userAnswers.removeValue(page)
 
               val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
-
-              result.left.value.page mustBe page
-          }
-        }
-      }
-    }
-
-    "PostalCodeDomain" - {
-
-      "can be parsed from UserAnswers with contact person" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(PostalCodePage, postalCode)
-          .setValue(AddContactPersonPage, true)
-          .setValue(ContactPersonNamePage, name)
-          .setValue(ContactPersonTelephonePage, tel)
-
-        val expectedResult = PostalCodeDomain(
-          postalCode,
-          Some(ContactPersonDomain(name, tel))
-        )
-
-        val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
-
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
-          PostalCodePage,
-          AddContactPersonPage,
-          ContactPersonNamePage,
-          ContactPersonTelephonePage
-        )
-      }
-
-      "can be parsed from UserAnswers without contact person" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-          .setValue(PostalCodePage, postalCode)
-          .setValue(AddContactPersonPage, false)
-
-        val expectedResult = PostalCodeDomain(
-          postalCode,
-          None
-        )
-
-        val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
-
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
-          PostalCodePage,
-          AddContactPersonPage
-        )
-      }
-
-      "cannot be parsed from UserAnswers" - {
-
-        val mandatoryPages: Seq[QuestionPage[?]] = Seq(PostalCodePage, AddContactPersonPage)
-
-        "when a mandatory page is missing" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(IsSimplifiedProcedurePage, ProcedureType.Normal)
-            .setValue(PostalCodePage, postalCode)
-            .setValue(AddContactPersonPage, true)
-            .setValue(ContactPersonNamePage, name)
-            .setValue(ContactPersonTelephonePage, tel)
-
-          mandatoryPages.map {
-            page =>
-              val updatedUserAnswers = userAnswers.removeValue(page)
-
-              val result = PostalCodeDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
               result.left.value.page mustBe page
           }

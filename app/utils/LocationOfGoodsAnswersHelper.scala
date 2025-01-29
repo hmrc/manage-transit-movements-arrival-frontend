@@ -17,8 +17,8 @@
 package utils
 
 import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
-import models.{Coordinates, DynamicAddress, Mode, PostalCodeAddress, UserAnswers}
-import pages.locationOfGoods._
+import models.{Coordinates, DynamicAddress, Mode, UserAnswers}
+import pages.locationOfGoods.*
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -89,13 +89,6 @@ class LocationOfGoodsAnswersHelper(
     formatAnswer = formatAsDynamicAddress,
     prefix = "locationOfGoods.address",
     id = Some("address")
-  )
-
-  def postalCode: Option[SummaryListRow] = getAnswerAndBuildRow[PostalCodeAddress](
-    page = PostalCodePage,
-    formatAnswer = formatAsPostalCodeAddress,
-    prefix = "locationOfGoods.postalCode",
-    id = Some("postal-code")
   )
 
   def contactYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

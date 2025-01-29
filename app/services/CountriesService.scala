@@ -33,9 +33,6 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getTransitCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     getCountries("CountryCodesCommonTransit")
 
-  def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
-    getCountries("CountryAddressPostcodeBased")
-
   private def getCountries(listName: String)(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries(listName)
