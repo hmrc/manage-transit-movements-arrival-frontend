@@ -16,7 +16,6 @@
 
 package base
 
-import config.{PostTransitionModule, TransitionModule}
 import controllers.actions.*
 import models.{Index, LockCheck, Mode, UserAnswers}
 import navigation.*
@@ -99,14 +98,4 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LockService].toInstance(mockLockService),
         bind[LockActionProvider].toInstance(mockLockActionProvider)
       )
-
-  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[PostTransitionModule]
-      .bindings(new TransitionModule)
-
-  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[TransitionModule]
-      .bindings(new PostTransitionModule)
 }

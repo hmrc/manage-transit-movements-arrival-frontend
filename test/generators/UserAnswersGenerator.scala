@@ -16,7 +16,6 @@
 
 package generators
 
-import config.PhaseConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.identification.IdentificationDomain
 import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
@@ -32,7 +31,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
+  implicit val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         mrn        <- arbitrary[MovementReferenceNumber]
@@ -87,6 +86,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitraryItemNumberAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[ItemNumberDomain](userAnswers)(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex))
 
-  def arbitraryArrivalAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[ArrivalDomain](userAnswers)
 }

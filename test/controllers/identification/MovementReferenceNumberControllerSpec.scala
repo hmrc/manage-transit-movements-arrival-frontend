@@ -17,7 +17,7 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import connectors.CacheConnector.IsTransitionalStateException
 import forms.identification.MovementReferenceNumberFormProvider
 import models.{MovementReferenceNumber, SubmissionStatus, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -167,50 +167,25 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         view(filledForm)(request, messages).toString
     }
 
-    "must redirect to 'draft no longer available' for a APIVersionHeaderMismatchException exception" - {
-      val mrn = "01YH1DI5N73MAQI1Y8" // only valid against MRN regex in transition
+    "must redirect to 'draft no longer available' for a IsTransitionalStateException exception" in {
 
-      "when transition" in {
-        val app = transitionApplicationBuilder().build()
-        running(app) {
-          when(mockSessionRepository.get(any())(any()))
-            .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
+      val mrn = "01YH1DI5N73MAQI1Y8"
 
-          val request = FakeRequest(POST, movementReferenceNumberRoute)
-            .withFormUrlEncodedBody(("value", mrn))
+      when(mockSessionRepository.get(any())(any()))
+        .thenReturn(Future.failed(new IsTransitionalStateException(mrn)))
 
-          val result = route(app, request).value
+      val request = FakeRequest(POST, movementReferenceNumberRoute)
+        .withFormUrlEncodedBody(("value", mrn))
 
-          status(result) mustEqual SEE_OTHER
+      val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual
-            controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
+      status(result) mustEqual SEE_OTHER
 
-          verify(mockSessionRepository, times(1)).get(eqTo(mrn))(any())
-          verify(mockSessionRepository, never()).put(any())(any())
-        }
-      }
+      redirectLocation(result).value mustEqual
+        controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
 
-      "when final" in {
-        val app = postTransitionApplicationBuilder().build()
-        running(app) {
-          when(mockSessionRepository.get(any())(any()))
-            .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
-
-          val request = FakeRequest(POST, movementReferenceNumberRoute)
-            .withFormUrlEncodedBody(("value", mrn))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual
-            controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
-
-          verify(mockSessionRepository, times(1)).get(eqTo(mrn))(any())
-          verify(mockSessionRepository, never()).put(any())(any())
-        }
-      }
+      verify(mockSessionRepository, times(1)).get(eqTo(mrn))(any())
+      verify(mockSessionRepository, never()).put(any())(any())
     }
   }
 }

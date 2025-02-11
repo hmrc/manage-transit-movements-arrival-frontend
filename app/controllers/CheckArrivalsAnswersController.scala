@@ -17,7 +17,6 @@
 package controllers
 
 import com.google.inject.Inject
-import config.PhaseConfig
 import connectors.SubmissionConnector
 import controllers.actions.Actions
 import models.journeyDomain.ArrivalDomain
@@ -39,8 +38,7 @@ class CheckArrivalsAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
-  submissionConnector: SubmissionConnector,
-  phaseConfig: PhaseConfig
+  submissionConnector: SubmissionConnector
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with Logging
@@ -56,7 +54,7 @@ class CheckArrivalsAnswersController @Inject() (
     .requireData(mrn)
     .async {
       implicit request =>
-        ArrivalDomain.userAnswersReader(phaseConfig).apply(Nil).run(request.userAnswers) match {
+        ArrivalDomain.userAnswersReader.apply(Nil).run(request.userAnswers) match {
           case Right(_) =>
             submissionConnector.post(mrn.toString).map {
               case response if is2xx(response.status) =>

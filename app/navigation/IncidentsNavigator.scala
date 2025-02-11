@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.PhaseConfig
 import models._
 import models.journeyDomain.Read
 import models.journeyDomain.incident.IncidentsDomain
@@ -24,7 +23,7 @@ import models.journeyDomain.incident.IncidentsDomain
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IncidentsNavigatorProviderImpl @Inject() (implicit phaseConfig: PhaseConfig) extends IncidentsNavigatorProvider {
+class IncidentsNavigatorProviderImpl @Inject() extends IncidentsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     mode match {

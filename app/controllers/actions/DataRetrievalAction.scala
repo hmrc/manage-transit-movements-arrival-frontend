@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import connectors.CacheConnector.IsTransitionalStateException
 import models.MovementReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
@@ -54,7 +54,7 @@ class DataRetrievalAction(
           Right(OptionalDataRequest(request.request, request.eoriNumber, userAnswers))
       }
       .recover {
-        case _: APIVersionHeaderMismatchException =>
+        case _: IsTransitionalStateException =>
           Left(Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad()))
       }
   }

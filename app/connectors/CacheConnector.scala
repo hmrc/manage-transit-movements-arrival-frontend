@@ -16,8 +16,8 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import config.FrontendAppConfig
+import connectors.CacheConnector.IsTransitionalStateException
 import models.LockCheck.*
 import models.{LockCheck, UserAnswers}
 import play.api.Logging
@@ -33,30 +33,24 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2,
-  phaseConfig: PhaseConfig
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = config.cacheUrl
-
-  private val headers = Seq(
-    "APIVersion" -> phaseConfig.values.apiVersion.toString
-  )
 
   def get(mrn: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     val url = url"$baseUrl/user-answers/$mrn"
 
     http
       .get(url)
-      .setHeader(headers*)
       .execute[UserAnswers]
       .map(Some(_))
       .recover {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           None
         case e: UpstreamErrorResponse if e.statusCode == BAD_REQUEST =>
-          throw new APIVersionHeaderMismatchException(mrn)
+          throw new IsTransitionalStateException(mrn)
       }
   }
 
@@ -102,7 +96,6 @@ class CacheConnector @Inject() (
     val url = url"$baseUrl/user-answers"
     http
       .put(url)
-      .setHeader(headers*)
       .withBody(Json.toJson(mrn))
       .execute[HttpResponse]
       .map {
@@ -113,6 +106,5 @@ class CacheConnector @Inject() (
 }
 
 object CacheConnector {
-
-  class APIVersionHeaderMismatchException(mrn: String) extends Exception(s"APIVersion header did not align with saved user answers for MRN $mrn")
+  class IsTransitionalStateException(mrn: String) extends Exception(s"The Transitional state did not align with saved user answers for MRN $mrn")
 }

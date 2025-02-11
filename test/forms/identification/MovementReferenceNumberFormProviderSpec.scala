@@ -32,76 +32,47 @@ class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours with
   private val invalidMRNKey       = "movementReferenceNumber.error.invalidMRN"
 
   private val mrnLength = MovementReferenceNumber.Constants.length
+  val form              = new MovementReferenceNumberFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    def runTests(form: Form[MovementReferenceNumber])(implicit arbitraryMrn: Arbitrary[MovementReferenceNumber]): Unit = {
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        arbitrary[MovementReferenceNumber](arbitraryMrn).map(_.toString)
-      )
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      arbitrary[MovementReferenceNumber].map(_.toString)
+    )
 
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey)
-      )
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
 
-      behave like fieldWithExactLength(
-        form,
-        fieldName,
-        exactLength = mrnLength,
-        lengthError = FormError(fieldName, lengthKey)
-      )
+    behave like fieldWithExactLength(
+      form,
+      fieldName,
+      exactLength = mrnLength,
+      lengthError = FormError(fieldName, lengthKey)
+    )
 
-      "must not bind MRN with invalid characters" in {
-        val str    = List.fill(mrnLength)("§").mkString
-        val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-        result.errors mustEqual Seq(FormError(fieldName, invalidCharacterKey))
-      }
-
-      "must not bind MRN with invalid format" in {
-        val str    = "51GBLFUWH7WOI085M6"
-        val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-        result.errors mustEqual Seq(FormError(fieldName, invalidMRNKey))
-      }
+    "must not bind MRN with invalid characters" in {
+      val str    = List.fill(mrnLength)("§").mkString
+      val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, invalidCharacterKey))
     }
 
-    "during transition" - {
-      val app = transitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[MovementReferenceNumberFormProvider].apply()
-        runTests(form)(arbitraryMovementReferenceNumberTransition)
-
-        "must bind valid MRN with spaces" in {
-          val str    = "24 GB Q4OPL9LU18CNZ 7"
-          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-          result.value.value mustBe str
-        }
-
-        "must bind MRNs beginning with 25" in {
-          val str    = "25BE532000233131J2"
-          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-          result.value.value mustBe str
-        }
-      }
+    "must not bind MRN with invalid format" in {
+      val str    = "51GBLFUWH7WOI085M6"
+      val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, invalidMRNKey))
     }
 
-    "post transition" - {
-      val app = postTransitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[MovementReferenceNumberFormProvider].apply()
-        runTests(form)(arbitraryMovementReferenceNumberFinal)
-
-        "must bind valid MRN with spaces" in {
-          val str    = "51 GB LFUWH7WOI085M 4"
-          val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-          result.value.value mustBe str
-        }
-      }
+    "must bind valid MRN with spaces" in {
+      val str    = "51 GB LFUWH7WOI085M 4"
+      val result = form.bind(Map(fieldName -> str)).apply(fieldName)
+      result.value.value mustBe str
     }
   }
 }

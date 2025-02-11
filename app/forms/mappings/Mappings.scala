@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import config.PhaseConfig
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
@@ -71,7 +70,7 @@ trait Mappings extends Formatters with Constraints {
     lengthKey: String,
     invalidCharacterKey: String,
     invalidMRNKey: String
-  )(implicit phaseConfig: PhaseConfig): FieldMapping[MovementReferenceNumber] =
+  ): FieldMapping[MovementReferenceNumber] =
     of(mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey))
 
   protected def mrnUnsafe(

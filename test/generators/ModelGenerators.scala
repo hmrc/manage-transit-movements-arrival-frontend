@@ -17,11 +17,10 @@
 package generators
 
 import config.Constants.IncidentCode._
-import config.PhaseConfig
 import models.AddressLine.{City, NumberAndStreet, PostalCode}
 import models._
 import models.LockCheck.*
-import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex, mrnTransitionRegex}
+import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -141,18 +140,7 @@ trait ModelGenerators {
       Gen.oneOf(models.identification.ProcedureType.values)
     }
 
-  implicit def arbitraryMovementReferenceNumber(implicit phaseConfig: PhaseConfig): Arbitrary[MovementReferenceNumber] =
-    phaseConfig.phase match {
-      case Phase.Transition     => arbitraryMovementReferenceNumberTransition
-      case Phase.PostTransition => arbitraryMovementReferenceNumberFinal
-    }
-
-  lazy val arbitraryMovementReferenceNumberTransition: Arbitrary[MovementReferenceNumber] =
-    Arbitrary {
-      movementReferenceNumberGen(mrnTransitionRegex)
-    }
-
-  lazy val arbitraryMovementReferenceNumberFinal: Arbitrary[MovementReferenceNumber] =
+  implicit val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       movementReferenceNumberGen(mrnFinalRegex)
     }

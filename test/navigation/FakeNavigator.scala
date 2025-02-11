@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.PhaseConfig
 import models.{Index, Mode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
@@ -25,7 +24,7 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
-class FakeArrivalNavigator(desiredRoute: Call, mode: Mode)(implicit phaseConfig: PhaseConfig) extends ArrivalNavigator(mode) {
+class FakeArrivalNavigator(desiredRoute: Call, mode: Mode) extends ArrivalNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
