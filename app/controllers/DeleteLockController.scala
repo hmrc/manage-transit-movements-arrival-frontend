@@ -51,7 +51,7 @@ class DeleteLockController @Inject() (
           Redirect(url)
       } recover {
         case exception =>
-          logger.info("Failed to unlock session", exception)
+          logger.info(s"Failed to unlock session for MRN $mrn", exception)
           Redirect(url)
       }
   }
