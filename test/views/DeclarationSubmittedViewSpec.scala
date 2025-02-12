@@ -26,6 +26,8 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
 
   override val prefix: String = "declarationSubmitted"
 
+  override val urlContainsMrn: Boolean = true
+
   val officeOfDestination: CustomsOffice      = new CustomsOffice("ABC12345", "Test", Some("+44 7760663422"), "AB")
   val officeOfDestinationNoTel: CustomsOffice = new CustomsOffice("ABC12345", "Test", None, "AB")
 
@@ -38,7 +40,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
     .value
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, oneOfOffices)(fakeRequest, messages)
+    injector.instanceOf[DeclarationSubmittedView].apply(mrn, oneOfOffices)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -65,7 +67,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
   )
 
   "Customs office with telephone" - {
-    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestination)(fakeRequest, messages)
+    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn, officeOfDestination)(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -78,7 +80,7 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
   }
 
   "Customs office with no telephone" - {
-    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn.toString, officeOfDestinationNoTel)(fakeRequest, messages)
+    val view = injector.instanceOf[DeclarationSubmittedView].apply(mrn, officeOfDestinationNoTel)(fakeRequest, messages)
 
     val doc = parseView(view)
 

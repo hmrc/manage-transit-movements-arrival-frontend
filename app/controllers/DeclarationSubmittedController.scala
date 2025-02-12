@@ -48,7 +48,7 @@ class DeclarationSubmittedController @Inject() (
         submissionConnector.getMessages(mrn).map {
           messages =>
             if (messages.contains("IE007")) {
-              Ok(view(mrn.value, request.arg))
+              Ok(view(mrn, request.arg))
             } else {
               logger.warn(s"IE007 not found for MRN $mrn")
               InternalServerError

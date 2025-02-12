@@ -25,7 +25,7 @@
     govukPanel: GovukPanel
 )
 
-@(mrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[?], messages: Messages)
+@(mrn: MovementReferenceNumber, officeOfDestination: CustomsOffice)(implicit request: Request[?], messages: Messages)
 
 @customsOfficeDetail = @{
     (officeOfDestination.name, officeOfDestination.phoneNumber) match {
@@ -36,7 +36,8 @@
 
 @mainTemplate(
     title = messages("declarationSubmitted.title"),
-    showBackLink = false
+    showBackLink = false,
+    mrn = Some(mrn)
 ) {
     @govukPanel(
         Panel(
