@@ -41,7 +41,7 @@ class DeclarationSubmittedController @Inject() (
     with Logging {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
-    .requireDataIgnoreSubmissionStatus(mrn)
+    .requireDataAfterSubmission(mrn)
     .andThen(getMandatoryPage(DestinationOfficePage))
     .async {
       implicit request =>
