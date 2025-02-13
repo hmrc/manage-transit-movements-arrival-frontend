@@ -72,7 +72,7 @@ class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(mrn.toString, customsOffice)(request, messages).toString
+            view(mrn, customsOffice)(request, messages).toString
       }
     }
 

@@ -41,14 +41,14 @@ class DeclarationSubmittedController @Inject() (
     with Logging {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
-    .requireDataIgnoreSubmissionStatus(mrn)
+    .requireDataNoLock(mrn)
     .andThen(getMandatoryPage(DestinationOfficePage))
     .async {
       implicit request =>
         submissionConnector.getMessages(mrn).map {
           messages =>
             if (messages.contains("IE007")) {
-              Ok(view(mrn.value, request.arg))
+              Ok(view(mrn, request.arg))
             } else {
               logger.warn(s"IE007 not found for MRN $mrn")
               InternalServerError

@@ -40,19 +40,20 @@ class DeleteLockController @Inject() (
     with I18nSupport
     with Logging {
 
-  def delete(mrn: MovementReferenceNumber, continue: Option[RedirectUrl]): Action[AnyContent] = actions.requireData(mrn).async {
-    implicit request =>
-      val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls*) | OnlyRelative
+  def delete(mrn: MovementReferenceNumber, continue: Option[RedirectUrl]): Action[AnyContent] =
+    actions.requireDataNoLock(mrn).async {
+      implicit request =>
+        val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls*) | OnlyRelative
 
-      val url = continue.map(_.get(redirectUrlPolicy).url).getOrElse(appConfig.signOutUrl)
+        val url = continue.map(_.get(redirectUrlPolicy).url).getOrElse(appConfig.signOutUrl)
 
-      lockService.deleteLock(request.userAnswers).map {
-        _ =>
-          Redirect(url)
-      } recover {
-        case exception =>
-          logger.info("Failed to unlock session", exception)
-          Redirect(url)
-      }
-  }
+        lockService.deleteLock(request.userAnswers).map {
+          _ =>
+            Redirect(url)
+        } recover {
+          case exception =>
+            logger.info(s"Failed to unlock session for MRN $mrn", exception)
+            Redirect(url)
+        }
+    }
 }
