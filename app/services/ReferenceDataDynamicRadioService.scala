@@ -16,10 +16,10 @@
 
 package services
 
-import config.Constants.LocationType._
-import config.Constants.QualifierCode._
+import config.Constants.LocationType.*
+import config.Constants.QualifierCode.*
 import connectors.ReferenceDataConnector
-import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
+import models.reference.{QualifierOfIdentification, TypeOfLocation}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,21 +29,11 @@ class ReferenceDataDynamicRadioService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getIncidentCodes()(implicit hc: HeaderCarrier): Future[Seq[IncidentCode]] =
-    referenceDataConnector
-      .getIncidentCodes()
-      .map(_.toSeq)
-
   def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
     referenceDataConnector
       .getTypesOfLocation()
       .map(_.toSeq)
       .map(_.filterNot(_.code == AuthorisedPlace))
-
-  def getTransportIdentifications()(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
-    referenceDataConnector
-      .getTransportIdentifications()
-      .map(_.toSeq)
 
   def getIdentifications(typeOfLocation: TypeOfLocation)(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] = {
     def filterQualifierOfIdentificationUserAnswers(
@@ -64,10 +54,4 @@ class ReferenceDataDynamicRadioService @Inject() (
       .map(_.toSeq)
       .map(filterQualifierOfIdentificationUserAnswers)
   }
-
-  def getIncidentIdentifications()(implicit hc: HeaderCarrier): Future[Seq[QualifierOfIdentification]] =
-    referenceDataConnector
-      .getIncidentIdentifications()
-      .map(_.toSeq)
-
 }

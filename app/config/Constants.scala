@@ -21,15 +21,6 @@ object Constants {
   val GB = "GB"
   val XI = "XI"
 
-  object IncidentCode {
-    lazy val DeviatedFromItineraryCode         = "1"
-    lazy val SealsBrokenOrTamperedCode         = "2"
-    lazy val TransferredToAnotherTransportCode = "3"
-    lazy val PartiallyOrFullyUnloadedCode      = "4"
-    lazy val CarrierUnableToComplyCode         = "5"
-    lazy val UnexpectedlyChangedCode           = "6"
-  }
-
   object QualifierCode {
     lazy val UnlocodeCode            = "U"
     lazy val CustomsOfficeCode       = "V"

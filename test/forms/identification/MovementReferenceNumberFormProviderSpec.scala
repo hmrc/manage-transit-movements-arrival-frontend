@@ -21,8 +21,7 @@ import forms.behaviours.StringFieldBehaviours
 import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import play.api.data.{Form, FormError}
-import play.api.test.Helpers.running
+import play.api.data.FormError
 
 class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures {
 

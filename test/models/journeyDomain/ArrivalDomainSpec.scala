@@ -17,40 +17,26 @@
 package models.journeyDomain
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants.IncidentCode.*
 import config.Constants.QualifierCode.*
 import generators.Generators
 import models.DynamicAddress
 import models.identification.ProcedureType
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.equipment.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
-import models.journeyDomain.incident.equipment.seal.{SealDomain, SealsDomain}
-import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
-import models.journeyDomain.incident.{IncidentDomain, IncidentUnLocodeLocationDomain, IncidentsDomain, TransportMeansDomain}
 import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomain}
 import models.reference.*
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
-import pages.incident.*
-import pages.incident.equipment.itemNumber.ItemNumberPage
-import pages.incident.equipment.seal.SealIdentificationNumberPage
-import pages.incident.equipment.{AddGoodsItemNumberYesNoPage, AddSealsYesNoPage, ContainerIdentificationNumberPage}
-import pages.incident.location.{QualifierOfIdentificationPage as IncidentQualifierOfIdentificationPage, UnLocodePage}
-import pages.incident.transportMeans.{IdentificationNumberPage as TransportMeansIdentificationNumberPage, IdentificationPage, TransportNationalityPage}
 import pages.locationOfGoods.*
-import pages.sections.incident.*
 
 class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
 
-  private val destinationOffice       = arbitrary[CustomsOffice].sample.value
-  private val country                 = arbitrary[Country].sample.value
-  private val address                 = arbitrary[DynamicAddress].sample.value
-  private val idNumber                = Gen.alphaNumStr.sample.value
-  private val transportIdentification = arbitrary[Identification].sample.value
-  private val typeOfLocation          = arbitrary[TypeOfLocation].sample.value
+  private val destinationOffice = arbitrary[CustomsOffice].sample.value
+  private val country           = arbitrary[Country].sample.value
+  private val address           = arbitrary[DynamicAddress].sample.value
+  private val idNumber          = Gen.alphaNumStr.sample.value
+  private val typeOfLocation    = arbitrary[TypeOfLocation].sample.value
 
   "ArrivalDomain" - {
 

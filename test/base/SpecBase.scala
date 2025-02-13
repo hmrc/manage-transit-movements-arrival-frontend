@@ -17,7 +17,7 @@
 package base
 
 import config.FrontendAppConfig
-import models.{EoriNumber, Id, Index, MovementReferenceNumber, UserAnswers}
+import models.{EoriNumber, Id, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -53,14 +53,6 @@ trait SpecBase
   lazy val mrn: MovementReferenceNumber = new MovementReferenceNumber("51GBLFUWH7WOI085M4")
 
   lazy val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
-
-  val authorisationIndex: Index = Index(0)
-  val incidentIndex: Index      = Index(0)
-  val containerIndex: Index     = Index(0)
-  val sealIndex: Index          = Index(0)
-  val index: Index              = Index(0)
-  val equipmentIndex: Index     = Index(0)
-  val itemNumberIndex: Index    = Index(0)
 
   def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

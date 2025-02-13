@@ -16,7 +16,6 @@
 
 package generators
 
-import config.Constants.IncidentCode._
 import models.AddressLine.{City, NumberAndStreet, PostalCode}
 import models._
 import models.LockCheck.*
@@ -34,14 +33,6 @@ trait ModelGenerators {
 
   self: Generators =>
 
-  implicit lazy val arbitraryIdentification: Arbitrary[Identification] =
-    Arbitrary {
-      for {
-        code        <- Gen.oneOf("10", "11", "20", "21", "30", "31", "40", "41", "80", "81", "99")
-        description <- nonEmptyString
-      } yield Identification(code, description)
-    }
-
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
@@ -58,39 +49,6 @@ trait ModelGenerators {
         city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
         postalCode      <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
       } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
-    }
-
-  implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      for {
-        code        <- Gen.oneOf("1", "2", "3", "4", "5", "6")
-        description <- nonEmptyString
-      } yield IncidentCode(code, description)
-    }
-
-  lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))
-    }
-
-  lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
-    }
-
-  lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(DeviatedFromItineraryCode, "test"), IncidentCode(CarrierUnableToComplyCode, "test"))
-    }
-
-  lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(
-        IncidentCode(SealsBrokenOrTamperedCode, "test1"),
-        IncidentCode(PartiallyOrFullyUnloadedCode, "test2"),
-        IncidentCode(DeviatedFromItineraryCode, "test3"),
-        IncidentCode(CarrierUnableToComplyCode, "test4")
-      )
     }
 
   implicit lazy val arbitraryUnLocode: Arbitrary[String] =

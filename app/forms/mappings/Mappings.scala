@@ -19,19 +19,10 @@ package forms.mappings
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import play.api.data.format.Formats.ignoredFormat
 
 import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
-
-  protected def mandatoryIfBoolean(
-    condition: Boolean,
-    requiredKey: String = "error.required",
-    defaultResult: Boolean = true,
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[Boolean] =
-    if (condition) boolean(requiredKey, args = args) else of(ignoredFormat(defaultResult))
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     adaptedText(errorKey, args)(identity)

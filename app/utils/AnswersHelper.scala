@@ -16,18 +16,11 @@
 
 package utils
 
-import models.journeyDomain.OpsError.ReaderError
-import models.journeyDomain.Stage.AccessingJourney
-import models.journeyDomain.{JourneyDomainModel, Read, ReaderSuccess}
-import models.{Index, Mode, MovementReferenceNumber, RichJsArray, RichOptionJsArray, UserAnswers}
-import navigation.UserAnswersNavigator
+import models.{Mode, MovementReferenceNumber, UserAnswers}
 import pages.QuestionPage
-import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, Reads}
-import play.api.mvc.Call
+import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import viewModels.{Link, ListItem}
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -50,113 +43,4 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
       call = call,
       args = args*
     )
-
-  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
-    userAnswers
-      .get(section)
-      .mapWithIndex {
-        (_, index) => f(index)
-      }
-
-  def getAnswerAndBuildSectionRow[A <: JourneyDomainModel](
-    formatAnswer: A => Content,
-    prefix: String,
-    id: Option[String],
-    args: Any*
-  )(implicit userAnswersReader: Read[A]): Option[SummaryListRow] =
-    userAnswersReader
-      .apply(Nil)
-      .run(userAnswers)
-      .map(
-        x =>
-          buildSimpleRow(
-            prefix = prefix,
-            label = messages(s"$prefix.label", args*),
-            answer = formatAnswer(x.value),
-            id = id,
-            call = Some(UserAnswersNavigator.nextPage[A](userAnswers, None, mode, AccessingJourney)),
-            args = args*
-          )
-      )
-      .toOption
-
-  protected def buildListItems(
-    section: Section[JsArray]
-  )(block: Index => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
-    userAnswers
-      .get(section)
-      .mapWithIndex {
-        (_, index) => block(index)
-      }
-
-  protected def buildListItem[A <: JourneyDomainModel, B](
-    page: QuestionPage[B],
-    formatJourneyDomainModel: A => String,
-    formatType: B => String,
-    removeRoute: Option[Call]
-  )(implicit userAnswersReader: Read[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
-    buildListItem(
-      formatJourneyDomainModel,
-      removeRoute
-    ) {
-      _.page.route(userAnswers, mode).flatMap {
-        changeRoute =>
-          userAnswers
-            .get(page)
-            .map {
-              value =>
-                ListItem(
-                  name = formatType(value),
-                  changeUrl = changeRoute.url,
-                  removeUrl = removeRoute.map(_.url)
-                )
-            }
-            .map(Left(_))
-      }
-    }
-
-  protected def buildListItemWithDefault[A <: JourneyDomainModel, B](
-    page: QuestionPage[B],
-    formatJourneyDomainModel: A => String,
-    formatType: Option[B] => String,
-    removeRoute: Option[Call]
-  )(implicit userAnswersReader: Read[A], rds: Reads[B]): Option[Either[ListItem, ListItem]] =
-    buildListItem(
-      formatJourneyDomainModel,
-      removeRoute
-    ) {
-      _.page.route(userAnswers, mode).map {
-        changeRoute =>
-          Left(
-            ListItem(
-              name = formatType(userAnswers.get(page)),
-              changeUrl = changeRoute.url,
-              removeUrl = removeRoute.map(_.url)
-            )
-          )
-      }
-    }
-
-  private def buildListItem[A <: JourneyDomainModel](
-    formatJourneyDomainModel: A => String,
-    removeRoute: Option[Call]
-  )(f: ReaderError => Option[Either[ListItem, ListItem]])(implicit userAnswersReader: Read[A]): Option[Either[ListItem, ListItem]] =
-    userAnswersReader.apply(Nil).run(userAnswers) match {
-      case Left(readerError) =>
-        f(readerError)
-      case Right(ReaderSuccess(journeyDomainModel, _)) =>
-        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
-          changeRoute =>
-            Right(
-              ListItem(
-                name = formatJourneyDomainModel(journeyDomainModel),
-                changeUrl = changeRoute.url,
-                removeUrl = removeRoute.map(_.url)
-              )
-            )
-        }
-    }
-
-  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
-    if (userAnswers.get(section).exists(_.nonEmpty)) Some(link) else None
 }
