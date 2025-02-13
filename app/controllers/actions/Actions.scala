@@ -38,7 +38,7 @@ class Actions @Inject() (
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction(mrn, ignoreSubmissionStatus = false) andThen lockAction()
 
-  def requireDataAfterSubmission(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
+  def requireDataNoLock(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction(mrn, ignoreSubmissionStatus = true)
 
   def requireIndex(mrn: MovementReferenceNumber, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
