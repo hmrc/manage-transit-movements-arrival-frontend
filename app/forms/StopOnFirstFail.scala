@@ -16,7 +16,7 @@
 
 package forms
 
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.validation.{Constraint, Valid}
 
 object StopOnFirstFail {
 
@@ -27,9 +27,4 @@ object StopOnFirstFail {
         case constraint :: _ => constraint(field)
       }
   }
-
-  def constraint[T](message: String, validator: T => Boolean): Constraint[T] =
-    Constraint(
-      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
-    )
 }

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import connectors.CacheConnector.IsTransitionalStateException
 import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.*
@@ -84,7 +84,7 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
       "when call returns a 400" in {
 
         when(mockSessionRepository.get(any())(any()))
-          .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn.value)))
+          .thenReturn(Future.failed(new IsTransitionalStateException(mrn.value)))
 
         val harness = new Harness(mockSessionRepository)
 

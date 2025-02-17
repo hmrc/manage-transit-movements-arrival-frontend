@@ -18,9 +18,9 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.Constants.LocationType._
+import config.Constants.LocationType.*
 import connectors.ReferenceDataConnector
-import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
+import models.reference.{QualifierOfIdentification, TypeOfLocation}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -49,20 +49,6 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
   "ReferenceDataDynamicRadioService" - {
 
-    "getIncidentCodes" - {
-      val incidentCode1: IncidentCode = IncidentCode("2", "Test2")
-      val incidentCode2: IncidentCode = IncidentCode("1", "Test1")
-
-      "must return a list of sorted incidentCodes" in {
-
-        when(mockRefDataConnector.getIncidentCodes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(incidentCode1, incidentCode2)))
-
-        service.getIncidentCodes().futureValue mustBe Seq(incidentCode2, incidentCode1)
-
-        verify(mockRefDataConnector).getIncidentCodes()(any(), any())
-      }
-    }
     "getTypesOfLocation" - {
 
       val typeOfLocation1: TypeOfLocation = TypeOfLocation("C", "TestA")
@@ -77,21 +63,6 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         service.getTypesOfLocation().futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
-      }
-    }
-
-    "getTransportIdentifications" - {
-      val transportId1: Identification = Identification("11", "Name of the sea-going vessel")
-      val transportId2: Identification = Identification("10", "IMO Ship Identification Number")
-
-      "must return a list of sorted transport identifications" in {
-
-        when(mockRefDataConnector.getTransportIdentifications()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(transportId1, transportId2)))
-
-        service.getTransportIdentifications().futureValue mustBe Seq(transportId2, transportId1)
-
-        verify(mockRefDataConnector).getTransportIdentifications()(any(), any())
       }
     }
 
@@ -133,22 +104,6 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }
       }
-    }
-    "getIncidentIdentifications" - {
-      val unlocode: QualifierOfIdentification    = QualifierOfIdentification("U", "UN/LOCODE")
-      val coordinates: QualifierOfIdentification = QualifierOfIdentification("W", "GPS coordinates")
-      val ids                                    = NonEmptySet.of(coordinates, unlocode)
-
-      "must return a list of sorted transport identifications" in {
-
-        when(mockRefDataConnector.getIncidentIdentifications()(any(), any()))
-          .thenReturn(Future.successful(ids))
-
-        service.getIncidentIdentifications().futureValue mustBe Seq(unlocode, coordinates)
-
-        verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
-      }
-
     }
 
   }

@@ -16,23 +16,18 @@
 
 package generators
 
-import config.PhaseConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.equipment.itemNumber.ItemNumberDomain
-import models.journeyDomain.incident.equipment.seal.SealDomain
-import models.journeyDomain.incident.equipment.{EquipmentDomain, EquipmentsDomain}
-import models.journeyDomain.incident.{IncidentDomain, IncidentsDomain}
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
 import models.journeyDomain.{ArrivalDomain, Read}
-import models.{EoriNumber, Index, MovementReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, MovementReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
+  implicit val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         mrn        <- arbitrary[MovementReferenceNumber]
@@ -69,24 +64,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitraryLocationOfGoodsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[LocationOfGoodsDomain](userAnswers)
 
-  def arbitraryIncidentsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[IncidentsDomain](userAnswers)
-
-  def arbitraryIncidentAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
-    buildUserAnswers[IncidentDomain](userAnswers)(IncidentDomain.userAnswersReader(index))
-
-  def arbitraryEquipmentAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[EquipmentDomain](userAnswers)(EquipmentDomain.userAnswersReader(incidentIndex, equipmentIndex))
-
-  def arbitraryEquipmentsAnswers(userAnswers: UserAnswers, incidentIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[EquipmentsDomain](userAnswers)(EquipmentsDomain.userAnswersReader(incidentIndex))
-
-  def arbitrarySealAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[SealDomain](userAnswers)(SealDomain.userAnswersReader(incidentIndex, equipmentIndex, sealIndex))
-
-  def arbitraryItemNumberAnswers(userAnswers: UserAnswers, incidentIndex: Index, equipmentIndex: Index, itemNumberIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[ItemNumberDomain](userAnswers)(ItemNumberDomain.userAnswersReader(incidentIndex, equipmentIndex, itemNumberIndex))
-
-  def arbitraryArrivalAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryArrivalAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[ArrivalDomain](userAnswers)
 }

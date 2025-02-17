@@ -97,22 +97,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .map(_.head)
   }
 
-  def getIncidentCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[IncidentCode]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/IncidentCode"
-    http
-      .get(url)
-      .setHeader(headers*)
-      .execute[NonEmptySet[IncidentCode]]
-  }
-
-  def getIncidentIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[QualifierOfIdentification]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfIdentificationIncident"
-    http
-      .get(url)
-      .setHeader(headers*)
-      .execute[NonEmptySet[QualifierOfIdentification]]
-  }
-
   def getIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[QualifierOfIdentification]] = {
     val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfTheIdentification"
     http
@@ -127,14 +111,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .get(url)
       .setHeader(headers*)
       .execute[NonEmptySet[TypeOfLocation]]
-  }
-
-  def getTransportIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Identification]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
-    http
-      .get(url)
-      .setHeader(headers*)
-      .execute[NonEmptySet[Identification]]
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {

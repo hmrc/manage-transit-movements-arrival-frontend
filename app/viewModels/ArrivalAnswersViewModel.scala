@@ -20,7 +20,6 @@ import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
-import viewModels.incident.IncidentsAnswersViewModel.IncidentsAnswersViewModelProvider
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -31,8 +30,7 @@ object ArrivalAnswersViewModel {
 
   class ArrivalAnswersViewModelProvider @Inject() (
     identificationAnswersViewModelProvider: IdentificationAnswersViewModelProvider,
-    locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider,
-    IncidentsAnswersViewModelProvider: IncidentsAnswersViewModelProvider
+    locationOfGoodsAnswersViewModelProvider: LocationOfGoodsAnswersViewModelProvider
   ) {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): ArrivalAnswersViewModel = {
@@ -40,7 +38,6 @@ object ArrivalAnswersViewModel {
       new ArrivalAnswersViewModel(
         identificationAnswersViewModelProvider.apply(userAnswers, mode).section ::
           locationOfGoodsAnswersViewModelProvider.apply(userAnswers, mode).section ::
-          IncidentsAnswersViewModelProvider.apply(userAnswers, mode).section ::
           Nil
       )
     }
