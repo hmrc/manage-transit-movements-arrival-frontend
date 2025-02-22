@@ -52,7 +52,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted nationalities" in {
 
         when(mockRefDataConnector.getNationalities()(any(), any()))
-          .thenReturn(Future.successful(nationalities))
+          .thenReturn(Future.successful(Right(nationalities)))
 
         service.getNationalities().futureValue mustBe
           SelectableList(Seq(nationality1, nationality2, nationality3))

@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.Constants.LocationType._
+import config.Constants.LocationType.*
 import connectors.ReferenceDataConnector
 import models.reference.{Identification, IncidentCode, QualifierOfIdentification, TypeOfLocation}
 import org.mockito.ArgumentMatchers.any
@@ -56,7 +56,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted incidentCodes" in {
 
         when(mockRefDataConnector.getIncidentCodes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(incidentCode1, incidentCode2)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(incidentCode1, incidentCode2))))
 
         service.getIncidentCodes().futureValue mustBe Seq(incidentCode2, incidentCode1)
 
@@ -73,7 +73,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted TypeOfLocation filtered -without B" in {
 
         when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
-          .thenReturn(Future.successful(typesOfLocation))
+          .thenReturn(Future.successful(Right(typesOfLocation)))
 
         service.getTypesOfLocation().futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
@@ -87,7 +87,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted transport identifications" in {
 
         when(mockRefDataConnector.getTransportIdentifications()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(transportId1, transportId2)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(transportId1, transportId2))))
 
         service.getTransportIdentifications().futureValue mustBe Seq(transportId2, transportId1)
 
@@ -101,7 +101,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is DesignatedLocation" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(DesignatedLocation, "test")).futureValue mustBe
             Seq(unlocode, customsOfficeIdentifier)
@@ -111,7 +111,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is Approved place" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustBe
             Seq(
@@ -126,7 +126,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is Other location" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(unlocode, coordinates, address)
 
@@ -142,14 +142,12 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted transport identifications" in {
 
         when(mockRefDataConnector.getIncidentIdentifications()(any(), any()))
-          .thenReturn(Future.successful(ids))
+          .thenReturn(Future.successful(Right(ids)))
 
         service.getIncidentIdentifications().futureValue mustBe Seq(unlocode, coordinates)
 
         verify(mockRefDataConnector).getIncidentIdentifications()(any(), any())
       }
-
     }
-
   }
 }
