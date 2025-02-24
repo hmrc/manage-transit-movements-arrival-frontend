@@ -18,7 +18,6 @@ package controllers
 
 import com.google.inject.Inject
 import config.PhaseConfig
-import connectors.SubmissionConnector
 import controllers.actions.Actions
 import models.journeyDomain.ArrivalDomain
 import models.{MovementReferenceNumber, NormalMode}
@@ -26,6 +25,7 @@ import navigation.UserAnswersNavigator
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SubmissionService
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
@@ -39,7 +39,7 @@ class CheckArrivalsAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
-  submissionConnector: SubmissionConnector,
+  submissionService: SubmissionService,
   phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -58,7 +58,7 @@ class CheckArrivalsAnswersController @Inject() (
       implicit request =>
         ArrivalDomain.userAnswersReader(phaseConfig).apply(Nil).run(request.userAnswers) match {
           case Right(_) =>
-            submissionConnector.post(mrn.toString).map {
+            submissionService.post(mrn).map {
               case response if is2xx(response.status) =>
                 Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
               case e =>

@@ -20,10 +20,10 @@ import config.{FrontendAppConfig, PhaseConfig}
 import models.{ArrivalMessages, MovementReferenceNumber}
 import play.api.Logging
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.JsonBodyWritables.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import play.api.libs.ws.JsonBodyWritables._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,12 +41,12 @@ class SubmissionConnector @Inject() (
     "APIVersion" -> phaseConfig.values.apiVersion.toString
   )
 
-  def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def post(mrn: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
       .setHeader(headers*)
-      .withBody(Json.toJson(mrn))
+      .withBody(Json.toJson(mrn.value))
       .execute[HttpResponse]
   }
 

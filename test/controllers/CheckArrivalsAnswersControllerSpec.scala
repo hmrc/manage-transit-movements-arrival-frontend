@@ -17,7 +17,6 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.SubmissionConnector
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +26,8 @@ import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.SubmissionService
 import viewModels.ArrivalAnswersViewModel
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import viewModels.sections.Section
@@ -35,14 +35,14 @@ import views.html.CheckArrivalsAnswersView
 
 class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider                   = mock[ArrivalAnswersViewModelProvider]
-  private val mockSubmissionConnector: SubmissionConnector = mock[SubmissionConnector]
+  private lazy val mockViewModelProvider               = mock[ArrivalAnswersViewModelProvider]
+  private val mockSubmissionService: SubmissionService = mock[SubmissionService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[SubmissionConnector]).toInstance(mockSubmissionConnector))
+      .overrides(bind(classOf[SubmissionService]).toInstance(mockSubmissionService))
 
   private val userAnswersGen = arbitraryArrivalAnswers(emptyUserAnswers)
 
@@ -85,7 +85,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
           setExistingUserAnswers(userAnswers)
 
-          when(mockSubmissionConnector.post(any())(any()))
+          when(mockSubmissionService.post(any())(any()))
             .thenReturn(response(OK))
 
           val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
@@ -106,7 +106,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
           setExistingUserAnswers(userAnswers)
 
-          when(mockSubmissionConnector.post(any())(any()))
+          when(mockSubmissionService.post(any())(any()))
             .thenReturn(response(errorCode))
 
           val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)
@@ -123,7 +123,7 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must redirect to unanswered page when answers incomplete" in {
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSubmissionConnector.post(any())(any()))
+      when(mockSubmissionService.post(any())(any()))
         .thenReturn(response(OK))
 
       val request = FakeRequest(POST, routes.CheckArrivalsAnswersController.onSubmit(mrn).url)

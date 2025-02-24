@@ -17,10 +17,9 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.SubmissionConnector
 import generators.Generators
+import models.ArrivalMessage
 import models.reference.CustomsOffice
-import models.{ArrivalMessage, ArrivalMessages}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,36 +28,38 @@ import pages.identification.DestinationOfficePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.SubmissionService
 import views.html.DeclarationSubmittedView
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationSubmittedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val mockSubmissionConnector: SubmissionConnector = mock[SubmissionConnector]
+  private val mockSubmissionService: SubmissionService = mock[SubmissionService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[SubmissionConnector]).toInstance(mockSubmissionConnector))
+      .overrides(bind(classOf[SubmissionService]).toInstance(mockSubmissionService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockSubmissionConnector)
+    reset(mockSubmissionService)
   }
 
   private lazy val declarationSubmittedRoute = routes.DeclarationSubmittedController.onPageLoad(mrn).url
 
   "Declaration Submitted Controller" - {
 
-    "must return OK and the correct view for a GET and purge the cache" in {
+    "must return OK and the correct view for a GET" in {
       forAll(arbitrary[CustomsOffice]) {
         customsOffice =>
           beforeEach()
 
-          when(mockSubmissionConnector.getMessages(any())(any()))
-            .thenReturn(Future.successful(ArrivalMessages(Seq(ArrivalMessage("IE007")))))
+          when(mockSubmissionService.getMessages(any())(any()))
+            .thenReturn(Future.successful(Seq(ArrivalMessage("IE007", LocalDateTime.now()))))
 
           val userAnswers = emptyUserAnswers.setValue(DestinationOfficePage, customsOffice)
           setExistingUserAnswers(userAnswers)
