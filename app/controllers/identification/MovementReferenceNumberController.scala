@@ -85,17 +85,20 @@ class MovementReferenceNumberController @Inject() (
                       def redirect(userAnswers: UserAnswers): Result =
                         Redirect(navigatorProvider(CheckMode).nextPage(userAnswers, None))
 
-                      service.getMessages(mrn).map(_.map(_.`type`)).flatMap {
-                        case "IE057" :: _ =>
-                          val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
-                          sessionRepository.set(updatedUserAnswers).map {
-                            _ => redirect(updatedUserAnswers)
+                      userAnswers.submissionStatus match {
+                        case SubmissionStatus.Submitted =>
+                          service.getMessages(mrn).map(_.map(_.`type`)).flatMap {
+                            case "IE057" :: _ =>
+                              val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+                              sessionRepository.set(updatedUserAnswers).map {
+                                _ => redirect(updatedUserAnswers)
+                              }
+                            case _ =>
+                              logger.warn(s"[MovementReferenceNumberController][onSubmit] Status of movement is insufficient for user to regain access to $mrn")
+                              Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
                           }
-                        case Nil =>
-                          Future.successful(redirect(userAnswers))
                         case _ =>
-                          logger.warn(s"[MovementReferenceNumberController][onSubmit] Status of movement is insufficient for user to regain access to $mrn")
-                          Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
+                          Future.successful(redirect(userAnswers))
                       }
                   }
               }

@@ -154,9 +154,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
               submissionStatus =>
                 beforeEach()
 
-                when(mockService.getMessages(eqTo(mrn))(any()))
-                  .thenReturn(Future.successful(Nil))
-
                 val userAnswers = emptyUserAnswers.copy(submissionStatus = submissionStatus)
                 when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
 
@@ -216,9 +213,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
           submissionStatus =>
             beforeEach()
 
-            when(mockService.getMessages(eqTo(mrn))(any()))
-              .thenReturn(Future.successful(Nil))
-
             val userAnswers = emptyUserAnswers.copy(submissionStatus = submissionStatus)
             when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
 
@@ -267,8 +261,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       "when transition" in {
         val app = transitionApplicationBuilder().build()
         running(app) {
-          when(mockService.getMessages(eqTo(new MovementReferenceNumber(mrn)))(any()))
-            .thenReturn(Future.successful(Nil))
 
           when(mockSessionRepository.get(any())(any()))
             .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
@@ -291,8 +283,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       "when final" in {
         val app = postTransitionApplicationBuilder().build()
         running(app) {
-          when(mockService.getMessages(eqTo(new MovementReferenceNumber(mrn)))(any()))
-            .thenReturn(Future.successful(Nil))
 
           when(mockSessionRepository.get(any())(any()))
             .thenReturn(Future.failed(new APIVersionHeaderMismatchException(mrn)))
