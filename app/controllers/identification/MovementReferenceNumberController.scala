@@ -23,7 +23,7 @@ import models.requests.IdentifierRequest
 import models.{CheckMode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
 import navigation.ArrivalNavigatorProvider
 import play.api.Logging
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -94,8 +94,8 @@ class MovementReferenceNumberController @Inject() (
                                 _ => redirect(updatedUserAnswers)
                               }
                             case _ =>
-                              logger.warn(s"[MovementReferenceNumberController][onSubmit] Status of movement is insufficient for user to regain access to $mrn")
-                              Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
+                              val formWithErrors = form.withError(FormError("value", "movementReferenceNumber.error.ie007AlreadySubmitted"))
+                              Future.successful(BadRequest(view(formWithErrors)))
                           }
                         case _ =>
                           Future.successful(redirect(userAnswers))

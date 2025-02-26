@@ -24,7 +24,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
 import org.scalacheck.Gen
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -119,13 +119,13 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
           "and answers have previously been submitted and rejected" in {
             val now = LocalDateTime.now()
 
-            val messages = Seq(
+            val arrivalMessages = Seq(
               ArrivalMessage("IE057", now),
               ArrivalMessage("IE007", now.minusDays(1))
             )
 
             when(mockService.getMessages(eqTo(mrn))(any()))
-              .thenReturn(Future.successful(messages))
+              .thenReturn(Future.successful(arrivalMessages))
 
             val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
             when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
@@ -177,17 +177,38 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       }
     }
 
-    "must redirect to technical difficulties" - {
+    "must return a Bad Request and errors" - {
+
+      "when invalid data is submitted" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val invalidAnswer = ""
+
+        val request = FakeRequest(POST, movementReferenceNumberRoute)
+          .withFormUrlEncodedBody(("value", invalidAnswer))
+
+        val filledForm = form.bind(Map("value" -> invalidAnswer))
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[MovementReferenceNumberView]
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(filledForm)(request, messages).toString
+      }
 
       "when answers have previously been submitted" in {
         val now = LocalDateTime.now()
 
-        val messages = Seq(
+        val arrivalMessages = Seq(
           ArrivalMessage("IE007", now)
         )
 
         when(mockService.getMessages(eqTo(mrn))(any()))
-          .thenReturn(Future.successful(messages))
+          .thenReturn(Future.successful(arrivalMessages))
 
         val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
         when(mockSessionRepository.get(any())(any())) `thenReturn` Future.successful(Some(userAnswers))
@@ -197,11 +218,17 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         val request = FakeRequest(POST, movementReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", mrn.toString))
 
+        val boundForm = form
+          .withError(FormError("value", "An IE007 has already been submitted for this Movement Reference Number"))
+
         val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual
-          controllers.routes.ErrorController.technicalDifficulties().url
+        val view = injector.instanceOf[MovementReferenceNumberView]
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm)(request, messages).toString
 
         verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
         verify(mockSessionRepository, never()).put(any())(any())
@@ -232,27 +259,6 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
             verify(mockSessionRepository, never()).set(any())(any())
         }
       }
-    }
-
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val invalidAnswer = ""
-
-      val request = FakeRequest(POST, movementReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", invalidAnswer))
-
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[MovementReferenceNumberView]
-
-      status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(filledForm)(request, messages).toString
     }
 
     "must redirect to 'draft no longer available' for a APIVersionHeaderMismatchException exception" - {
