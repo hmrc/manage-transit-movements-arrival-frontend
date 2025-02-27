@@ -219,7 +219,12 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
           .withFormUrlEncodedBody(("value", mrn.toString))
 
         val boundForm = form
-          .withError(FormError("value", "An IE007 has already been submitted for this Movement Reference Number"))
+          .withError(
+            FormError(
+              "value",
+              "This Movement Reference Number has already been used for a submitted arrival notification. Enter a unique MRN if you want to start a new arrival notification."
+            )
+          )
 
         val result = route(app, request).value
 

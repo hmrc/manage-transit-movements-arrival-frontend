@@ -69,7 +69,7 @@ movementReferenceNumber.error.required = Enter the Movement Reference Number
 movementReferenceNumber.error.length = The Movement Reference Number must be 18 characters long
 movementReferenceNumber.error.invalidCharacter = The Movement Reference Number must only include letters a to z and numbers 0 to 9
 movementReferenceNumber.error.invalidMRN = Enter a valid Movement Reference Number
-movementReferenceNumber.error.ie007AlreadySubmitted = An IE007 has already been submitted for this Movement Reference Number
+movementReferenceNumber.error.ie007AlreadySubmitted = This Movement Reference Number has already been used for a submitted arrival notification. Enter a unique MRN if you want to start a new arrival notification.
 
 pageNotFound.title = Page not found
 pageNotFound.heading = Page not found
