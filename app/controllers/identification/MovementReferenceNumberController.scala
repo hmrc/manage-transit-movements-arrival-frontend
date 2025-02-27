@@ -22,10 +22,12 @@ import forms.identification.MovementReferenceNumberFormProvider
 import models.requests.IdentifierRequest
 import models.{CheckMode, MovementReferenceNumber, NormalMode, SubmissionStatus, UserAnswers}
 import navigation.ArrivalNavigatorProvider
-import play.api.data.Form
+import play.api.Logging
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
 
@@ -39,10 +41,12 @@ class MovementReferenceNumberController @Inject() (
   identify: IdentifierAction,
   formProvider: MovementReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: MovementReferenceNumberView
+  view: MovementReferenceNumberView,
+  service: SubmissionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider.apply()
 
@@ -83,9 +87,15 @@ class MovementReferenceNumberController @Inject() (
 
                       userAnswers.submissionStatus match {
                         case SubmissionStatus.Submitted =>
-                          val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
-                          sessionRepository.set(updatedUserAnswers).map {
-                            _ => redirect(updatedUserAnswers)
+                          service.getMessages(mrn).map(_.map(_.`type`)).flatMap {
+                            case "IE057" :: _ =>
+                              val updatedUserAnswers = userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+                              sessionRepository.set(updatedUserAnswers).map {
+                                _ => redirect(updatedUserAnswers)
+                              }
+                            case _ =>
+                              val formWithErrors = form.withError(FormError("value", "movementReferenceNumber.error.ie007AlreadySubmitted"))
+                              Future.successful(BadRequest(view(formWithErrors)))
                           }
                         case _ =>
                           Future.successful(redirect(userAnswers))

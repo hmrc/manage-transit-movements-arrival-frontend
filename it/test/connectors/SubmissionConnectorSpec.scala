@@ -16,13 +16,15 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.{ArrivalMessage, ArrivalMessages}
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpResponse
+
+import java.time.LocalDateTime
 
 class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
@@ -47,7 +49,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
             .willReturn(aResponse().withStatus(OK))
         )
 
-        val result: HttpResponse = await(connector.post(mrn.toString))
+        val result: HttpResponse = await(connector.post(mrn))
 
         result.status mustBe OK
       }
@@ -62,7 +64,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
             .willReturn(aResponse().withStatus(status))
         )
 
-        val result: HttpResponse = await(connector.post(mrn.toString))
+        val result: HttpResponse = await(connector.post(mrn))
 
         result.status mustBe status
       }
@@ -77,7 +79,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
             .willReturn(aResponse().withStatus(status))
         )
 
-        val result: HttpResponse = await(connector.post(mrn.toString))
+        val result: HttpResponse = await(connector.post(mrn))
 
         result.status mustBe status
       }
@@ -92,10 +94,12 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
           |{
           |  "messages" : [
           |    {
-          |      "type" : "IE007"
+          |      "type" : "IE007",
+          |      "received" : "2022-11-10T15:32:51.000Z"
           |    },
           |    {
-          |      "type" : "IE043"
+          |      "type" : "IE043",
+          |      "received" : "2022-11-10T16:32:51.000Z"
           |    }
           |  ]
           |}
@@ -112,8 +116,8 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         result mustBe ArrivalMessages(
           Seq(
-            ArrivalMessage("IE007"),
-            ArrivalMessage("IE043")
+            ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
+            ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
           )
         )
       }
