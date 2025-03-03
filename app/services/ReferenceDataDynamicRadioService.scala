@@ -32,6 +32,7 @@ class ReferenceDataDynamicRadioService @Inject() (
   def getTypesOfLocation()(implicit hc: HeaderCarrier): Future[Seq[TypeOfLocation]] =
     referenceDataConnector
       .getTypesOfLocation()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(_.filterNot(_.code == AuthorisedPlace))
 
@@ -51,6 +52,7 @@ class ReferenceDataDynamicRadioService @Inject() (
 
     referenceDataConnector
       .getIdentifications()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filterQualifierOfIdentificationUserAnswers)
   }

@@ -18,10 +18,7 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class ArrivalMessages(messages: Seq[ArrivalMessage]) {
-
-  def contains(`type`: String): Boolean = messages.exists(_.`type` == `type`)
-}
+case class ArrivalMessages(messages: Seq[ArrivalMessage])
 
 object ArrivalMessages {
 

@@ -36,11 +36,11 @@ class SubmissionConnector @Inject() (
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  def post(mrn: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def post(mrn: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
-      .withBody(Json.toJson(mrn))
+      .withBody(Json.toJson(mrn.value))
       .execute[HttpResponse]
   }
 

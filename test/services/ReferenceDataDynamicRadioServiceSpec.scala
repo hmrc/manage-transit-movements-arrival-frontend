@@ -59,7 +59,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
       "must return a list of sorted TypeOfLocation filtered -without B" in {
 
         when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
-          .thenReturn(Future.successful(typesOfLocation))
+          .thenReturn(Future.successful(Right(typesOfLocation)))
 
         service.getTypesOfLocation().futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
 
@@ -72,7 +72,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is DesignatedLocation" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(DesignatedLocation, "test")).futureValue mustBe
             Seq(unlocode, customsOfficeIdentifier)
@@ -82,7 +82,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is Approved place" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustBe
             Seq(
@@ -97,7 +97,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
 
         "must show an filtered list when TypeOfLocation is Other location" in {
           when(mockRefDataConnector.getIdentifications()(any(), any()))
-            .thenReturn(Future.successful(ids))
+            .thenReturn(Future.successful(Right(ids)))
 
           service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(unlocode, coordinates, address)
 

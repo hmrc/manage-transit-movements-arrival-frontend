@@ -16,13 +16,13 @@
 
 package controllers
 
-import connectors.SubmissionConnector
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
 import models.MovementReferenceNumber
 import pages.identification.DestinationOfficePage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.DeclarationSubmittedView
 
@@ -34,21 +34,21 @@ class DeclarationSubmittedController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   cc: MessagesControllerComponents,
   view: DeclarationSubmittedView,
-  submissionConnector: SubmissionConnector
+  submissionService: SubmissionService
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging {
 
   def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = actions
-    .requireDataIgnoreSubmissionStatus(mrn)
+    .requireDataNoLock(mrn)
     .andThen(getMandatoryPage(DestinationOfficePage))
     .async {
       implicit request =>
-        submissionConnector.getMessages(mrn).map {
+        submissionService.getMessages(mrn).map {
           messages =>
-            if (messages.contains("IE007")) {
-              Ok(view(mrn.value, request.arg))
+            if (messages.map(_.`type`).contains("IE007")) {
+              Ok(view(mrn, request.arg))
             } else {
               logger.warn(s"IE007 not found for MRN $mrn")
               InternalServerError
