@@ -16,7 +16,7 @@
 
 package controllers.identification
 
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import connectors.CacheConnector.IsTransitionalStateException
 import controllers.actions.*
 import forms.identification.MovementReferenceNumberFormProvider
 import models.requests.IdentifierRequest
@@ -103,7 +103,7 @@ class MovementReferenceNumberController @Inject() (
                   }
               }
           } recover {
-            case _: APIVersionHeaderMismatchException =>
+            case _: IsTransitionalStateException =>
               Redirect(controllers.routes.DraftNoLongerAvailableController.onPageLoad())
           }
       }

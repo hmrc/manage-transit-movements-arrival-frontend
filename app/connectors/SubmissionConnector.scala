@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{ArrivalMessages, MovementReferenceNumber}
 import play.api.Logging
 import play.api.libs.json.Json
@@ -30,22 +30,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2,
-  phaseConfig: PhaseConfig
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  private val headers = Seq(
-    "APIVersion" -> phaseConfig.values.apiVersion.toString
-  )
-
   def post(mrn: MovementReferenceNumber)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
-      .setHeader(headers*)
       .withBody(Json.toJson(mrn.value))
       .execute[HttpResponse]
   }
@@ -54,7 +48,6 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/messages/$mrn"
     http
       .get(url)
-      .setHeader(headers*)
       .execute[ArrivalMessages]
   }
 }

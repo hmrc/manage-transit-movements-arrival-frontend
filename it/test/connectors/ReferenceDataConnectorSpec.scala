@@ -40,6 +40,30 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
+  private val unLocodeResponseJson: String =
+    """
+      | {
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/UnLocodeExtended"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "UnLocodeExtended",
+      |  "data": [
+      |    {
+      |      "state": "valid",
+      |      "activeFrom": "2019-01-01",
+      |      "unLocodeExtendedCode": "UN1",
+      |      "name": "testName1"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   private val unlocodesResponseJson: String =
     """
       |{
@@ -142,42 +166,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |}
       |""".stripMargin
 
-  private val incidentIdentifiersResponseJson: String =
-    """
-    |{
-    |  "data": [
-    |    {
-    |     "qualifier": "U",
-    |     "description": "UN/LOCODE"
-    |    },
-    |    {
-    |     "qualifier": "W",
-    |     "description": "GPS coordinates"
-    |    }
-    |  ]
-    |}
-    |""".stripMargin
-
-  private val transportIdentifiersResponseJson: String =
-    """
-      |{
-      |  "data": [
-      |    {
-      |     "type": "10",
-      |     "description": "IMO Ship Identification Number"
-      |    },
-      |    {
-      |     "type": "11",
-      |     "description": "Name of the sea-going vessel"
-      |    },
-      |    {
-      |     "type": "20",
-      |     "description": "Wagon Number"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-
   private val identifiersResponseJson: String =
     """
       |{
@@ -189,22 +177,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |    {
       |     "qualifier": "W",
       |     "description": "GPS coordinates"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-
-  private val incidentCodeResponseJson: String =
-    """
-      |{
-      |  "data": [
-      |    {
-      |      "code": "1",
-      |      "description": "The carrier is obliged to deviate from..."
-      |    },
-      |    {
-      |      "code": "2",
-      |     "description": "Seals are broken or tampered with..."
       |    }
       |  ]
       |}
@@ -339,6 +311,26 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getUnLocode" - {
+      val code = "UN1"
+      val url  = s"/$baseUrl/lists/UnLocodeExtended?data.unLocodeExtendedCode=UN1"
+
+      "must return a Seq of UN/LOCODES when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(unLocodeResponseJson))
+        )
+
+        val expectedResult = UnLocode("UN1", "testName1")
+
+        connector.getUnLocode(code).futureValue.value mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getUnLocode(code))
+      }
+    }
+
     "getNationalities" - {
       val url = s"/$baseUrl/lists/Nationality"
 
@@ -363,33 +355,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getNationalities())
-      }
-    }
-
-    "getIncidentCodes" - {
-      val url = s"/$baseUrl/lists/IncidentCode"
-
-      "must return a successful future response with a sequence of IncidentCodes" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(incidentCodeResponseJson))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          IncidentCode("1", "The carrier is obliged to deviate from..."),
-          IncidentCode("2", "Seals are broken or tampered with...")
-        )
-
-        connector.getIncidentCodes().futureValue.value mustBe expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getIncidentCodes())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getIncidentCodes())
       }
     }
 
@@ -420,32 +385,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getIncidentIdentifications" - {
-      val url = s"/$baseUrl/lists/QualifierOfIdentificationIncident"
-
-      "must return a successful future response with a sequence of IncidentIdentifications" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(incidentIdentifiersResponseJson))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          QualifierOfIdentification("U", "UN/LOCODE"),
-          QualifierOfIdentification("W", "GPS coordinates")
-        )
-        connector.getIncidentIdentifications().futureValue.value mustBe expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getIncidentIdentifications())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getIncidentIdentifications())
-      }
-    }
-
     "getIdentifications" - {
       val url = s"/$baseUrl/lists/QualifierOfTheIdentification"
 
@@ -469,33 +408,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getIdentifications())
-      }
-    }
-
-    "getTransportIdentifications" - {
-      val url = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport"
-
-      "must return a successful future response with a sequence of  Identifications" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(transportIdentifiersResponseJson))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          Identification("10", "IMO Ship Identification Number"),
-          Identification("11", "Name of the sea-going vessel"),
-          Identification("20", "Wagon Number")
-        )
-        connector.getTransportIdentifications().futureValue.value mustBe expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportIdentifications())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportIdentifications())
       }
     }
 
