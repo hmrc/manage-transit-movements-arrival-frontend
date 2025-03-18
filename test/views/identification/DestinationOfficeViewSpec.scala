@@ -16,7 +16,7 @@
 
 package views.identification
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,11 @@ import views.html.identification.DestinationOfficeView
 
 class DestinationOfficeViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
 
-  override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CustomsOfficeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[CustomsOffice] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[DestinationOfficeView].apply(form, mrn, values, NormalMode)(fakeRequest, messages)

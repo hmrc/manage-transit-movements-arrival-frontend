@@ -17,7 +17,7 @@
 package controllers.incident.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.NationalityFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.IncidentNavigatorProvider
@@ -39,8 +39,9 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
   private val nationality2    = arbitraryNationality.arbitrary.sample.get
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new NationalityFormProvider()
   private val form         = formProvider("incident.transportMeans.transportNationality", nationalityList)
+  private val field        = formProvider.field
   private val mode         = NormalMode
 
   private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
@@ -81,7 +82,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> nationality1.code))
+      val filledForm = form.bind(Map(field -> nationality1.code))
 
       val view = injector.instanceOf[TransportNationalityView]
 
@@ -99,7 +100,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, transportNationalityRoute)
-        .withFormUrlEncodedBody(("value", nationality1.code))
+        .withFormUrlEncodedBody((field, nationality1.code))
 
       val result = route(app, request).value
 
@@ -113,8 +114,8 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, transportNationalityRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, transportNationalityRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -143,7 +144,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, transportNationalityRoute)
-        .withFormUrlEncodedBody(("value", nationality1.code))
+        .withFormUrlEncodedBody((field, nationality1.code))
 
       val result = route(app, request).value
 

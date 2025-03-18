@@ -18,7 +18,7 @@ package controllers.incident
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.IncidentCountryPage
@@ -37,7 +37,7 @@ class IncidentCountryController @Inject() (
   val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: IncidentCountryView

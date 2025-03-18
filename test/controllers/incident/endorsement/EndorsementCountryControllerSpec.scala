@@ -17,7 +17,7 @@
 package controllers.incident.endorsement
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.IncidentNavigatorProvider
@@ -39,8 +39,9 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
   private val country2    = arbitraryCountry.arbitrary.sample.get
   private val countryList = SelectableList(Seq(country1, country2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CountryFormProvider()
   private val form         = formProvider("incident.endorsement.country", countryList)
+  private val field        = formProvider.field
   private val mode         = NormalMode
 
   private val mockCountriesService: CountriesService = mock[CountriesService]
@@ -81,7 +82,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> country1.code.code))
+      val filledForm = form.bind(Map(field -> country1.code.code))
 
       val view = injector.instanceOf[EndorsementCountryView]
 
@@ -100,7 +101,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
 
       val request =
         FakeRequest(POST, endorsementCountryRoute)
-          .withFormUrlEncodedBody(("value", country1.code.code))
+          .withFormUrlEncodedBody((field, country1.code.code))
 
       val result = route(app, request).value
 
@@ -114,8 +115,8 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
       when(mockCountriesService.getTransitCountries()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, endorsementCountryRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, endorsementCountryRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -144,7 +145,7 @@ class EndorsementCountryControllerSpec extends SpecBase with AppWithDefaultMockF
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, endorsementCountryRoute)
-        .withFormUrlEncodedBody(("value", country1.code.code))
+        .withFormUrlEncodedBody((field, country1.code.code))
 
       val result = route(app, request).value
 

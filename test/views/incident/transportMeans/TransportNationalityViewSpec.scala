@@ -16,7 +16,7 @@
 
 package views.incident.transportMeans
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.NationalityFormProvider
 import models.reference.Nationality
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,11 @@ import views.html.incident.transportMeans.TransportNationalityView
 
 class TransportNationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
 
-  override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new NationalityFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[Nationality] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
     injector.instanceOf[TransportNationalityView].apply(form, mrn, values, NormalMode, incidentIndex)(fakeRequest, messages)

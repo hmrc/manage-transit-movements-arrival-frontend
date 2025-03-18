@@ -17,6 +17,7 @@
 @import controllers.locationOfGoods.routes
 @import models.MovementReferenceNumber
 @import models.reference.Country
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("locationOfGoods.country.heading"),
                 caption = Some(messages("locationOfGoods.caption"))
