@@ -17,6 +17,7 @@
 @import controllers.identification.routes
 @import models.MovementReferenceNumber
 @import models.reference.CustomsOffice
+@import forms.SelectableFormProvider.CustomsOfficeFormProvider.field
 @import models.Selectable._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("identification.destinationOffice.heading"),
                 additionalHtml = messages("identification.destinationOffice.paragraph").toParagraph,

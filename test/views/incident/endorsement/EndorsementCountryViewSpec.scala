@@ -16,7 +16,7 @@
 
 package views.incident.endorsement
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Country
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,11 @@ import views.html.incident.endorsement.EndorsementCountryView
 
 class EndorsementCountryViewSpec extends InputSelectViewBehaviours[Country] {
 
-  override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CountryFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[Country] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[EndorsementCountryView].apply(form, mrn, values, NormalMode, index)(fakeRequest, messages)

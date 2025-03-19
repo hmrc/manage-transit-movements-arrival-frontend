@@ -17,6 +17,7 @@
 @import controllers.incident.endorsement.routes
 @import models.MovementReferenceNumber
 @import models.reference.Country
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.Selectable._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("incident.endorsement.country.heading"),
                 caption = Some(messages("incident.caption"))

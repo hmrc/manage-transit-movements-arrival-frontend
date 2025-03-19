@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.ArrivalNavigatorProvider
@@ -39,8 +39,9 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
   private val customsOfficeList = SelectableList(Seq(customsOffice1, customsOffice2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CustomsOfficeFormProvider()
   private val form         = formProvider("locationOfGoods.customsOffice", customsOfficeList)
+  private val field        = formProvider.field
   private val mode         = NormalMode
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
@@ -81,7 +82,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> customsOffice1.id))
+      val filledForm = form.bind(Map(field -> customsOffice1.id))
 
       val view = injector.instanceOf[CustomsOfficeView]
 
@@ -100,7 +101,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val request =
         FakeRequest(POST, customsofficeRoute)
-          .withFormUrlEncodedBody(("value", customsOffice1.id))
+          .withFormUrlEncodedBody((field, customsOffice1.id))
 
       val result = route(app, request).value
 
@@ -114,8 +115,8 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, customsofficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, customsofficeRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -144,7 +145,7 @@ class CustomsOfficeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, customsofficeRoute)
-        .withFormUrlEncodedBody(("value", customsOffice1.id))
+        .withFormUrlEncodedBody((field, customsOffice1.id))
 
       val result = route(app, request).value
 

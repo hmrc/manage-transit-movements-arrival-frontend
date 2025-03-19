@@ -16,6 +16,7 @@
 
 @import controllers.incident.routes
 @import models.MovementReferenceNumber
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.reference.Country
 @import models.Selectable._
 @import viewModels.components.InputSelectViewModel._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("incident.incidentCountry.heading"),
                 caption = Some(messages("incident.caption"))
