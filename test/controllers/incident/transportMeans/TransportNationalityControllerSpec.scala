@@ -17,7 +17,7 @@
 package controllers.incident.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider.NationalityFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.IncidentNavigatorProvider
@@ -39,7 +39,7 @@ class TransportNationalityControllerSpec extends SpecBase with AppWithDefaultMoc
   private val nationality2    = arbitraryNationality.arbitrary.sample.get
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
-  private val formProvider = new NationalityFormProvider()
+  private val formProvider = new CountryFormProvider()
   private val form         = formProvider("incident.transportMeans.transportNationality", nationalityList)
   private val field        = formProvider.field
   private val mode         = NormalMode

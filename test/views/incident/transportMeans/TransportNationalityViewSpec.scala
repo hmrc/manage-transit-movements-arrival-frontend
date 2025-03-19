@@ -16,7 +16,7 @@
 
 package views.incident.transportMeans
 
-import forms.SelectableFormProvider.NationalityFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Nationality
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,7 @@ import views.html.incident.transportMeans.TransportNationalityView
 
 class TransportNationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
 
-  private val formProvider = new NationalityFormProvider()
+  private val formProvider = new CountryFormProvider()
 
   override val field: String = formProvider.field
 

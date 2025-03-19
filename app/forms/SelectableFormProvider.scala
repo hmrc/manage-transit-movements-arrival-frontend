@@ -47,12 +47,4 @@ object SelectableFormProvider {
   object CountryFormProvider {
     val field: String = "country"
   }
-
-  class NationalityFormProvider extends SelectableFormProvider {
-    override val field: String = NationalityFormProvider.field
-  }
-
-  object NationalityFormProvider {
-    val field: String = "nationality"
-  }
 }

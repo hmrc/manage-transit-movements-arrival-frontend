@@ -18,7 +18,7 @@ package controllers.incident.transportMeans
 
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider.NationalityFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, Mode, MovementReferenceNumber}
 import navigation.{IncidentNavigatorProvider, UserAnswersNavigator}
 import pages.incident.transportMeans.TransportNationalityPage
@@ -37,7 +37,7 @@ class TransportNationalityController @Inject() (
   val sessionRepository: SessionRepository,
   navigatorProvider: IncidentNavigatorProvider,
   actions: Actions,
-  formProvider: NationalityFormProvider,
+  formProvider: CountryFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: TransportNationalityView
