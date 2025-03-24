@@ -28,12 +28,6 @@ class Module extends AbstractModule {
 
     bind(classOf[ArrivalNavigatorProvider]).to(classOf[ArrivalNavigatorProviderImpl])
 
-    bind(classOf[IncidentsNavigatorProvider]).to(classOf[IncidentsNavigatorProviderImpl])
-    bind(classOf[IncidentNavigatorProvider]).to(classOf[IncidentNavigatorProviderImpl])
-    bind(classOf[EquipmentsNavigatorProvider]).to(classOf[EquipmentsNavigatorProviderImpl])
-    bind(classOf[EquipmentNavigatorProvider]).to(classOf[EquipmentNavigatorProviderImpl])
-    bind(classOf[SealNavigatorProvider]).to(classOf[SealNavigatorProviderImpl])
-    bind(classOf[ItemNumberNavigatorProvider]).to(classOf[ItemNumberNavigatorProviderImpl])
     bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
@@ -41,7 +35,6 @@ class Module extends AbstractModule {
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredActionProvider]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
-    bind(classOf[RemoveInProgressActionProvider]).to(classOf[RemoveInProgressActionProviderImpl])
 
     bind(classOf[Clock]).toInstance(Clock.systemUTC)
   }

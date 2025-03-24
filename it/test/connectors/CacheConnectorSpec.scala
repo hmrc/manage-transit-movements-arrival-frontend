@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import connectors.CacheConnector.APIVersionHeaderMismatchException
+import connectors.CacheConnector.IsTransitionalStateException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.{LockCheck, UserAnswers}
 import org.scalacheck.Gen
@@ -61,7 +61,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "must return user answers when status is Ok" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
@@ -71,7 +70,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "return None when no cached data found for provided mrn" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(notFound())
         )
 
@@ -83,14 +81,13 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "throw BadRequestException when 400 returned" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(badRequest())
         )
 
         lazy val result = connector.get(mrn.toString)
 
         whenReady[Throwable, Assertion](result.failed) {
-          _ mustBe an[APIVersionHeaderMismatchException]
+          _ mustBe an[IsTransitionalStateException]
         }
       }
     }
@@ -133,7 +130,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
       "must return true when status is Ok" in {
         server.stubFor(
           put(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
@@ -148,7 +144,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         server.stubFor(
           put(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(aResponse().withStatus(status))
         )
 

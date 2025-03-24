@@ -87,16 +87,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getOne[UnLocode](url)
   }
 
-  def getIncidentCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[IncidentCode]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/IncidentCode"
-    get[IncidentCode](url)
-  }
-
-  def getIncidentIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[QualifierOfIdentification]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfIdentificationIncident"
-    get[QualifierOfIdentification](url)
-  }
-
   def getIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[QualifierOfIdentification]] = {
     val url = url"${config.customsReferenceDataUrl}/lists/QualifierOfTheIdentification"
     get[QualifierOfIdentification](url)
@@ -105,11 +95,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getTypesOfLocation()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[TypeOfLocation]] = {
     val url = url"${config.customsReferenceDataUrl}/lists/TypeOfLocation"
     get[TypeOfLocation](url)
-  }
-
-  def getTransportIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Identification]] = {
-    val url = url"${config.customsReferenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
-    get[Identification](url)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CountryCode]] = {

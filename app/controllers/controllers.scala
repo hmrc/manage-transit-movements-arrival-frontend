@@ -45,15 +45,6 @@ package object controllers {
             case Failure(exception) => Left(WriterError(page, Some(s"Failed to write $value to page $page with exception: ${exception.toString}")))
           }
       )
-
-    def removeFromUserAnswers(): UserAnswersWriter[Write[A]] =
-      ReaderT[EitherType, UserAnswers, Write[A]] {
-        userAnswers =>
-          userAnswers.remove(page) match {
-            case Success(value)     => Right((page, value))
-            case Failure(exception) => Left(WriterError(page, Some(s"Failed to remove ${page.path} with exception: ${exception.toString}")))
-          }
-      }
   }
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
@@ -84,11 +75,6 @@ package object controllers {
     def navigateWith(navigator: Navigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
-      }
-
-    def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =
-      navigate {
-        _ => call
       }
 
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =

@@ -17,7 +17,6 @@
 package forms.mappings
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.PhaseConfig
 import generators.Generators
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
@@ -198,38 +197,18 @@ class MappingsSpec extends SpecBase with AppWithDefaultMockFixtures with Mapping
 
   "mrn" - {
 
-    def testFormBuilder(implicit phaseConfig: PhaseConfig) = Form(
-      "value" -> mrn("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")(phaseConfig)
+    def testFormBuilder = Form(
+      "value" -> mrn("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")
     )
 
     val testForm = testFormBuilder
 
-    "must bind valid MRNs" - {
+    "must bind valid MRNs" in {
 
-      "when transition" in {
-        val app         = transitionApplicationBuilder().build()
-        val phaseConfig = app.injector.instanceOf[PhaseConfig]
-
-        val testForm = testFormBuilder(phaseConfig)
-
-        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber(phaseConfig))) {
-          mrn =>
-            val result = testForm.bind(Map("value" -> mrn.toString))
-            result.get mustEqual mrn
-        }
-      }
-
-      "when final" in {
-        val app         = postTransitionApplicationBuilder().build()
-        val phaseConfig = app.injector.instanceOf[PhaseConfig]
-
-        val testForm = testFormBuilder(phaseConfig)
-
-        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber(phaseConfig))) {
-          mrn =>
-            val result = testForm.bind(Map("value" -> mrn.toString))
-            result.get mustEqual mrn
-        }
+      forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber)) {
+        mrn =>
+          val result = testForm.bind(Map("value" -> mrn.toString))
+          result.get mustEqual mrn
       }
     }
 
@@ -280,25 +259,14 @@ class MappingsSpec extends SpecBase with AppWithDefaultMockFixtures with Mapping
       "value" -> mrnUnsafe("error.required", "error.length", "error.invalid.invalidCharacter", "error.invalidMRN")
     )
 
-    "must bind valid MRNs" - {
+    "must bind valid MRNs" in {
 
-      "when transition" in {
-
-        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumberTransition)) {
-          mrn =>
-            val result = testForm.bind(Map("value" -> mrn.toString))
-            result.get mustEqual mrn
-        }
+      forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumber)) {
+        mrn =>
+          val result = testForm.bind(Map("value" -> mrn.toString))
+          result.get mustEqual mrn
       }
 
-      "when final" in {
-
-        forAll(arbitrary[MovementReferenceNumber](arbitraryMovementReferenceNumberFinal)) {
-          mrn =>
-            val result = testForm.bind(Map("value" -> mrn.toString))
-            result.get mustEqual mrn
-        }
-      }
     }
 
     "must not bind invalid MRNs" - {
