@@ -17,7 +17,7 @@
 package controllers.identification
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.ArrivalNavigatorProvider
@@ -39,8 +39,9 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val customsOffice2    = arbitraryCustomsOffice.arbitrary.sample.get
   private val customsOfficeList = SelectableList(Seq(customsOffice1, customsOffice2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CustomsOfficeFormProvider()
   private val form         = formProvider("identification.destinationOffice", customsOfficeList)
+  private val field        = formProvider.field
   private val mode         = NormalMode
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
@@ -81,7 +82,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> customsOffice1.id))
+      val filledForm = form.bind(Map(field -> customsOffice1.id))
 
       val view = injector.instanceOf[DestinationOfficeView]
 
@@ -100,7 +101,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val request =
         FakeRequest(POST, destinationOfficeRoute)
-          .withFormUrlEncodedBody(("value", customsOffice1.id))
+          .withFormUrlEncodedBody((field, customsOffice1.id))
 
       val result = route(app, request).value
 
@@ -114,8 +115,8 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
       when(mockCustomsOfficesService.getCustomsOfficesOfArrival(any())).thenReturn(Future.successful(customsOfficeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -144,7 +145,7 @@ class DestinationOfficeControllerSpec extends SpecBase with AppWithDefaultMockFi
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, destinationOfficeRoute)
-        .withFormUrlEncodedBody(("value", customsOffice1.id))
+        .withFormUrlEncodedBody((field, customsOffice1.id))
 
       val result = route(app, request).value
 

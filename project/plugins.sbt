@@ -18,4 +18,4 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.3")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-accessibility-linter" % "1.0.0")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-sass-compiler" % "0.9.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-sass-compiler" % "0.11.0")

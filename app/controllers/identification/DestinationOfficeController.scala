@@ -16,9 +16,9 @@
 
 package controllers.identification
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.{Mode, MovementReferenceNumber}
 import navigation.{ArrivalNavigatorProvider, UserAnswersNavigator}
 import pages.identification.DestinationOfficePage
@@ -37,7 +37,7 @@ class DestinationOfficeController @Inject() (
   val sessionRepository: SessionRepository,
   navigatorProvider: ArrivalNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CustomsOfficeFormProvider,
   service: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: DestinationOfficeView
