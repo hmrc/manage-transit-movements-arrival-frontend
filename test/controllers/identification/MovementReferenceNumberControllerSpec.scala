@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.SubmissionService
+import services.{SessionService, SubmissionService}
 import views.html.identification.MovementReferenceNumberView
 
 import java.time.LocalDateTime
@@ -37,16 +37,22 @@ import scala.concurrent.Future
 
 class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val mockService = mock[SubmissionService]
+  private val mockSubmissionService = mock[SubmissionService]
+  private val mockSessionService    = mock[SessionService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[SubmissionService]).toInstance(mockService))
+      .overrides(
+        bind(classOf[SubmissionService]).toInstance(mockSubmissionService),
+        bind(classOf[SessionService]).toInstance(mockSessionService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockService)
+    reset(mockSubmissionService)
+    reset(mockSessionService)
+    when(mockSessionService.setMrnInSession(any(), any())(any())).thenCallRealMethod()
   }
 
   val formProvider                        = new MovementReferenceNumberFormProvider()
@@ -57,6 +63,9 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   "MovementReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockSessionService.getMrnFromSession(any()))
+        .thenReturn(None)
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, movementReferenceNumberRoute)
@@ -71,23 +80,47 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         view(form)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      setNoExistingUserAnswers()
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when onPageLoad" in {
+        when(mockSessionService.getMrnFromSession(any()))
+          .thenReturn(Some(mrn.toString))
 
-      lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageReload(mrn).url
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, movementReferenceNumberRoute)
+        lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageLoad().url
 
-      val result = route(app, request).value
+        val request = FakeRequest(GET, movementReferenceNumberRoute)
 
-      val filledForm = form.bind(Map("value" -> mrn.toString))
+        val result = route(app, request).value
 
-      val view = injector.instanceOf[MovementReferenceNumberView]
+        val filledForm = form.bind(Map("value" -> mrn.toString))
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[MovementReferenceNumberView]
 
-      contentAsString(result) mustEqual
-        view(filledForm)(request, messages).toString
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm)(request, messages).toString
+      }
+
+      "when onPageReload" in {
+        setNoExistingUserAnswers()
+
+        lazy val movementReferenceNumberRoute = routes.MovementReferenceNumberController.onPageReload(mrn).url
+
+        val request = FakeRequest(GET, movementReferenceNumberRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form.bind(Map("value" -> mrn.toString))
+
+        val view = injector.instanceOf[MovementReferenceNumberView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm)(request, messages).toString
+      }
     }
 
     "must redirect to the next page with NormalMode" - {
@@ -109,6 +142,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
           verify(mockSessionRepository, times(2)).get(eqTo(mrn.toString))(any())
           verify(mockSessionRepository).put(eqTo(mrn.toString))(any())
+          verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
         }
       }
     }
@@ -124,7 +158,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
               ArrivalMessage("IE007", now.minusDays(1))
             )
 
-            when(mockService.getMessages(eqTo(mrn))(any()))
+            when(mockSubmissionService.getMessages(eqTo(mrn))(any()))
               .thenReturn(Future.successful(arrivalMessages))
 
             val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
@@ -143,6 +177,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
             verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
             verify(mockSessionRepository, never()).put(any())(any())
+            verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -171,6 +206,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
                 verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
                 verify(mockSessionRepository, never()).put(any())(any())
                 verify(mockSessionRepository, never()).set(any())(any())
+                verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
             }
           }
         }
@@ -207,7 +243,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
           ArrivalMessage("IE007", now)
         )
 
-        when(mockService.getMessages(eqTo(mrn))(any()))
+        when(mockSubmissionService.getMessages(eqTo(mrn))(any()))
           .thenReturn(Future.successful(arrivalMessages))
 
         val userAnswers = emptyUserAnswers.copy(submissionStatus = SubmissionStatus.Submitted)
@@ -262,6 +298,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
             verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
             verify(mockSessionRepository, never()).put(any())(any())
             verify(mockSessionRepository, never()).set(any())(any())
+            verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
         }
       }
     }

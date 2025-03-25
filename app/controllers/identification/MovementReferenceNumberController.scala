@@ -27,7 +27,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.SubmissionService
+import services.{SessionService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.identification.MovementReferenceNumberView
 
@@ -42,7 +42,8 @@ class MovementReferenceNumberController @Inject() (
   formProvider: MovementReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: MovementReferenceNumberView,
-  service: SubmissionService
+  service: SubmissionService,
+  sessionService: SessionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -54,7 +55,10 @@ class MovementReferenceNumberController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(form))
+      sessionService.getMrnFromSession.flatMap(MovementReferenceNumber(_)) match {
+        case Some(mrn) => Ok(view(form.fill(mrn)))
+        case None      => Ok(view(form))
+      }
   }
 
   def onPageReload(mrn: MovementReferenceNumber): Action[AnyContent] = identify {
@@ -70,7 +74,7 @@ class MovementReferenceNumberController @Inject() (
             userAnswers =>
               bind(form) {
                 mrn =>
-                  userAnswers match {
+                  (userAnswers match {
                     case None =>
                       def redirect(userAnswers: Option[UserAnswers]): Result =
                         userAnswers match {
@@ -100,6 +104,8 @@ class MovementReferenceNumberController @Inject() (
                         case _ =>
                           Future.successful(redirect(userAnswers))
                       }
+                  }).map {
+                    result => sessionService.setMrnInSession(result, mrn)
                   }
               }
           } recover {
