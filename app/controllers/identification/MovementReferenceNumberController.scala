@@ -55,7 +55,7 @@ class MovementReferenceNumberController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = identify {
     implicit request =>
-      sessionService.getMrnFromSession.flatMap(MovementReferenceNumber(_)) match {
+      sessionService.get.flatMap(MovementReferenceNumber(_)) match {
         case Some(mrn) => Ok(view(form.fill(mrn)))
         case None      => Ok(view(form))
       }
@@ -105,7 +105,7 @@ class MovementReferenceNumberController @Inject() (
                           Future.successful(redirect(userAnswers))
                       }
                   }).map {
-                    result => sessionService.setMrnInSession(result, mrn)
+                    result => sessionService.set(result, mrn)
                   }
               }
           } recover {

@@ -22,12 +22,14 @@ import services.SessionService.key
 
 class SessionService {
 
-  def getMrnFromSession[A <: Request[?]](implicit request: A): Option[String] =
+  def get[A <: Request[?]](implicit request: A): Option[String] =
     request.session.get(key)
 
-  def setMrnInSession[A <: Request[?]](result: Result, lrn: MovementReferenceNumber)(implicit request: A): Result =
+  def set[A <: Request[?]](result: Result, lrn: MovementReferenceNumber)(implicit request: A): Result =
     result.addingToSession(key -> lrn.toString)(request)
 
+  def remove[A <: Request[?]](result: Result)(implicit request: A): Result =
+    result.removingFromSession(key)
 }
 
 object SessionService {

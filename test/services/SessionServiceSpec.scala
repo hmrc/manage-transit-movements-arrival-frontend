@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import generators.Generators
+import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.Results.Ok
@@ -27,14 +28,13 @@ class SessionServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
   private val sessionService = new SessionService()
 
-  "getMrnFromSession" - {
-
+  "get" - {
     "when MRN exists" - {
       "must return Some value" in {
         forAll(arbitrary[String]) {
           value =>
             implicit val request: FakeRequest[?] = fakeRequest.withSession(SessionService.key -> value)
-            sessionService.getMrnFromSession.get mustEqual value
+            sessionService.get.get mustEqual value
         }
       }
     }
@@ -42,18 +42,46 @@ class SessionServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     "when MRN does not exist" - {
       "must return None" in {
         implicit val request: FakeRequest[?] = fakeRequest
-        sessionService.getMrnFromSession mustNot be(defined)
+        sessionService.get mustNot be(defined)
       }
     }
   }
 
-  "setMrnInSession" - {
+  "set" - {
     "must set MRN in session" in {
       implicit val request: FakeRequest[?] = fakeRequest
       val resultBefore                     = Ok
       resultBefore.session.get(SessionService.key) mustNot be(defined)
-      val resultAfter = sessionService.setMrnInSession(resultBefore, mrn)
+      val resultAfter = sessionService.set(resultBefore, mrn)
       resultAfter.session.get(SessionService.key).get mustEqual mrn.toString
+    }
+
+    "must overwrite MRN in session" in {
+      implicit val request: FakeRequest[?] = fakeRequest.withSession(SessionService.key -> "foo")
+      val resultBefore                     = Ok
+      resultBefore.session.get(SessionService.key) must be(defined)
+      val resultAfter = sessionService.set(resultBefore, mrn)
+      resultAfter.session.get(SessionService.key).get mustEqual mrn.toString
+    }
+  }
+
+  "remove" - {
+    "must remove MRN from session" - {
+      "when there isn't an MRN in the session" in {
+        implicit val request: FakeRequest[?] = fakeRequest
+        val resultBefore                     = Ok
+        resultBefore.session.get(SessionService.key) mustNot be(defined)
+        val resultAfter = sessionService.remove(resultBefore)
+        resultAfter.session.get(SessionService.key) mustNot be(defined)
+      }
+
+      "when there is an MRN in the session" in {
+        implicit val request: FakeRequest[?] = fakeRequest.withSession(SessionService.key -> mrn.toString)
+        val resultBefore                     = Ok
+        resultBefore.session.get(SessionService.key) must be(defined)
+        val resultAfter = sessionService.remove(resultBefore)
+        resultAfter.session.get(SessionService.key) mustNot be(defined)
+      }
     }
   }
 }

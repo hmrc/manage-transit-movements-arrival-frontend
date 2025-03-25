@@ -52,7 +52,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
     super.beforeEach()
     reset(mockSubmissionService)
     reset(mockSessionService)
-    when(mockSessionService.setMrnInSession(any(), any())(any())).thenCallRealMethod()
+    when(mockSessionService.set(any(), any())(any())).thenCallRealMethod()
   }
 
   val formProvider                        = new MovementReferenceNumberFormProvider()
@@ -63,7 +63,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   "MovementReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockSessionService.getMrnFromSession(any()))
+      when(mockSessionService.get(any()))
         .thenReturn(None)
 
       setNoExistingUserAnswers()
@@ -82,7 +82,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must populate the view correctly on a GET when the question has previously been answered" - {
       "when onPageLoad" in {
-        when(mockSessionService.getMrnFromSession(any()))
+        when(mockSessionService.get(any()))
           .thenReturn(Some(mrn.toString))
 
         setNoExistingUserAnswers()
@@ -142,7 +142,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
           verify(mockSessionRepository, times(2)).get(eqTo(mrn.toString))(any())
           verify(mockSessionRepository).put(eqTo(mrn.toString))(any())
-          verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
+          verify(mockSessionService).set(any(), eqTo(mrn))(any())
         }
       }
     }
@@ -177,7 +177,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
             verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
             verify(mockSessionRepository, never()).put(any())(any())
-            verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
+            verify(mockSessionService).set(any(), eqTo(mrn))(any())
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -206,7 +206,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
                 verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
                 verify(mockSessionRepository, never()).put(any())(any())
                 verify(mockSessionRepository, never()).set(any())(any())
-                verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
+                verify(mockSessionService).set(any(), eqTo(mrn))(any())
             }
           }
         }
@@ -298,7 +298,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
             verify(mockSessionRepository).get(eqTo(mrn.toString))(any())
             verify(mockSessionRepository, never()).put(any())(any())
             verify(mockSessionRepository, never()).set(any())(any())
-            verify(mockSessionService).setMrnInSession(any(), eqTo(mrn))(any())
+            verify(mockSessionService).set(any(), eqTo(mrn))(any())
         }
       }
     }
