@@ -25,7 +25,7 @@ import navigation.UserAnswersNavigator
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SubmissionService
+import services.{SessionService, SubmissionService}
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
@@ -40,7 +40,8 @@ class CheckArrivalsAnswersController @Inject() (
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
   submissionService: SubmissionService,
-  phaseConfig: PhaseConfig
+  phaseConfig: PhaseConfig,
+  sessionService: SessionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with Logging
@@ -58,13 +59,16 @@ class CheckArrivalsAnswersController @Inject() (
       implicit request =>
         ArrivalDomain.userAnswersReader(phaseConfig).apply(Nil).run(request.userAnswers) match {
           case Right(_) =>
-            submissionService.post(mrn).map {
-              case response if is2xx(response.status) =>
-                Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
-              case e =>
-                logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${e.status}")
-                Redirect(routes.ErrorController.technicalDifficulties())
-            }
+            submissionService
+              .post(mrn)
+              .map {
+                case response if is2xx(response.status) =>
+                  Redirect(controllers.routes.DeclarationSubmittedController.onPageLoad(mrn))
+                case e =>
+                  logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: ${e.status}")
+                  Redirect(routes.ErrorController.technicalDifficulties())
+              }
+              .map(sessionService.remove(_))
           case Left(value) =>
             logger.warn(s"CheckArrivalsAnswersController:onSubmit:$mrn: Answers incomplete. Redirecting.")
             Future.successful {

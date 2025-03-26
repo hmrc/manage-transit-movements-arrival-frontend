@@ -20,14 +20,14 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.SubmissionService
+import services.{SessionService, SubmissionService}
 import viewModels.ArrivalAnswersViewModel
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 import viewModels.sections.Section
@@ -37,12 +37,25 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private lazy val mockViewModelProvider               = mock[ArrivalAnswersViewModelProvider]
   private val mockSubmissionService: SubmissionService = mock[SubmissionService]
+  private val mockSessionService: SessionService       = mock[SessionService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[SubmissionService]).toInstance(mockSubmissionService))
+      .overrides(
+        bind[ArrivalAnswersViewModelProvider].toInstance(mockViewModelProvider),
+        bind(classOf[SubmissionService]).toInstance(mockSubmissionService),
+        bind(classOf[SessionService]).toInstance(mockSessionService)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+    reset(mockSubmissionService)
+    reset(mockSessionService)
+
+    when(mockSessionService.remove(any())(any())).thenCallRealMethod()
+  }
 
   private val userAnswersGen = arbitraryArrivalAnswers(emptyUserAnswers)
 
@@ -96,6 +109,8 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
           redirectLocation(result).value mustEqual
             routes.DeclarationSubmittedController.onPageLoad(mrn).url
+
+          verify(mockSessionService).remove(any())(any())
       }
     }
 
@@ -117,6 +132,8 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
           redirectLocation(result).value mustEqual
             routes.ErrorController.technicalDifficulties().url
+
+          verify(mockSessionService).remove(any())(any())
       }
     }
 
@@ -134,6 +151,8 @@ class CheckArrivalsAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
 
       redirectLocation(result).value mustEqual
         controllers.identification.routes.DestinationOfficeController.onPageLoad(mrn, NormalMode).url
+
+      verifyNoInteractions(mockSessionService)
     }
   }
 }
