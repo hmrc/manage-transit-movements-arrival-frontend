@@ -17,7 +17,6 @@
 package controllers
 
 import com.google.inject.Inject
-import config.PhaseConfig
 import controllers.actions.Actions
 import models.journeyDomain.ArrivalDomain
 import models.{MovementReferenceNumber, NormalMode}
@@ -40,7 +39,6 @@ class CheckArrivalsAnswersController @Inject() (
   view: CheckArrivalsAnswersView,
   viewModelProvider: ArrivalAnswersViewModelProvider,
   submissionService: SubmissionService,
-  phaseConfig: PhaseConfig,
   sessionService: SessionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -57,7 +55,7 @@ class CheckArrivalsAnswersController @Inject() (
     .requireData(mrn)
     .async {
       implicit request =>
-        ArrivalDomain.userAnswersReader(phaseConfig).apply(Nil).run(request.userAnswers) match {
+        ArrivalDomain.userAnswersReader.apply(Nil).run(request.userAnswers) match {
           case Right(_) =>
             submissionService
               .post(mrn)

@@ -16,9 +16,8 @@
 
 package base
 
-import config.{PostTransitionModule, TransitionModule}
 import controllers.actions.*
-import models.{Index, LockCheck, Mode, UserAnswers}
+import models.{LockCheck, Mode, UserAnswers}
 import navigation.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -70,26 +69,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeArrivalNavigatorProvider: ArrivalNavigatorProvider =
     (mode: Mode) => new FakeArrivalNavigator(onwardRoute, mode)
 
-  protected val fakeIncidentsNavigatorProvider: IncidentsNavigatorProvider =
-    (mode: Mode) => new FakeIncidentsNavigator(onwardRoute, mode)
-
-  protected val fakeIncidentNavigatorProvider: IncidentNavigatorProvider =
-    (mode: Mode, index: Index) => new FakeIncidentNavigator(onwardRoute, index, mode)
-
-  protected val fakeEquipmentsNavigatorProvider: EquipmentsNavigatorProvider =
-    (mode: Mode, incidentIndex: Index) => new FakeEquipmentsNavigator(onwardRoute, incidentIndex, mode)
-
-  protected val fakeEquipmentNavigatorProvider: EquipmentNavigatorProvider =
-    (mode: Mode, incidentIndex: Index, equipmentIndex: Index) => new FakeEquipmentNavigator(onwardRoute, incidentIndex, equipmentIndex, mode)
-
-  protected val fakeSealNavigatorProvider: SealNavigatorProvider =
-    (mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) =>
-      new FakeSealNavigator(onwardRoute, incidentIndex, equipmentIndex, sealIndex, mode)
-
-  protected val fakeItemNumberNavigatorProvider: ItemNumberNavigatorProvider =
-    (mode: Mode, incidentIndex: Index, equipmentIndex: Index, sealIndex: Index) =>
-      new FakeItemNumberNavigator(onwardRoute, incidentIndex, equipmentIndex, sealIndex, mode)
-
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
@@ -99,14 +78,4 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LockService].toInstance(mockLockService),
         bind[LockActionProvider].toInstance(mockLockActionProvider)
       )
-
-  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[PostTransitionModule]
-      .bindings(new TransitionModule)
-
-  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[TransitionModule]
-      .bindings(new PostTransitionModule)
 }

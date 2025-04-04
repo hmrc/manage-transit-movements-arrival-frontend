@@ -23,8 +23,6 @@ import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.mvc.Request
 
-import java.time.LocalDate
-
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
@@ -66,16 +64,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val maxIdentificationAuthorisations: Int = configuration.get[Int]("limits.maxIdentificationAuthorisations")
-  lazy val maxIncidents: Int                    = configuration.get[Int]("limits.maxIncidents")
-  lazy val maxSeals: Int                        = configuration.get[Int]("limits.maxSeals")
-  lazy val maxNumberOfItems: Int                = configuration.get[Int]("limits.maxNumberOfItems")
-  lazy val maxTransportEquipments: Int          = configuration.get[Int]("limits.maxTransportEquipments")
-
-  lazy val endorsementDateMin: LocalDate = LocalDate.of(
-    configuration.get[Int]("dates.endorsementDateMin.year"),
-    configuration.get[Int]("dates.endorsementDateMin.month"),
-    configuration.get[Int]("dates.endorsementDateMin.day")
-  )
 
   lazy val cacheUrl: String = configuration.get[Service]("microservice.services.manage-transit-movements-arrival-cache").fullServiceUrl
 

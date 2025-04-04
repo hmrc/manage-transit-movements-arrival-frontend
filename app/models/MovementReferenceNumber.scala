@@ -16,7 +16,6 @@
 
 package models
 
-import config.PhaseConfig
 import models.domain.StringFieldRegex._
 import play.api.libs.json._
 import play.api.mvc.{JavascriptLiteral, PathBindable}
@@ -39,8 +38,8 @@ object MovementReferenceNumber {
     validate(input, mrnTransitionRegex) orElse
       validate(input, mrnFinalRegex)
 
-  def validate(input: String)(implicit phaseConfig: PhaseConfig): Option[MovementReferenceNumber] =
-    validate(input, phaseConfig.mrnRegex)
+  def validate(input: String): Option[MovementReferenceNumber] =
+    validate(input, mrnFinalRegex)
 
   private def validate(input: String, regex: Regex): Option[MovementReferenceNumber] =
     input match {

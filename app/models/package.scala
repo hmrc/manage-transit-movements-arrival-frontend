@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import cats.implicits._
-import models.journeyDomain.{Pages, Read, ReaderSuccess, UserAnswersReader}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import scala.annotation.nowarn
 
@@ -29,85 +27,6 @@ package object models {
 
     def removeObject(path: JsPath): JsResult[JsObject] =
       jsObject.remove(path).flatMap(_.validate[JsObject])
-
-    def filterNot(f: (String, JsValue) => Boolean): JsObject =
-      JsObject(jsObject.fields.filterNot(f.tupled))
-
-    private def map(f: (String, JsValue) => (String, JsValue)): JsObject =
-      JsObject(jsObject.fields.map(f.tupled))
-
-    def filterNulls: JsObject =
-      map {
-        case (k, v: JsObject) =>
-          k -> v.filterNulls
-        case (k, v: JsArray) =>
-          k -> v.filterNulls
-        case (k, v) =>
-          k -> v
-      }.filterNot(
-        (_, v) => v == JsNull || v == Json.obj() || v == JsArray()
-      )
-  }
-
-  implicit class RichJsArray(arr: JsArray) {
-
-    def map(f: JsValue => JsValue): JsArray =
-      JsArray(arr.value.map(f))
-
-    def filter(f: JsValue => Boolean): JsArray =
-      JsArray(arr.value.filter(f))
-
-    def filterNot(f: JsValue => Boolean): JsArray =
-      JsArray(arr.value.filterNot(f))
-
-    def filterNulls: JsArray =
-      map {
-        case v: JsObject => v.filterNulls
-        case v: JsArray  => v.filterNulls
-        case v           => v
-      }.filterNot(
-        v => v == JsNull || v == Json.obj() || v == JsArray()
-      )
-
-    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
-      x => (x._1, Index(x._2))
-    )
-
-    def filterWithIndex(f: (JsValue, Index) => Boolean): Seq[(JsValue, Index)] =
-      arr.zipWithIndex.filter {
-        case (value, i) => f(value, i)
-      }
-
-    def isEmpty: Boolean = arr.value.isEmpty
-
-    def nonEmpty: Boolean = !isEmpty
-
-    def traverse[T](implicit userAnswersReader: (Index, Pages) => UserAnswersReader[T]): Read[Seq[T]] = pages =>
-      arr.zipWithIndex
-        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages)) {
-          case (acc, (_, index)) =>
-            acc.flatMap {
-              case ReaderSuccess(ts, pages) =>
-                userAnswersReader(index, pages).map {
-                  case ReaderSuccess(t, pages) =>
-                    ReaderSuccess(ts :+ t, pages)
-                }
-            }
-        }
-  }
-
-  implicit class RichOptionJsArray(arr: Option[JsArray]) {
-
-    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
-      arr
-        .map {
-          _.zipWithIndex.flatMap {
-            case (value, i) => f(value, i)
-          }
-        }
-        .getOrElse(Nil)
-
-    def length: Int = arr.getOrElse(JsArray()).value.length
   }
 
   implicit class RichJsValue(jsValue: JsValue) {

@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import config.PhaseConfig
 import models.{Enumerable, MovementReferenceNumber, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
@@ -103,7 +102,7 @@ trait Formatters {
     lengthKey: String,
     invalidCharacterKey: String,
     invalidMRNKey: String
-  )(implicit phaseConfig: PhaseConfig): Formatter[MovementReferenceNumber] =
+  ): Formatter[MovementReferenceNumber] =
     mrnFormatter(requiredKey, lengthKey, invalidCharacterKey, invalidMRNKey, MovementReferenceNumber.validate)
 
   private[mappings] def mrnFormatterUnsafe(

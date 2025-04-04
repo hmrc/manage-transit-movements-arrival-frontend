@@ -16,14 +16,13 @@
 
 package forms.identification
 
-import config.PhaseConfig
 import forms.mappings.Mappings
 import models.MovementReferenceNumber
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class MovementReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
+class MovementReferenceNumberFormProvider @Inject() extends Mappings {
 
   private val requiredKey: String         = "movementReferenceNumber.error.required"
   private val lengthKey: String           = "movementReferenceNumber.error.length"

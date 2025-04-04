@@ -16,12 +16,10 @@
 
 package generators
 
-import config.Constants.IncidentCode._
-import config.PhaseConfig
 import models.AddressLine.{City, NumberAndStreet, PostalCode}
 import models._
 import models.LockCheck.*
-import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex, mrnTransitionRegex}
+import models.domain.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex, mrnFinalRegex}
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -34,14 +32,6 @@ import scala.util.matching.Regex
 trait ModelGenerators {
 
   self: Generators =>
-
-  implicit lazy val arbitraryIdentification: Arbitrary[Identification] =
-    Arbitrary {
-      for {
-        code        <- Gen.oneOf("10", "11", "20", "21", "30", "31", "40", "41", "80", "81", "99")
-        description <- nonEmptyString
-      } yield Identification(code, description)
-    }
 
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
@@ -59,39 +49,6 @@ trait ModelGenerators {
         city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
         postalCode      <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
       } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
-    }
-
-  implicit lazy val arbitraryIncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      for {
-        code        <- Gen.oneOf("1", "2", "3", "4", "5", "6")
-        description <- nonEmptyString
-      } yield IncidentCode(code, description)
-    }
-
-  lazy val arbitrary3Or6IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(TransferredToAnotherTransportCode, "test"), IncidentCode(UnexpectedlyChangedCode, "test"))
-    }
-
-  lazy val arbitrary2Or4IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(SealsBrokenOrTamperedCode, "test"), IncidentCode(PartiallyOrFullyUnloadedCode, "test"))
-    }
-
-  lazy val arbitrary1Or5IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(IncidentCode(DeviatedFromItineraryCode, "test"), IncidentCode(CarrierUnableToComplyCode, "test"))
-    }
-
-  lazy val arbitraryNot3Or6IncidentCode: Arbitrary[IncidentCode] =
-    Arbitrary {
-      Gen.oneOf(
-        IncidentCode(SealsBrokenOrTamperedCode, "test1"),
-        IncidentCode(PartiallyOrFullyUnloadedCode, "test2"),
-        IncidentCode(DeviatedFromItineraryCode, "test3"),
-        IncidentCode(CarrierUnableToComplyCode, "test4")
-      )
     }
 
   implicit lazy val arbitraryUnLocode: Arbitrary[String] =
@@ -141,18 +98,7 @@ trait ModelGenerators {
       Gen.oneOf(models.identification.ProcedureType.values)
     }
 
-  implicit def arbitraryMovementReferenceNumber(implicit phaseConfig: PhaseConfig): Arbitrary[MovementReferenceNumber] =
-    phaseConfig.phase match {
-      case Phase.Transition     => arbitraryMovementReferenceNumberTransition
-      case Phase.PostTransition => arbitraryMovementReferenceNumberFinal
-    }
-
-  lazy val arbitraryMovementReferenceNumberTransition: Arbitrary[MovementReferenceNumber] =
-    Arbitrary {
-      movementReferenceNumberGen(mrnTransitionRegex)
-    }
-
-  lazy val arbitraryMovementReferenceNumberFinal: Arbitrary[MovementReferenceNumber] =
+  implicit val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       movementReferenceNumberGen(mrnFinalRegex)
     }

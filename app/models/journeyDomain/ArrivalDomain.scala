@@ -16,17 +16,15 @@
 
 package models.journeyDomain
 
-import config.PhaseConfig
 import models.journeyDomain.identification.IdentificationDomain
-import models.journeyDomain.incident.IncidentsDomain
 import models.journeyDomain.locationOfGoods.LocationOfGoodsDomain
-import models.{Mode, Phase, UserAnswers}
-import pages.incident.IncidentFlagPage
+import models.{Mode, UserAnswers}
 import play.api.mvc.Call
 
-sealed trait ArrivalDomain extends JourneyDomainModel {
-  val identification: IdentificationDomain
-  val locationOfGoods: LocationOfGoodsDomain
+case class ArrivalDomain(
+  identification: IdentificationDomain,
+  locationOfGoods: LocationOfGoodsDomain
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Some(controllers.routes.CheckArrivalsAnswersController.onPageLoad(userAnswers.mrn))
@@ -34,39 +32,9 @@ sealed trait ArrivalDomain extends JourneyDomainModel {
 
 object ArrivalDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[ArrivalDomain] = phaseConfig.phase match {
-    case Phase.Transition     => ArrivalTransitionDomain.userAnswersReader
-    case Phase.PostTransition => ArrivalPostTransitionDomain.userAnswersReader
-  }
-
-}
-
-case class ArrivalPostTransitionDomain(
-  identification: IdentificationDomain,
-  locationOfGoods: LocationOfGoodsDomain
-) extends ArrivalDomain
-
-object ArrivalPostTransitionDomain {
-
   implicit val userAnswersReader: Read[ArrivalDomain] =
     (
       IdentificationDomain.userAnswersReader,
       LocationOfGoodsDomain.userAnswersReader
-    ).map(ArrivalPostTransitionDomain.apply)
-}
-
-case class ArrivalTransitionDomain(
-  identification: IdentificationDomain,
-  locationOfGoods: LocationOfGoodsDomain,
-  incidents: Option[IncidentsDomain]
-) extends ArrivalDomain
-
-object ArrivalTransitionDomain {
-
-  implicit val userAnswersReader: Read[ArrivalDomain] =
-    (
-      IdentificationDomain.userAnswersReader,
-      LocationOfGoodsDomain.userAnswersReader,
-      IncidentFlagPage.filterOptionalDependent(identity)(IncidentsDomain.userAnswersReader)
-    ).map(ArrivalTransitionDomain.apply)
+    ).map(ArrivalDomain.apply)
 }
