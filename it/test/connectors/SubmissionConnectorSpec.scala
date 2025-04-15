@@ -44,13 +44,14 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return true when status is Ok" in {
         server.stubFor(
           post(urlEqualTo(url))
+            .withHeader("API-Version", equalTo("1.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(OK))
         )
 
         val result: HttpResponse = await(connector.post(mrn))
 
-        result.status mustBe OK
+        result.status mustEqual OK
       }
 
       "return false for 4xx response" in {
@@ -58,13 +59,14 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withHeader("API-Version", equalTo("1.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
         val result: HttpResponse = await(connector.post(mrn))
 
-        result.status mustBe status
+        result.status mustEqual status
       }
 
       "return false for 5xx response" in {
@@ -72,13 +74,14 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         server.stubFor(
           post(urlEqualTo(url))
+            .withHeader("API-Version", equalTo("1.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
 
         val result: HttpResponse = await(connector.post(mrn))
 
-        result.status mustBe status
+        result.status mustEqual status
       }
     }
 
@@ -110,7 +113,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: ArrivalMessages = await(connector.getMessages(mrn))
 
-        result mustBe ArrivalMessages(
+        result mustEqual ArrivalMessages(
           Seq(
             ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
             ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
