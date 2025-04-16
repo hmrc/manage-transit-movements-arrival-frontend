@@ -40,6 +40,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/declaration/submit"
     http
       .post(url)
+      .setHeader("API-Version" -> config.apiVersion)
       .withBody(Json.toJson(mrn.value))
       .execute[HttpResponse]
   }

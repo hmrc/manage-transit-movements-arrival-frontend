@@ -26,6 +26,8 @@ import play.api.mvc.Request
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
+  val apiVersion: String = configuration.get[String]("microservice.services.manage-transit-movements-arrival-cache.version")
+
   lazy val countriesOfDestination: Seq[String] = configuration.get[Seq[String]]("countriesOfDestination")
 
   val contactHost: String = configuration.get[String]("contact-frontend.host")
