@@ -30,11 +30,12 @@ e.g.: http://localhost:10121/manage-transit-movements/arrivals/movement-referenc
 
 The following features can be toggled in [application.conf](conf/application.conf):
 
-| Key                        | Argument type | sbt                                                            | Description                                                                                                                                                                                    |
-|----------------------------|---------------|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `trader-test.enabled`      | `Boolean`     | `sbt -Dtrader-test.enabled=true run`                           | If enabled, this will override the behaviour of the "Is this page not working properly?" and "feedback" links. This is so we can receive feedback in the absence of Deskpro in `externaltest`. |
-| `banners.showUserResearch` | `Boolean`     | `sbt -Dbanners.showUserResearch=true run`                      | Controls whether or not we show the user research banner.                                                                                                                                      |
-| `play.http.router`         | `String`      | `sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes run`  | Controls which router is used for the application, either `prod.Routes` or `testOnlyDoNotUseInAppConf.Routes`                                                                                  |
+| Key                             | Argument type | sbt                                                           | Description                                                                                                                                                                                    |
+|---------------------------------|---------------|---------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `feature-flags.phase-6-enabled` | `Boolean`     | `sbt -Dfeature-flags.phase-6-enabled=true run`                | Controls whether the submission logic will follow phase 5 or phase 6 protocol.                                                                                                                 |
+| `trader-test.enabled`           | `Boolean`     | `sbt -Dtrader-test.enabled=true run`                          | If enabled, this will override the behaviour of the "Is this page not working properly?" and "feedback" links. This is so we can receive feedback in the absence of Deskpro in `externaltest`. |
+| `banners.showUserResearch`      | `Boolean`     | `sbt -Dbanners.showUserResearch=true run`                     | Controls whether or not we show the user research banner.                                                                                                                                      |
+| `play.http.router`              | `String`      | `sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes run` | Controls which router is used for the application, either `prod.Routes` or `testOnlyDoNotUseInAppConf.Routes`                                                                                  |
 
 ### Scaffold
 

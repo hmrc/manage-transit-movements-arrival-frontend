@@ -41,17 +41,48 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
       val url = s"/manage-transit-movements-arrival-cache/declaration/submit"
 
-      "must return true when status is Ok" in {
-        server.stubFor(
-          post(urlEqualTo(url))
-            .withHeader("API-Version", equalTo("1.0"))
-            .withRequestBody(equalToJson(mrn.toString))
-            .willReturn(aResponse().withStatus(OK))
-        )
+      "must return true when status is Ok" - {
+        "when phase 6 enabled" in {
+          val app = guiceApplicationBuilder()
+            .configure("feature-flags.phase-6-enabled" -> true)
+            .build()
 
-        val result: HttpResponse = await(connector.post(mrn))
+          running(app) {
+            val connector = app.injector.instanceOf[SubmissionConnector]
 
-        result.status mustEqual OK
+            server.stubFor(
+              post(urlEqualTo(url))
+                .withHeader("API-Version", equalTo("2.0"))
+                .withRequestBody(equalToJson(mrn.toString))
+                .willReturn(aResponse().withStatus(OK))
+            )
+
+            val result: HttpResponse = await(connector.post(mrn))
+
+            result.status mustEqual OK
+          }
+        }
+
+        "when phase 6 disabled" in {
+          val app = guiceApplicationBuilder()
+            .configure("feature-flags.phase-6-enabled" -> false)
+            .build()
+
+          running(app) {
+            val connector = app.injector.instanceOf[SubmissionConnector]
+
+            server.stubFor(
+              post(urlEqualTo(url))
+                .withHeader("API-Version", equalTo("1.0"))
+                .withRequestBody(equalToJson(mrn.toString))
+                .willReturn(aResponse().withStatus(OK))
+            )
+
+            val result: HttpResponse = await(connector.post(mrn))
+
+            result.status mustEqual OK
+          }
+        }
       }
 
       "return false for 4xx response" in {
