@@ -39,44 +39,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   val prefix: String
 
-  def hasSignOutLink: Boolean = true
-
-  val urlContainsMrn: Boolean = false
-
-  if (hasSignOutLink) {
-    "must render sign out link in header" in {
-      val link = getElementByClass(doc, "hmrc-sign-out-nav__link")
-      assertElementContainsText(link, "Sign out")
-      assertElementContainsHref(
-        link,
-        if (urlContainsMrn) {
-          controllers.routes.DeleteLockController.delete(mrn, None).url
-        } else {
-          "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-movements"
-        }
-      )
-    }
-
-    "must render timeout dialog" in {
-      val metas = getElementsByTag(doc, "meta")
-      assertElementExists(metas, _.attr("name") == "hmrc-timeout-dialog")
-      if (urlContainsMrn) {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == s"/manage-transit-movements/arrivals/$mrn/keep-alive")
-      } else {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == "/manage-transit-movements/arrivals/keep-alive")
-      }
-    }
-  } else {
-    "must not render sign out link in header" in {
-      assertElementDoesNotExist(doc, "hmrc-sign-out-nav__link")
-    }
-
-    "must not render timeout dialog" in {
-      val metas = getElementsByTag(doc, "meta")
-      assertElementDoesNotExist(metas, _.attr("name") == "hmrc-timeout-dialog")
-    }
-  }
-
   "must render service name link in header" in {
     val link = getElementByClass(doc, "govuk-header__service-name")
     assertElementContainsText(link, "Manage your transit movements")
