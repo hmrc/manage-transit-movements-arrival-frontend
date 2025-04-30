@@ -26,8 +26,6 @@ class DeclarationSubmittedViewSpec extends PanelViewBehaviours {
 
   override val prefix: String = "declarationSubmitted"
 
-  override val urlContainsMrn: Boolean = true
-
   val officeOfDestination: CustomsOffice      = new CustomsOffice("ABC12345", "Test", Some("+44 7760663422"), "AB")
   val officeOfDestinationNoTel: CustomsOffice = new CustomsOffice("ABC12345", "Test", None, "AB")
 

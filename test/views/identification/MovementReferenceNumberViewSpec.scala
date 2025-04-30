@@ -26,8 +26,8 @@ import views.behaviours.InputTextViewBehaviours
 import views.html.identification.MovementReferenceNumberView
 
 class MovementReferenceNumberViewSpec extends InputTextViewBehaviours[MovementReferenceNumber] {
-  override val prefix: String          = "movementReferenceNumber"
-  override val urlContainsMrn: Boolean = false
+
+  override val prefix: String = "movementReferenceNumber"
 
   override def form: Form[MovementReferenceNumber] = new MovementReferenceNumberFormProvider().apply()
 
