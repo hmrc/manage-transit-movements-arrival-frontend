@@ -14,8 +14,6 @@ lazy val microservice = (project in file("."))
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(A11yTest)
   .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings) *)
-  .settings(DefaultBuildSettings.scalaSettings *)
-  .settings(DefaultBuildSettings.defaultSettings() *)
   .settings(headerSettings(A11yTest) *)
   .settings(automateHeaderSettings(A11yTest))
   .settings(
@@ -52,7 +50,6 @@ lazy val microservice = (project in file("."))
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
-    resolvers += Resolver.jcenterRepo,
     Assets / pipelineStages := Seq(digest),
     ThisBuild / useSuperShell := false
   )
