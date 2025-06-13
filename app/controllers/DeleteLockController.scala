@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.MovementReferenceNumber
+import scala.util.control.NonFatal
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,7 +52,7 @@ class DeleteLockController @Inject() (
           _ =>
             Redirect(url)
         } recover {
-          case exception =>
+          case NonFatal(exception) =>
             logger.info(s"Failed to unlock session for MRN $mrn", exception)
             Redirect(url)
         }

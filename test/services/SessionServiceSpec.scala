@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import generators.Generators
-import models.MovementReferenceNumber
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.Results.Ok
