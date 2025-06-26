@@ -33,7 +33,7 @@ class UnlocodeViewSpec extends InputTextViewBehaviours[String] {
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[UnlocodeView].apply(form, mrn, NormalMode)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[String] = arbitraryUnLocode
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(nonEmptyString)
 
   behave like pageWithTitle()
 

@@ -17,30 +17,73 @@
 package models.reference
 
 import base.SpecBase
-import models.reference.TypeOfLocation._
+import config.FrontendAppConfig
+import models.reference.TypeOfLocation.*
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 
 class TypeOfLocationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "TypeOfLocation" - {
 
-    "must deserialise valid values" in {
+    "must deserialise" - {
+      "when reading from mongo" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = TypeOfLocation(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "type": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[TypeOfLocation] mustEqual value
+        }
+      }
 
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val typeOfLocation = TypeOfLocation(code, description)
-          Json
-            .parse(s"""
-                 |{
-                 |  "type": "$code",
-                 |  "description": "$description"
-                 |}
-                 |""".stripMargin)
-            .as[TypeOfLocation] mustBe typeOfLocation
+      "when reading from reference data" - {
+        "when phase 5" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val value = TypeOfLocation(code, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "type": "$code",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TypeOfLocation](TypeOfLocation.reads(config)) mustEqual value
+              }
+          }
+        }
+
+        "when phase 6" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val value = TypeOfLocation(code, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "key": "$code",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TypeOfLocation](TypeOfLocation.reads(config)) mustEqual value
+              }
+          }
+        }
       }
     }
 
@@ -49,7 +92,7 @@ class TypeOfLocationSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val typeOfLocation = TypeOfLocation(code, description)
-          Json.toJson(typeOfLocation) mustBe Json.parse(s"""
+          Json.toJson(typeOfLocation) mustEqual Json.parse(s"""
                |{
                |  "type": "$code",
                |  "description": "$description"

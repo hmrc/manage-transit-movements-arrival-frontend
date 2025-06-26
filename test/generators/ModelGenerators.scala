@@ -51,11 +51,12 @@ trait ModelGenerators {
       } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
     }
 
-  implicit lazy val arbitraryUnLocode: Arbitrary[String] =
+  implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
     Arbitrary {
       for {
-        code <- stringsWithExactLength(5, 5: Int)
-      } yield code
+        unLocodeExtendedCode <- stringsWithExactLength(5)
+        name                 <- nonEmptyString
+      } yield UnLocode(unLocodeExtendedCode, name)
     }
 
   implicit lazy val arbitraryCoordinates: Arbitrary[Coordinates] =
@@ -144,7 +145,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
-        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .pick(2, 'A' to 'Z')
         .map(
           code => CountryCode(code.mkString)
         )
