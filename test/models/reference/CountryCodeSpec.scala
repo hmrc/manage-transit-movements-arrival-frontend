@@ -17,25 +17,67 @@
 package models.reference
 
 import base.SpecBase
+import config.FrontendAppConfig
+import org.scalacheck.Gen
 import play.api.libs.json.{JsString, Json}
+import play.api.test.Helpers.running
 
 class CountryCodeSpec extends SpecBase {
 
-  "must deserialise" - {
-    "when country code is its own object" in {
-      val json = JsString("foo")
-      json.as[CountryCode] mustBe CountryCode("foo")
+  "CountryCode" - {
+
+    "must serialise" in {
+      forAll(Gen.alphaNumStr) {
+        code =>
+          val countryCode = CountryCode(code)
+          Json.toJson(countryCode) mustEqual JsString(code)
+      }
     }
 
-    "when country code is nested inside an object" in {
-      val json = Json.parse(s"""
-           |{
-           |  "code": "foo"
-           |}
-           |""".stripMargin)
+    "must deserialise" - {
+      "when reading from mongo" in {
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val countryCode = CountryCode(code)
+            JsString(code).as[CountryCode] mustEqual countryCode
+        }
+      }
 
-      json.as[CountryCode] mustBe CountryCode("foo")
+      "when reading from reference data" - {
+        "when phase 5" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "code": "$code"
+                         |}
+                         |""".stripMargin)
+                    .as[CountryCode](CountryCode.reads(config)) mustEqual CountryCode(code)
+              }
+          }
+        }
+
+        "when phase 6" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "key": "$code"
+                         |}
+                         |""".stripMargin)
+                    .as[CountryCode](CountryCode.reads(config)) mustEqual CountryCode(code)
+              }
+          }
+        }
+      }
     }
   }
-
 }

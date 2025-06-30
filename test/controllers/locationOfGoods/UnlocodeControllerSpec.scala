@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val unLocode1 = arbitraryUnLocode.arbitrary.sample.get
+  private val unLocode1 = arbitraryUnLocode.arbitrary.sample.get.unLocodeExtendedCode
 
   private val formProvider       = new UnLocodeFormProvider()
   private val form               = formProvider("locationOfGoods.unlocode")
