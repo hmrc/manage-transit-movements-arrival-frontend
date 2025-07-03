@@ -42,6 +42,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginHmrcServiceUrl: String = configuration.get[String]("urls.loginHmrcService")
 
   lazy val manageTransitMovementsUrl: String = configuration.get[String]("urls.manageTransitMovementsFrontend")
+  lazy val feedbackUrl: String               = configuration.get[String]("urls.feedback")
   lazy val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
 
   lazy val manageTransitMovementsViewArrivalsUrl: String = s"$manageTransitMovementsUrl/view-arrival-notifications"
