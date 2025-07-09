@@ -49,6 +49,7 @@ class SubmissionConnector @Inject() (
     val url = url"$baseUrl/messages/$mrn"
     http
       .get(url)
+      .setHeader("API-Version" -> config.apiVersion)
       .execute[ArrivalMessages]
   }
 }
