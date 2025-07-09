@@ -136,20 +136,54 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
           |}
           |""".stripMargin
 
-      "must return messages when status is Ok" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(json))
-        )
+      "must return messages when status is Ok" - {
+        "when phase 5" in {
+          val app = guiceApplicationBuilder()
+            .configure("feature-flags.phase-6-enabled" -> false)
+            .build()
 
-        val result: ArrivalMessages = await(connector.getMessages(mrn))
+          running(app) {
+            val connector = app.injector.instanceOf[SubmissionConnector]
+            server.stubFor(
+              get(urlEqualTo(url))
+                .withHeader("API-Version", equalTo("1.0"))
+                .willReturn(okJson(json))
+            )
 
-        result mustEqual ArrivalMessages(
-          Seq(
-            ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
-            ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
-          )
-        )
+            val result: ArrivalMessages = await(connector.getMessages(mrn))
+
+            result mustEqual ArrivalMessages(
+              Seq(
+                ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
+                ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
+              )
+            )
+          }
+        }
+
+        "when phase 6" in {
+          val app = guiceApplicationBuilder()
+            .configure("feature-flags.phase-6-enabled" -> true)
+            .build()
+
+          running(app) {
+            val connector = app.injector.instanceOf[SubmissionConnector]
+            server.stubFor(
+              get(urlEqualTo(url))
+                .withHeader("API-Version", equalTo("2.0"))
+                .willReturn(okJson(json))
+            )
+
+            val result: ArrivalMessages = await(connector.getMessages(mrn))
+
+            result mustEqual ArrivalMessages(
+              Seq(
+                ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
+                ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
+              )
+            )
+          }
+        }
       }
     }
   }
