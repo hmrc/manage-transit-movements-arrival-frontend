@@ -181,7 +181,7 @@ class MovementReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-            userAnswersCaptor.getValue mustBe userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
+            userAnswersCaptor.getValue mustEqual userAnswers.copy(submissionStatus = SubmissionStatus.Amending)
           }
 
           "and answers have not previously been submitted" in {

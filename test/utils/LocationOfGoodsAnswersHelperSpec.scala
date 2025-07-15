@@ -37,7 +37,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.locationType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -51,15 +51,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.locationType.get
 
-              result.key.value mustBe "Location type"
-              result.value.value mustBe typeOfLocation.asString
+              result.key.value mustEqual "Location type"
+              result.value.value mustEqual typeOfLocation.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.TypeOfLocationController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "location type for the goods"
-              action.id mustBe "type-of-location"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.TypeOfLocationController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "location type for the goods"
+              action.id mustEqual "type-of-location"
           }
         }
       }
@@ -72,7 +72,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.qualifierOfIdentification
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -86,15 +86,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.qualifierOfIdentification.get
 
-              result.key.value mustBe "Identifier type"
-              result.value.value mustBe qualifierOfIdentification.asString
+              result.key.value mustEqual "Identifier type"
+              result.value.value mustEqual qualifierOfIdentification.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.QualifierOfIdentificationController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
-              action.id mustBe "qualifier-of-identification"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.QualifierOfIdentificationController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "identifier type for the location of goods"
+              action.id mustEqual "qualifier-of-identification"
           }
         }
       }
@@ -107,7 +107,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.customsOfficeIdentifier
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -121,15 +121,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.customsOfficeIdentifier.get
 
-              result.key.value mustBe "Customs office identifier"
-              result.value.value mustBe customsOffice.toString
+              result.key.value mustEqual "Customs office identifier"
+              result.value.value mustEqual customsOffice.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.CustomsOfficeController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "customs office identifier for the location of goods"
-              action.id mustBe "customs-office"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.CustomsOfficeController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "customs office identifier for the location of goods"
+              action.id mustEqual "customs-office"
           }
         }
       }
@@ -142,7 +142,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.identificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -156,15 +156,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.identificationNumber.get
 
-              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
-              result.value.value mustBe identificationNumber
+              result.key.value mustEqual "EORI number or Trader Identification Number (TIN)"
+              result.value.value mustEqual identificationNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "EORI number or Trader Identification Number (TIN) for the location of goods"
-              action.id mustBe "identification-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "EORI number or Trader Identification Number (TIN) for the location of goods"
+              action.id mustEqual "identification-number"
           }
         }
       }
@@ -177,7 +177,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.authorisationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -191,15 +191,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.authorisationNumber.get
 
-              result.key.value mustBe "Authorisation number"
-              result.value.value mustBe authorisationNumber
+              result.key.value mustEqual "Authorisation number"
+              result.value.value mustEqual authorisationNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.AuthorisationNumberController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "authorisation number for the location of goods"
-              action.id mustBe "authorisation-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.AuthorisationNumberController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "authorisation number for the location of goods"
+              action.id mustEqual "authorisation-number"
           }
         }
       }
@@ -212,7 +212,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.coordinates
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -226,15 +226,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.coordinates.get
 
-              result.key.value mustBe "Coordinates"
-              result.value.value mustBe coordinates.toString
+              result.key.value mustEqual "Coordinates"
+              result.value.value mustEqual coordinates.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.CoordinatesController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "coordinates for the location of goods"
-              action.id mustBe "coordinates"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.CoordinatesController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "coordinates for the location of goods"
+              action.id mustEqual "coordinates"
           }
         }
       }
@@ -247,7 +247,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.unLocode
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -261,15 +261,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.unLocode.get
 
-              result.key.value mustBe "UN/LOCODE"
-              result.value.value mustBe unLocode.toString
+              result.key.value mustEqual "UN/LOCODE"
+              result.value.value mustEqual unLocode.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.UnlocodeController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "UN/LOCODE for the location of goods"
-              action.id mustBe "un-locode"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.UnlocodeController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "UN/LOCODE for the location of goods"
+              action.id mustEqual "un-locode"
           }
         }
       }
@@ -282,7 +282,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.country
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -296,15 +296,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.country.get
 
-              result.key.value mustBe "Country"
-              result.value.value mustBe country.toString
+              result.key.value mustEqual "Country"
+              result.value.value mustEqual country.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.CountryController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "country for the location of goods"
-              action.id mustBe "country"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.CountryController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "country for the location of goods"
+              action.id mustEqual "country"
           }
         }
       }
@@ -317,7 +317,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.address
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -331,15 +331,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.address.get
 
-              result.key.value mustBe "Address"
-              result.value.value mustBe address.toString
+              result.key.value mustEqual "Address"
+              result.value.value mustEqual address.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.AddressController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "address for the location of goods"
-              action.id mustBe "address"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.AddressController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "address for the location of goods"
+              action.id mustEqual "address"
           }
         }
       }
@@ -352,7 +352,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.contactYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -366,15 +366,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.contactYesNo.get
 
-              result.key.value mustBe "Do you want to add a contact for the location of goods?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a contact for the location of goods?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.AddContactPersonController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a contact for the location of goods"
-              action.id mustBe "add-contact-person"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.AddContactPersonController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a contact for the location of goods"
+              action.id mustEqual "add-contact-person"
           }
         }
       }
@@ -387,7 +387,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.contactName
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -401,15 +401,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.contactName.get
 
-              result.key.value mustBe "Contact name"
-              result.value.value mustBe name
+              result.key.value mustEqual "Contact name"
+              result.value.value mustEqual name
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.ContactPersonNameController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "contact name for the location of goods"
-              action.id mustBe "contact-person-name"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.ContactPersonNameController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "contact name for the location of goods"
+              action.id mustEqual "contact-person-name"
           }
         }
       }
@@ -422,7 +422,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val helper = LocationOfGoodsAnswersHelper(emptyUserAnswers, mode)
               val result = helper.contactPhoneNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -436,15 +436,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               val helper = LocationOfGoodsAnswersHelper(answers, mode)
               val result = helper.contactPhoneNumber.get
 
-              result.key.value mustBe "Contact phone number"
-              result.value.value mustBe phoneNumber
+              result.key.value mustEqual "Contact phone number"
+              result.value.value mustEqual phoneNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.ContactPersonTelephoneController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "contact phone number for the location of goods"
-              action.id mustBe "contact-person-phone"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.ContactPersonTelephoneController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "contact phone number for the location of goods"
+              action.id mustEqual "contact-person-phone"
           }
         }
       }

@@ -33,7 +33,7 @@ class IdentificationAnswersViewModelSpec extends SpecBase with Generators {
           val section     = new IdentificationAnswersViewModelProvider().apply(userAnswers, mode).section
 
           section.sectionTitle must not be defined
-          section.rows.size mustBe 5
+          section.rows.size mustEqual 5
           section.addAnotherLink must not be defined
       }
     }

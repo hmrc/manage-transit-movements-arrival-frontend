@@ -64,7 +64,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
             .willReturn(okJson(json))
         )
 
-        connector.get(mrn.toString).futureValue mustBe Some(userAnswers)
+        connector.get(mrn.toString).futureValue.value mustEqual userAnswers
       }
 
       "return None when no cached data found for provided mrn" in {
@@ -75,7 +75,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Option[UserAnswers] = await(connector.get(mrn.toString))
 
-        result mustBe None
+        result must not be defined
       }
 
       "throw BadRequestException when 400 returned" in {
@@ -105,7 +105,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Boolean = await(connector.post(userAnswers))
 
-        result mustBe true
+        result mustEqual true
       }
 
       "return false for 4xx or 5xx response" in {
@@ -119,7 +119,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Boolean = await(connector.post(userAnswers))
 
-        result mustBe false
+        result mustEqual false
       }
     }
 
@@ -136,7 +136,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Boolean = await(connector.put(mrn.toString))
 
-        result mustBe true
+        result mustEqual true
       }
 
       "return false for 4xx or 5xx response" in {
@@ -149,7 +149,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Boolean = await(connector.put(mrn.toString))
 
-        result mustBe false
+        result mustEqual false
       }
     }
 
@@ -162,7 +162,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe LockCheck.Unlocked
+        result mustEqual LockCheck.Unlocked
       }
 
       "must return locked when status is locked" in {
@@ -170,7 +170,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe LockCheck.Locked
+        result mustEqual LockCheck.Locked
       }
 
       "return LockCheckFailure for other responses" in {
@@ -181,7 +181,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
             val result: LockCheck = await(connector.checkLock(userAnswers))
 
-            result mustBe LockCheck.LockCheckFailure
+            result mustEqual LockCheck.LockCheckFailure
         }
       }
     }
@@ -195,7 +195,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
         val result: Boolean = await(connector.deleteLock(userAnswers))
 
-        result mustBe true
+        result mustEqual true
       }
 
       "return false for other responses" in {
@@ -212,7 +212,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler with Scal
 
             val result: Boolean = await(connector.deleteLock(userAnswers))
 
-            result mustBe false
+            result mustEqual false
         }
       }
     }

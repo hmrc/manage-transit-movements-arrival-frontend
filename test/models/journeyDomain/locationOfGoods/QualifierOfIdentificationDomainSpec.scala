@@ -58,8 +58,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         CountryPage,
         AddressPage,
@@ -82,8 +82,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         IdentificationNumberPage,
         AddContactPersonPage
@@ -105,8 +105,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         AuthorisationNumberPage,
         AddContactPersonPage
@@ -130,8 +130,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         CoordinatesPage,
         AddContactPersonPage,
@@ -151,8 +151,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         CustomsOfficePage
       )
@@ -173,8 +173,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         QualifierOfIdentificationPage,
         UnlocodePage,
         AddContactPersonPage
@@ -189,8 +189,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = QualifierOfIdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe QualifierOfIdentificationPage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual QualifierOfIdentificationPage
+        result.left.value.pages mustEqual Seq(
           QualifierOfIdentificationPage
         )
       }
@@ -217,8 +217,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = AddressDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         CountryPage,
         AddressPage,
         AddContactPersonPage,
@@ -243,8 +243,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = AddressDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         CountryPage,
         AddressPage,
         AddContactPersonPage
@@ -271,7 +271,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
             val result = AddressDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-            result.left.value.page mustBe page
+            result.left.value.page mustEqual page
         }
       }
     }
@@ -295,8 +295,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         IdentificationNumberPage,
         AddContactPersonPage,
         ContactPersonNamePage,
@@ -318,8 +318,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
       val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         IdentificationNumberPage,
         AddContactPersonPage
       )
@@ -344,7 +344,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
             val result = EoriNumberDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-            result.left.value.page mustBe page
+            result.left.value.page mustEqual page
         }
       }
     }
@@ -369,8 +369,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           AuthorisationNumberPage,
           AddContactPersonPage,
           ContactPersonNamePage,
@@ -392,8 +392,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           AuthorisationNumberPage,
           AddContactPersonPage
         )
@@ -418,7 +418,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
               val result = AuthorisationNumberDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-              result.left.value.page mustBe page
+              result.left.value.page mustEqual page
           }
         }
       }
@@ -442,8 +442,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           CoordinatesPage,
           AddContactPersonPage,
           ContactPersonNamePage,
@@ -465,8 +465,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           CoordinatesPage,
           AddContactPersonPage
         )
@@ -491,7 +491,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
               val result = CoordinatesDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-              result.left.value.page mustBe page
+              result.left.value.page mustEqual page
           }
         }
       }
@@ -509,8 +509,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = CustomsOfficeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           CustomsOfficePage
         )
       }
@@ -521,8 +521,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
           val result = CustomsOfficeDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe CustomsOfficePage
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual CustomsOfficePage
+          result.left.value.pages mustEqual Seq(
             CustomsOfficePage
           )
         }
@@ -547,8 +547,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           UnlocodePage,
           AddContactPersonPage,
           ContactPersonNamePage,
@@ -570,8 +570,8 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
         val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           UnlocodePage,
           AddContactPersonPage
         )
@@ -596,7 +596,7 @@ class QualifierOfIdentificationDomainSpec extends SpecBase with Generators {
 
               val result = UnlocodeDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-              result.left.value.page mustBe page
+              result.left.value.page mustEqual page
           }
         }
       }

@@ -41,8 +41,8 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
 
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           ContactPersonNamePage,
           ContactPersonTelephonePage
         )
@@ -53,8 +53,8 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
       "when name is unanswered" in {
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe ContactPersonNamePage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual ContactPersonNamePage
+        result.left.value.pages mustEqual Seq(
           ContactPersonNamePage
         )
       }
@@ -64,8 +64,8 @@ class ContactPersonDomainSpec extends SpecBase with Generators {
 
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe ContactPersonTelephonePage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual ContactPersonTelephonePage
+        result.left.value.pages mustEqual Seq(
           ContactPersonNamePage,
           ContactPersonTelephonePage
         )

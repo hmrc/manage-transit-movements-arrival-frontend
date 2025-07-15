@@ -36,7 +36,7 @@ class ArrivalNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
+                .mustEqual(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }
@@ -53,7 +53,7 @@ class ArrivalNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
+                .mustEqual(controllers.routes.CheckArrivalsAnswersController.onPageLoad(answers.mrn))
           }
         }
       }

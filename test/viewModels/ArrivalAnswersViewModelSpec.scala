@@ -28,7 +28,7 @@ class ArrivalAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
       userAnswers =>
         val viewModelProvider = app.injector.instanceOf[ArrivalAnswersViewModelProvider]
         val sections          = viewModelProvider.apply(userAnswers).sections
-        sections.size mustBe 2
+        sections.size mustEqual 2
     }
   }
 }

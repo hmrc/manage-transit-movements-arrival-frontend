@@ -61,7 +61,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
         when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
           .thenReturn(Future.successful(Right(typesOfLocation)))
 
-        service.getTypesOfLocation().futureValue mustBe Seq(typeOfLocation3, typeOfLocation1)
+        service.getTypesOfLocation().futureValue mustEqual Seq(typeOfLocation3, typeOfLocation1)
 
       }
     }
@@ -74,7 +74,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(Right(ids)))
 
-          service.getIdentifications(TypeOfLocation(DesignatedLocation, "test")).futureValue mustBe
+          service.getIdentifications(TypeOfLocation(DesignatedLocation, "test")).futureValue mustEqual
             Seq(unlocode, customsOfficeIdentifier)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
@@ -84,7 +84,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(Right(ids)))
 
-          service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustBe
+          service.getIdentifications(TypeOfLocation(ApprovedPlace, "test")).futureValue mustEqual
             Seq(
               unlocode,
               coordinates,
@@ -99,7 +99,7 @@ class ReferenceDataDynamicRadioServiceSpec extends SpecBase with BeforeAndAfterE
           when(mockRefDataConnector.getIdentifications()(any(), any()))
             .thenReturn(Future.successful(Right(ids)))
 
-          service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustBe Seq(unlocode, coordinates, address)
+          service.getIdentifications(TypeOfLocation(Other, "test")).futureValue mustEqual Seq(unlocode, coordinates, address)
 
           verify(mockRefDataConnector).getIdentifications()(any(), any())
         }

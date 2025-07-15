@@ -41,8 +41,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, Some(RedirectUrl(url))).url)).value
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual url
 
           verify(mockLockService, times(1)).deleteLock(any())(any())
         }
@@ -71,8 +71,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, None).url)).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.signOutUrl
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.signOutUrl
 
         verify(mockLockService, times(1)).deleteLock(any())(any())
       }
@@ -89,8 +89,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, Some(RedirectUrl(url))).url)).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual url
 
         verify(mockLockService, times(1)).deleteLock(any())(any())
       }
@@ -102,8 +102,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, None).url)).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.signOutUrl
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.signOutUrl
 
         verify(mockLockService, times(1)).deleteLock(any())(any())
       }
@@ -120,8 +120,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, Some(RedirectUrl(url))).url)).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual url
 
         verify(mockLockService, times(1)).deleteLock(any())(any())
       }
@@ -133,8 +133,8 @@ class DeleteLockControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = route(app, FakeRequest(GET, routes.DeleteLockController.delete(mrn, None).url)).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.signOutUrl
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.signOutUrl
 
         verify(mockLockService, times(1)).deleteLock(any())(any())
       }

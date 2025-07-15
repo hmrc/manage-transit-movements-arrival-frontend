@@ -71,7 +71,7 @@ class MovementReferenceNumberFormProviderSpec extends StringFieldBehaviours with
     "must bind valid MRN with spaces" in {
       val str    = "51 GB LFUWH7WOI085M 4"
       val result = form.bind(Map(fieldName -> str)).apply(fieldName)
-      result.value.value mustBe str
+      result.value.value mustEqual str
     }
   }
 }

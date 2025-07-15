@@ -90,8 +90,8 @@ class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with Sca
 
         val result = harness.callRefine(IdentifierRequest(fakeRequest, eoriNumber)).map(_.left.value)
 
-        status(result) mustBe 303
-        redirectLocation(result).value mustBe controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
+        status(result) mustEqual 303
+        redirectLocation(result).value mustEqual controllers.routes.DraftNoLongerAvailableController.onPageLoad().url
       }
     }
   }

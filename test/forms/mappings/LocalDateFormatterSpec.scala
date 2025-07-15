@@ -157,7 +157,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors mustBe Seq(
+        result.errors mustEqual Seq(
           FormError("value", "error.required", List("day")),
           FormError("value", "error.invalid", List("month"))
         )
@@ -176,7 +176,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors mustBe Seq(
+        result.errors mustEqual Seq(
           FormError("value", "error.invalid", List("day")),
           FormError("value", "error.required", List("month"))
         )

@@ -54,7 +54,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         val result = service.post(mrn).futureValue
 
-        result.status mustBe OK
+        result.status mustEqual OK
       }
     }
 
@@ -73,7 +73,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         val result = service.getMessages(mrn).futureValue
 
-        result mustBe Seq(message3, message2, message1)
+        result mustEqual Seq(message3, message2, message1)
       }
     }
   }
