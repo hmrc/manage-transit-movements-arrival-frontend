@@ -24,10 +24,11 @@ import navigation.ArrivalNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.UnlocodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.UnLocodeService
 import views.html.locationOfGoods.UnlocodeView
 
@@ -35,10 +36,12 @@ import scala.concurrent.Future
 
 class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val prefix = "locationOfGoods.unlocode"
+
   private val unLocode1 = arbitraryUnLocode.arbitrary.sample.get.unLocodeExtendedCode
 
   private val formProvider       = new UnLocodeFormProvider()
-  private val form               = formProvider("locationOfGoods.unlocode")
+  private val form               = formProvider(prefix)
   private val mode               = NormalMode
   private lazy val unlocodeRoute = routes.UnlocodeController.onPageLoad(mrn, mode).url
 
@@ -113,16 +116,21 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       setExistingUserAnswers(emptyUserAnswers)
 
+      val unknownAnswer = "ABCDE"
+
       val request = FakeRequest(POST, unlocodeRoute)
-        .withFormUrlEncodedBody(("value", unLocode1))
+        .withFormUrlEncodedBody(("value", unknownAnswer))
+
+      val filledForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", s"$prefix.error.not.exists"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) must include(
-        "Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER."
-      )
+      val view = injector.instanceOf[UnlocodeView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, mode)(request, messages).toString
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -131,7 +139,7 @@ class UnlocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, unlocodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, unlocodeRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value

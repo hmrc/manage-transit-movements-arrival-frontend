@@ -60,8 +60,8 @@ class UnlocodeController @Inject() (
 
   def onSubmit(mrn: MovementReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(mrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
+      val boundForm = form.bindFromRequest()
+      boundForm
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mrn, mode))),
           value =>
@@ -73,7 +73,7 @@ class UnlocodeController @Inject() (
                   .writeToSession(sessionRepository)
                   .navigateWith(navigator)
               case false =>
-                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                val formWithErrors = boundForm.withError(FormError("value", s"$prefix.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, mrn, mode)))
             }
         )
