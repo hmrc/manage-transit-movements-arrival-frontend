@@ -53,7 +53,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         when(mockRefDataConnector.getCountries(any())(any(), any()))
           .thenReturn(Future.successful(Right(countries)))
 
-        service.getCountries().futureValue mustBe
+        service.getCountries().futureValue mustEqual
           SelectableList(Seq(country2, country3, country1))
 
         verify(mockRefDataConnector).getCountries(eqTo("CountryCodesFullList"))(any(), any())
@@ -66,7 +66,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         when(mockRefDataConnector.getCountries(any())(any(), any()))
           .thenReturn(Future.successful(Right(countries)))
 
-        service.getTransitCountries().futureValue mustBe
+        service.getTransitCountries().futureValue mustEqual
           SelectableList(Seq(country2, country3, country1))
 
         verify(mockRefDataConnector).getCountries(eqTo("CountryCodesCommonTransit"))(any(), any())
@@ -79,7 +79,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
           .thenReturn(Future.successful(Right(countries.map(_.code))))
 
-        service.getCountriesWithoutZip().futureValue mustBe
+        service.getCountriesWithoutZip().futureValue mustEqual
           Seq(country3.code, country2.code, country1.code)
 
         verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
@@ -94,7 +94,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val result = service.doesCountryRequireZip(country1).futureValue
 
-          result mustBe true
+          result mustEqual true
         }
       }
 
@@ -105,7 +105,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val result = service.doesCountryRequireZip(country1).futureValue
 
-          result mustBe false
+          result mustEqual false
         }
       }
     }

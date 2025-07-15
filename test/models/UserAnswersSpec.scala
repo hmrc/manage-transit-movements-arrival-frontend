@@ -60,7 +60,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
             testPagePath -> testPageAnswer
           )
 
-        result mustBe UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
+        result mustEqual UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
       }
 
       "must run cleanup when given a different answer" in {
@@ -75,7 +75,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
             testPagePath -> testPageAnswer2
           )
 
-        result mustBe UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
+        result mustEqual UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
       }
 
       "must not run cleanup when given the same answer" in {
@@ -91,7 +91,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
             testPagePath        -> testPageAnswer
           )
 
-        result mustBe UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
+        result mustEqual UserAnswers(mrn, eoriNumber, data, id = emptyUserAnswers.id)
       }
     }
   }

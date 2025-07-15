@@ -60,8 +60,8 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             TypeOfLocationPage,
             QualifierOfIdentificationPage,
             CountryPage,
@@ -91,8 +91,8 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         AuthorisationNumberPage,
         AddContactPersonPage
       )
@@ -120,7 +120,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
             val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-            result.left.value.page mustBe mandatoryPage
+            result.left.value.page mustEqual mandatoryPage
         }
       }
 
@@ -141,7 +141,7 @@ class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks w
 
             val result = LocationOfGoodsDomain.userAnswersReader.apply(Nil).run(updatedUserAnswers)
 
-            result.left.value.page mustBe mandatoryPage
+            result.left.value.page mustEqual mandatoryPage
         }
       }
     }

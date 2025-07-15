@@ -40,14 +40,14 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             val helper = IdentificationAnswersHelper(answers, mode)
             val result = helper.movementReferenceNumber
 
-            result.key.value mustBe "Movement Reference Number (MRN)"
-            result.value.value mustBe mrn.toString
+            result.key.value mustEqual "Movement Reference Number (MRN)"
+            result.value.value mustEqual mrn.toString
             val actions = result.actions.get.items
-            actions.size mustBe 1
+            actions.size mustEqual 1
             val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe routes.MovementReferenceNumberController.onPageReload(mrn).url
-            action.visuallyHiddenText.get mustBe "Movement Reference Number (MRN)"
+            action.content.value mustEqual "Change"
+            action.href mustEqual routes.MovementReferenceNumberController.onPageReload(mrn).url
+            action.visuallyHiddenText.get mustEqual "Movement Reference Number (MRN)"
         }
       }
     }
@@ -59,7 +59,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = IdentificationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.destinationOffice
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -73,15 +73,15 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = IdentificationAnswersHelper(answers, mode)
               val result = helper.destinationOffice.get
 
-              result.key.value mustBe "Office of destination"
-              result.value.value mustBe customsOffice.toString
+              result.key.value mustEqual "Office of destination"
+              result.value.value mustEqual customsOffice.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.DestinationOfficeController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "office of destination"
-              action.id mustBe "change-destination-office"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.DestinationOfficeController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "office of destination"
+              action.id mustEqual "change-destination-office"
           }
         }
       }
@@ -94,7 +94,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = IdentificationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.identificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -108,15 +108,15 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = IdentificationAnswersHelper(answers, mode)
               val result = helper.identificationNumber.get
 
-              result.key.value mustBe "Consignee EORI number or Trader Identification Number (TIN)"
-              result.value.value mustBe identificationNumber
+              result.key.value mustEqual "Consignee EORI number or Trader Identification Number (TIN)"
+              result.value.value mustEqual identificationNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "consignee EORI number or Trader Identification Number (TIN)"
-              action.id mustBe "change-identification-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.IdentificationNumberController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "consignee EORI number or Trader Identification Number (TIN)"
+              action.id mustEqual "change-identification-number"
           }
         }
       }
@@ -129,7 +129,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = IdentificationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.isSimplified
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -143,17 +143,17 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = IdentificationAnswersHelper(answers, mode)
               val result = helper.isSimplified.get
 
-              result.key.value mustBe "Procedure type"
+              result.key.value mustEqual "Procedure type"
               val key = s"identification.isSimplifiedProcedure.$procedureType"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(s"$key")
+              messages.isDefinedAt(key) mustEqual true
+              result.value.value mustEqual messages(s"$key")
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.IsSimplifiedProcedureController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "procedure type"
-              action.id mustBe "change-is-simplified-procedure"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.IsSimplifiedProcedureController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "procedure type"
+              action.id mustEqual "change-is-simplified-procedure"
           }
         }
       }
@@ -166,7 +166,7 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = IdentificationAnswersHelper(emptyUserAnswers, mode)
               val result = helper.authorisationReferenceNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -180,15 +180,15 @@ class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = IdentificationAnswersHelper(answers, mode)
               val result = helper.authorisationReferenceNumber.get
 
-              result.key.value mustBe "Authorisation reference number"
-              result.value.value mustBe ref
+              result.key.value mustEqual "Authorisation reference number"
+              result.value.value mustEqual ref
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, mode).url
-              action.visuallyHiddenText.get mustBe "authorisation reference number"
-              action.id mustBe "change-authorisation-reference-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.AuthorisationReferenceNumberController.onPageLoad(answers.mrn, mode).url
+              action.visuallyHiddenText.get mustEqual "authorisation reference number"
+              action.id mustEqual "change-authorisation-reference-number"
           }
         }
       }

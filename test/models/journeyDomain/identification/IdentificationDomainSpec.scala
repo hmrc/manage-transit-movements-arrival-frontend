@@ -47,8 +47,8 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           DestinationOfficePage,
           IsSimplifiedProcedurePage,
           IdentificationNumberPage
@@ -74,8 +74,8 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           DestinationOfficePage,
           IsSimplifiedProcedurePage,
           IdentificationNumberPage,
@@ -88,8 +88,8 @@ class IdentificationDomainSpec extends SpecBase with Generators {
       "when is simplified question unanswered" in {
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe DestinationOfficePage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual DestinationOfficePage
+        result.left.value.pages mustEqual Seq(
           DestinationOfficePage
         )
       }
@@ -102,8 +102,8 @@ class IdentificationDomainSpec extends SpecBase with Generators {
 
         val result = IdentificationDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe AuthorisationReferenceNumberPage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AuthorisationReferenceNumberPage
+        result.left.value.pages mustEqual Seq(
           DestinationOfficePage,
           IsSimplifiedProcedurePage,
           IdentificationNumberPage,

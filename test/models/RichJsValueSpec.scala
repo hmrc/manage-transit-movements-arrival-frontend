@@ -293,7 +293,7 @@ class RichJsValueSpec extends SpecBase with Generators {
               Seq(valuesInArrays.slice(0, indexToRemove) ++ valuesInArrays.slice(indexToRemove + 1, values.length))
             )
 
-          removed mustBe JsSuccess(expectedOutcome)
+          removed mustEqual JsSuccess(expectedOutcome)
       }
     }
 
@@ -306,7 +306,7 @@ class RichJsValueSpec extends SpecBase with Generators {
 
       val path = JsPath \ "key" \ 0
 
-      input.remove(path) mustBe JsSuccess(
+      input.remove(path) mustEqual JsSuccess(
         Json.obj("key" -> JsArray(Seq(Json.toJson(2))), "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2))))
       )
     }
@@ -321,7 +321,7 @@ class RichJsValueSpec extends SpecBase with Generators {
 
     val path = JsPath \ "key" \ 0 \ 0
 
-    input.remove(path) mustBe JsSuccess(
+    input.remove(path) mustEqual JsSuccess(
       Json.obj(
         "key"  -> JsArray(Seq(JsArray(Seq(Json.toJson(2))), Json.toJson(2))),
         "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
@@ -338,7 +338,7 @@ class RichJsValueSpec extends SpecBase with Generators {
 
     val path = JsPath \ "key" \ 0
 
-    input.remove(path) mustBe JsSuccess(
+    input.remove(path) mustEqual JsSuccess(
       Json.obj(
         "key"  -> JsArray(),
         "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))

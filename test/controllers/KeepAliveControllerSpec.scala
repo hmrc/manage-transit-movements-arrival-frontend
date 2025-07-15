@@ -34,7 +34,7 @@ class KeepAliveControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(Some(mrn.toString)).url
       val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
 
-      status(result) mustBe NO_CONTENT
+      status(result) mustEqual NO_CONTENT
       verify(mockSessionRepository, times(1)).set(any())(any())
       verify(mockSessionRepository, times(1)).get(any())(any())
     }
@@ -43,7 +43,7 @@ class KeepAliveControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(None).url
       val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
 
-      status(result) mustBe NO_CONTENT
+      status(result) mustEqual NO_CONTENT
       verify(mockSessionRepository, never()).set(any())(any())
       verify(mockSessionRepository, never()).get(any())(any())
     }

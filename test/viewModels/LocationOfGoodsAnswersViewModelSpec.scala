@@ -46,8 +46,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 2
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 2
                 section.addAnotherLink must not be defined
             }
           }
@@ -63,8 +63,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 4
                 section.addAnotherLink must not be defined
             }
           }
@@ -85,8 +85,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
             (mode, answers) =>
               val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-              section.sectionTitle.get mustBe sectionTitle
-              section.rows.size mustBe 3
+              section.sectionTitle.get mustEqual sectionTitle
+              section.rows.size mustEqual 3
               section.addAnotherLink must not be defined
           }
         }
@@ -106,8 +106,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 4
                 section.addAnotherLink must not be defined
             }
           }
@@ -124,8 +124,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 6
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 6
                 section.addAnotherLink must not be defined
             }
           }
@@ -146,8 +146,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 4
                 section.addAnotherLink must not be defined
             }
           }
@@ -164,8 +164,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 6
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 6
                 section.addAnotherLink must not be defined
             }
           }
@@ -186,8 +186,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 4
                 section.addAnotherLink must not be defined
             }
           }
@@ -204,8 +204,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 6
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 6
                 section.addAnotherLink must not be defined
             }
           }
@@ -226,8 +226,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 4
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 4
                 section.addAnotherLink must not be defined
             }
           }
@@ -244,8 +244,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 6
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 6
                 section.addAnotherLink must not be defined
             }
           }
@@ -266,8 +266,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 5
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 5
                 section.addAnotherLink must not be defined
             }
           }
@@ -284,8 +284,8 @@ class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
               (mode, answers) =>
                 val section = new LocationOfGoodsAnswersViewModelProvider().apply(answers, mode).section
 
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe 7
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual 7
                 section.addAnotherLink must not be defined
             }
           }

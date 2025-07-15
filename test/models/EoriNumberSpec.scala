@@ -25,14 +25,14 @@ class EoriNumberSpec extends SpecBase {
   "EoriNumber" - {
 
     "add GB prefix to eori if missing" in {
-      EoriNumber.prefixGBIfMissing("123455") mustBe "GB123455"
+      EoriNumber.prefixGBIfMissing("123455") mustEqual "GB123455"
     }
 
     "do not add prefix to eori if it has one" in {
       val generator: Gen[String] = RegexpGen.from("[A-Z]{2}[^\n\r]{1,}")
       forAll(generator) {
         validString =>
-          EoriNumber.prefixGBIfMissing(validString) mustBe validString
+          EoriNumber.prefixGBIfMissing(validString) mustEqual validString
       }
     }
   }

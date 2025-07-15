@@ -72,8 +72,8 @@ class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckProperty
 
       val result = ArrivalDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value mustBe expectedResult
-      result.value.pages mustBe Seq(
+      result.value.value mustEqual expectedResult
+      result.value.pages mustEqual Seq(
         DestinationOfficePage,
         IsSimplifiedProcedurePage,
         IdentificationNumberPage,

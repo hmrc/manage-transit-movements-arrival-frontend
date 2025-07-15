@@ -29,7 +29,7 @@ class ArrivalIdSpec extends SpecBase with EitherValues {
       val arrivalId    = ArrivalId(12)
 
       val bind: Either[String, ArrivalId] = pathBindable.bind("arrivalId", "12")
-      bind.value mustBe arrivalId
+      bind.value mustEqual arrivalId
     }
 
     "unbind to path value" in {
@@ -37,12 +37,12 @@ class ArrivalIdSpec extends SpecBase with EitherValues {
       val arrivalId    = ArrivalId(12)
 
       val bindValue = pathBindable.unbind("arrivalId", arrivalId)
-      bindValue mustBe "12"
+      bindValue mustEqual "12"
     }
 
     "must serialize and deserialize" in {
       val arrivalId = ArrivalId(1)
-      Json.toJson(arrivalId).validate[ArrivalId].asOpt.value mustBe arrivalId
+      Json.toJson(arrivalId).validate[ArrivalId].asOpt.value mustEqual arrivalId
     }
   }
 }
