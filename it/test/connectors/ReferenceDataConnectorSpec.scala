@@ -128,6 +128,72 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           }
         }
       }
+      "when phase 6" - {
+        val customsOfficesResponseJson: String =
+          """
+            |[
+            |  {
+            |    "customsOfficeLsd": {
+            |      "languageCode": "EN",
+            |      "customsOfficeUsualName": "Glasgow Airport"
+            |    },
+            |    "phoneNumber": "+44(0)300 106 3520",
+            |    "referenceNumber": "GB000054",
+            |    "countryCode": "GB"
+            |  },
+            |  {
+            |    "customsOfficeLsd": {
+            |      "languageCode": "EN",
+            |      "customsOfficeUsualName": "Belfast International Airport"
+            |    },
+            |    "phoneNumber": "+44 (0)3000 575 988",
+            |    "referenceNumber": "XI000014",
+            |    "countryCode": "XI"
+            |  }
+            |]
+            |""".stripMargin
+
+        "must return a successful future response with a sequence of CustomsOffices" in {
+          val url        = s"/$baseUrl/lists/CustomsOffices?countryCodes=GB&countryCodes=XI&roles=DES"
+          val countryIds = Seq("GB", "XI")
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              server.stubFor(
+                get(urlEqualTo(url))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                  .willReturn(okJson(customsOfficesResponseJson))
+              )
+
+              val expectedResult = NonEmptySet.of(
+                CustomsOffice("GB000054", "Glasgow Airport", Some("+44(0)300 106 3520"), "GB"),
+                CustomsOffice("XI000014", "Belfast International Airport", Some("+44 (0)3000 575 988"), "XI")
+              )
+
+              connector.getCustomsOfficesForCountry(countryIds*).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              val countryId = "AR"
+              val url       = s"/$baseUrl/lists/CustomsOffices?countryCodes=AR&roles=DES"
+              checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getCustomsOfficesForCountry(countryId))
+          }
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              val countryId = "GB"
+              val url       = s"/$baseUrl/lists/CustomsOffices?countryCodes=GB&roles=DES"
+              checkErrorResponse(url, connector.getCustomsOfficesForCountry(countryId))
+          }
+        }
+      }
     }
 
     "getCountries" - {

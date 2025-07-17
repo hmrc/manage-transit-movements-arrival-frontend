@@ -65,8 +65,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       }
 
   def getCustomsOfficesForCountry(countryCodes: String*)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CustomsOffice]] = {
-    val query = countryCodes.map("data.countryId" -> _) :+ ("data.roles.role" -> "DES")
-    val url   = url"${config.customsReferenceDataUrl}/lists/CustomsOffices?$query"
+    val queryParameters                            = CustomsOffice.queryParameters(Seq("DES"), countryCodes = countryCodes)(config)
+    val url                                        = url"${config.customsReferenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
     get[CustomsOffice](url)
   }
 
