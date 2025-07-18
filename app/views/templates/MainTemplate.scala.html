@@ -17,7 +17,6 @@
 @import config.{FrontendAppConfig, MyBetaBanner}
 @import resources._
 @import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
@@ -25,12 +24,10 @@
 @this(
     appConfig: FrontendAppConfig,
     hmrcStandardPage: HmrcStandardPage,
-    hmrcInternalHead: HmrcInternalHead,
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     betaBanner: MyBetaBanner,
     stylesheets: Stylesheets,
     javascripts: Javascripts,
-    govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )(implicit cfConfig: ContactFrontendConfig)
 

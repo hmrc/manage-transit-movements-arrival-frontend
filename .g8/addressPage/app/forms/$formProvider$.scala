@@ -55,5 +55,5 @@ class $formProvider$ @Inject() extends Mappings {
 object $formProvider$ {
 
   def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
-    new $formProvider$()(prefix, isPostalCodeRequired, args: _*)
+    new $formProvider$()(prefix, isPostalCodeRequired, args*)
 }
