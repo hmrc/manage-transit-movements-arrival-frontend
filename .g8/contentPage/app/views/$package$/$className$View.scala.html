@@ -6,7 +6,7 @@
     heading: Heading
 )
 
-@(mrn: MovementReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
