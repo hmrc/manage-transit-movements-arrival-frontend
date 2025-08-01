@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.requests.DataRequest
 import models.{EoriNumber, LockCheck}
 import org.mockito.ArgumentMatchers.any

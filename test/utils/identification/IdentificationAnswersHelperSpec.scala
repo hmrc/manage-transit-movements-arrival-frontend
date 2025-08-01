@@ -24,7 +24,6 @@ import models.reference.CustomsOffice
 import models.{Mode, MovementReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.*
 
 class IdentificationAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

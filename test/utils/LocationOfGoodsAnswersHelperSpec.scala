@@ -23,7 +23,6 @@ import models.reference.{Country, CustomsOffice, QualifierOfIdentification, Type
 import models.{Coordinates, DynamicAddress, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.*
 
 class LocationOfGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

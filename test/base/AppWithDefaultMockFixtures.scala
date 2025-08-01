@@ -32,7 +32,6 @@ import play.api.inject.{bind, Injector}
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import repositories.SessionRepository
-import services.LockService
 
 import scala.concurrent.Future
 

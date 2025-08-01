@@ -21,7 +21,6 @@ import models.UserAnswers
 import models.requests.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}

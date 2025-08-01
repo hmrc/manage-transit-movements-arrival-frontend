@@ -18,20 +18,22 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
-import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
+import viewModels.identification.IdentificationAnswersViewModel
 
 class ArrivalAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
-  private val mockIdentificationAnswersViewModelProvider  = mock[IdentificationAnswersViewModelProvider]
-  private val mockLocationOfGoodsAnswersViewModelProvider = mock[LocationOfGoodsAnswersViewModelProvider]
 
-  "must return 3 sections" in {
+  val identificationProvider = new IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider()
+  val locationProvider       = new LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider()
+
+  "must return 2 sections" in {
     forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
       userAnswers =>
-        val viewModelProvider = new ArrivalAnswersViewModelProvider(mockIdentificationAnswersViewModelProvider, mockLocationOfGoodsAnswersViewModelProvider)
-        val sections          = viewModelProvider.apply(userAnswers).sections
+        val viewModelProvider = new ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider(
+          identificationProvider,
+          locationProvider
+        )
+        val sections = viewModelProvider.apply(userAnswers).sections
         sections.size mustEqual 2
     }
   }

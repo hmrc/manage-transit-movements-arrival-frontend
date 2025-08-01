@@ -22,10 +22,7 @@ import generators.Generators
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class CountrySpec extends SpecBase with Generators {
@@ -77,7 +74,7 @@ class CountrySpec extends SpecBase with Generators {
                      |  "description": "$description"
                      |}
                      |""".stripMargin)
-                .as[Country](Country.reads(config)) mustEqual country
+                .as[Country](Country.reads(mockFrontendAppConfig)) mustEqual country
           }
         }
 
@@ -93,7 +90,7 @@ class CountrySpec extends SpecBase with Generators {
                      |  "value": "$description"
                      |}
                      |""".stripMargin)
-                .as[Country](Country.reads(config)) mustEqual country
+                .as[Country](Country.reads(mockFrontendAppConfig)) mustEqual country
           }
         }
       }
