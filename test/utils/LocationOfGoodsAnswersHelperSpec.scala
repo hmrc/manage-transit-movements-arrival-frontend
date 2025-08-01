@@ -16,7 +16,7 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
@@ -26,7 +26,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.*
 
-class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "LocationOfGoodsAnswersHelper" - {
 

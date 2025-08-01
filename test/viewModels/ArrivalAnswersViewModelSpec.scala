@@ -16,17 +16,21 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
+import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.ArrivalAnswersViewModel.ArrivalAnswersViewModelProvider
 
-class ArrivalAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ArrivalAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+  private val mockIdentificationAnswersViewModelProvider  = mock[IdentificationAnswersViewModelProvider]
+  private val mockLocationOfGoodsAnswersViewModelProvider = mock[LocationOfGoodsAnswersViewModelProvider]
 
   "must return 3 sections" in {
     forAll(arbitraryArrivalAnswers(emptyUserAnswers)) {
       userAnswers =>
-        val viewModelProvider = app.injector.instanceOf[ArrivalAnswersViewModelProvider]
+        val viewModelProvider = new ArrivalAnswersViewModelProvider(mockIdentificationAnswersViewModelProvider, mockLocationOfGoodsAnswersViewModelProvider)
         val sections          = viewModelProvider.apply(userAnswers).sections
         sections.size mustEqual 2
     }
