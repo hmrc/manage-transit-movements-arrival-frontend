@@ -253,7 +253,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockF
 
       "must return Some(Row)" - {
         "when UnlocodePage defined" in {
-          forAll(arbitrary[String], arbitrary[Mode]) {
+          forAll(nonEmptyString, arbitrary[Mode]) {
             (unLocode, mode) =>
               val answers = emptyUserAnswers.setValue(UnlocodePage, unLocode)
 
