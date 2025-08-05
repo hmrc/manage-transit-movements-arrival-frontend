@@ -27,7 +27,7 @@ case class LocationOfGoodsAnswersViewModel(section: Section)
 
 object LocationOfGoodsAnswersViewModel {
 
-  class LocationOfGoodsAnswersViewModelProvider @Inject() () {
+  class LocationOfGoodsAnswersViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): LocationOfGoodsAnswersViewModel = {
 

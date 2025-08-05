@@ -16,16 +16,13 @@
 
 package controllers.actions
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.CacheConnector.IsTransitionalStateException
 import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.*
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{Assertion, OptionValues}
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatest.Assertion
 import play.api.mvc.Result
 import play.api.test.Helpers.*
 import repositories.SessionRepository
@@ -33,7 +30,7 @@ import repositories.SessionRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
+class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
 

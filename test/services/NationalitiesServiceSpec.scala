@@ -22,7 +22,7 @@ import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.Nationality
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,20 +30,15 @@ import scala.concurrent.Future
 
 class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  val nationality1: Nationality = Nationality("Code1", "Desc1")
-  val nationality2: Nationality = Nationality("Code2", "Desc2")
-  val nationality3: Nationality = Nationality("Code3", "Desc3")
+  private val nationality1: Nationality = Nationality("Code1", "Desc1")
+  private val nationality2: Nationality = Nationality("Code2", "Desc2")
+  private val nationality3: Nationality = Nationality("Code3", "Desc3")
 
-  val nationalities: NonEmptySet[Nationality] = NonEmptySet.of(nationality2, nationality1, nationality3)
+  private val nationalities: NonEmptySet[Nationality] = NonEmptySet.of(nationality2, nationality1, nationality3)
 
-  val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
-
-  override def beforeEach(): Unit = {
-    reset(mockRefDataConnector)
-    super.beforeEach()
-  }
+  private val service: NationalitiesService = new NationalitiesService(mockRefDataConnector)
 
   "NationalitiesService" - {
 

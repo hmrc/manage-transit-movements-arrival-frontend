@@ -16,17 +16,16 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.routes
 import generators.Generators
 import models.reference.{Country, CustomsOffice, QualifierOfIdentification, TypeOfLocation}
 import models.{Coordinates, DynamicAddress, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.*
 
-class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "LocationOfGoodsAnswersHelper" - {
 
@@ -254,7 +253,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
       "must return Some(Row)" - {
         "when UnlocodePage defined" in {
-          forAll(arbitrary[String], arbitrary[Mode]) {
+          forAll(nonEmptyString, arbitrary[Mode]) {
             (unLocode, mode) =>
               val answers = emptyUserAnswers.setValue(UnlocodePage, unLocode)
 

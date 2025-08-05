@@ -16,27 +16,22 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import connectors.SubmissionConnector
 import models.{ArrivalMessage, ArrivalMessages}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.OK
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDateTime
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class SubmissionServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockConnector = mock[SubmissionConnector]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[SubmissionConnector]).toInstance(mockConnector))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -50,7 +45,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockConnector.post(eqTo(mrn))(any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-        val service = app.injector.instanceOf[SubmissionService]
+        val service = new SubmissionService(mockConnector)
 
         val result = service.post(mrn).futureValue
 
@@ -69,7 +64,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockConnector.getMessages(eqTo(mrn))(any()))
           .thenReturn(Future.successful(messages))
 
-        val service = app.injector.instanceOf[SubmissionService]
+        val service = new SubmissionService(mockConnector)
 
         val result = service.getMessages(mrn).futureValue
 
