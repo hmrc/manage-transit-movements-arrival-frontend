@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import config.Constants.QualifierCode.*
 import generators.Generators
 import models.DynamicAddress
@@ -26,11 +26,10 @@ import models.journeyDomain.locationOfGoods.{AddressDomain, LocationOfGoodsDomai
 import models.reference.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.identification.{DestinationOfficePage, IdentificationNumberPage, IsSimplifiedProcedurePage}
 import pages.locationOfGoods.*
 
-class ArrivalDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures {
+class ArrivalDomainSpec extends SpecBase with Generators {
 
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
   private val country           = arbitrary[Country].sample.value

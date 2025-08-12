@@ -16,7 +16,7 @@
 
 package utils.identification
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.identification.routes
 import generators.Generators
 import models.identification.ProcedureType
@@ -24,10 +24,9 @@ import models.reference.CustomsOffice
 import models.{Mode, MovementReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.identification._
+import pages.identification.*
 
-class IdentificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class IdentificationAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "IdentificationAnswersHelper" - {
 
