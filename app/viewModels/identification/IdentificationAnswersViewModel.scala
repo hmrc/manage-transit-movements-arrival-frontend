@@ -27,7 +27,7 @@ case class IdentificationAnswersViewModel(section: Section)
 
 object IdentificationAnswersViewModel {
 
-  class IdentificationAnswersViewModelProvider @Inject() {
+  class IdentificationAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): IdentificationAnswersViewModel = {
 

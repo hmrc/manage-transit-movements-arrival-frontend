@@ -19,7 +19,6 @@ package models.reference
 import base.SpecBase
 import config.FrontendAppConfig
 import models.reference.TypeOfLocation.*
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
@@ -27,8 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class TypeOfLocationSpec extends SpecBase {
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
+class TypeOfLocationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "TypeOfLocation" - {
 
@@ -50,34 +48,40 @@ class TypeOfLocationSpec extends SpecBase {
 
       "when reading from reference data" - {
         "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = TypeOfLocation(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "type": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[TypeOfLocation](TypeOfLocation.reads(mockFrontendAppConfig)) mustEqual value
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val value = TypeOfLocation(code, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "type": "$code",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TypeOfLocation](TypeOfLocation.reads(config)) mustEqual value
+              }
           }
         }
 
         "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = TypeOfLocation(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "key": "$code",
-                     |  "value": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[TypeOfLocation](TypeOfLocation.reads(mockFrontendAppConfig)) mustEqual value
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val value = TypeOfLocation(code, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "key": "$code",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TypeOfLocation](TypeOfLocation.reads(config)) mustEqual value
+              }
           }
         }
       }

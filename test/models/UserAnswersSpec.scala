@@ -18,12 +18,13 @@ package models
 
 import base.SpecBase
 import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.libs.json.{JsPath, Json}
 
 import scala.util.Try
 
-class UserAnswersSpec extends SpecBase with Generators {
+class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val testPageAnswer  = "foo"
   private val testPageAnswer2 = "bar"

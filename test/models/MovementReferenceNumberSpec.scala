@@ -24,7 +24,7 @@ import org.scalatest.EitherValues
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.PathBindable
 
-class MovementReferenceNumberSpec extends SpecBase with Generators {
+class MovementReferenceNumberSpec extends SpecBase with Generators with EitherValues {
 
   "a Movement Reference Number" - {
 

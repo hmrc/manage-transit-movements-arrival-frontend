@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.UserAnswers
 import models.requests.DataRequest
 import pages.sections.Section
@@ -26,7 +26,7 @@ import play.api.mvc.{AnyContent, Call, Result, Results}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IndexRequiredActionSpec extends SpecBase {
+class IndexRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private case object FooSection extends Section[JsObject] {
     override def path: JsPath = JsPath \ "foo"

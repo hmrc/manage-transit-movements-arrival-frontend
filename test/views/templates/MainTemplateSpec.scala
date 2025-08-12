@@ -16,13 +16,14 @@
 
 package views.templates
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import config.FrontendAppConfig
 import generators.Generators
 import models.MovementReferenceNumber
 import org.jsoup.Jsoup
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -30,7 +31,7 @@ import play.twirl.api.Html
 import views.base.ViewSpecAssertions
 import views.html.templates.MainTemplate
 
-class MainTemplateSpec extends SpecBase with ViewSpecAssertions with AppWithDefaultMockFixtures with Generators {
+class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckPropertyChecks with Generators {
 
   private val path = "foo"
 
