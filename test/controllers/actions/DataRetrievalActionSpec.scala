@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import connectors.CacheConnector.IsTransitionalStateException
 import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
@@ -30,7 +30,7 @@ import repositories.SessionRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DataRetrievalActionSpec extends SpecBase with Generators {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
 

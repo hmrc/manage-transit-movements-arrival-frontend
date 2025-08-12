@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.UserAnswers
 import models.requests.*
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,7 +31,7 @@ import queries.Gettable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpecificDataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures {
+class SpecificDataRequiredActionSpec extends SpecBase {
 
   private class Harness1[T1](pages: Gettable[T1]*)(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](pages*) {
 

@@ -16,13 +16,13 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 
-class SessionServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class SessionServiceSpec extends SpecBase with Generators {
 
   private val sessionService = new SessionService()
 

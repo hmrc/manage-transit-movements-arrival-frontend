@@ -24,9 +24,10 @@ import models.SelectableList
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, JsPath, Json, JsonValidationError}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
+import scala.collection.Seq
 import scala.collection.immutable.List
 
 class CustomsOfficeSpec extends SpecBase with Generators {
@@ -333,24 +334,20 @@ class CustomsOfficeSpec extends SpecBase with Generators {
 
           }
 
-//          "must fail to read list of customs offices" - {
-//            "when not an array" in {
-//              running(_.configure("feature-flags.when-phase-6-enabled" -> true)) { // TODO: Is this assertion correct, "feature-flags.when-phase-6-enabled" does not exist
-//                app =>
-//                  val config = app.injector.instanceOf[FrontendAppConfig]
-//                  val json = Json.parse("""
-//                      |{
-//                      |  "foo" : "bar"
-//                      |}
-//                      |""".stripMargin)
-//
-//                  val result = json.validate[List[CustomsOffice]](CustomsOffice.listReads(config))
-//
-//                  result mustEqual JsError("Expected customs offices to be in a JsArray")
-//              }
-//
-//            }
-//          }
+          "must fail to read list of customs offices" - {
+            "when not an array" in {
+              when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+              val json = Json.parse("""
+                  |{
+                  |  "foo" : "bar"
+                  |}
+                  |""".stripMargin)
+
+              val result = json.validate[List[CustomsOffice]](CustomsOffice.listReads(mockFrontendAppConfig))
+
+              result mustEqual JsError(Seq(JsPath -> Seq(JsonValidationError("error.expected.jsarray"))))
+            }
+          }
         }
 
       }

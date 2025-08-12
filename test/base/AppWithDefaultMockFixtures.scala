@@ -44,8 +44,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   override def beforeEach(): Unit = {

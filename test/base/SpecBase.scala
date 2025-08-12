@@ -17,6 +17,7 @@
 package base
 
 import models.{EoriNumber, Id, MovementReferenceNumber, UserAnswers}
+import org.apache.pekko.stream.testkit.NoMaterializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -25,6 +26,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.libs.json.{Json, Reads, Writes}
+import play.api.mvc.{AnyContentAsEmpty, BodyParsers}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.stubPlayBodyParsers
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -46,6 +50,8 @@ trait SpecBase
   lazy val mrn: MovementReferenceNumber = new MovementReferenceNumber("51GBLFUWH7WOI085M4")
 
   lazy val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
+
+  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -76,6 +82,8 @@ trait SpecBase
   implicit class RichAction(ai: ActionItem) {
     def id: String = ai.attributes.get("id").value
   }
+
+  implicit val bodyParser: BodyParsers.Default = new BodyParsers.Default(stubPlayBodyParsers(NoMaterializer))
 
   def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }
