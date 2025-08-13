@@ -16,21 +16,21 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import controllers.routes
 import models.requests.{DataRequest, OptionalDataRequest}
 import models.{SubmissionStatus, UserAnswers}
 import org.scalacheck.Gen
-import org.scalatest.{Assertion, EitherValues}
+import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRequiredActionSpec extends SpecBase with EitherValues with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
+class DataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   private class Harness(ignoreSubmissionStatus: Boolean) extends DataRequiredAction(mrn, ignoreSubmissionStatus) {
     def callRefine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = refine(request)

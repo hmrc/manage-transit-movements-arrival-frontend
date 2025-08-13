@@ -16,29 +16,22 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import connectors.CacheConnector
 import generators.Generators
 import models.LockCheck
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.Future
 
-class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class LockServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
 
   private val mockConnector = mock[CacheConnector]
 
   private val service = new LockService(mockConnector)
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[CacheConnector]).toInstance(mockConnector))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
