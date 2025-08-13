@@ -16,34 +16,41 @@
 
 package services
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.CustomsOffice
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsOfficesServiceSpec extends SpecBase {
+class CustomsOfficesServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val mockFrontendAppConfig: FrontendAppConfig     = mock[FrontendAppConfig]
+  val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val gbCustomsOffice1: CustomsOffice = CustomsOffice("1", "BOSTON", None, "GB")
-  private val gbCustomsOffice2: CustomsOffice = CustomsOffice("2", "Appledore", None, "GB")
-  private val xiCustomsOffice1: CustomsOffice = CustomsOffice("3", "Belfast", None, "XI")
-  private val xiCustomsOffice2: CustomsOffice = CustomsOffice("4", "Blah", None, "XI")
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
-  private val countriesOfDestination: Seq[String] = Seq("GB", "XI")
+  val gbCustomsOffice1: CustomsOffice = CustomsOffice("1", "BOSTON", None, "GB")
+  val gbCustomsOffice2: CustomsOffice = CustomsOffice("2", "Appledore", None, "GB")
+  val xiCustomsOffice1: CustomsOffice = CustomsOffice("3", "Belfast", None, "XI")
+  val xiCustomsOffice2: CustomsOffice = CustomsOffice("4", "Blah", None, "XI")
 
   val customsOffices: NonEmptySet[CustomsOffice] = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2, xiCustomsOffice1, xiCustomsOffice2)
 
-  private val service = new CustomsOfficesService(mockRefDataConnector, mockFrontendAppConfig)
+  val service = app.injector.instanceOf[CustomsOfficesService]
+
+  override def beforeEach(): Unit = {
+    reset(mockRefDataConnector)
+    super.beforeEach()
+  }
 
   "CustomsOfficesService" - {
 
@@ -52,14 +59,12 @@ class CustomsOfficesServiceSpec extends SpecBase {
       when(mockRefDataConnector.getCustomsOfficesForCountry(any())(any(), any()))
         .thenReturn(Future.successful(Right(customsOffices)))
 
-      when(mockFrontendAppConfig.countriesOfDestination).thenReturn(countriesOfDestination)
-
       service.getCustomsOfficesOfArrival.futureValue mustEqual
         SelectableList(Seq(gbCustomsOffice2, xiCustomsOffice1, xiCustomsOffice2, gbCustomsOffice1))
 
       val varargsCaptor: ArgumentCaptor[Seq[String]] = ArgumentCaptor.forClass(classOf[Seq[String]])
       verify(mockRefDataConnector).getCustomsOfficesForCountry(varargsCaptor.capture()*)(any(), any())
-      varargsCaptor.getValue mustEqual countriesOfDestination
+      varargsCaptor.getValue mustEqual Seq("GB", "XI")
     }
 
   }

@@ -18,9 +18,10 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests.*
+import models.requests._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}
@@ -31,7 +32,7 @@ import queries.Gettable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpecificDataRequiredActionSpec extends SpecBase {
+class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   private class Harness1[T1](pages: Gettable[T1]*)(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](pages*) {
 

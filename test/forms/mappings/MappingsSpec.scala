@@ -16,13 +16,14 @@
 
 package forms.mappings
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Enumerable, MovementReferenceNumber, Radioable, Selectable, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 
-class MappingsSpec extends SpecBase with Mappings with Generators {
+class MappingsSpec extends SpecBase with AppWithDefaultMockFixtures with Mappings with ScalaCheckPropertyChecks with Generators {
 
   "text" - {
 

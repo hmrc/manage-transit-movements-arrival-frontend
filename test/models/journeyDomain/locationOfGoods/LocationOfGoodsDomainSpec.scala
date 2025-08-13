@@ -24,11 +24,12 @@ import models.identification.ProcedureType
 import models.reference.{Country, TypeOfLocation}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.identification.IsSimplifiedProcedurePage
 import pages.locationOfGoods._
 
-class LocationOfGoodsDomainSpec extends SpecBase with Generators {
+class LocationOfGoodsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val country = arbitrary[Country].sample.value
   private val address = arbitrary[DynamicAddress].sample.value

@@ -21,7 +21,7 @@ import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.mvc.PathBindable
 
-class ArrivalIdSpec extends SpecBase {
+class ArrivalIdSpec extends SpecBase with EitherValues {
 
   "Arrival Id" - {
     "must bind from url" in {

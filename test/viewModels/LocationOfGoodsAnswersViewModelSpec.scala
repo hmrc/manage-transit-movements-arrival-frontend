@@ -16,18 +16,18 @@
 
 package viewModels
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants.QualifierCode.*
+import base.SpecBase
+import config.Constants.QualifierCode._
 import generators.Generators
 import models.Mode
 import models.identification.ProcedureType
-import models.reference.QualifierOfIdentification.*
+import models.reference.QualifierOfIdentification._
 import org.scalacheck.Arbitrary.arbitrary
 import pages.identification.IsSimplifiedProcedurePage
-import pages.locationOfGoods.*
+import pages.locationOfGoods._
 import viewModels.LocationOfGoodsAnswersViewModel.LocationOfGoodsAnswersViewModelProvider
 
-class LocationOfGoodsAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class LocationOfGoodsAnswersViewModelSpec extends SpecBase with Generators {
 
   private val sectionTitle = "Location of goods"
 

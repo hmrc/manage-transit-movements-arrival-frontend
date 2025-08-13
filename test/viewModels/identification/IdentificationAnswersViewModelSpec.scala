@@ -16,14 +16,14 @@
 
 package viewModels.identification
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.identification.AuthorisationReferenceNumberPage
 import viewModels.identification.IdentificationAnswersViewModel.IdentificationAnswersViewModelProvider
 
-class IdentificationAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class IdentificationAnswersViewModelSpec extends SpecBase with Generators {
 
   "identification section" - {
     "must have 5 rows" in {
