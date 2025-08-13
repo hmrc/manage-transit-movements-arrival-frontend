@@ -19,11 +19,10 @@ package services
 import base.SpecBase
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 
-class SessionServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SessionServiceSpec extends SpecBase with Generators {
 
   private val sessionService = new SessionService()
 

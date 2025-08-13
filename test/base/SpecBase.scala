@@ -16,21 +16,19 @@
 
 package base
 
-import config.FrontendAppConfig
 import models.{EoriNumber, Id, MovementReferenceNumber, UserAnswers}
+import org.apache.pekko.stream.testkit.NoMaterializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, BodyParsers}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.stubPlayBodyParsers
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -39,7 +37,6 @@ import scala.concurrent.Future
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
-    with GuiceOneAppPerSuite
     with ScalaCheckPropertyChecks
     with OptionValues
     with TryValues
@@ -54,13 +51,9 @@ trait SpecBase
 
   lazy val emptyUserAnswers: UserAnswers = UserAnswers(mrn, eoriNumber, Json.obj(), None, Id())
 
-  def injector: Injector                               = app.injector
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-  def messagesApi: MessagesApi                         = injector.instanceOf[MessagesApi]
-  implicit def messages: Messages                      = messagesApi.preferred(fakeRequest)
-  implicit val hc: HeaderCarrier                       = HeaderCarrier()
 
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 
@@ -89,6 +82,8 @@ trait SpecBase
   implicit class RichAction(ai: ActionItem) {
     def id: String = ai.attributes.get("id").value
   }
+
+  implicit val bodyParser: BodyParsers.Default = new BodyParsers.Default(stubPlayBodyParsers(NoMaterializer))
 
   def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }

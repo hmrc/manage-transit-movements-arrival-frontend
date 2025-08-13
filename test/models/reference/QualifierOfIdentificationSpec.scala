@@ -19,6 +19,7 @@ package models.reference
 import base.SpecBase
 import config.FrontendAppConfig
 import models.reference.QualifierOfIdentification.*
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
@@ -26,7 +27,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class QualifierOfIdentificationSpec extends SpecBase {
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "QualifierOfIdentification" - {
 
@@ -48,40 +50,34 @@ class QualifierOfIdentificationSpec extends SpecBase with Matchers with ScalaChe
 
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = QualifierOfIdentification(code, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "qualifier": "$code",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[QualifierOfIdentification](QualifierOfIdentification.reads(config)) mustEqual value
-              }
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = QualifierOfIdentification(code, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "qualifier": "$code",
+                     |  "description": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[QualifierOfIdentification](QualifierOfIdentification.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = QualifierOfIdentification(code, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "key": "$code",
-                         |  "value": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[QualifierOfIdentification](QualifierOfIdentification.reads(config)) mustEqual value
-              }
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = QualifierOfIdentification(code, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "key": "$code",
+                     |  "value": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[QualifierOfIdentification](QualifierOfIdentification.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
       }
