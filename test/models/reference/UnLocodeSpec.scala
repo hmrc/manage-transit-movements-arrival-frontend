@@ -24,9 +24,7 @@ import models.SelectableList
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class UnLocodeSpec extends SpecBase with Generators {

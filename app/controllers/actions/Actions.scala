@@ -17,14 +17,15 @@
 package controllers.actions
 
 import models.MovementReferenceNumber
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest}
 import pages.sections.Section
 import play.api.libs.json.JsObject
-import play.api.mvc.{ActionBuilder, AnyContent, Call}
+import play.api.mvc.{ActionBuilder, AnyContent, Call, DefaultActionBuilder}
 
 import javax.inject.Inject
 
 class Actions @Inject() (
+  defaultActionBuilder: DefaultActionBuilder,
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredActionProvider,
@@ -32,8 +33,11 @@ class Actions @Inject() (
   lockAction: LockActionProvider
 ) {
 
+  def identify(): ActionBuilder[IdentifierRequest, AnyContent] =
+    defaultActionBuilder andThen identifierAction
+
   def getData(mrn: MovementReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen dataRetrievalActionProvider(mrn)
+    identify() andThen dataRetrievalActionProvider(mrn)
 
   def requireData(mrn: MovementReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     getData(mrn) andThen dataRequiredAction(mrn, ignoreSubmissionStatus = false) andThen lockAction()

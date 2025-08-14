@@ -17,7 +17,6 @@
 package models
 
 import base.SpecBase
-import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.mvc.PathBindable
 

@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.EitherValues
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.PathBindable
 

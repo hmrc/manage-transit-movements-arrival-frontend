@@ -22,21 +22,28 @@ import models.{Mode, UserAnswers}
 import navigation.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{BeforeAndAfterEach, TestSuite}
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{bind, Injector}
-import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
+trait AppWithDefaultMockFixtures extends GuiceOneAppPerSuite with BeforeAndAfterAll with BeforeAndAfterEach with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite & SpecBase =>
+
+  // wake the app up before tests start running
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    route(app, FakeRequest(GET, "/ping/ping"))
+  }
 
   def injector: Injector = app.injector
 

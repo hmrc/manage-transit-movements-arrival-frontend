@@ -19,7 +19,6 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class ArrivalNavigatorSpec extends SpecBase with Generators {
 

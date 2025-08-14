@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.Actions
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
@@ -25,13 +25,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 
 class RedirectController @Inject() (
-  identify: IdentifierAction,
+  actions: Actions,
   cc: MessagesControllerComponents,
   sessionService: SessionService
 ) extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
+  def onPageLoad(): Action[AnyContent] = actions.identify() {
     implicit request =>
       val result = Redirect(controllers.identification.routes.MovementReferenceNumberController.onPageLoad())
       sessionService.remove(result)
