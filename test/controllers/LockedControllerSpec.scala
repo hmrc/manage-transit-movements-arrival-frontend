@@ -32,6 +32,7 @@ class LockedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with
   "Locked Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, controllers.routes.LockedController.onPageLoad().url)
 

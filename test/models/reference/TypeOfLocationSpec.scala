@@ -21,11 +21,7 @@ import config.FrontendAppConfig
 import models.reference.TypeOfLocation.*
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class TypeOfLocationSpec extends SpecBase {
   private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
