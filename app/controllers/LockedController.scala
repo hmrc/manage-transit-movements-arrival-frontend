@@ -27,23 +27,19 @@ import javax.inject.Inject
 
 class LockedController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: LockedView,
   config: FrontendAppConfig
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (Action andThen identify) {
+  def onPageLoad(): Action[AnyContent] = actions.identify() {
     implicit request =>
       Ok(view())
   }
 
-  def onSubmit(): Action[AnyContent] =
-    (Action andThen identify) {
-      Redirect {
-        config.manageTransitMovementsViewArrivalsUrl
-      }
-    }
-
+  def onSubmit(): Action[AnyContent] = actions.identify() {
+    Redirect(config.manageTransitMovementsViewArrivalsUrl)
+  }
 }

@@ -18,16 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.LockedView
 
 class LockedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
 
   "Locked Controller" - {
 
