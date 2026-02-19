@@ -30,7 +30,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val apiVersion: String = if (phase6Enabled) "2.0" else "1.0"
 
-  lazy val disableUnLocodeExtendedLookup: Boolean = configuration.get[Boolean]("disable-un-locode-extended-lookup")
+  lazy val disableUnLocodeExtendedLookup: Boolean = configuration.get[Boolean]("feature-flags.disable-un-locode-extended-lookup")
 
   lazy val countriesOfDestination: Seq[String] = configuration.get[Seq[String]]("countriesOfDestination")
 
