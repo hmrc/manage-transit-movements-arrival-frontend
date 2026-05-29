@@ -44,7 +44,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return true when status is Ok" - {
         "when phase 6 enabled" in {
           val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-enabled" -> true)
+            .configure("feature-flags.phase-6-api-enabled" -> true)
             .build()
 
           running(app) {
@@ -65,7 +65,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         "when phase 6 disabled" in {
           val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-enabled" -> false)
+            .configure("feature-flags.phase-6-api-enabled" -> false)
             .build()
 
           running(app) {
@@ -139,7 +139,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return messages when status is Ok" - {
         "when phase 5" in {
           val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-enabled" -> false)
+            .configure("feature-flags.phase-6-api-enabled" -> false)
             .build()
 
           running(app) {
@@ -163,7 +163,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         "when phase 6" in {
           val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-enabled" -> true)
+            .configure("feature-flags.phase-6-api-enabled" -> true)
             .build()
 
           running(app) {
