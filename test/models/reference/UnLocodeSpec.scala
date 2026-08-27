@@ -18,17 +18,14 @@ package models.reference
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import generators.Generators
 import models.SelectableList
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class UnLocodeSpec extends SpecBase with Generators {
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "UnLocode" - {
 
@@ -62,36 +59,17 @@ class UnLocodeSpec extends SpecBase with Generators {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val unLocode = UnLocode(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "unLocodeExtendedCode": "$code",
-                     |  "name": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[UnLocode](UnLocode.reads(mockFrontendAppConfig)) mustEqual unLocode
-          }
-        }
-
-        "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val unLocode = UnLocode(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "key": "$code",
-                     |  "value": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[UnLocode](UnLocode.reads(mockFrontendAppConfig)) mustEqual unLocode
-          }
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val unLocode = UnLocode(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "key": "$code",
+                   |  "value": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[UnLocode](UnLocode.reads) mustEqual unLocode
         }
       }
     }

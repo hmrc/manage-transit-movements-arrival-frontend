@@ -30,15 +30,10 @@ case class TypeOfLocation(`type`: String, description: String) extends Radioable
 
 object TypeOfLocation extends DynamicEnumerableType[TypeOfLocation] {
 
-  def reads(config: FrontendAppConfig): Reads[TypeOfLocation] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(TypeOfLocation.apply)
-    } else {
-      Json.reads[TypeOfLocation]
-    }
+  def reads: Reads[TypeOfLocation] = (
+    (__ \ "key").read[String] and
+      (__ \ "value").read[String]
+  )(TypeOfLocation.apply)
 
   implicit val format: Format[TypeOfLocation] = Json.format[TypeOfLocation]
 

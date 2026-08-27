@@ -34,22 +34,14 @@ case class UnLocode(
 
 object UnLocode {
 
-  def reads(config: FrontendAppConfig): Reads[UnLocode] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(UnLocode.apply)
-    } else {
-      Json.reads[UnLocode]
-    }
+  def reads: Reads[UnLocode] = (
+    (__ \ "key").read[String] and
+      (__ \ "value").read[String]
+  )(UnLocode.apply)
 
   implicit val format: OFormat[UnLocode] = Json.format[UnLocode]
 
   implicit val order: Order[UnLocode] = (x: UnLocode, y: UnLocode) => (x, y).compareBy(_.toString)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.phase6Enabled) "keys" else "data.unLocodeExtendedCode"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }

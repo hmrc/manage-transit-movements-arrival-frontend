@@ -17,14 +17,11 @@
 package models.reference
 
 import base.SpecBase
-import config.FrontendAppConfig
 import models.reference.TypeOfLocation.*
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import play.api.libs.json.Json
 
 class TypeOfLocationSpec extends SpecBase {
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "TypeOfLocation" - {
 
@@ -45,36 +42,17 @@ class TypeOfLocationSpec extends SpecBase {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = TypeOfLocation(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "type": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[TypeOfLocation](TypeOfLocation.reads(mockFrontendAppConfig)) mustEqual value
-          }
-        }
-
-        "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = TypeOfLocation(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "key": "$code",
-                     |  "value": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[TypeOfLocation](TypeOfLocation.reads(mockFrontendAppConfig)) mustEqual value
-          }
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = TypeOfLocation(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "key": "$code",
+                   |  "value": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[TypeOfLocation](TypeOfLocation.reads) mustEqual value
         }
       }
     }

@@ -26,9 +26,7 @@ import play.api.mvc.Request
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
-  lazy val phase6Enabled: Boolean            = configuration.get[Boolean]("feature-flags.phase-6-enabled")
-  private lazy val phase6ApiEnabled: Boolean = configuration.get[Boolean]("feature-flags.phase-6-api-enabled")
-  val apiVersion: String                     = if (phase6ApiEnabled) "2.0" else "1.0"
+  val apiVersion: String = "2.0"
 
   lazy val disableUnLocodeExtendedLookup: Boolean = configuration.get[Boolean]("feature-flags.disable-un-locode-extended-lookup")
 
