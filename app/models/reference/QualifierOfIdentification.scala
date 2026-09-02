@@ -32,15 +32,10 @@ case class QualifierOfIdentification(qualifier: String, description: String) ext
 
 object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdentification] {
 
-  def reads(config: FrontendAppConfig): Reads[QualifierOfIdentification] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(QualifierOfIdentification.apply)
-    } else {
-      Json.reads[QualifierOfIdentification]
-    }
+  def reads: Reads[QualifierOfIdentification] = (
+    (__ \ "key").read[String] and
+      (__ \ "value").read[String]
+  )(QualifierOfIdentification.apply)
 
   implicit val format: Format[QualifierOfIdentification] = Json.format[QualifierOfIdentification]
 

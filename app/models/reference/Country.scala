@@ -30,15 +30,10 @@ case class Country(code: CountryCode, description: String) extends Selectable {
 
 object Country {
 
-  def reads(config: FrontendAppConfig): Reads[Country] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[CountryCode] and
-          (__ \ "value").read[String]
-      )(Country.apply)
-    } else {
-      Json.reads[Country]
-    }
+  def reads: Reads[Country] = (
+    (__ \ "key").read[CountryCode] and
+      (__ \ "value").read[String]
+  )(Country.apply)
 
   implicit val format: OFormat[Country] = Json.format[Country]
 

@@ -41,47 +41,22 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
       val url = s"/manage-transit-movements-arrival-cache/declaration/submit"
 
-      "must return true when status is Ok" - {
-        "when phase 6 enabled" in {
-          val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-api-enabled" -> true)
-            .build()
+      "must return true when status is Ok" in {
+        val app = guiceApplicationBuilder().build()
 
-          running(app) {
-            val connector = app.injector.instanceOf[SubmissionConnector]
+        running(app) {
+          val connector = app.injector.instanceOf[SubmissionConnector]
 
-            server.stubFor(
-              post(urlEqualTo(url))
-                .withHeader("API-Version", equalTo("2.0"))
-                .withRequestBody(equalToJson(mrn.toString))
-                .willReturn(aResponse().withStatus(OK))
-            )
+          server.stubFor(
+            post(urlEqualTo(url))
+              .withHeader("API-Version", equalTo("2.0"))
+              .withRequestBody(equalToJson(mrn.toString))
+              .willReturn(aResponse().withStatus(OK))
+          )
 
-            val result: HttpResponse = await(connector.post(mrn))
+          val result: HttpResponse = await(connector.post(mrn))
 
-            result.status mustEqual OK
-          }
-        }
-
-        "when phase 6 disabled" in {
-          val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-api-enabled" -> false)
-            .build()
-
-          running(app) {
-            val connector = app.injector.instanceOf[SubmissionConnector]
-
-            server.stubFor(
-              post(urlEqualTo(url))
-                .withHeader("API-Version", equalTo("1.0"))
-                .withRequestBody(equalToJson(mrn.toString))
-                .willReturn(aResponse().withStatus(OK))
-            )
-
-            val result: HttpResponse = await(connector.post(mrn))
-
-            result.status mustEqual OK
-          }
+          result.status mustEqual OK
         }
       }
 
@@ -90,7 +65,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         server.stubFor(
           post(urlEqualTo(url))
-            .withHeader("API-Version", equalTo("1.0"))
+            .withHeader("API-Version", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
@@ -105,7 +80,7 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         server.stubFor(
           post(urlEqualTo(url))
-            .withHeader("API-Version", equalTo("1.0"))
+            .withHeader("API-Version", equalTo("2.0"))
             .withRequestBody(equalToJson(mrn.toString))
             .willReturn(aResponse().withStatus(status))
         )
@@ -136,53 +111,25 @@ class SubmissionConnectorSpec extends ItSpecBase with WireMockServerHandler {
           |}
           |""".stripMargin
 
-      "must return messages when status is Ok" - {
-        "when phase 5" in {
-          val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-api-enabled" -> false)
-            .build()
+      "must return messages when status is Ok" in {
+        val app = guiceApplicationBuilder().build()
 
-          running(app) {
-            val connector = app.injector.instanceOf[SubmissionConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("API-Version", equalTo("1.0"))
-                .willReturn(okJson(json))
+        running(app) {
+          val connector = app.injector.instanceOf[SubmissionConnector]
+          server.stubFor(
+            get(urlEqualTo(url))
+              .withHeader("API-Version", equalTo("2.0"))
+              .willReturn(okJson(json))
+          )
+
+          val result: ArrivalMessages = await(connector.getMessages(mrn))
+
+          result mustEqual ArrivalMessages(
+            Seq(
+              ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
+              ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
             )
-
-            val result: ArrivalMessages = await(connector.getMessages(mrn))
-
-            result mustEqual ArrivalMessages(
-              Seq(
-                ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
-                ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
-              )
-            )
-          }
-        }
-
-        "when phase 6" in {
-          val app = guiceApplicationBuilder()
-            .configure("feature-flags.phase-6-api-enabled" -> true)
-            .build()
-
-          running(app) {
-            val connector = app.injector.instanceOf[SubmissionConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("API-Version", equalTo("2.0"))
-                .willReturn(okJson(json))
-            )
-
-            val result: ArrivalMessages = await(connector.getMessages(mrn))
-
-            result mustEqual ArrivalMessages(
-              Seq(
-                ArrivalMessage("IE007", LocalDateTime.of(2022, 11, 10, 15, 32, 51)),
-                ArrivalMessage("IE043", LocalDateTime.of(2022, 11, 10, 16, 32, 51))
-              )
-            )
-          }
+          )
         }
       }
     }
